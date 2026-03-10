@@ -172,12 +172,12 @@ This documentation is generated from scraped CakePHP official documentation. If 
 
 ```mermaid
 pie title Documentation Coverage
-    "Completed" : 2
+    "Completed" : 3
     "In Progress" : 0
-    "Planned" : 15
+    "Planned" : 14
 ```
 
-**Current Status:** 2 documents completed, 15+ planned
+**Current Status:** 3 documents completed, 14+ planned
 
 ---
 
