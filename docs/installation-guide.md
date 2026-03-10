@@ -576,4 +576,4 @@ flowchart LR
 
 ---
 
-[← Back to Documentation Home](README.md)
+[← Back to Documentation Home](index.md) | [← Previous: Introduction](cakephp-at-a-glance.md)

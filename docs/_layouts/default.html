@@ -248,6 +248,20 @@
       <span id="theme-icon">🌙</span>
     </button>
     
+    <!-- Navigation bar -->
+    <nav style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 12px 0; position: sticky; top: 0; z-index: 999;">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 0 45px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <a href="{{ "/" | relative_url }}" style="font-weight: 600; font-size: 1.1em; display: flex; align-items: center; gap: 8px;">
+          <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP" style="height: 24px;">
+          CakePHP Docs
+        </a>
+        <div style="flex: 1;"></div>
+        <a href="{{ "/cakephp-at-a-glance.html" | relative_url }}" style="font-size: 0.95em;">Introduction</a>
+        <a href="{{ "/installation-guide.html" | relative_url }}" style="font-size: 0.95em;">Installation</a>
+        <a href="https://book.cakephp.org/5.x/" target="_blank" style="font-size: 0.95em;">Official Docs ↗</a>
+      </div>
+    </nav>
+    
     <div class="container">
       {% if site.title and site.title != page.title %}
       <h1>
