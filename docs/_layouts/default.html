@@ -19,7 +19,7 @@
         padding: 0;
       }
       .container {
-        max-width: 980px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 45px;
       }
@@ -35,21 +35,30 @@
       code {
         padding: 0.2em 0.4em;
         margin: 0;
-        font-size: 85%;
+        font-size: 90%;
         background-color: rgba(27,31,35,0.05);
         border-radius: 3px;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        white-space: pre-wrap;
+        word-break: break-word;
       }
       pre {
         padding: 16px;
-        overflow: auto;
-        font-size: 85%;
+        overflow-x: auto;
+        font-size: 90%;
         line-height: 1.45;
         background-color: #f6f8fa;
-        border-radius: 3px;
+        border-radius: 6px;
+        margin: 16px 0;
+        border: 1px solid #e1e4e8;
       }
       pre code {
         background-color: transparent;
         padding: 0;
+        font-size: 100%;
+        white-space: pre;
+        word-break: normal;
+        display: block;
       }
       blockquote {
         padding: 0 1em;
@@ -59,6 +68,9 @@
       }
       blockquote > :first-child { margin-top: 0; }
       blockquote > :last-child { margin-bottom: 0; }
+      blockquote strong {
+        color: #24292e;
+      }
       a { color: #0366d6; text-decoration: none; }
       a:hover { text-decoration: underline; }
       table {
@@ -73,19 +85,32 @@
       table tr { background-color: #fff; border-top: 1px solid #c6cbd1; }
       table tr:nth-child(2n) { background-color: #f6f8fa; }
       hr { border: 0; border-top: 1px solid #eaecef; margin: 24px 0; }
+      
+      /* Mermaid diagram styling */
+      .mermaid {
+        background-color: #fff;
+        border: 1px solid #e1e4e8;
+        border-radius: 6px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: center;
+      }
+      
+      /* Hide mermaid code blocks until processed */
+      pre:has(code.language-mermaid) {
+        display: none;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+        pre {
+          font-size: 85%;
+        }
+      }
     </style>
-    
-    <!-- Mermaid JS for diagrams -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        mermaid.initialize({ 
-          startOnLoad: true,
-          theme: 'default',
-          securityLevel: 'loose'
-        });
-      });
-    </script>
   </head>
   <body>
     <div class="container">
@@ -102,5 +127,48 @@
       </div>
       {% endif %}
     </div>
+    
+    <!-- Mermaid JS for diagrams -->
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      
+      // Initialize mermaid
+      mermaid.initialize({ 
+        startOnLoad: false,
+        theme: 'default',
+        securityLevel: 'loose',
+        flowchart: {
+          useMaxWidth: true,
+          htmlLabels: true,
+          curve: 'basis'
+        }
+      });
+      
+      // Convert mermaid code blocks to mermaid divs
+      document.addEventListener('DOMContentLoaded', function() {
+        // Find all code blocks with language-mermaid class
+        const mermaidBlocks = document.querySelectorAll('code.language-mermaid');
+        
+        mermaidBlocks.forEach((block, index) => {
+          // Get the mermaid code
+          const code = block.textContent;
+          
+          // Create a new div for mermaid
+          const mermaidDiv = document.createElement('div');
+          mermaidDiv.className = 'mermaid';
+          mermaidDiv.textContent = code;
+          
+          // Replace the pre block with the mermaid div
+          const preBlock = block.closest('pre');
+          if (preBlock) {
+            preBlock.parentNode.insertBefore(mermaidDiv, preBlock);
+            preBlock.remove();
+          }
+        });
+        
+        // Run mermaid after converting blocks
+        mermaid.run();
+      });
+    </script>
   </body>
 </html>
