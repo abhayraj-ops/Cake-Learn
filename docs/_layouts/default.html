@@ -328,19 +328,12 @@
     function applyCodeTheme(theme) {
       const light = document.getElementById('hljs-theme-light');
       const dark = document.getElementById('hljs-theme-dark');
-      // Simplified - removed rouge references
-      const rougeDark = document.getElementById('rouge-dark');
 
       if (!light || !dark) return;
 
       const isDark = theme === 'dark';
       light.disabled = isDark;
       dark.disabled = !isDark;
-
-      if (rougeLight && rougeDark) {
-        rougeLight.disabled = isDark;
-        rougeDark.disabled = !isDark;
-      }
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -352,41 +345,7 @@
         hljs.configure({
           languages: ['php', 'bash', 'sql', 'json', 'xml', 'apache', 'nginx', 'dockerfile', 'javascript', 'css', 'html', 'yaml', 'ruby']
         });
-
-        // Find all code blocks and apply highlighting
-        // This handles both Rouge-generated code and markdown code blocks
-        document.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
-          // Add language class if missing
-          if (!block.className.includes('language-')) {
-            // Try to detect language from filename or previous sibling
-            const pre = block.parentElement;
-            if (pre && pre.previousElementSibling && pre.previousElementSibling.classList.contains('filename')) {
-              const filename = pre.previousElementSibling.textContent;
-              const ext = filename.split('.').pop();
-              const langMap = {
-                'php': 'php', 'ctp': 'php', 'phtml': 'php',
-                'js': 'javascript', 'ts': 'typescript',
-                'css': 'css', 'scss': 'scss', 'sass': 'scss',
-                'sql': 'sql', 'yml': 'yaml', 'yaml': 'yaml',
-                'json': 'json', 'xml': 'xml', 'html': 'html', 'htm': 'html',
-                'sh': 'bash', 'bash': 'bash', 'zsh': 'bash',
-                'rb': 'ruby', 'ruby': 'ruby',
-                'dockerfile': 'dockerfile', 'docker': 'dockerfile',
-                'apache': 'apache', 'conf': 'apache',
-                'nginx': 'nginx'
-              };
-              if (langMap[ext]) {
-                block.classList.add('language-' + langMap[ext]);
-              }
-            }
-          }
-          hljs.highlightElement(block);
-        });
-
-        // Also handle pre blocks that might have language class
-        document.querySelectorAll('pre code[class*="language-"]').forEach((block) => {
-          hljs.highlightElement(block);
-        });
+        hljs.highlightAll();
       }
     });
   </script>

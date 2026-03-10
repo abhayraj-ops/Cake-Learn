@@ -10,7 +10,8 @@ baseurl: /Cake-Learn
 markdown: kramdown
 kramdown:
   input: GFM
-  syntax_highlighter: rouge
+  # Use highlight.js at runtime instead of Rouge at build time
+  syntax_highlighter: none
   hard_wrap: false
 
 # Plugins (GitHub Pages supported plugins only)
