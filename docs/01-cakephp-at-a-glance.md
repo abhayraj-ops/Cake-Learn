@@ -41,10 +41,22 @@ CakePHP provides a basic organizational structure that covers class names, filen
 
 ```mermaid
 graph LR
-    A[Convention] --> B[Less Configuration]
-    B --> C[Faster Development]
-    C --> D[Consistent Structure]
-    D --> E[Easy Maintenance]
+    subgraph Benefits["✨ Convention Over Configuration Benefits"]
+        A["📋 Convention"]
+        B["⚙️ Less Configuration"]
+        C["⚡ Faster Development"]
+        D["🏗️ Consistent Structure"]
+        E["🔧 Easy Maintenance"]
+    end
+
+    A --> B --> C --> D --> E
+
+    style Benefits fill:#1a365d,color:#fff
+    style A fill:#2c5282,color:#fff
+    style B fill:#2c5282,color:#fff
+    style C fill:#2c5282,color:#fff
+    style D fill:#2c5282,color:#fff
+    style E fill:#2c5282,color:#fff
 ```
 
 ---
@@ -101,13 +113,30 @@ $users->save($user);
 
 ```mermaid
 flowchart TD
-    A[Model Layer] --> B[Business Logic]
-    A --> C[Data Validation]
-    A --> D[Database Operations]
-    B --> E[User Management]
-    B --> F[Associations]
-    C --> G[Rules & Constraints]
-    D --> H[CRUD Operations]
+    subgraph ModelLayer["📊 Model Layer Architecture"]
+        A["Business Logic"]
+        B["Data Validation"]
+        C["Database Operations"]
+    end
+
+    subgraph Responsibilities["🎯 Key Responsibilities"]
+        E["User Management"]
+        F["Associations"]
+        G["Rules & Constraints"]
+        H["CRUD Operations"]
+    end
+
+    ModelLayer --> Responsibilities
+
+    style ModelLayer fill:#1a4731,color:#fff
+    style Responsibilities fill:#276749,color:#fff
+    style A fill:#2f855a,color:#fff
+    style B fill:#2f855a,color:#fff
+    style C fill:#2f855a,color:#fff
+    style E fill:#38a169,color:#fff
+    style F fill:#38a169,color:#fff
+    style G fill:#38a169,color:#fff
+    style H fill:#38a169,color:#fff
 ```
 
 ---
@@ -145,13 +174,30 @@ The View layer provides extension points like:
 
 ```mermaid
 graph TB
-    A[View Layer] --> B[Templates]
-    A --> C[Elements]
-    A --> D[Cells]
-    A --> E[Helpers]
-    B --> F[HTML Output]
-    B --> G[JSON Output]
-    B --> H[XML Output]
+    subgraph ViewLayer["👁️ View Layer Components"]
+        A["Templates"]
+        B["Elements"]
+        C["Cells"]
+        D["Helpers"]
+    end
+
+    subgraph Outputs["📤 Output Formats"]
+        F["HTML Output"]
+        G["JSON Output"]
+        H["XML Output"]
+    end
+
+    ViewLayer --> Outputs
+
+    style ViewLayer fill:#553c9a,color:#fff
+    style Outputs fill:#6b46c1,color:#fff
+    style A fill:#7c3aed,color:#fff
+    style B fill:#7c3aed,color:#fff
+    style C fill:#7c3aed,color:#fff
+    style D fill:#7c3aed,color:#fff
+    style F fill:#a78bfa,color:#fff
+    style G fill:#a78bfa,color:#fff
+    style H fill:#a78bfa,color:#fff
 ```
 
 ---
@@ -194,18 +240,20 @@ public function add()
 
 ```mermaid
 sequenceDiagram
-    participant User
-    participant Controller
-    participant Model
-    participant View
+    participant User as 👤 User
+    participant Controller as 🎮 Controller
+    participant Model as 📊 Model
+    participant View as 👁️ View
 
-    User->>Controller: HTTP Request
-    Controller->>Controller: Validate Request
-    Controller->>Model: Fetch/Save Data
-    Model-->>Controller: Return Data
-    Controller->>View: Pass Data
-    View-->>Controller: Rendered Output
-    Controller-->>User: HTTP Response
+    User->>Controller: 📨 HTTP Request
+    Controller->>Controller: ✅ Validate Request
+    Controller->>Model: 🔍 Fetch/Save Data
+    Model-->>Controller: 📦 Return Data
+    Controller->>View: 🎨 Pass Data
+    View-->>Controller: 📄 Rendered Output
+    Controller-->>User: 📤 HTTP Response
+
+    Note over User,View: MVC Pattern in Action
 ```
 
 ---
@@ -220,16 +268,42 @@ The typical CakePHP request cycle starts with a user requesting a page or resour
 
 ```mermaid
 flowchart TD
-    A[User Request] --> B[Web Server Routes]
-    B --> C[Application Bootstrap]
-    C --> D[Middleware Stack]
-    D --> E[Routing]
-    E --> F[Controller Action]
-    F --> G[Model Operations]
-    G --> H[View Rendering]
-    H --> I[Response Middleware]
-    I --> J[HTTP Response]
-    J --> K[User Receives Page]
+    subgraph Request["🌐 HTTP Request"]
+        A["User Request"]
+    end
+
+    subgraph Processing["⚙️ Processing Pipeline"]
+        B["Web Server Routes"]
+        C["Application Bootstrap"]
+        D["Middleware Stack"]
+        E["Routing"]
+        F["Controller Action"]
+        G["Model Operations"]
+        H["View Rendering"]
+        I["Response Middleware"]
+    end
+
+    subgraph Response["📤 Response"]
+        J["HTTP Response"]
+        K["User Receives Page"]
+    end
+
+    A --> B --> C --> D --> E --> F --> G --> H --> I --> J --> K
+
+    style Request fill:#1a365d,color:#fff
+    style Processing fill:#1a4731,color:#fff
+    style Response fill:#553c9a,color:#fff
+    style A fill:#2c5282,color:#fff
+    style B fill:#2f855a,color:#fff
+    style C fill:#2f855a,color:#fff
+    style D fill:#2f855a,color:#fff
+    style E fill:#2f855a,color:#fff
+    style F fill:#2f855a,color:#fff
+    style G fill:#2f855a,color:#fff
+    style H fill:#2f855a,color:#fff
+    style I fill:#2f855a,color:#fff
+    style J fill:#7c3aed,color:#fff
+    style K fill:#7c3aed,color:#fff
 ```
 
 ### Request Cycle Steps
@@ -322,16 +396,19 @@ CakePHP follows semantic versioning and provides clear support timelines for eac
 
 ```mermaid
 gantt
-    title CakePHP Version Support Timeline
+    title 📅 CakePHP Version Support Timeline
     dateFormat YYYY-MM
+
     section CakePHP 5.x
-    Active Support    :2023-09, 2026-12
-    Security Updates  :2023-09, 2028-09
+    Active Support           :active, 2023-09, 2026-12
+    Security Updates         :crit, 2023-09, 2028-09
+
     section CakePHP 4.x
-    Active Support    :done, 2020-12, 2025-09
-    Security Updates  :2020-12, 2026-09
+    Active Support (Ended)   :done, 2020-12, 2025-09
+    Security Updates         :crit, 2020-12, 2026-09
+
     section CakePHP 3.x
-    All Support Ended :done, 2015-03, 2023-09
+    All Support Ended        :done, 2015-03, 2023-09
 ```
 
 ---
