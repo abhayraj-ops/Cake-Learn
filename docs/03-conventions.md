@@ -11,8 +11,8 @@ description: Learn CakePHP naming conventions and folder structure for rapid dev
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="02-installation-guide.html" style="color: var(--link-color);">← Previous: Installation</a>
-    <span style="color: var(--text-secondary);">📋 Page 3 of 3</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">📋 Page 3 of 4</span>
+    <a href="04-cms-tutorial.html" style="color: var(--link-color);">Next: CMS Tutorial →</a>
   </div>
 </nav>
 
@@ -678,7 +678,7 @@ sequenceDiagram
 
 Now that you understand CakePHP's structure and conventions:
 
-1. Try the [Content Management Tutorial](https://book.cakephp.org/5.x/tutorials-and-examples/cms/installation.html) to see everything in action
+1. Continue with the [Content Management Tutorial](04-cms-tutorial.html) for a hands-on walkthrough
 2. Learn about [Routes Configuration](https://book.cakephp.org/5.x/development/routing.html) for URL handling
 
 ---
@@ -686,8 +686,8 @@ Now that you understand CakePHP's structure and conventions:
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="02-installation-guide.html" style="color: var(--link-color);">← Previous: Installation</a>
-    <span style="color: var(--text-secondary);">📋 Page 3 of 3</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">📋 Page 3 of 4</span>
+    <a href="04-cms-tutorial.html" style="color: var(--link-color);">Next: CMS Tutorial →</a>
   </div>
 </nav>
 

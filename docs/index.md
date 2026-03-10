@@ -21,6 +21,7 @@ graph TB
     A[🏠 Home] --> B[📖 Introduction]
     A --> C[⚙️ Installation]
     A --> D[📋 Conventions]
+    A --> E[📚 CMS Tutorial]
 
     B --> B1[CakePHP at a Glance]
     B --> B2[Where to Get Help]
@@ -63,6 +64,7 @@ graph TB
 | [CakePHP at a Glance](cakephp-at-a-glance.html) | Introduction to CakePHP concepts and architecture | ✅ Available |
 | [Installation Guide](installation-guide.html)   | Complete installation and configuration guide     | ✅ Available |
 | [CakePHP Conventions](03-conventions.html) | Naming conventions and folder structure for rapid development | ✅ Available |
+| [Content Management Tutorial](04-cms-tutorial.html) | Build a CMS with articles, tags, auth, and authorization | ✅ Available |
 
 ### Coming Soon
 
@@ -173,12 +175,12 @@ This documentation is generated from scraped CakePHP official documentation. If 
 
 ```mermaid
 pie title Documentation Coverage
-    "Completed" : 3
+    "Completed" : 4
     "In Progress" : 0
-    "Planned" : 14
+    "Planned" : 13
 ```
 
-**Current Status:** 3 documents completed, 14+ planned
+**Current Status:** 4 documents completed, 13+ planned
 
 ---
 
