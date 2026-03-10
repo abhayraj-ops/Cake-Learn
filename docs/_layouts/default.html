@@ -1,418 +1,471 @@
 <!DOCTYPE html>
 <html lang="en-US">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ page.title | default: site.title }}</title>
-    <meta name="description" content="{{ page.description | default: site.description }}">
-    <link rel="icon" type="image/svg+xml" href="https://book.cakephp.org/5.x/logo.svg">
-    <link rel="shortcut icon" type="image/svg+xml" href="https://book.cakephp.org/5.x/logo.svg">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- GitHub Pages default styling with dark mode support -->
-    <style>
-      :root {
-        --bg-primary: #fff;
-        --bg-secondary: #f6f8fa;
-        --bg-code: #f6f8fa;
-        --text-primary: #24292e;
-        --text-secondary: #6a737d;
-        --border-color: #e1e4e8;
-        --border-light: #eaecef;
-        --link-color: #0366d6;
-        --code-bg: rgba(27,31,35,0.05);
-        --blockquote-border: #dfe2e5;
-        --table-stripe: #f6f8fa;
-      }
-      
-      [data-theme="dark"] {
-        --bg-primary: #0d1117;
-        --bg-secondary: #161b22;
-        --bg-code: #161b22;
-        --text-primary: #c9d1d9;
-        --text-secondary: #8b949e;
-        --border-color: #30363d;
-        --border-light: #21262d;
-        --link-color: #58a6ff;
-        --code-bg: rgba(110,118,129,0.4);
-        --blockquote-border: #3b434b;
-        --table-stripe: #161b22;
-      }
-      
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-        line-height: 1.6;
-        color: var(--text-primary);
-        background-color: var(--bg-primary);
-        margin: 0;
-        padding: 0;
-        transition: background-color 0.3s ease, color 0.3s ease;
-      }
-      
+  <title>{{ page.title | default: site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+  <link rel="icon" type="image/svg+xml" href="https://book.cakephp.org/5.x/logo.svg">
+  <link rel="shortcut icon" type="image/svg+xml" href="https://book.cakephp.org/5.x/logo.svg">
+  <link id="hljs-theme-light" rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github.min.css">
+  <link id="hljs-theme-dark" rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github-dark.min.css" disabled>
+
+  <!-- GitHub Pages default styling with dark mode support -->
+  <style>
+    :root {
+      --bg-primary: #fff;
+      --bg-secondary: #f6f8fa;
+      --bg-code: #f6f8fa;
+      --text-primary: #24292e;
+      --text-secondary: #6a737d;
+      --border-color: #e1e4e8;
+      --border-light: #eaecef;
+      --link-color: #0366d6;
+      --code-bg: rgba(27, 31, 35, 0.05);
+      --blockquote-border: #dfe2e5;
+      --table-stripe: #f6f8fa;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-code: #161b22;
+      --text-primary: #c9d1d9;
+      --text-secondary: #8b949e;
+      --border-color: #30363d;
+      --border-light: #21262d;
+      --link-color: #58a6ff;
+      --code-bg: rgba(110, 118, 129, 0.4);
+      --blockquote-border: #3b434b;
+      --table-stripe: #161b22;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background-color: var(--bg-primary);
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 45px;
+    }
+
+    /* Dark mode toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 20px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      background: var(--border-color);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-top: 24px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text-primary);
+    }
+
+    h1 {
+      font-size: 2em;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 0.3em;
+    }
+
+    h2 {
+      font-size: 1.5em;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 0.3em;
+    }
+
+    h3 {
+      font-size: 1.25em;
+    }
+
+    code {
+      padding: 0.2em 0.4em;
+      margin: 0;
+      font-size: 90%;
+      background-color: var(--code-bg);
+      border-radius: 3px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: var(--text-primary);
+    }
+
+    /* Code block container with copy button */
+    .code-block-wrapper {
+      position: relative;
+      margin: 16px 0;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-primary);
+      opacity: 0;
+      transition: opacity 0.2s ease, background 0.2s ease;
+      z-index: 10;
+    }
+
+    .code-block-wrapper:hover .copy-button {
+      opacity: 1;
+    }
+
+    .copy-button:hover {
+      background: var(--border-color);
+    }
+
+    .copy-button.copied {
+      background: #28a745;
+      color: white;
+      border-color: #28a745;
+    }
+
+    pre {
+      padding: 16px;
+      padding-top: 40px;
+      overflow-x: auto;
+      font-size: 90%;
+      line-height: 1.45;
+      background-color: var(--bg-code);
+      border-radius: 6px;
+      margin: 0;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      font-size: 100%;
+      white-space: pre;
+      word-break: normal;
+      display: block;
+    }
+
+    pre code.hljs {
+      background: transparent;
+    }
+
+    blockquote {
+      padding: 0 1em;
+      color: var(--text-secondary);
+      border-left: 0.25em solid var(--blockquote-border);
+      margin: 0 0 16px 0;
+    }
+
+    blockquote> :first-child {
+      margin-top: 0;
+    }
+
+    blockquote> :last-child {
+      margin-bottom: 0;
+    }
+
+    blockquote strong {
+      color: var(--text-primary);
+    }
+
+    a {
+      color: var(--link-color);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    table th,
+    table td {
+      padding: 6px 13px;
+      border: 1px solid var(--border-color);
+    }
+
+    table tr {
+      background-color: var(--bg-primary);
+      border-top: 1px solid var(--border-color);
+    }
+
+    table tr:nth-child(2n) {
+      background-color: var(--table-stripe);
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border-light);
+      margin: 24px 0;
+    }
+
+    /* Mermaid diagram styling */
+    .mermaid {
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    /* Hide mermaid code blocks until processed */
+    pre:has(code.language-mermaid) {
+      display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
       .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 45px;
-      }
-      
-      /* Dark mode toggle button */
-      .theme-toggle {
-        position: fixed;
-        top: 70px;
-        right: 20px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        padding: 8px 12px;
-        cursor: pointer;
-        font-size: 20px;
-        z-index: 1000;
-        transition: all 0.3s ease;
-      }
-      
-      .theme-toggle:hover {
-        background: var(--border-color);
-      }
-      
-      h1, h2, h3, h4, h5, h6 {
-        margin-top: 24px;
-        margin-bottom: 16px;
-        font-weight: 600;
-        line-height: 1.25;
-        color: var(--text-primary);
-      }
-      
-      h1 { 
-        font-size: 2em; 
-        border-bottom: 1px solid var(--border-light); 
-        padding-bottom: 0.3em; 
-      }
-      
-      h2 { 
-        font-size: 1.5em; 
-        border-bottom: 1px solid var(--border-light); 
-        padding-bottom: 0.3em; 
-      }
-      
-      h3 { font-size: 1.25em; }
-      
-      code {
-        padding: 0.2em 0.4em;
-        margin: 0;
-        font-size: 90%;
-        background-color: var(--code-bg);
-        border-radius: 3px;
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-        white-space: pre-wrap;
-        word-break: break-word;
-        color: var(--text-primary);
-      }
-      
-      /* Code block container with copy button */
-      .code-block-wrapper {
-        position: relative;
-        margin: 16px 0;
-      }
-      
-      .copy-button {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
-        border-radius: 4px;
-        padding: 6px 12px;
-        font-size: 12px;
-        cursor: pointer;
-        color: var(--text-primary);
-        opacity: 0;
-        transition: opacity 0.2s ease, background 0.2s ease;
-        z-index: 10;
-      }
-      
-      .code-block-wrapper:hover .copy-button {
-        opacity: 1;
-      }
-      
-      .copy-button:hover {
-        background: var(--border-color);
-      }
-      
-      .copy-button.copied {
-        background: #28a745;
-        color: white;
-        border-color: #28a745;
-      }
-      
-      pre {
-        padding: 16px;
-        padding-top: 40px;
-        overflow-x: auto;
-        font-size: 90%;
-        line-height: 1.45;
-        background-color: var(--bg-code);
-        border-radius: 6px;
-        margin: 0;
-        border: 1px solid var(--border-color);
-      }
-      
-      pre code {
-        background-color: transparent;
-        padding: 0;
-        font-size: 100%;
-        white-space: pre;
-        word-break: normal;
-        display: block;
-      }
-      
-      blockquote {
-        padding: 0 1em;
-        color: var(--text-secondary);
-        border-left: 0.25em solid var(--blockquote-border);
-        margin: 0 0 16px 0;
-      }
-      
-      blockquote > :first-child { margin-top: 0; }
-      blockquote > :last-child { margin-bottom: 0; }
-      blockquote strong {
-        color: var(--text-primary);
-      }
-      
-      a { 
-        color: var(--link-color); 
-        text-decoration: none; 
-      }
-      
-      a:hover { text-decoration: underline; }
-      
-      table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-bottom: 16px;
-      }
-      
-      table th, table td {
-        padding: 6px 13px;
-        border: 1px solid var(--border-color);
-      }
-      
-      table tr { 
-        background-color: var(--bg-primary); 
-        border-top: 1px solid var(--border-color); 
-      }
-      
-      table tr:nth-child(2n) { 
-        background-color: var(--table-stripe); 
-      }
-      
-      hr { 
-        border: 0; 
-        border-top: 1px solid var(--border-light); 
-        margin: 24px 0; 
-      }
-      
-      /* Mermaid diagram styling */
-      .mermaid {
-        background-color: var(--bg-primary);
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
         padding: 20px;
-        margin: 20px 0;
-        text-align: center;
       }
-      
-      /* Hide mermaid code blocks until processed */
-      pre:has(code.language-mermaid) {
-        display: none;
-      }
-      
-      /* Responsive */
-      @media (max-width: 768px) {
-        .container {
-          padding: 20px;
-        }
-        pre {
-          font-size: 85%;
-        }
-        .theme-toggle {
-          top: 10px;
-          right: 10px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Dark mode toggle button -->
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-      <span id="theme-icon">🌙</span>
-    </button>
-    
-    <!-- Navigation bar -->
-    <nav style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 12px 0; position: sticky; top: 0; z-index: 999;">
-      <div style="max-width: 1200px; margin: 0 auto; padding: 0 45px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-        <a href="{{ "/" | relative_url }}" style="font-weight: 600; font-size: 1.1em; display: flex; align-items: center; gap: 8px;">
-          <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP" style="height: 24px;">
-          CakePHP Docs
-        </a>
-        <div style="flex: 1;"></div>
-        <a href="https://book.cakephp.org/5.x/" target="_blank" style="font-size: 0.95em;">Official Docs ↗</a>
-      </div>
-    </nav>
-    
-    <div class="container">
-      {% if site.title and site.title != page.title %}
-      <h1>
-        <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP Logo" style="height: 40px; vertical-align: middle; margin-right: 10px;">
-        <a href="{{ "/" | relative_url }}" style="vertical-align: middle;">{{ site.title }}</a>
-      </h1>
-      {% endif %}
 
-      {{ content }}
+      pre {
+        font-size: 85%;
+      }
 
-      {% if site.github.private != true %}
-      <hr>
-      <div style="text-align: center; color: var(--text-secondary); font-size: 0.9em;">
-        <p>Released under the MIT License. Copyright © Cake Software Foundation, Inc.</p>
-      </div>
-      {% endif %}
+      .theme-toggle {
+        top: 10px;
+        right: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Dark mode toggle button -->
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+    <span id="theme-icon">🌙</span>
+  </button>
+
+  <!-- Navigation bar -->
+  <nav
+    style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 12px 0; position: sticky; top: 0; z-index: 999;">
+    <div
+      style="max-width: 1200px; margin: 0 auto; padding: 0 45px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+      <a href="{{ " /" | relative_url }}"
+        style="font-weight: 600; font-size: 1.1em; display: flex; align-items: center; gap: 8px;">
+        <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP" style="height: 24px;">
+        CakePHP Docs
+      </a>
+      <div style="flex: 1;"></div>
+      <a href="https://book.cakephp.org/5.x/" target="_blank" style="font-size: 0.95em;">Official Docs ↗</a>
     </div>
-    
-    <!-- Mermaid JS for diagrams -->
-    <script type="module">
-      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-      
-      // Get current theme
+  </nav>
+
+  <div class="container">
+    {% if site.title and site.title != page.title %}
+    <h1>
+      <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP Logo"
+        style="height: 40px; vertical-align: middle; margin-right: 10px;">
+      <a href="{{ " /" | relative_url }}" style="vertical-align: middle;">{{ site.title }}</a>
+    </h1>
+    {% endif %}
+
+    {{ content }}
+
+    {% if site.github.private != true %}
+    <hr>
+    <div style="text-align: center; color: var(--text-secondary); font-size: 0.9em;">
+      <p>Released under the MIT License. Copyright © Cake Software Foundation, Inc.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Mermaid JS for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/common.min.js"></script>
+  <script>
+    function applyCodeTheme(theme) {
+      const light = document.getElementById('hljs-theme-light');
+      const dark = document.getElementById('hljs-theme-dark');
+      if (!light || !dark) return;
+      const isDark = theme === 'dark';
+      light.disabled = isDark;
+      dark.disabled = !isDark;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
       const currentTheme = localStorage.getItem('theme') || 'light';
-      
-      // Initialize mermaid with theme
-      mermaid.initialize({ 
-        startOnLoad: false,
-        theme: currentTheme === 'dark' ? 'dark' : 'base',
-        securityLevel: 'loose',
-        themeVariables: {
-          primaryColor: currentTheme === 'dark' ? '#1f6feb' : '#0366d6',
-          primaryTextColor: currentTheme === 'dark' ? '#c9d1d9' : '#24292e',
-          primaryBorderColor: currentTheme === 'dark' ? '#30363d' : '#e1e4e8',
-          lineColor: currentTheme === 'dark' ? '#8b949e' : '#6a737d',
-          secondaryColor: currentTheme === 'dark' ? '#161b22' : '#f0f0f0',
-          tertiaryColor: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
-          background: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
-          mainBkg: currentTheme === 'dark' ? '#161b22' : '#f0f0f0',
-          secondBkg: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
-          textColor: currentTheme === 'dark' ? '#c9d1d9' : '#24292e',
-          fontSize: '16px'
-        },
-        flowchart: {
-          useMaxWidth: true,
-          htmlLabels: true,
-          curve: 'basis'
+      applyCodeTheme(currentTheme);
+      if (window.hljs) window.hljs.highlightAll();
+    });
+  </script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+    // Get current theme
+    const currentTheme = localStorage.getItem('theme') || 'light';
+
+    // Initialize mermaid with theme
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: currentTheme === 'dark' ? 'dark' : 'base',
+      securityLevel: 'loose',
+      themeVariables: {
+        primaryColor: currentTheme === 'dark' ? '#1f6feb' : '#0366d6',
+        primaryTextColor: currentTheme === 'dark' ? '#c9d1d9' : '#24292e',
+        primaryBorderColor: currentTheme === 'dark' ? '#30363d' : '#e1e4e8',
+        lineColor: currentTheme === 'dark' ? '#8b949e' : '#6a737d',
+        secondaryColor: currentTheme === 'dark' ? '#161b22' : '#f0f0f0',
+        tertiaryColor: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
+        background: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
+        mainBkg: currentTheme === 'dark' ? '#161b22' : '#f0f0f0',
+        secondBkg: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
+        textColor: currentTheme === 'dark' ? '#c9d1d9' : '#24292e',
+        fontSize: '16px'
+      },
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      }
+    });
+
+    // Convert mermaid code blocks to mermaid divs
+    document.addEventListener('DOMContentLoaded', function () {
+      // Find all code blocks with language-mermaid class
+      const mermaidBlocks = document.querySelectorAll('code.language-mermaid');
+
+      mermaidBlocks.forEach((block, index) => {
+        // Get the mermaid code
+        const code = block.textContent;
+
+        // Create a new div for mermaid
+        const mermaidDiv = document.createElement('div');
+        mermaidDiv.className = 'mermaid';
+        mermaidDiv.textContent = code;
+
+        // Replace the pre block with the mermaid div
+        const preBlock = block.closest('pre');
+        if (preBlock) {
+          preBlock.parentNode.insertBefore(mermaidDiv, preBlock);
+          preBlock.remove();
         }
       });
-      
-      // Convert mermaid code blocks to mermaid divs
-      document.addEventListener('DOMContentLoaded', function() {
-        // Find all code blocks with language-mermaid class
-        const mermaidBlocks = document.querySelectorAll('code.language-mermaid');
-        
-        mermaidBlocks.forEach((block, index) => {
-          // Get the mermaid code
-          const code = block.textContent;
-          
-          // Create a new div for mermaid
-          const mermaidDiv = document.createElement('div');
-          mermaidDiv.className = 'mermaid';
-          mermaidDiv.textContent = code;
-          
-          // Replace the pre block with the mermaid div
-          const preBlock = block.closest('pre');
-          if (preBlock) {
-            preBlock.parentNode.insertBefore(mermaidDiv, preBlock);
-            preBlock.remove();
+
+      // Run mermaid after converting blocks
+      mermaid.run();
+    });
+  </script>
+
+  <!-- Dark mode toggle script -->
+  <script>
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    // Apply saved theme on load
+    if (currentTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeIcon.textContent = '☀️';
+    }
+    applyCodeTheme(currentTheme);
+
+    // Toggle theme
+    themeToggle.addEventListener('click', function () {
+      const theme = document.documentElement.getAttribute('data-theme');
+
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        themeIcon.textContent = '🌙';
+        applyCodeTheme('light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeIcon.textContent = '☀️';
+        applyCodeTheme('dark');
+      }
+    });
+  </script>
+
+  <!-- Copy button script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Find all pre blocks (except mermaid ones)
+      const preBlocks = document.querySelectorAll('pre:not(:has(code.language-mermaid))');
+
+      preBlocks.forEach((pre) => {
+        // Create wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+
+        // Create copy button
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-button';
+        copyButton.textContent = 'Copy';
+        copyButton.setAttribute('aria-label', 'Copy code to clipboard');
+
+        // Wrap the pre block
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+        wrapper.appendChild(copyButton);
+
+        // Add click event
+        copyButton.addEventListener('click', async function () {
+          const code = pre.querySelector('code');
+          const text = code ? code.textContent : pre.textContent;
+
+          try {
+            await navigator.clipboard.writeText(text);
+            copyButton.textContent = 'Copied!';
+            copyButton.classList.add('copied');
+
+            setTimeout(() => {
+              copyButton.textContent = 'Copy';
+              copyButton.classList.remove('copied');
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy:', err);
+            copyButton.textContent = 'Failed';
+
+            setTimeout(() => {
+              copyButton.textContent = 'Copy';
+            }, 2000);
           }
         });
-        
-        // Run mermaid after converting blocks
-        mermaid.run();
       });
-    </script>
-    
-    <!-- Dark mode toggle script -->
-    <script>
-      // Check for saved theme preference or default to light mode
-      const currentTheme = localStorage.getItem('theme') || 'light';
-      const themeToggle = document.getElementById('theme-toggle');
-      const themeIcon = document.getElementById('theme-icon');
-      
-      // Apply saved theme on load
-      if (currentTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        themeIcon.textContent = '☀️';
-      }
-      
-      // Toggle theme
-      themeToggle.addEventListener('click', function() {
-        const theme = document.documentElement.getAttribute('data-theme');
-        
-        if (theme === 'dark') {
-          document.documentElement.setAttribute('data-theme', 'light');
-          localStorage.setItem('theme', 'light');
-          themeIcon.textContent = '🌙';
-        } else {
-          document.documentElement.setAttribute('data-theme', 'dark');
-          localStorage.setItem('theme', 'dark');
-          themeIcon.textContent = '☀️';
-        }
-      });
-    </script>
-    
-    <!-- Copy button script -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // Find all pre blocks (except mermaid ones)
-        const preBlocks = document.querySelectorAll('pre:not(:has(code.language-mermaid))');
-        
-        preBlocks.forEach((pre) => {
-          // Create wrapper
-          const wrapper = document.createElement('div');
-          wrapper.className = 'code-block-wrapper';
-          
-          // Create copy button
-          const copyButton = document.createElement('button');
-          copyButton.className = 'copy-button';
-          copyButton.textContent = 'Copy';
-          copyButton.setAttribute('aria-label', 'Copy code to clipboard');
-          
-          // Wrap the pre block
-          pre.parentNode.insertBefore(wrapper, pre);
-          wrapper.appendChild(pre);
-          wrapper.appendChild(copyButton);
-          
-          // Add click event
-          copyButton.addEventListener('click', async function() {
-            const code = pre.querySelector('code');
-            const text = code ? code.textContent : pre.textContent;
-            
-            try {
-              await navigator.clipboard.writeText(text);
-              copyButton.textContent = 'Copied!';
-              copyButton.classList.add('copied');
-              
-              setTimeout(() => {
-                copyButton.textContent = 'Copy';
-                copyButton.classList.remove('copied');
-              }, 2000);
-            } catch (err) {
-              console.error('Failed to copy:', err);
-              copyButton.textContent = 'Failed';
-              
-              setTimeout(() => {
-                copyButton.textContent = 'Copy';
-              }, 2000);
-            }
-          });
-        });
-      });
-    </script>
-  </body>
+    });
+  </script>
+</body>
+
 </html>
