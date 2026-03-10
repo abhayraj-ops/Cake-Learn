@@ -32,6 +32,7 @@ description: Learn about CakePHP Controller Components - packages of logic share
 Components are packages of logic that are shared between controllers. They provide a way to organize reusable controller logic.
 
 ```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true, 'primaryColor': '#4ecdc4', 'primaryTextColor': '#fff', 'primaryBorderColor': '#4ecdc4', 'lineColor': '#ffffff', 'secondaryColor': '#45b7d1', 'tertiaryColor': '#96ceb4'}}}%%
 graph TB
     A[Controller] --> B[Components]
     B --> C[Flash Component]
@@ -39,12 +40,12 @@ graph TB
     B --> E[Check HTTP Cache]
     B --> F[Custom Component]
     
-    style A fill:#4ecdc4,color:#fff
-    style B fill:#45b7d1,color:#fff
-    style C fill:#96ceb4
-    style D fill:#96ceb4
-    style E fill:#96ceb4
-    style F fill:#ffeaa7
+    style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
+    style B fill:#2d3436,color:#fff,stroke:#45b7d1,stroke-width:2px
+    style C fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
+    style D fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
+    style E fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
+    style F fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
 ```
 
 > **Key Benefits:**
@@ -84,6 +85,7 @@ class PostsController extends AppController
 ### Configuration Methods
 
 ```mermaid
+%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
 graph LR
     A[Configuration] --> B[initialize()]
     A --> C[setConfig()]
@@ -93,10 +95,10 @@ graph LR
     C --> F[Runtime Config]
     D --> G[Dynamic Config]
     
-    style A fill:#4ecdc4,color:#fff
-    style B fill:#96ceb4
-    style C fill:#ffeaa7
-    style D fill:#dfe6e9
+    style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
+    style B fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
+    style C fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
+    style D fill:#2d3436,color:#fff,stroke:#dfe6e9,stroke-width:2px
 ```
 
 You can configure components at runtime using the `setConfig()` method:
@@ -144,17 +146,18 @@ $this->loadComponent('Flash', [
 Once you've included some components in your controller, using them is pretty simple:
 
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 graph LR
     A[Controller] --> B[loadComponent]
     B --> C[Exposed as Property]
     C --> D[$this->Flash]
     C --> E[$this->FormProtection]
     
-    style A fill:#4ecdc4,color:#fff
-    style B fill:#96ceb4
-    style C fill:#ffeaa7
-    style D fill:#dfe6e9
-    style E fill:#dfe6e9
+    style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
+    style B fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
+    style C fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
+    style D fill:#2d3436,color:#fff,stroke:#dfe6e9,stroke-width:2px
+    style E fill:#2d3436,color:#fff,stroke:#dfe6e9,stroke-width:2px
 ```
 
 ```php
@@ -212,6 +215,7 @@ $controller = $this->getController();
 Suppose our application needs a complex mathematical operation in many places. Create a component:
 
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 graph TB
     A[Create Component] --> B[src/Controller/Component]
     B --> C[MathComponent.php]
@@ -219,12 +223,12 @@ graph TB
     D --> E[Add Methods]
     E --> F[Load in Controller]
     
-    style A fill:#4ecdc4,color:#fff
-    style B fill:#96ceb4
-    style C fill:#ffeaa7
-    style D fill:#dfe6e9
-    style E fill:#dfe6e9
-    style F fill:#45b7d1
+    style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
+    style B fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
+    style C fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
+    style D fill:#2d3436,color:#fff,stroke:#dfe6e9,stroke-width:2px
+    style E fill:#2d3436,color:#fff,stroke:#dfe6e9,stroke-width:2px
+    style F fill:#2d3436,color:#fff,stroke:#45b7d1,stroke-width:2px
 ```
 
 Create the file in `src/Controller/Component/MathComponent.php`:
@@ -299,6 +303,7 @@ public function initialize(): void
 Components offer request life-cycle callbacks:
 
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 sequenceDiagram
     participant R as Request
     participant C as Controller
@@ -318,6 +323,10 @@ sequenceDiagram
     Comp->>C: Response Ready
     
     C-->>R: Send Response
+    
+    style R fill:#2d3436,color:#fff,stroke:#4ecdc4
+    style C fill:#2d3436,color:#fff,stroke:#45b7d1
+    style Comp fill:#2d3436,color:#fff,stroke:#96ceb4
 ```
 
 Available callbacks:
@@ -360,6 +369,7 @@ throw new RedirectException('/some/path');
 CakePHP provides several useful core components:
 
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 graph TB
     A[Core Components] --> B[Flash]
     A --> C[Form Protection]
@@ -373,12 +383,12 @@ graph TB
     E --> E1[User login]
     F --> F1[Access control]
     
-    style A fill:#4ecdc4,color:#fff
-    style B fill:#ffeaa7
-    style C fill:#fab1a0
-    style D fill:#74b9ff
-    style E fill:#a29bfe
-    style F fill:#fd79a8
+    style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
+    style B fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
+    style C fill:#2d3436,color:#fff,stroke:#fab1a0,stroke-width:2px
+    style D fill:#2d3436,color:#fff,stroke:#74b9ff,stroke-width:2px
+    style E fill:#2d3436,color:#fff,stroke:#a29bfe,stroke-width:2px
+    style F fill:#2d3436,color:#fff,stroke:#fd79a8,stroke-width:2px
 ```
 
 ### Flash Component
@@ -423,15 +433,18 @@ $this->Flash->success('Saved!', [
 The HTTP cache validation model helps reduce bandwidth and CPU usage:
 
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 graph TD
     A[Client Request] --> B{Validate Cache?}
     B -->|Yes| C[304 Not Modified]
     B -->|No| D[Generate Response]
     D --> E[200 OK + Content]
     
-    style C fill:#74b9ff
-    style D fill:#96ceb4
-    style E fill:#96ceb4
+    style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
+    style B fill:#2d3436,color:#fff,stroke:#fab1a0,stroke-width:2px
+    style C fill:#2d3436,color:#fff,stroke:#74b9ff,stroke-width:2px
+    style D fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
+    style E fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
 ```
 
 Enable it:
@@ -459,14 +472,16 @@ If headers match, view rendering is skipped and a 304 response is returned.
 The FormProtection Component provides protection against form data tampering:
 
 ```mermaid
+%%{init: {'theme': 'dark'}}%%
 graph LR
     A[Form Submission] --> B{Validate Token?}
     B -->|Valid| C[Process Form]
     B -->|Invalid| D[400 Error]
     
-    style B fill:#fab1a0
-    style C fill:#96ceb4
-    style D fill:#e74c3c,color:#fff
+    style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
+    style B fill:#2d3436,color:#fff,stroke:#fab1a0,stroke-width:2px
+    style C fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
+    style D fill:#2d3436,color:#fff,stroke:#e74c3c,stroke-width:2px
 ```
 
 Enable it:
