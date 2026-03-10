@@ -85,16 +85,14 @@ class PostsController extends AppController
 ### Configuration Methods
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
+%%{init: {'theme':'dark'}}%%
 graph LR
     A[Configuration] --> B[initialize()]
     A --> C[setConfig()]
     A --> D[beforeFilter()]
-    
     B --> E[Static Config]
     C --> F[Runtime Config]
     D --> G[Dynamic Config]
-    
     style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
     style B fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
     style C fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
@@ -303,19 +301,16 @@ public function initialize(): void
 Components offer request life-cycle callbacks:
 
 ```mermaid
-%%{init: {'theme': 'dark'}}%%
+%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     participant R as Request
     participant C as Controller
     participant Comp as Component
-    
     R->>C: Request Received
     C->>Comp: beforeFilter()
     Comp->>C: Continue
-    
     C->>Comp: startup()
     Comp->>C: Continue
-    
     C->>Comp: beforeRender()
     Comp->>C: Render View
     
