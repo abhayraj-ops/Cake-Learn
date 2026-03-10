@@ -32,20 +32,19 @@ description: Learn about CakePHP Controller Components - packages of logic share
 Components are packages of logic that are shared between controllers. They provide a way to organize reusable controller logic.
 
 ```mermaid
-%%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true, 'primaryColor': '#4ecdc4', 'primaryTextColor': '#fff', 'primaryBorderColor': '#4ecdc4', 'lineColor': '#ffffff', 'secondaryColor': '#45b7d1', 'tertiaryColor': '#96ceb4'}}}%%
+%%{init:{'theme':'dark'}}%%
 graph TB
-    A[Controller] --> B[Components]
-    B --> C[Flash Component]
-    B --> D[Form Protection]
-    B --> E[Check HTTP Cache]
-    B --> F[Custom Component]
-    
-    style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
-    style B fill:#2d3436,color:#fff,stroke:#45b7d1,stroke-width:2px
-    style C fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
-    style D fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
-    style E fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
-    style F fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
+A["Controller"] --> B["Components"]
+B --> C["Flash"]
+B --> D["Form Protection"]
+B --> E["HTTP Cache"]
+B --> F["Custom"]
+style A fill:#2d3436,stroke:#4ecdc4,stroke-width:2px
+style B fill:#2d3436,stroke:#45b7d1,stroke-width:2px
+style C fill:#2d3436,stroke:#96ceb4,stroke-width:2px
+style D fill:#2d3436,stroke:#96ceb4,stroke-width:2px
+style E fill:#2d3436,stroke:#96ceb4,stroke-width:2px
+style F fill:#2d3436,stroke:#ffeaa7,stroke-width:2px
 ```
 
 > **Key Benefits:**
@@ -87,16 +86,16 @@ class PostsController extends AppController
 ```mermaid
 %%{init:{'theme':'dark'}}%%
 graph LR
-A[Configuration] --> B[initialize()]
-A --> C[setConfig()]
-A --> D[beforeFilter()]
-B --> E[Static Config]
-C --> F[Runtime Config]
-D --> G[Dynamic Config]
-style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
-style B fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
-style C fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
-style D fill:#2d3436,color:#fff,stroke:#dfe6e9,stroke-width:2px
+A["Configuration"] --> B["initialize()"]
+A --> C["setConfig()"]
+A --> D["beforeFilter()"]
+B --> E["Static"]
+C --> F["Runtime"]
+D --> G["Dynamic"]
+style A fill:#2d3436,stroke:#4ecdc4,stroke-width:2px
+style B fill:#2d3436,stroke:#96ceb4,stroke-width:2px
+style C fill:#2d3436,stroke:#ffeaa7,stroke-width:2px
+style D fill:#2d3436,stroke:#dfe6e9,stroke-width:2px
 ```
 
 You can configure components at runtime using the `setConfig()` method:
@@ -316,9 +315,9 @@ Comp->>C: Render View
 C->>Comp: afterFilter()
 Comp->>C: Response Ready
 C-->>R: Send Response
-style R fill:#2d3436,color:#fff,stroke:#4ecdc4
-style C fill:#2d3436,color:#fff,stroke:#45b7d1
-style Comp fill:#2d3436,color:#fff,stroke:#96ceb4
+style R fill:#2d3436,stroke:#4ecdc4
+style C fill:#2d3436,stroke:#45b7d1
+style Comp fill:#2d3436,stroke:#96ceb4
 ```
 
 Available callbacks:
