@@ -20,6 +20,7 @@ Welcome to the CakePHP 5.x documentation repository. This documentation is gener
 graph TB
     A[🏠 Home] --> B[📖 Introduction]
     A --> C[⚙️ Installation]
+    A --> D[📋 Conventions]
 
     B --> B1[CakePHP at a Glance]
     B --> B2[Where to Get Help]
@@ -61,7 +62,7 @@ graph TB
 | ----------------------------------------------- | ------------------------------------------------- | ------------ |
 | [CakePHP at a Glance](cakephp-at-a-glance.html) | Introduction to CakePHP concepts and architecture | ✅ Available |
 | [Installation Guide](installation-guide.html)   | Complete installation and configuration guide     | ✅ Available |
-| [Application Architecture](03-architecture.html) | How CakePHP applications are structured and bootstrapped. | ✅ Available |
+| [CakePHP Conventions](03-conventions.html) | Naming conventions and folder structure for rapid development | ✅ Available |
 
 ### Coming Soon
 
