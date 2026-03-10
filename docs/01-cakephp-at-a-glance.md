@@ -113,7 +113,7 @@ $users->save($user);
 
 ```mermaid
 flowchart TD
-    subgraph ModelLayer["📊 Model Layer Architecture"]
+    subgraph ModelLayer["📊 Model Layer"]
         A["Business Logic"]
         B["Data Validation"]
         C["Database Operations"]
@@ -126,7 +126,10 @@ flowchart TD
         H["CRUD Operations"]
     end
 
-    ModelLayer --> Responsibilities
+    A --> E
+    A --> F
+    B --> G
+    C --> H
 
     style ModelLayer fill:#1a4731,color:#fff
     style Responsibilities fill:#276749,color:#fff
@@ -174,7 +177,7 @@ The View layer provides extension points like:
 
 ```mermaid
 graph TB
-    subgraph ViewLayer["👁️ View Layer Components"]
+    subgraph ViewLayer["👁️ View Layer"]
         A["Templates"]
         B["Elements"]
         C["Cells"]
@@ -187,7 +190,12 @@ graph TB
         H["XML Output"]
     end
 
-    ViewLayer --> Outputs
+    A --> F
+    A --> G
+    A --> H
+    B --> F
+    C --> F
+    D --> F
 
     style ViewLayer fill:#553c9a,color:#fff
     style Outputs fill:#6b46c1,color:#fff
