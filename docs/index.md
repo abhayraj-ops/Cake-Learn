@@ -61,6 +61,7 @@ graph TB
 | ----------------------------------------------- | ------------------------------------------------- | ------------ |
 | [CakePHP at a Glance](cakephp-at-a-glance.html) | Introduction to CakePHP concepts and architecture | ✅ Available |
 | [Installation Guide](installation-guide.html)   | Complete installation and configuration guide     | ✅ Available |
+| [Application Architecture](03-architecture.html) | How CakePHP applications are structured and bootstrapped. | ✅ Available |
 
 ### Coming Soon
 

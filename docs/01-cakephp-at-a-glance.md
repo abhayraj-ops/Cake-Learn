@@ -11,7 +11,7 @@ description: Introduction to CakePHP framework concepts and architecture
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="index.html" style="color: var(--link-color);">← Home</a>
-    <span style="color: var(--text-secondary);">📖 Page 1 of 2</span>
+    <span style="color: var(--text-secondary);">📖 Page 1 of 3</span>
     <a href="02-installation-guide.html" style="color: var(--link-color);">Next: Installation →</a>
   </div>
 </nav>
@@ -223,12 +223,6 @@ flowchart TD
     H --> I[Response Middleware]
     I --> J[HTTP Response]
     J --> K[User Receives Page]
-
-    style A fill:#e1f5ff
-    style K fill:#e1f5ff
-    style F fill:#fff4e1
-    style G fill:#ffe1e1
-    style H fill:#e1ffe1
 ```
 
 ### Request Cycle Steps

@@ -11,8 +11,8 @@ description: Complete guide to installing and configuring CakePHP 5.x
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="01-cakephp-at-a-glance.html" style="color: var(--link-color);">← Previous: Introduction</a>
-    <span style="color: var(--text-secondary);">⚙️ Page 2 of 2</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">⚙️ Page 2 of 3</span>
+    <a href="03-architecture.html" style="color: var(--link-color);">Next: Architecture →</a>
   </div>
 </nav>
 
@@ -581,8 +581,8 @@ flowchart LR
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="01-cakephp-at-a-glance.html" style="color: var(--link-color);">← Previous: Introduction</a>
-    <span style="color: var(--text-secondary);">⚙️ Page 2 of 2</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">⚙️ Page 2 of 3</span>
+    <a href="03-architecture.html" style="color: var(--link-color);">Next: Architecture →</a>
   </div>
 </nav>
 
