@@ -315,9 +315,6 @@ Comp->>C: Render View
 C->>Comp: afterFilter()
 Comp->>C: Response Ready
 C-->>R: Send Response
-style R fill:#2d3436,stroke:#4ecdc4
-style C fill:#2d3436,stroke:#45b7d1
-style Comp fill:#2d3436,stroke:#96ceb4
 ```
 
 Available callbacks:
