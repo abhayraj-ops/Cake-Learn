@@ -38,6 +38,42 @@ CakePHP embraces **convention over configuration**. By following conventions, yo
 
 After downloading the CakePHP application skeleton, you'll see these top-level folders:
 
+```mermaid
+graph TB
+    subgraph Essential["📁 Essential Folders"]
+        SRC["src/<br/>Application Code"]
+        TPL["templates/<br/>View Templates"]
+        CFG["config/<br/>Configuration"]
+        WEB["webroot/<br/>Public Files"]
+    end
+
+    subgraph Dev["🔧 Development"]
+        TEST["tests/<br/>Test Cases"]
+        BIN["bin/<br/>Console CLI"]
+    end
+
+    subgraph Runtime["⚙️ Runtime"]
+        TMP["tmp/<br/>Cache & Sessions"]
+        LOG["logs/<br/>Log Files"]
+        VENDOR["vendor/<br/>Dependencies"]
+    end
+
+    subgraph Ext["🔌 Extensions"]
+        PLG["plugins/<br/>Plugin Packages"]
+        RES["resources/<br/>Assets"]
+        LOC["locales/<br/>Translations"]
+    end
+
+    style Essential fill:#1a365d,color:#fff
+    style Dev fill:#1a4731,color:#fff
+    style Runtime fill:#744210,color:#fff
+    style Ext fill:#553c9a,color:#fff
+    style SRC fill:#2c5282,color:#fff
+    style TPL fill:#2c5282,color:#fff
+    style CFG fill:#2c5282,color:#fff
+    style WEB fill:#2c5282,color:#fff
+```
+
 ### Essential Folders
 
 | Folder | Purpose |
@@ -78,6 +114,45 @@ After downloading the CakePHP application skeleton, you'll see these top-level f
 
 The `src/` folder is where you'll do most development:
 
+```mermaid
+graph LR
+    subgraph SRC["src/ Directory"]
+        CTRL["Controller/<br/>Request Handlers"]
+        MODEL["Model/"]
+        VIEW["View/"]
+        CMD["Command/"]
+        MID["Middleware/"]
+    end
+
+    subgraph MODEL["Model Subfolders"]
+        TBL["Table/<br/>Database Access"]
+        ENT["Entity/<br/>Data Objects"]
+        BEH["Behavior/<br/>Reusable Logic"]
+    end
+
+    subgraph VIEW["View Subfolders"]
+        VCLS["View Classes"]
+        HLP["Helper/<br/>View Helpers"]
+        CELL["Cell/"]
+    end
+
+    SRC --> MODEL
+    SRC --> VIEW
+
+    style SRC fill:#1a365d,color:#fff
+    style MODEL fill:#1a4731,color:#fff
+    style VIEW fill:#553c9a,color:#fff
+    style CTRL fill:#2c5282,color:#fff
+    style CMD fill:#2c5282,color:#fff
+    style MID fill:#2c5282,color:#fff
+    style TBL fill:#276749,color:#fff
+    style ENT fill:#276749,color:#fff
+    style BEH fill:#276749,color:#fff
+    style VCLS fill:#6b46c1,color:#fff
+    style HLP fill:#6b46c1,color:#fff
+    style CELL fill:#6b46c1,color:#fff
+```
+
 | Subfolder | Purpose |
 |-----------|---------|
 | `Controller/` | Controllers handle requests |
@@ -99,6 +174,31 @@ The `src/` folder is where you'll do most development:
 
 All files follow PSR-4 autoloading - filenames must match class names exactly:
 
+```mermaid
+flowchart TB
+    subgraph Naming["📝 Naming Pattern"]
+        A["Class Name"] --> B["File Name"]
+        B --> C["Location"]
+    end
+
+    subgraph Examples["Examples"]
+        E1["ArticlesController<br/>→ ArticlesController.php<br/>→ src/Controller/"]
+        E2["UsersTable<br/>→ UsersTable.php<br/>→ src/Model/Table/"]
+        E3["User Entity<br/>→ User.php<br/>→ src/Model/Entity/"]
+    end
+
+    Naming --> Examples
+
+    style Naming fill:#1a365d,color:#fff
+    style Examples fill:#1a4731,color:#fff
+    style A fill:#2c5282,color:#fff
+    style B fill:#2c5282,color:#fff
+    style C fill:#2c5282,color:#fff
+    style E1 fill:#276749,color:#fff
+    style E2 fill:#276749,color:#fff
+    style E3 fill:#276749,color:#fff
+```
+
 | Type | Class Name | File Name | Location |
 |------|------------|-----------|----------|
 | Controller | `ArticlesController` | `ArticlesController.php` | `src/Controller/` |
@@ -118,6 +218,24 @@ All files follow PSR-4 autoloading - filenames must match class names exactly:
 - **File:** Same as class name in `src/Controller/`
 - **Methods:** camelBacked (first word lowercase)
 - **URLs:** Dashed lowercase (`/users/view-me` for `viewMe()`)
+
+```mermaid
+flowchart LR
+    subgraph Controller["🎮 Controller Naming"]
+        NAME["Plural + CamelCase<br/>+ 'Controller'"]
+        FILE["Same name + .php<br/>src/Controller/"]
+        METHOD["camelBacked<br/>methods"]
+        URL["dashed-lowercase<br/>URLs"]
+    end
+
+    NAME --> FILE --> METHOD --> URL
+
+    style Controller fill:#1a365d,color:#fff
+    style NAME fill:#2c5282,color:#fff
+    style FILE fill:#2c5282,color:#fff
+    style METHOD fill:#2c5282,color:#fff
+    style URL fill:#2c5282,color:#fff
+```
 
 ```php
 // File: src/Controller/UsersController.php
@@ -165,6 +283,25 @@ $this->Html->link('title', [
 
 ## Model Conventions
 
+```mermaid
+flowchart TB
+    subgraph Model["📊 Model Layer"]
+        DB["Database Table<br/>(plural, underscored)"]
+        TBL["Table Class<br/>(plural, CamelCase + Table)"]
+        ENT["Entity Class<br/>(singular, CamelCase)"]
+    end
+
+    DB -->|"users"| TBL
+    TBL -->|"UsersTable"| ENT
+    ENT -->|"User"| APP["Application"]
+
+    style Model fill:#1a4731,color:#fff
+    style DB fill:#276749,color:#fff
+    style TBL fill:#276749,color:#fff
+    style ENT fill:#276749,color:#fff
+    style APP fill:#2f855a,color:#fff
+```
+
 ### Table Classes
 
 - **Name:** Plural, CamelCased, ends with `Table`
@@ -207,6 +344,23 @@ class User extends Entity
 
 ## View Conventions
 
+```mermaid
+flowchart LR
+    subgraph View["👁️ View Layer"]
+        CTRL["Controller Action<br/>viewAll()"]
+        TPL["Template File<br/>view_all.php"]
+        LOC["Location<br/>templates/Articles/"]
+    end
+
+    CTRL -->|"underscored"| TPL
+    TPL --> LOC
+
+    style View fill:#553c9a,color:#fff
+    style CTRL fill:#6b46c1,color:#fff
+    style TPL fill:#6b46c1,color:#fff
+    style LOC fill:#6b46c1,color:#fff
+```
+
 ### Template Files
 
 - **Location:** `templates/{Controller}/{underscored_action}.php`
@@ -240,6 +394,55 @@ class ArticlesView extends View
 ---
 
 ## Database Conventions
+
+```mermaid
+flowchart TB
+    subgraph DB["🗄️ Database Naming"]
+        TABLE["Table Names<br/>plural, underscored"]
+        COL["Column Names<br/>underscored"]
+        FK["Foreign Keys<br/>{singular}_id"]
+        JUNC["Junction Tables<br/>alphabetical plurals"]
+    end
+
+    subgraph Correct["✅ Correct"]
+        C1["users"]
+        C2["menu_links"]
+        C3["user_id"]
+        C4["articles_tags"]
+    end
+
+    subgraph Wrong["❌ Wrong"]
+        W1["user"]
+        W2["MenuLinks"]
+        W3["users_id"]
+        W4["tags_articles"]
+    end
+
+    TABLE --> C1
+    TABLE --> W1
+    COL --> C2
+    COL --> W2
+    FK --> C3
+    FK --> W3
+    JUNC --> C4
+    JUNC --> W4
+
+    style DB fill:#744210,color:#fff
+    style TABLE fill:#975a16,color:#fff
+    style COL fill:#975a16,color:#fff
+    style FK fill:#975a16,color:#fff
+    style JUNC fill:#975a16,color:#fff
+    style Correct fill:#1a4731,color:#fff
+    style Wrong fill:#742a2a,color:#fff
+    style C1 fill:#276749,color:#fff
+    style C2 fill:#276749,color:#fff
+    style C3 fill:#276749,color:#fff
+    style C4 fill:#276749,color:#fff
+    style W1 fill:#9b2c2c,color:#fff
+    style W2 fill:#9b2c2c,color:#fff
+    style W3 fill:#9b2c2c,color:#fff
+    style W4 fill:#9b2c2c,color:#fff
+```
 
 ### Table Names
 
@@ -295,6 +498,43 @@ CREATE TABLE tags_articles;
 
 ## Plugin Conventions
 
+```mermaid
+flowchart TB
+    subgraph Plugin["🔌 Plugin Naming"]
+        FORMAT["vendor/package-name"]
+        PREFIX["Must include<br/>cakephp- prefix"]
+        LOWER["Use lowercase<br/>and dashes"]
+    end
+
+    subgraph Good["✅ Correct"]
+        G1["your-name/cakephp-blog"]
+        G2["awesome-dev/cakephp-payment"]
+        G3["company/cakephp-api-client"]
+    end
+
+    subgraph Bad["❌ Wrong"]
+        B1["cakephp/blog<br/>(reserved namespace)"]
+        B2["YourName/CakePHP-Blog<br/>(wrong case)"]
+        B3["your-name/blog<br/>(missing prefix)"]
+    end
+
+    FORMAT --> Good
+    FORMAT --> Bad
+
+    style Plugin fill:#553c9a,color:#fff
+    style FORMAT fill:#6b46c1,color:#fff
+    style PREFIX fill:#6b46c1,color:#fff
+    style LOWER fill:#6b46c1,color:#fff
+    style Good fill:#1a4731,color:#fff
+    style Bad fill:#742a2a,color:#fff
+    style G1 fill:#276749,color:#fff
+    style G2 fill:#276749,color:#fff
+    style G3 fill:#276749,color:#fff
+    style B1 fill:#9b2c2c,color:#fff
+    style B2 fill:#9b2c2c,color:#fff
+    style B3 fill:#9b2c2c,color:#fff
+```
+
 ### Naming
 
 Plugin names should follow Packagist conventions:
@@ -322,6 +562,47 @@ your-name/blog        // Missing cakephp- prefix
 ## Complete Example
 
 Here's how all the conventions work together for a complete Articles feature:
+
+```mermaid
+flowchart TB
+    subgraph Request["🌐 HTTP Request"]
+        URL["URL: /articles/view/5"]
+    end
+
+    subgraph MVC["🎯 MVC Flow"]
+        CTRL["ArticlesController<br/>::view(5)"]
+        TBL["ArticlesTable<br/>(Model)"]
+        ENT["Article Entity<br/>(Data)"]
+        TPL["templates/Articles/<br/>view.php"]
+    end
+
+    subgraph DB["💾 Database"]
+        TABLE["articles table"]
+    end
+
+    subgraph Response["📤 Response"]
+        HTML["HTML Page"]
+    end
+
+    URL --> CTRL
+    CTRL --> TBL
+    TBL --> TABLE
+    TABLE --> ENT
+    ENT --> TPL
+    TPL --> HTML
+
+    style Request fill:#1a365d,color:#fff
+    style MVC fill:#1a4731,color:#fff
+    style DB fill:#744210,color:#fff
+    style Response fill:#553c9a,color:#fff
+    style URL fill:#2c5282,color:#fff
+    style CTRL fill:#276749,color:#fff
+    style TBL fill:#276749,color:#fff
+    style ENT fill:#276749,color:#fff
+    style TPL fill:#276749,color:#fff
+    style TABLE fill:#975a16,color:#fff
+    style HTML fill:#6b46c1,color:#fff
+```
 
 ### Database
 
@@ -369,16 +650,24 @@ templates/
 **No configuration required!** CakePHP wires everything automatically through conventions.
 
 ```mermaid
-flowchart LR
-    A[URL: /articles/view/5] --> B[ArticlesController]
-    B --> C[ArticlesTable]
-    C --> D[articles table]
-    D --> E[Article Entity]
-    E --> F[view.php Template]
-    F --> G[Response]
+sequenceDiagram
+    participant Browser
+    participant Router
+    participant Controller
+    participant Model
+    participant Database
+    participant View
 
-    style A fill:#e1f5ff
-    style G fill:#e1ffe1
+    Browser->>Router: GET /articles/view/5
+    Router->>Controller: ArticlesController::view(5)
+    Controller->>Model: ArticlesTable->get(5)
+    Model->>Database: SELECT * FROM articles WHERE id = 5
+    Database-->>Model: Article data
+    Model-->>Controller: Article Entity
+    Controller->>View: Render view.php with Article
+    View-->>Browser: HTML Response
+
+    Note over Browser,View: All wired automatically by conventions!
 ```
 
 > **Warning:** If junction tables have additional data columns, create a dedicated Table and Entity class for them.
