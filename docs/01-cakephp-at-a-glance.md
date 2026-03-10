@@ -74,6 +74,7 @@ The model objects can be thought of as "Friend", "User", "Comment", or "Photo".
 **Loading data from the `users` table:**
 
 ```php
+<?php
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 $users = $this->fetchTable('Users');
@@ -81,6 +82,7 @@ $resultset = $users->find()->all();
 foreach ($resultset as $row) {
     echo $row->username;
 }
+?>
 ```
 
 > **Note:** You may notice that we didn't have to write any code before we could start working with our data. By using conventions, CakePHP will use standard classes for table and entity classes that have not yet been defined.
@@ -88,11 +90,13 @@ foreach ($resultset as $row) {
 **Creating and saving a new user:**
 
 ```php
+<?php
 use Cake\ORM\Locator\LocatorAwareTrait;
 
 $users = $this->fetchTable('Users');
 $user = $users->newEntity(['email' => '[email protected]']);
 $users->save($user);
+?>
 ```
 
 ```mermaid
@@ -122,8 +126,9 @@ The View layer renders a presentation of modeled data. Being separate from the M
 ### Example: Rendering User Data
 
 ```php
+<?php
 // In a view template file, we'll render an 'element' for each user.
-<?php foreach ($resultset as $user): ?>
+foreach ($resultset as $user): ?>
     <li class="user">
         <?= $this->element('user_info', ['user' => $user]) ?>
     </li>
@@ -168,6 +173,7 @@ A controller can be seen as a manager that ensures all resources needed for comp
 ### Example: User Registration Controller
 
 ```php
+<?php
 public function add()
 {
     $user = $this->Users->newEmptyEntity();
@@ -181,6 +187,7 @@ public function add()
     }
     $this->set('user', $user);
 }
+?>
 ```
 
 > **Note:** You may notice that we never explicitly rendered a view. CakePHP's conventions will take care of selecting the right view and rendering it with the view data we prepared with `set()`.

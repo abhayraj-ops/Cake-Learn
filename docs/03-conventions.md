@@ -76,35 +76,35 @@ graph TB
 
 ### Essential Folders
 
-| Folder | Purpose |
-|--------|---------|
-| `src/` | Your application code (controllers, models, views) |
-| `templates/` | View templates and layouts |
-| `config/` | Configuration files (routes, database, app settings) |
-| `webroot/` | Public files (CSS, JS, images) - document root |
+| Folder       | Purpose                                              |
+| ------------ | ---------------------------------------------------- |
+| `src/`       | Your application code (controllers, models, views)   |
+| `templates/` | View templates and layouts                           |
+| `config/`    | Configuration files (routes, database, app settings) |
+| `webroot/`   | Public files (CSS, JS, images) - document root       |
 
 ### Development & Testing
 
-| Folder | Purpose |
-|--------|---------|
-| `tests/` | PHPUnit test cases |
-| `bin/` | Console executable (`bin/cake`) |
+| Folder   | Purpose                         |
+| -------- | ------------------------------- |
+| `tests/` | PHPUnit test cases              |
+| `bin/`   | Console executable (`bin/cake`) |
 
 ### Runtime & Dependencies
 
-| Folder | Purpose |
-|--------|---------|
-| `tmp/` | Cache, logs, sessions (must be writable) |
-| `logs/` | Application log files (must be writable) |
-| `vendor/` | Composer dependencies |
+| Folder    | Purpose                                  |
+| --------- | ---------------------------------------- |
+| `tmp/`    | Cache, logs, sessions (must be writable) |
+| `logs/`   | Application log files (must be writable) |
+| `vendor/` | Composer dependencies                    |
 
 ### Extensions & Localization
 
-| Folder | Purpose |
-|--------|---------|
-| `plugins/` | Plugin packages |
+| Folder       | Purpose                          |
+| ------------ | -------------------------------- |
+| `plugins/`   | Plugin packages                  |
 | `resources/` | Locale files and other resources |
-| `locales/` | Translation files |
+| `locales/`   | Translation files                |
 
 > **Warning:** Make sure `tmp/` and `logs/` folders are writable! Poor performance or errors will occur otherwise.
 
@@ -153,16 +153,16 @@ graph LR
     style CELL fill:#6b46c1,color:#fff
 ```
 
-| Subfolder | Purpose |
-|-----------|---------|
-| `Controller/` | Controllers handle requests |
-| `Model/Table/` | Table classes (database access) |
-| `Model/Entity/` | Entity classes (data objects) |
-| `Model/Behavior/` | Reusable model behaviors |
-| `View/` | View classes and helpers |
-| `View/Helper/` | View helpers |
-| `Command/` | Console commands |
-| `Middleware/` | HTTP middleware |
+| Subfolder         | Purpose                         |
+| ----------------- | ------------------------------- |
+| `Controller/`     | Controllers handle requests     |
+| `Model/Table/`    | Table classes (database access) |
+| `Model/Entity/`   | Entity classes (data objects)   |
+| `Model/Behavior/` | Reusable model behaviors        |
+| `View/`           | View classes and helpers        |
+| `View/Helper/`    | View helpers                    |
+| `Command/`        | Console commands                |
+| `Middleware/`     | HTTP middleware                 |
 
 > **Note:** The `Command/` folder isn't present by default - it's auto-generated when you create your first command using bake.
 
@@ -199,14 +199,14 @@ flowchart TB
     style E3 fill:#276749,color:#fff
 ```
 
-| Type | Class Name | File Name | Location |
-|------|------------|-----------|----------|
-| Controller | `ArticlesController` | `ArticlesController.php` | `src/Controller/` |
-| Table | `ArticlesTable` | `ArticlesTable.php` | `src/Model/Table/` |
-| Entity | `Article` | `Article.php` | `src/Model/Entity/` |
-| Behavior | `TimestampBehavior` | `TimestampBehavior.php` | `src/Model/Behavior/` |
-| Helper | `FormHelper` | `FormHelper.php` | `src/View/Helper/` |
-| Command | `UpdateCacheCommand` | `UpdateCacheCommand.php` | `src/Command/` |
+| Type       | Class Name           | File Name                | Location              |
+| ---------- | -------------------- | ------------------------ | --------------------- |
+| Controller | `ArticlesController` | `ArticlesController.php` | `src/Controller/`     |
+| Table      | `ArticlesTable`      | `ArticlesTable.php`      | `src/Model/Table/`    |
+| Entity     | `Article`            | `Article.php`            | `src/Model/Entity/`   |
+| Behavior   | `TimestampBehavior`  | `TimestampBehavior.php`  | `src/Model/Behavior/` |
+| Helper     | `FormHelper`         | `FormHelper.php`         | `src/View/Helper/`    |
+| Command    | `UpdateCacheCommand` | `UpdateCacheCommand.php` | `src/Command/`        |
 
 ---
 
@@ -238,6 +238,7 @@ flowchart LR
 ```
 
 ```php
+<?php
 // File: src/Controller/UsersController.php
 namespace App\Controller;
 
@@ -249,11 +250,13 @@ class UsersController extends AppController
         // camelBacked method names
     }
 }
+?>
 ```
 
 ### Wrong Example
 
 ```php
+<?php
 // Wrong: singular, lowercase, no suffix
 class user extends AppController
 {
@@ -262,6 +265,7 @@ class user extends AppController
     {
     }
 }
+?>
 ```
 
 > **Warning:** Only public methods are accessible through routing. Protected and private methods cannot be accessed via URLs.
@@ -271,12 +275,14 @@ class user extends AppController
 ### URL Arrays
 
 ```php
+<?php
 $this->Html->link('title', [
     'prefix' => 'MyPrefix',      // CamelCased
     'plugin' => 'MyPlugin',      // CamelCased
     'controller' => 'Users',     // CamelCased
     'action' => 'viewProfile'    // camelBacked
 ]);
+?>
 ```
 
 ---
@@ -308,6 +314,7 @@ flowchart TB
 - **File:** `src/Model/Table/UsersTable.php`
 
 ```php
+<?php
 // File: src/Model/Table/UsersTable.php
 namespace App\Model\Table;
 
@@ -315,6 +322,7 @@ class UsersTable extends Table
 {
     // Plural, CamelCased, ends in "Table"
 }
+?>
 ```
 
 ### Entity Classes
@@ -323,6 +331,7 @@ class UsersTable extends Table
 - **File:** `src/Model/Entity/User.php`
 
 ```php
+<?php
 // File: src/Model/Entity/User.php
 namespace App\Model\Entity;
 
@@ -330,14 +339,15 @@ class User extends Entity
 {
     // Singular, CamelCased, no suffix
 }
+?>
 ```
 
 ### Examples
 
-| Database Table | Table Class | Entity Class |
-|----------------|-------------|--------------|
-| `users` | `UsersTable` | `User` |
-| `menu_links` | `MenuLinksTable` | `MenuLink` |
+| Database Table        | Table Class              | Entity Class       |
+| --------------------- | ------------------------ | ------------------ |
+| `users`               | `UsersTable`             | `User`             |
+| `menu_links`          | `MenuLinksTable`         | `MenuLink`         |
 | `user_favorite_pages` | `UserFavoritePagesTable` | `UserFavoritePage` |
 
 ---
@@ -462,12 +472,12 @@ CREATE TABLE articles_tags;
 
 ### Rules
 
-| Convention | Correct | Wrong |
-|------------|---------|-------|
-| Table names | `users`, `menu_links` | `user`, `MenuLinks` |
-| Column names | `first_name`, `created_at` | `FirstName`, `createdAt` |
-| Foreign keys | `user_id`, `menu_link_id` | `users_id`, `UserId` |
-| Junction tables | `articles_tags` | `tags_articles` |
+| Convention      | Correct                    | Wrong                    |
+| --------------- | -------------------------- | ------------------------ |
+| Table names     | `users`, `menu_links`      | `user`, `MenuLinks`      |
+| Column names    | `first_name`, `created_at` | `FirstName`, `createdAt` |
+| Foreign keys    | `user_id`, `menu_link_id`  | `users_id`, `UserId`     |
+| Junction tables | `articles_tags`            | `tags_articles`          |
 
 > **Warning:** The bake command requires junction tables to be alphabetically sorted! Use `articles_tags`, not `tags_articles`.
 
@@ -643,8 +653,8 @@ templates/
 
 ### How It Works
 
-| URL | Controller | Table | Entity | Template |
-|-----|------------|-------|--------|----------|
+| URL                | Controller                   | Table           | Entity    | Template                      |
+| ------------------ | ---------------------------- | --------------- | --------- | ----------------------------- |
 | `/articles/view/5` | `ArticlesController::view()` | `ArticlesTable` | `Article` | `templates/Articles/view.php` |
 
 **No configuration required!** CakePHP wires everything automatically through conventions.

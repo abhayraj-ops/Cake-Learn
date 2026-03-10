@@ -224,12 +224,111 @@ class ArticlesController extends AppController
         $this->set(compact('articles'));
     }
 }
+?>
 ```
 ````
 
 **Supported languages:**
 
-- `php`, `bash`, `shell`, `json`, `xml`, `yaml`, `sql`, `html`, `css`, `javascript`
+- `php`, `bash`, `shell`, `json`, `xml`, `yaml`, `sql`, `html`, `css`, `javascript`, `apache`, `nginx`, `caddy`, `dockerfile`, `batch`
+
+**Important: Proper Syntax Highlighting Rules**
+
+To ensure code blocks render with proper color syntax highlighting:
+
+##### PHP Code Blocks
+
+Always include opening and closing PHP tags:
+
+```php
+<?php
+// Your PHP code here
+?>
+```
+
+##### Bash/Shell Scripts
+
+Always include the shebang line:
+
+```bash
+#!/bin/bash
+# Your bash commands here
+```
+
+##### Batch Scripts (Windows)
+
+Always include the batch header:
+
+```batch
+@echo off
+REM Your batch commands here
+```
+
+##### Configuration Files
+
+Specify the correct language:
+
+```apache
+# Apache configuration
+```
+
+```nginx
+# nginx configuration
+```
+
+```xml
+<!-- XML configuration -->
+```
+
+```json
+{
+  "json": "configuration"
+}
+```
+
+##### SQL Queries
+
+```sql
+SELECT * FROM users;
+```
+
+##### Docker Files
+
+```dockerfile
+FROM php:8.2-cli
+```
+
+**❌ Common Mistakes to Avoid:**
+
+- Missing language identifier: ` ```  ` (no language)
+- PHP without tags: ` ```php ` without `<?php` and `?>`
+- Bash without shebang: ` ```bash ` without `#!/bin/bash`
+- Batch without header: ` ```batch ` without `@echo off`
+- Mixed languages in one block
+
+**✅ Correct Examples:**
+
+```php
+<?php
+echo "Hello World";
+?>
+```
+
+```bash
+#!/bin/bash
+echo "Hello World"
+```
+
+```sql
+SELECT id, name FROM users WHERE active = 1;
+```
+
+```json
+{
+  "name": "example",
+  "version": "1.0.0"
+}
+```
 
 #### Callouts
 
@@ -521,7 +620,11 @@ Before committing, verify:
 - [ ] Front matter present and correct
 - [ ] Navigation box under title
 - [ ] Page counter accurate
-- [ ] All code blocks have language tags
+- [ ] **All code blocks have language tags** ⚠️
+- [ ] **PHP code blocks include `<?php` and `?>` tags** ⚠️
+- [ ] **Bash scripts include `#!/bin/bash` shebang** ⚠️
+- [ ] **Batch scripts include `@echo off` header** ⚠️
+- [ ] **Configuration files use correct language identifier** ⚠️
 - [ ] Mermaid diagrams render correctly
 - [ ] Bottom navigation present
 - [ ] Homepage updated (map, table, progress)
@@ -567,6 +670,35 @@ git push origin main
 
 ## Common Issues and Solutions
 
+### Issue: Code blocks not showing colors/syntax highlighting
+
+**Solution:** Ensure you include proper language tags AND language-specific formatting:
+
+**For PHP:**
+
+```php
+<?php
+// Always include opening and closing tags
+echo "Hello";
+?>
+```
+
+**For Bash:**
+
+```bash
+#!/bin/bash
+# Always include shebang
+echo "Hello"
+```
+
+**For Batch (Windows):**
+
+```batch
+@echo off
+REM Always include header
+echo Hello
+```
+
 ### Issue: Mermaid diagrams not rendering
 
 **Solution:** Ensure you're using triple backticks with `mermaid` language tag:
@@ -580,7 +712,7 @@ graph LR
 
 ### Issue: Code blocks not syntax highlighted
 
-**Solution:** Add language tag after opening backticks:
+**Solution:** Add language tag after opening backticks AND include proper opening/closing syntax:
 
 ````markdown
 ```php
@@ -695,12 +827,138 @@ git push origin main
 
 ---
 
-## Need Help?
+## Code Formatting Standards
 
-- Check existing pages for examples
-- Review the [Page Template](#page-template)
-- Test locally before pushing
-- Ask in the community channels
+This section ensures all future documentation maintains consistent, properly highlighted code snippets.
+
+### Language-Specific Requirements
+
+#### PHP Code
+
+**Required:** Opening `<?php` and closing `?>` tags
+
+```php
+<?php
+namespace App\Controller;
+
+class UsersController extends AppController
+{
+    public function index()
+    {
+        $users = $this->Users->find('all');
+        $this->set(compact('users'));
+    }
+}
+?>
+```
+
+#### Bash/Shell Scripts
+
+**Required:** Shebang line `#!/bin/bash`
+
+```bash
+#!/bin/bash
+# Install dependencies
+composer install
+
+# Run migrations
+bin/cake migrations migrate
+```
+
+#### Batch Scripts (Windows)
+
+**Required:** Header `@echo off` and REM comments
+
+```batch
+@echo off
+REM Install dependencies
+composer install
+
+REM Run migrations
+bin/cake migrations migrate
+```
+
+#### Configuration Files
+
+**Apache:**
+
+```apache
+<VirtualHost *:80>
+    ServerName myapp.local
+    DocumentRoot /var/www/myapp/webroot
+</VirtualHost>
+```
+
+**nginx:**
+
+```nginx
+server {
+    listen 80;
+    server_name myapp.local;
+    root /var/www/myapp/webroot;
+}
+```
+
+**XML:**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Your XML here -->
+</configuration>
+```
+
+**JSON:**
+
+```json
+{
+  "name": "cakephp-app",
+  "require": {
+    "cakephp/cakephp": "^5.3"
+  }
+}
+```
+
+**SQL:**
+
+```sql
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL,
+    created DATETIME
+);
+```
+
+**Docker:**
+
+```dockerfile
+FROM php:8.2-cli
+RUN apt-get update && apt-get install -y libicu-dev
+RUN docker-php-ext-install intl
+```
+
+### Checklist for Code Blocks
+
+Before adding any code snippet, verify:
+
+- [ ] Language identifier specified (php, bash, sql, etc.)
+- [ ] Opening/closing tags present (PHP: `<?php` `?>`)
+- [ ] Shebang present (Bash: `#!/bin/bash`)
+- [ ] Header present (Batch: `@echo off`)
+- [ ] Proper indentation (4 spaces or 1 tab)
+- [ ] No syntax errors
+- [ ] Renders correctly in dark mode
+- [ ] Copy button works
+
+### Why This Matters
+
+Proper code formatting:
+
+- ✅ Enables syntax highlighting for better readability
+- ✅ Helps users copy-paste working code
+- ✅ Maintains professional documentation standards
+- ✅ Improves user experience across all devices
+- ✅ Ensures consistency across all pages
 
 ---
 

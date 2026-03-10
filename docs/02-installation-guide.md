@@ -82,6 +82,7 @@ The standard way to install CakePHP.
 **Linux/macOS:**
 
 ```bash
+#!/bin/bash
 # Download and install Composer
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
@@ -92,17 +93,19 @@ composer --version
 
 **Windows:**
 
-```bash
-# Download and run the Windows installer
-# https://getcomposer.org/Composer-Setup.exe
+```batch
+@echo off
+REM Download and run the Windows installer
+REM https://getcomposer.org/Composer-Setup.exe
 
-# Verify installation
+REM Verify installation
 composer --version
 ```
 
 #### Create a New CakePHP Project
 
 ```bash
+#!/bin/bash
 # Create a new CakePHP 5 application
 composer create-project --prefer-dist cakephp/app:5.3 my_app_name
 
@@ -119,6 +122,14 @@ bin/cake server --frankenphp
 #### Version Constraints
 
 Your `composer.json` version constraint controls updates:
+
+```json
+{
+  "require": {
+    "cakephp/cakephp": "5.3.*"
+  }
+}
+```
 
 - `"cakephp/cakephp": "5.3.*"` - Locks to 5.3.x (patch updates only)
 - `"cakephp/cakephp": "^5.3"` - Allows 5.3.x and 5.4.x (minor updates)
@@ -144,6 +155,7 @@ Perfect for local development environments.
 #### Create New Project
 
 ```bash
+#!/bin/bash
 # Create and configure project
 mkdir my-cakephp-app && cd my-cakephp-app
 ddev config --project-type=cakephp --docroot=webroot
@@ -156,6 +168,7 @@ ddev launch
 #### Clone Existing Project
 
 ```bash
+#!/bin/bash
 # Clone your repository
 git clone <your-cakephp-repo>
 cd <your-cakephp-project>
@@ -177,6 +190,7 @@ ddev launch
 For containerized development:
 
 ```bash
+#!/bin/bash
 # Create project using Composer in Docker
 docker run --rm -v $(pwd):/app composer create-project \
   --prefer-dist cakephp/app:5.3 my_app
@@ -202,6 +216,7 @@ CakePHP uses the `tmp` and `logs` directories for various operations like cachin
 **Using ACL (Recommended):**
 
 ```bash
+#!/bin/bash
 # Auto-detect web server user and set permissions using ACL
 HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
 setfacl -R -m u:${HTTPDUSER}:rwx tmp logs
@@ -211,6 +226,7 @@ setfacl -R -d -m u:${HTTPDUSER}:rwx tmp logs
 **Using chmod:**
 
 ```bash
+#!/bin/bash
 # Auto-detect web server user and set permissions using chmod
 HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
 sudo chown -R $(whoami):${HTTPDUSER} tmp logs
@@ -220,6 +236,7 @@ sudo chmod -R 775 tmp logs
 **Fallback (if auto-detection doesn't work):**
 
 ```bash
+#!/bin/bash
 # Use broader permissions
 chmod -R 777 tmp logs
 ```
@@ -229,19 +246,22 @@ chmod -R 777 tmp logs
 ### Make Console Executable
 
 ```bash
+#!/bin/bash
 # Unix/Linux/macOS
 chmod +x bin/cake
 ```
 
-```bash
-# Windows
-# .bat file is already executable
-# For WSL or shared directories, ensure execute permissions are shared
+```batch
+@echo off
+REM Windows
+REM .bat file is already executable
+REM For WSL or shared directories, ensure execute permissions are shared
 ```
 
 **Alternative (if you cannot change permissions):**
 
 ```bash
+#!/bin/bash
 php bin/cake.php
 ```
 
@@ -252,6 +272,7 @@ php bin/cake.php
 The fastest way to get started. CakePHP includes a development server built on PHP's built-in web server.
 
 ```bash
+#!/bin/bash
 # Starts at http://localhost:8765
 bin/cake server
 ```
@@ -259,6 +280,7 @@ bin/cake server
 **Custom Host and Port:**
 
 ```bash
+#!/bin/bash
 # Useful for network access or port conflicts
 bin/cake server -H 192.168.1.100 -p 5000
 ```
@@ -266,6 +288,7 @@ bin/cake server -H 192.168.1.100 -p 5000
 **Allow Network Access:**
 
 ```bash
+#!/bin/bash
 # Allow access from other devices on your network
 bin/cake server -H 0.0.0.0
 ```
@@ -355,6 +378,7 @@ Apache works out of the box with CakePHP's included `.htaccess` files.
 **Enable mod_rewrite:**
 
 ```bash
+#!/bin/bash
 # Ensure mod_rewrite is enabled
 LoadModule rewrite_module modules/mod_rewrite.so
 
@@ -469,6 +493,7 @@ RUN composer install --no-dev --optimize-autoloader
 **Standalone FrankenPHP:**
 
 ```bash
+#!/bin/bash
 # Download FrankenPHP
 curl -L https://github.com/dunglas/frankenphp/releases/latest/download/frankenphp-linux-x86_64 -o frankenphp
 chmod +x frankenphp
@@ -482,6 +507,7 @@ chmod +x frankenphp
 For local development, you can use the built-in CakePHP development server with FrankenPHP support:
 
 ```bash
+#!/bin/bash
 bin/cake server --frankenphp
 ```
 
@@ -530,10 +556,12 @@ If you cannot enable URL rewriting, you can use CakePHP's built-in non-rewritten
 In `config/app.php`, uncomment:
 
 ```php
+<?php
 'App' => [
     // ...
     'baseUrl' => env('SCRIPT_NAME'),
 ]
+?>
 ```
 
 ### Remove .htaccess Files

@@ -66,10 +66,12 @@ You will build:
 ### Install CakePHP with Composer
 
 ```bash
+#!/bin/bash
 curl -s https://getcomposer.org/installer | php
 ```
 
 ```bash
+#!/bin/bash
 php composer.phar create-project --prefer-dist cakephp/app:5.3 cms
 ```
 
@@ -80,6 +82,7 @@ php composer.phar create-project --prefer-dist cakephp/app:5.3 cms
 Start the development server:
 
 ```bash
+#!/bin/bash
 bin/cake server
 ```
 
@@ -106,11 +109,13 @@ return [
         ],
     ],
 ];
+?>
 ```
 
 ### Migrations (Recommended)
 
 ```bash
+#!/bin/bash
 bin/cake bake migration CreateUsers email:string password:string created modified
 bin/cake bake migration CreateArticles user_id:integer title:string slug:string[191]:unique body:text published:boolean created modified
 bin/cake bake migration CreateTags title:string[191]:unique created modified
@@ -143,6 +148,7 @@ class ArticlesTable extends Table
         $this->addBehavior('Timestamp');
     }
 }
+?>
 ```
 
 Create an entity in `src/Model/Entity/Article.php`:
@@ -169,11 +175,13 @@ class Article extends Entity
         'tags' => true,
     ];
 }
+?>
 ```
 
 You can also generate these with Bake:
 
 ```bash
+#!/bin/bash
 bin/cake bake model articles
 ```
 
@@ -197,6 +205,7 @@ class ArticlesController extends AppController
         $this->set(compact('articles'));
     }
 }
+?>
 ```
 
 A basic view template in `templates/Articles/index.php` might start like:
