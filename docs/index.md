@@ -22,6 +22,7 @@ graph TB
     A --> C[⚙️ Installation]
     A --> D[📋 Conventions]
     A --> E[📚 CMS Tutorial]
+    A --> F[⚡ Components]
 
     B --> B1[CakePHP at a Glance]
     B --> B2[Where to Get Help]
@@ -31,6 +32,10 @@ graph TB
     C --> C2[Installation Methods]
     C --> C3[Web Server Config]
     C --> C4[Development Server]
+
+    F --> F1[Flash Component]
+    F --> F2[Check HTTP Cache]
+    F --> F3[Form Protection]
 ```
 
 ---
@@ -65,6 +70,7 @@ graph TB
 | [Installation Guide](installation-guide.html)   | Complete installation and configuration guide     | ✅ Available |
 | [CakePHP Conventions](03-conventions.html) | Naming conventions and folder structure for rapid development | ✅ Available |
 | [Content Management Tutorial](04-cms-tutorial.html) | Build a CMS with articles, tags, auth, and authorization | ✅ Available |
+| [Controller Components](05-components.html) | Flash, Form Protection, HTTP Cache components | ✅ Available |
 
 ### Coming Soon
 
@@ -175,7 +181,7 @@ This documentation is generated from scraped CakePHP official documentation. If 
 
 ```mermaid
 pie title Documentation Coverage
-    "Completed" : 4
+    "Completed" : 5
     "In Progress" : 0
     "Planned" : 13
 ```

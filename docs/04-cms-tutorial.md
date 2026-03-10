@@ -11,8 +11,8 @@ description: Build a simple CMS in CakePHP 5.x with articles, tags, authenticati
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="03-conventions.html" style="color: var(--link-color);">← Previous: Conventions</a>
-    <span style="color: var(--text-secondary);">📚 Page 4 of 4</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">📚 Page 4 of 5</span>
+    <a href="05-components.html" style="color: var(--link-color);">Next: Components →</a>
   </div>
 </nav>
 
@@ -356,8 +356,8 @@ You now have a working CMS with:
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="03-conventions.html" style="color: var(--link-color);">← Previous: Conventions</a>
-    <span style="color: var(--text-secondary);">📚 Page 4 of 4</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">📚 Page 4 of 5</span>
+    <a href="05-components.html" style="color: var(--link-color);">Next: Components →</a>
   </div>
 </nav>
 
