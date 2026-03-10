@@ -121,6 +121,30 @@
       color: var(--text-primary);
     }
 
+    /* Copy all as markdown button */
+    .copy-all-markdown-btn {
+      display: inline-block;
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .copy-all-markdown-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    
+    .copy-all-markdown-btn.copied {
+      background: #28a745;
+    }
+
     /* Code block container with copy button */
     .code-block-wrapper {
       position: relative;
@@ -297,7 +321,10 @@
   </nav>
 
   <div class="container">
-    {% if site.title and site.title != page.title %}
+    <!-- Big Copy All as Markdown button -->
+    <button id="copy-all-markdown" class="copy-all-markdown-btn">📋 Copy All as Markdown</button>
+    
+    {% if site.title and site.title != page.title %}}
     <h1>
       <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP Logo"
         style="height: 40px; vertical-align: middle; margin-right: 10px;">
@@ -489,6 +516,63 @@
           }
         });
       });
+    });
+  </script>
+
+  <!-- Copy All as Markdown button script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const copyAllBtn = document.getElementById('copy-all-markdown');
+      
+      if (copyAllBtn) {
+        copyAllBtn.addEventListener('click', async function () {
+          // Find all code blocks (pre > code)
+          const codeBlocks = document.querySelectorAll('pre:not(:has(code.language-mermaid)) code');
+          
+          if (codeBlocks.length === 0) {
+            copyAllBtn.textContent = 'No code to copy!';
+            setTimeout(() => {
+              copyAllBtn.textContent = '📋 Copy All as Markdown';
+            }, 2000);
+            return;
+          }
+          
+          // Build markdown formatted text
+          let markdown = '# Code Examples\n\n';
+          
+          codeBlocks.forEach((code, index) => {
+            const text = code.textContent.trim();
+            // Try to detect language from class
+            const langClass = Array.from(code.classList).find(c => c.startsWith('language-'));
+            const lang = langClass ? langClass.replace('language-', '') : '';
+            
+            if (lang) {
+              markdown += '```' + lang + '\n';
+            } else {
+              markdown += '```\n';
+            }
+            markdown += text + '\n';
+            markdown += '```\n\n';
+          });
+          
+          try {
+            await navigator.clipboard.writeText(markdown);
+            copyAllBtn.textContent = '✅ Copied! All code copied as Markdown';
+            copyAllBtn.classList.add('copied');
+            
+            setTimeout(() => {
+              copyAllBtn.textContent = '📋 Copy All as Markdown';
+              copyAllBtn.classList.remove('copied');
+            }, 3000);
+          } catch (err) {
+            console.error('Failed to copy:', err);
+            copyAllBtn.textContent = '❌ Failed to copy';
+            setTimeout(() => {
+              copyAllBtn.textContent = '📋 Copy All as Markdown';
+            }, 2000);
+          }
+        });
+      }
     });
   </script>
 </body>
