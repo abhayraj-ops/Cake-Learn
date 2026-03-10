@@ -1,0 +1,42 @@
+# GitHub Pages Configuration for CakePHP Documentation
+
+# Site settings
+title: CakePHP 5.x Documentation
+description: Comprehensive CakePHP 5.x documentation with examples and visualizations
+
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  hard_wrap: false
+
+# Plugins (GitHub Pages supported plugins only)
+plugins:
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-titles-from-headings
+
+# Relative links
+relative_links:
+  enabled: true
+  collections: true
+
+# Optional front matter
+optional_front_matter:
+  remove_originals: true
+
+# Titles from headings
+titles_from_headings:
+  enabled: true
+  strip_title: true
+  collections: true
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - SETUP.md
