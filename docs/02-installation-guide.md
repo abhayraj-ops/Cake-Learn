@@ -8,6 +8,14 @@ description: Complete guide to installing and configuring CakePHP 5.x
 
 > **Source:** [CakePHP Official Documentation](https://book.cakephp.org/5.x/installation.html)
 
+<nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+    <a href="01-cakephp-at-a-glance.html" style="color: var(--link-color);">← Previous: Introduction</a>
+    <span style="color: var(--text-secondary);">⚙️ Page 2 of 2</span>
+    <a href="index.html" style="color: var(--link-color);">Home →</a>
+  </div>
+</nav>
+
 CakePHP is designed to be easy to install and configure. This guide will walk you through getting CakePHP up and running in just a few minutes.
 
 ## Table of Contents
@@ -570,10 +578,16 @@ flowchart LR
 
 ---
 
-**Released under the MIT License.**
-
-**Copyright © Cake Software Foundation, Inc. All rights reserved.**
+<nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+    <a href="01-cakephp-at-a-glance.html" style="color: var(--link-color);">← Previous: Introduction</a>
+    <span style="color: var(--text-secondary);">⚙️ Page 2 of 2</span>
+    <a href="index.html" style="color: var(--link-color);">Home →</a>
+  </div>
+</nav>
 
 ---
 
-[← Back to Documentation Home](index.md) | [← Previous: Introduction](cakephp-at-a-glance.md)
+**Released under the MIT License.**
+
+**Copyright © Cake Software Foundation, Inc. All rights reserved.**

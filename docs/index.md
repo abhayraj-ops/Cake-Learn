@@ -51,13 +51,13 @@ graph TB
 <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; background: var(--bg-secondary);">
   <h3 style="margin-top: 0;">📖 Introduction</h3>
   <p>Learn about CakePHP's architecture, MVC pattern, and core concepts.</p>
-  <a href="cakephp-at-a-glance.html" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: var(--link-color); color: white; border-radius: 4px; text-decoration: none;">Read Introduction →</a>
+  <a href="01-cakephp-at-a-glance.html" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: var(--link-color); color: white; border-radius: 4px; text-decoration: none;">Read Introduction →</a>
 </div>
 
 <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; background: var(--bg-secondary);">
   <h3 style="margin-top: 0;">⚙️ Installation</h3>
   <p>Complete guide to installing and configuring CakePHP 5.x on your system.</p>
-  <a href="installation-guide.html" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: var(--link-color); color: white; border-radius: 4px; text-decoration: none;">Install CakePHP →</a>
+  <a href="02-installation-guide.html" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: var(--link-color); color: white; border-radius: 4px; text-decoration: none;">Install CakePHP →</a>
 </div>
 
 </div>
@@ -203,8 +203,8 @@ Copyright © Cake Software Foundation, Inc. All rights reserved.
   <h3 style="margin-top: 0;">Ready to Get Started?</h3>
   <p>Begin your CakePHP journey with our comprehensive guides!</p>
   <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
-    <a href="cakephp-at-a-glance.html" style="padding: 12px 24px; background: var(--link-color); color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">📖 Read Introduction</a>
-    <a href="installation-guide.html" style="padding: 12px 24px; background: #28a745; color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">⚙️ Install CakePHP</a>
+    <a href="01-cakephp-at-a-glance.html" style="padding: 12px 24px; background: var(--link-color); color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">📖 Read Introduction</a>
+    <a href="02-installation-guide.html" style="padding: 12px 24px; background: #28a745; color: white; border-radius: 6px; text-decoration: none; font-weight: 600;">⚙️ Install CakePHP</a>
   </div>
 </div>
 

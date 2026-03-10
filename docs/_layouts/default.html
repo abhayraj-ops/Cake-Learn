@@ -59,7 +59,7 @@
       /* Dark mode toggle button */
       .theme-toggle {
         position: fixed;
-        top: 20px;
+        top: 70px;
         right: 20px;
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
@@ -256,8 +256,6 @@
           CakePHP Docs
         </a>
         <div style="flex: 1;"></div>
-        <a href="{{ "/cakephp-at-a-glance.html" | relative_url }}" style="font-size: 0.95em;">Introduction</a>
-        <a href="{{ "/installation-guide.html" | relative_url }}" style="font-size: 0.95em;">Installation</a>
         <a href="https://book.cakephp.org/5.x/" target="_blank" style="font-size: 0.95em;">Official Docs ↗</a>
       </div>
     </nav>
@@ -292,6 +290,19 @@
         startOnLoad: false,
         theme: currentTheme === 'dark' ? 'dark' : 'default',
         securityLevel: 'loose',
+        themeVariables: {
+          primaryColor: currentTheme === 'dark' ? '#1f6feb' : '#0366d6',
+          primaryTextColor: currentTheme === 'dark' ? '#c9d1d9' : '#24292e',
+          primaryBorderColor: currentTheme === 'dark' ? '#30363d' : '#e1e4e8',
+          lineColor: currentTheme === 'dark' ? '#8b949e' : '#6a737d',
+          secondaryColor: currentTheme === 'dark' ? '#161b22' : '#f6f8fa',
+          tertiaryColor: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
+          background: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
+          mainBkg: currentTheme === 'dark' ? '#161b22' : '#f6f8fa',
+          secondBkg: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
+          textColor: currentTheme === 'dark' ? '#c9d1d9' : '#24292e',
+          fontSize: '16px'
+        },
         flowchart: {
           useMaxWidth: true,
           htmlLabels: true,

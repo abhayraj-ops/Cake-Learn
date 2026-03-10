@@ -8,6 +8,14 @@ description: Introduction to CakePHP framework concepts and architecture
 
 > **Source:** [CakePHP Official Documentation](https://book.cakephp.org/5.x/intro.html)
 
+<nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+    <a href="index.html" style="color: var(--link-color);">← Home</a>
+    <span style="color: var(--text-secondary);">📖 Page 1 of 2</span>
+    <a href="02-installation-guide.html" style="color: var(--link-color);">Next: Installation →</a>
+  </div>
+</nav>
+
 CakePHP is designed to make common web-development tasks simple and easy. By providing an all-in-one toolbox to get you started, the various parts of CakePHP work well together or separately.
 
 The goal of this overview is to introduce the general concepts in CakePHP and give you a quick overview of how those concepts are implemented. If you are itching to get started on a project, you can start with the tutorial or dive into the docs.
@@ -337,10 +345,16 @@ The next obvious steps are to:
 
 ---
 
-**Released under the MIT License.**
-
-**Copyright © Cake Software Foundation, Inc. All rights reserved.**
+<nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+    <a href="index.html" style="color: var(--link-color);">← Home</a>
+    <span style="color: var(--text-secondary);">📖 Page 1 of 2</span>
+    <a href="02-installation-guide.html" style="color: var(--link-color);">Next: Installation →</a>
+  </div>
+</nav>
 
 ---
 
-[← Back to Documentation Home](index.md) | [Next: Installation Guide →](installation-guide.md)
+**Released under the MIT License.**
+
+**Copyright © Cake Software Foundation, Inc. All rights reserved.**
