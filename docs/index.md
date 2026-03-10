@@ -4,6 +4,10 @@ title: CakePHP 5.x Documentation
 description: Comprehensive CakePHP 5.x documentation with examples and visualizations
 ---
 
+<div style="text-align: center; margin: 40px 0;">
+  <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP Logo" style="height: 120px;">
+</div>
+
 # CakePHP 5.x Documentation
 
 Welcome to the CakePHP 5.x documentation repository. This documentation is generated from the official CakePHP documentation and enhanced with visualizations and examples.

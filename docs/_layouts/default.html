@@ -7,6 +7,8 @@
 
     <title>{{ page.title | default: site.title }}</title>
     <meta name="description" content="{{ page.description | default: site.description }}">
+    <link rel="icon" type="image/svg+xml" href="https://book.cakephp.org/5.x/logo.svg">
+    <link rel="shortcut icon" type="image/svg+xml" href="https://book.cakephp.org/5.x/logo.svg">
 
     <!-- GitHub Pages default styling -->
     <style>
@@ -115,7 +117,10 @@
   <body>
     <div class="container">
       {% if site.title and site.title != page.title %}
-      <h1><a href="{{ "/" | relative_url }}">{{ site.title }}</a></h1>
+      <h1>
+        <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP Logo" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+        <a href="{{ "/" | relative_url }}" style="vertical-align: middle;">{{ site.title }}</a>
+      </h1>
       {% endif %}
 
       {{ content }}
