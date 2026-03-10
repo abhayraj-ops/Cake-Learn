@@ -29,17 +29,6 @@ graph TB
     C --> C2[Installation Methods]
     C --> C3[Web Server Config]
     C --> C4[Development Server]
-
-    style A fill:#ff6b6b,color:#fff
-    style B fill:#4ecdc4,color:#fff
-    style C fill:#45b7d1,color:#fff
-    style B1 fill:#96ceb4
-    style B2 fill:#96ceb4
-    style B3 fill:#96ceb4
-    style C1 fill:#dfe6e9
-    style C2 fill:#dfe6e9
-    style C3 fill:#dfe6e9
-    style C4 fill:#dfe6e9
 ```
 
 ---

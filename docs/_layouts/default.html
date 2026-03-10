@@ -288,17 +288,17 @@
       // Initialize mermaid with theme
       mermaid.initialize({ 
         startOnLoad: false,
-        theme: currentTheme === 'dark' ? 'dark' : 'default',
+        theme: currentTheme === 'dark' ? 'dark' : 'base',
         securityLevel: 'loose',
         themeVariables: {
           primaryColor: currentTheme === 'dark' ? '#1f6feb' : '#0366d6',
           primaryTextColor: currentTheme === 'dark' ? '#c9d1d9' : '#24292e',
           primaryBorderColor: currentTheme === 'dark' ? '#30363d' : '#e1e4e8',
           lineColor: currentTheme === 'dark' ? '#8b949e' : '#6a737d',
-          secondaryColor: currentTheme === 'dark' ? '#161b22' : '#f6f8fa',
+          secondaryColor: currentTheme === 'dark' ? '#161b22' : '#f0f0f0',
           tertiaryColor: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
           background: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
-          mainBkg: currentTheme === 'dark' ? '#161b22' : '#f6f8fa',
+          mainBkg: currentTheme === 'dark' ? '#161b22' : '#f0f0f0',
           secondBkg: currentTheme === 'dark' ? '#0d1117' : '#ffffff',
           textColor: currentTheme === 'dark' ? '#c9d1d9' : '#24292e',
           fontSize: '16px'
