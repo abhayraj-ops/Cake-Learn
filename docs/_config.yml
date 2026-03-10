@@ -3,6 +3,8 @@
 # Site settings
 title: CakePHP 5.x Documentation
 description: Comprehensive CakePHP 5.x documentation with examples and visualizations
+url: https://abhayraj-ops.github.io
+baseurl: /Cake-Learn
 
 # Markdown settings
 markdown: kramdown
