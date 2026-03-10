@@ -18,28 +18,48 @@ description: Learn about CakePHP Controller Components - packages of logic share
 
 ## Table of Contents
 
-- [Introduction](#introduction)
+- [What are Components?](#what-are-components)
 - [Configuring Components](#configuring-components)
 - [Using Components](#using-components)
 - [Creating a Component](#creating-a-component)
 - [Component Callbacks](#component-callbacks)
-- [Flash Component](#flash-component)
-- [Check HTTP Cache Component](#check-http-cache-component)
-- [Form Protection Component](#form-protection-component)
+- [Core Components](#core-components)
 
 ---
 
-## Introduction
+## What are Components?
 
-Components are packages of logic that are shared between controllers. CakePHP comes with a fantastic set of core components you can use to aid in various common tasks. You can also create your own components. If you find yourself wanting to copy and paste things between controllers, you should consider creating your own component to contain the functionality. Creating components keeps controller code clean and allows you to reuse code between different controllers.
+Components are packages of logic that are shared between controllers. They provide a way to organize reusable controller logic.
 
-> **Note:** Since both Models and Components are added to Controllers as properties they share the same 'namespace'. Be sure to not give a component and a model the same name.
+```mermaid
+graph TB
+    A[Controller] --> B[Components]
+    B --> C[Flash Component]
+    B --> D[Form Protection]
+    B --> E[Check HTTP Cache]
+    B --> F[Custom Component]
+    
+    style A fill:#4ecdc4,color:#fff
+    style B fill:#45b7d1,color:#fff
+    style C fill:#96ceb4
+    style D fill:#96ceb4
+    style E fill:#96ceb4
+    style F fill:#ffeaa7
+```
+
+> **Key Benefits:**
+> - Reusable across multiple controllers
+> - Keeps controller code clean
+> - Organized business logic
+> - Shared functionality
+
+> **Important:** Since both Models and Components are added to Controllers as properties they share the same 'namespace'. Be sure to not give a component and a model the same name.
 
 ---
 
 ## Configuring Components
 
-Many of the core components require configuration. Configuration for these components, and for components in general, is usually done via `loadComponent()` in your Controller's `initialize()` method or via the `$components` array:
+Many of the core components require configuration. Configuration for these components is usually done via `loadComponent()` in your Controller's `initialize()` method:
 
 ```php
 <?php
@@ -61,7 +81,25 @@ class PostsController extends AppController
 ?>
 ```
 
-You can configure components at runtime using the `setConfig()` method. Often, this is done in your controller's `beforeFilter()` method:
+### Configuration Methods
+
+```mermaid
+graph LR
+    A[Configuration] --> B[initialize()]
+    A --> C[setConfig()]
+    A --> D[beforeFilter()]
+    
+    B --> E[Static Config]
+    C --> F[Runtime Config]
+    D --> G[Dynamic Config]
+    
+    style A fill:#4ecdc4,color:#fff
+    style B fill:#96ceb4
+    style C fill:#ffeaa7
+    style D fill:#dfe6e9
+```
+
+You can configure components at runtime using the `setConfig()` method:
 
 ```php
 <?php
@@ -72,7 +110,7 @@ public function beforeFilter(EventInterface $event): void
 ?>
 ```
 
-Like helpers, components implement `getConfig()` and `setConfig()` methods to read and write configuration data:
+Like helpers, components implement `getConfig()` and `setConfig()` methods:
 
 ```php
 <?php
@@ -86,7 +124,7 @@ $this->Flash->setConfig('key', 'myFlash');
 
 ### Aliasing Components
 
-One common setting to use is the `className` option, which allows you to alias components. This feature is useful when you want to replace `$this->Flash` or another common Component reference with a custom implementation:
+One common setting is the `className` option, which allows you to alias components:
 
 ```php
 <?php
@@ -103,7 +141,21 @@ $this->loadComponent('Flash', [
 
 ## Using Components
 
-Once you've included some components in your controller, using them is pretty simple. Each component you use is exposed as a property on your controller:
+Once you've included some components in your controller, using them is pretty simple:
+
+```mermaid
+graph LR
+    A[Controller] --> B[loadComponent]
+    B --> C[Exposed as Property]
+    C --> D[$this->Flash]
+    C --> E[$this->FormProtection]
+    
+    style A fill:#4ecdc4,color:#fff
+    style B fill:#96ceb4
+    style C fill:#ffeaa7
+    style D fill:#dfe6e9
+    style E fill:#dfe6e9
+```
 
 ```php
 <?php
@@ -114,7 +166,7 @@ $this->Flash->success('Your message here');
 
 ### Loading Components on the Fly
 
-You might not need all of your components available on every controller action. In situations like this you can load a component at runtime using the `loadComponent()` method:
+You might not need all components on every action. Load them at runtime:
 
 ```php
 <?php
@@ -122,11 +174,11 @@ $this->loadComponent('Flash');
 ?>
 ```
 
-> **Note:** Keep in mind that components loaded on the fly will not have missed callbacks called. If you rely on the beforeFilter or startup callbacks being called, you may need to call them manually depending on when you load your component.
+> **Note:** Components loaded on the fly won't have missed callbacks called automatically.
 
 ### Using Other Components in your Component
 
-Sometimes one of your components may need to use another component. You can load other components by adding them to the `$components` property:
+Sometimes one component needs another component:
 
 ```php
 <?php
@@ -141,11 +193,11 @@ class MathComponent extends Component
 ?>
 ```
 
-> **Note:** In contrast to a component included in a controller no callbacks will be triggered on a component's component.
+> **Note:** In contrast to a component included in a controller, no callbacks will be triggered on a component's component.
 
-### Accessing a Component's Controller
+### Accessing Component's Controller
 
-From within a Component you can access the current controller through the registry:
+From within a Component you can access the controller:
 
 ```php
 <?php
@@ -157,9 +209,25 @@ $controller = $this->getController();
 
 ## Creating a Component
 
-Suppose our application needs to perform a complex mathematical operation in many different parts of the application. We could create a component to house this shared logic for use in many different controllers.
+Suppose our application needs a complex mathematical operation in many places. Create a component:
 
-The first step is to create a new component file and class. Create the file in `src/Controller/Component/MathComponent.php`:
+```mermaid
+graph TB
+    A[Create Component] --> B[src/Controller/Component]
+    B --> C[MathComponent.php]
+    C --> D[Extend Component]
+    D --> E[Add Methods]
+    E --> F[Load in Controller]
+    
+    style A fill:#4ecdc4,color:#fff
+    style B fill:#96ceb4
+    style C fill:#ffeaa7
+    style D fill:#dfe6e9
+    style E fill:#dfe6e9
+    style F fill:#45b7d1
+```
+
+Create the file in `src/Controller/Component/MathComponent.php`:
 
 ```php
 <?php
@@ -186,11 +254,11 @@ class MathComponent extends Component
 ?>
 ```
 
-> **Note:** All components must extend `Cake\Controller\Component`. Failing to do this will trigger an exception.
+> **Note:** All components must extend `Cake\Controller\Component`.
 
 ### Dependency Injection
 
-Components can use Dependency Injection to receive services as constructor parameters (added in version 5.1.0):
+Components can use Dependency Injection (added in version 5.1.0):
 
 ```php
 <?php
@@ -212,7 +280,7 @@ class MathComponent extends Component
 ?>
 ```
 
-Once our component is finished, we can use it in the application's controllers by loading it during the controller's `initialize()` method:
+Load it in your controller:
 
 ```php
 <?php
@@ -228,17 +296,40 @@ public function initialize(): void
 
 ## Component Callbacks
 
-Components also offer a few request life-cycle callbacks that allow them to augment the request cycle:
+Components offer request life-cycle callbacks:
 
-- `beforeFilter(EventInterface $event): void` - Called before the controller's beforeFilter method
-- `startup(EventInterface $event): void` - Called after the controller's startup method
-- `beforeRender(EventInterface $event): void` - Called before the controller renders a view
-- `afterFilter(EventInterface $event): void` - Called after the controller renders a view
-- `beforeRedirect(EventInterface $event, $url, Response $response): void` - Called when a redirect is about to occur
+```mermaid
+sequenceDiagram
+    participant R as Request
+    participant C as Controller
+    participant Comp as Component
+    
+    R->>C: Request Received
+    C->>Comp: beforeFilter()
+    Comp->>C: Continue
+    
+    C->>Comp: startup()
+    Comp->>C: Continue
+    
+    C->>Comp: beforeRender()
+    Comp->>C: Render View
+    
+    C->>Comp: afterFilter()
+    Comp->>C: Response Ready
+    
+    C-->>R: Send Response
+```
+
+Available callbacks:
+- `beforeFilter(EventInterface $event): void` - Called before controller's beforeFilter
+- `startup(EventInterface $event): void` - Called after controller's startup
+- `beforeRender(EventInterface $event): void` - Called before rendering
+- `afterFilter(EventInterface $event): void` - Called after rendering
+- `beforeRedirect(EventInterface $event, $url, Response $response): void` - Called on redirect
 
 ### Using Redirects in Component Events
 
-To redirect from within a component callback method you can use the following:
+To redirect from within a component:
 
 ```php
 <?php
@@ -250,213 +341,176 @@ $event->setResult([
 ?>
 ```
 
-By setting a redirect as event result you let CakePHP know that you don't want any other component callbacks to run, and that the controller should not handle the action any further.
-
-As of 4.1.0 you can raise a `RedirectException` to signal a redirect:
+Or raise a `RedirectException`:
 
 ```php
 <?php
 use Cake\Http\Exception\RedirectException;
 
-// Raising an exception will halt all other event listeners
 throw new RedirectException('/some/path');
 ?>
 ```
 
-Raising an exception will halt all other event listeners and create a new response that doesn't retain or inherit any of the current response's headers.
+> Raising an exception will halt all other event listeners and create a new response.
 
 ---
 
-## Flash Component
+## Core Components
 
-The FlashComponent provides a way to set one-time notification messages to be displayed after processing a form or acknowledging data. CakePHP refers to these messages as "flash messages".
+CakePHP provides several useful core components:
 
-### Setting Flash Messages
+```mermaid
+graph TB
+    A[Core Components] --> B[Flash]
+    A --> C[Form Protection]
+    A --> D[Check HTTP Cache]
+    A --> E[Authentication]
+    A --> F[Authorization]
+    
+    B --> B1[One-time messages]
+    C --> C1[Form tampering protection]
+    D --> D1[HTTP caching]
+    E --> E1[User login]
+    F --> F1[Access control]
+    
+    style A fill:#4ecdc4,color:#fff
+    style B fill:#ffeaa7
+    style C fill:#fab1a0
+    style D fill:#74b9ff
+    style E fill:#a29bfe
+    style F fill:#fd79a8
+```
 
-FlashComponent provides two ways to set flash messages: its `__call()` magic method and its `set()` method:
+### Flash Component
+
+FlashComponent provides one-time notification messages:
 
 ```php
 <?php
 // Uses templates/element/flash/success.php
 $this->Flash->success('This was successful');
 
-// Uses templates/element/flash/great_success.php
-$this->Flash->greatSuccess('This was greatly successful');
-?>
-```
-
-Alternatively, to set a plain-text message without rendering an element, you can use the `set()` method:
-
-```php
-<?php
+// Plain text message
 $this->Flash->set('This is a message');
 ?>
 ```
 
-Flash messages are appended to an array internally. If you want to overwrite existing messages when setting a flash message, set the `clear` option to true:
+#### Options:
+
+| Option | Description |
+|--------|-------------|
+| `key` | The flash message key (default: 'flash') |
+| `clear` | Set to true to overwrite existing messages |
+| `params` | Additional parameters for the template |
+| `escape` | Set to false to allow HTML |
 
 ```php
 <?php
-$this->Flash->success('New message', ['clear' => true]);
-?>
-```
-
-### Options for Flash Messages
-
-FlashComponent's `__call()` and `set()` methods optionally take a second parameter, an array of options:
-
-```php
-<?php
-$this->Flash->success('The user has been saved', [
+$this->Flash->success('Saved!', [
     'key' => 'positive',
     'clear' => true,
-    'params' => [
-        'name' => $user->name,
-        'email' => $user->email,
-    ],
+    'params' => ['name' => $user->name]
 ]);
 ?>
 ```
 
-### HTML in Flash Messages
-
-By default, CakePHP escapes the content in flash messages to prevent cross site scripting. If you want to include HTML in your flash messages, you need to pass the `escape` option:
-
-```php
-<?php
-// In your controller
-$this->Flash->success('<b>Success!</b> Message', ['escape' => false]);
-
-// In your flash element template, make sure to handle escaping
-// templates/element/flash/success.php
-echo '<div class="message">' . $message . '</div>';
-?>
-```
-
-> **Warning:** Make sure that you escape the input manually if you use user data in your flash messages.
+> **Note:** By default, CakePHP escapes content in flash messages to prevent XSS.
 
 ---
 
-## Check HTTP Cache Component
+### Check HTTP Cache Component
 
-The HTTP cache validation model is one of the processes used for cache gateways, also known as reverse proxies, to determine if they can serve a stored copy of a response to the client. Under this model, you mostly save bandwidth, but when used correctly you can also save some CPU processing, reducing response times.
+The HTTP cache validation model helps reduce bandwidth and CPU usage:
 
-### Enabling CheckHttpCacheComponent
+```mermaid
+graph TD
+    A[Client Request] --> B{Validate Cache?}
+    B -->|Yes| C[304 Not Modified]
+    B -->|No| D[Generate Response]
+    D --> E[200 OK + Content]
+    
+    style C fill:#74b9ff
+    style D fill:#96ceb4
+    style E fill:#96ceb4
+```
+
+Enable it:
 
 ```php
 <?php
-// in a Controller
 public function initialize(): void
 {
     parent::initialize();
-
     $this->addComponent('CheckHttpCache');
 }
 ?>
 ```
 
-Enabling the CheckHttpCacheComponent in your controller automatically activates a `beforeRender` check. This check compares caching headers set in the response object to the caching headers sent in the request to determine whether the response was not modified since the last time the client asked for it.
+This automatically activates a `beforeRender` check comparing:
+- `If-None-Match` with response `ETag`
+- `If-Modified-Since` with response `Last-Modified`
 
-### How It Works
-
-The following request headers are used:
-- `If-None-Match` - Compares with response `ETag`
-- `If-Modified-Since` - Compares with response `Last-Modified`
-
-If response headers match the request header criteria, then view rendering is skipped. This saves your application generating a view, saving bandwidth and time. When response headers match, an empty response is returned with a `304 Not Modified` status code.
+If headers match, view rendering is skipped and a 304 response is returned.
 
 ---
 
-## Form Protection Component
+### Form Protection Component
 
-The FormProtection Component provides protection against form data tampering.
+The FormProtection Component provides protection against form data tampering:
 
-> **Note:** When using the FormProtection Component you must use the FormHelper to create your forms. In addition, you must not override any of the fields' "name" attributes.
+```mermaid
+graph LR
+    A[Form Submission] --> B{Validate Token?}
+    B -->|Valid| C[Process Form]
+    B -->|Invalid| D[400 Error]
+    
+    style B fill:#fab1a0
+    style C fill:#96ceb4
+    style D fill:#e74c3c,color:#fff
+```
 
-### Form Tampering Prevention
-
-By default, the FormProtectionComponent prevents users from tampering with forms in specific ways. It will prevent:
-- Adding new fields to the form
-- Removing fields from the form
-- Modifying hidden field values
-
-Configuring the form protection component is generally done in the controller's `initialize()` or `beforeFilter()` callbacks:
+Enable it:
 
 ```php
 <?php
-namespace App\Controller;
-
-use App\Controller\AppController;
-use Cake\Event\EventInterface;
-
-class WidgetsController extends AppController
+public function initialize(): void
 {
-    public function initialize(): void
-    {
-        parent::initialize();
-
-        $this->loadComponent('FormProtection');
-    }
-
-    public function beforeFilter(EventInterface $event): void
-    {
-        parent::beforeFilter($event);
-
-        if ($this->request->getParam('prefix') === 'Admin') {
-            $this->FormProtection->setConfig('validate', false);
-        }
-    }
+    parent::initialize();
+    $this->loadComponent('FormProtection');
 }
 ?>
 ```
 
-### Configuration Options
+#### Configuration Options:
 
-Available options are:
+| Option | Description |
+|--------|-------------|
+| `validate` | Set to false to skip validation |
+| `unlockedFields` | Fields to exclude from validation |
+| `unlockedActions` | Actions to exclude from validation |
+| `validationFailureCallback` | Custom callback for failures |
 
-- `validate` - Set to false to completely skip the validation of POST requests
-- `unlockedFields` - List of form fields to exclude from POST validation
-- `unlockedActions` - Actions to exclude from POST validation checks
-- `validationFailureCallback` - Callback to call in case of validation failure
-
-### Disabling Form Protection for Specific Actions
-
-```php
-<?php
-namespace App\Controller;
-
-use App\Controller\AppController;
-use Cake\Event\EventInterface;
-
-class WidgetController extends AppController
-{
-    public function initialize(): void
-    {
-        parent::initialize();
-        $this->loadComponent('FormProtection');
-    }
-
-    public function beforeFilter(EventInterface $event): void
-    {
-        parent::beforeFilter($event);
-
-        // Disable form protection for the edit action (e.g., for AJAX requests)
-        $this->FormProtection->setConfig('unlockedActions', ['edit']);
-    }
-}
-?>
-```
-
-### Handling Validation Failure
-
-If form protection validation fails it will result in a 400 error by default. You can configure this behavior by setting the `validationFailureCallback` configuration option:
+#### Disabling for Specific Actions:
 
 ```php
 <?php
 public function beforeFilter(EventInterface $event): void
 {
     parent::beforeFilter($event);
+    // Disable for AJAX requests
+    $this->FormProtection->setConfig('unlockedActions', ['edit']);
+}
+?>
+```
 
+#### Handling Validation Failure:
+
+```php
+<?php
+public function beforeFilter(EventInterface $event): void
+{
+    parent::beforeFilter($event);
+    
     $this->FormProtection->setConfig('validationFailureCallback', function ($controller) {
         $controller->response->statusCode(403);
         $controller->response->body('Invalid form submission');
@@ -465,6 +519,8 @@ public function beforeFilter(EventInterface $event): void
 }
 ?>
 ```
+
+> **Important:** When using FormProtection, you must use FormHelper to create forms and not override field "name" attributes.
 
 ---
 
