@@ -1,0 +1,596 @@
+URL: https://book.cakephp.org/5.x/core-libraries/inflector.html
+Title: Inflector | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Inflector ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Summary of Inflector Methods and Their Output ​
+  - Creating Plural & Singular Forms ​
+  - Creating CamelCase and under_scored Forms ​
+  - Creating Human Readable Forms ​
+  - Creating Table and Class Name Forms ​
+  - Creating Variable Names ​
+  - Inflection Configuration ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Inflector::singularize() ​
+  - Inflector::pluralize() ​
+  - Inflector::camelize() ​
+  - Inflector::underscore() ​
+  - Inflector::humanize() ​
+  - Inflector::classify() ​
+  - Inflector::dasherize() ​
+  - Inflector::tableize() ​
+  - Inflector::variable() ​
+  - Loading Custom Inflections ​
+  - Inflector::rules() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Utility\Inflector
+
+The Inflector class takes a string and can manipulate it to handle word variations such as pluralization or camelizing and is normally accessed statically. Example: Inflector::pluralize('example') returns "examples".
+
+You can try out the inflections online at inflector.cakephp.org or sandbox.dereuromark.de.
+
+Quick summary of the Inflector built-in methods and the results they output when provided a multi-word argument:
+
+static Cake\Utility\Inflector::singularize(string $word): string
+
+static Cake\Utility\Inflector::pluralize(string $word): string
+
+Both pluralize and singularize() work on most English nouns. If you need to support other languages, you can use Inflection Configuration to customize the rules used:
+
+NOTE
+
+pluralize() should not be used on a noun that is already in its plural form.
+
+NOTE
+
+singularize() should not be used on a noun that is already in its singular form.
+
+static Cake\Utility\Inflector::camelize(string $string, string $delimiter = '_'): string
+
+static Cake\Utility\Inflector::underscore(string $string): string
+
+These methods are useful when creating class names, or property names:
+
+It should be noted that underscore will only convert camelCase formatted words. Words that contains spaces will be lower-cased, but will not contain an underscore.
+
+static Cake\Utility\Inflector::humanize(string $string, string $delimiter = '_'): string
+
+This method is useful when converting underscored forms into "Title Case" forms for human readable values:
+
+static Cake\Utility\Inflector::classify(string $tableName): string
+
+static Cake\Utility\Inflector::dasherize(string $string): string
+
+static Cake\Utility\Inflector::tableize(string $className): string
+
+When generating code, or using CakePHP's conventions you may need to inflect table names or class names:
+
+static Cake\Utility\Inflector::variable(string $string): string
+
+Variable names are often useful when doing meta-programming tasks that involve generating code or doing work based on conventions:
+
+CakePHP's naming conventions can be really nice - you can name your database table big_boxes, your model BigBoxes, your controller BigBoxesController, and everything just works together automatically. The way CakePHP knows how to tie things together is by inflecting the words between their singular and plural forms.
+
+There are occasions (especially for our non-English speaking friends) where you may run into situations where CakePHP's inflector (the class that pluralizes, singularizes, camelCases, and under_scores) might not work as you'd like. If CakePHP won't recognize your Foci or Fish, you can tell CakePHP about your special cases.
+
+static Cake\Utility\Inflector::rules(string $type, array $rules, bool $reset = false): void
+
+Define new inflection and transliteration rules for Inflector to use. Often, this method is used in your config/bootstrap.php:
+
+The supplied rules will be merged into the respective inflection sets defined in Cake/Utility/Inflector, with the added rules taking precedence over the core rules. You can use Inflector::reset() to clear rules and restore the original Inflector state.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+Inflector::pluralize('example')
+----------------------------------------
+
+Code Block 3 ():
+pluralize()
+----------------------------------------
+
+Code Block 4 ():
+singularize()
+----------------------------------------
+
+Code Block 5 ():
+camelize()
+----------------------------------------
+
+Code Block 6 ():
+underscore()
+----------------------------------------
+
+Code Block 7 ():
+humanize()
+----------------------------------------
+
+Code Block 8 ():
+classify()
+----------------------------------------
+
+Code Block 9 ():
+dasherize()
+----------------------------------------
+
+Code Block 10 ():
+tableize()
+----------------------------------------
+
+Code Block 11 ():
+variable()
+----------------------------------------
+
+Code Block 12 ():
+static
+----------------------------------------
+
+Code Block 13 ():
+static
+----------------------------------------
+
+Code Block 14 ():
+pluralize
+----------------------------------------
+
+Code Block 15 ():
+singularize()
+----------------------------------------
+
+Code Block 16 (shiki):
+// Apples
+echo Inflector::pluralize('Apple');
+----------------------------------------
+
+Code Block 17 ():
+// Apples
+echo Inflector::pluralize('Apple');
+----------------------------------------
+
+Code Block 18 ():
+pluralize()
+----------------------------------------
+
+Code Block 19 (shiki):
+// Person
+echo Inflector::singularize('People');
+----------------------------------------
+
+Code Block 20 ():
+// Person
+echo Inflector::singularize('People');
+----------------------------------------
+
+Code Block 21 ():
+singularize()
+----------------------------------------
+
+Code Block 22 ():
+static
+----------------------------------------
+
+Code Block 23 ():
+static
+----------------------------------------
+
+Code Block 24 (shiki):
+// ApplePie
+Inflector::camelize('Apple_pie')
+
+// apple_pie
+Inflector::underscore('ApplePie');
+----------------------------------------
+
+Code Block 25 ():
+// ApplePie
+Inflector::camelize('Apple_pie')
+
+// apple_pie
+Inflector::underscore('ApplePie');
+----------------------------------------
+
+Code Block 26 ():
+static
+----------------------------------------
+
+Code Block 27 (shiki):
+// Apple Pie
+Inflector::humanize('apple_pie');
+----------------------------------------
+
+Code Block 28 ():
+// Apple Pie
+Inflector::humanize('apple_pie');
+----------------------------------------
+
+Code Block 29 ():
+static
+----------------------------------------
+
+Code Block 30 ():
+static
+----------------------------------------
+
+Code Block 31 ():
+static
+----------------------------------------
+
+Code Block 32 (shiki):
+// UserProfileSetting
+Inflector::classify('user_profile_settings');
+
+// user-profile-setting
+Inflector::dasherize('UserProfileSetting');
+
+// user_profile_settings
+Inflector::tableize('UserProfileSetting');
+----------------------------------------
+
+Code Block 33 ():
+// UserProfileSetting
+Inflector::classify('user_profile_settings');
+
+// user-profile-setting
+Inflector::dasherize('UserProfileSetting');
+
+// user_profile_settings
+Inflector::tableize('UserProfileSetting');
+----------------------------------------
+
+Code Block 34 ():
+static
+----------------------------------------
+
+Code Block 35 (shiki):
+// applePie
+Inflector::variable('apple_pie');
+----------------------------------------
+
+Code Block 36 ():
+// applePie
+Inflector::variable('apple_pie');
+----------------------------------------
+
+Code Block 37 ():
+big_boxes
+----------------------------------------
+
+Code Block 38 ():
+BigBoxes
+----------------------------------------
+
+Code Block 39 ():
+BigBoxesController
+----------------------------------------
+
+Code Block 40 ():
+static
+----------------------------------------
+
+Code Block 41 (shiki):
+Inflector::rules('singular', ['/^(bil)er$/i' => '\1', '/^(inflec|contribu)tors$/i' => '\1ta']);
+Inflector::rules('uninflected', ['singulars']);
+Inflector::rules('irregular', ['phylum' => 'phyla']); // The key is singular form, value is plural form
+----------------------------------------
+
+Code Block 42 ():
+Inflector::rules('singular', ['/^(bil)er$/i' => '\1', '/^(inflec|contribu)tors$/i' => '\1ta']);
+Inflector::rules('uninflected', ['singulars']);
+Inflector::rules('irregular', ['phylum' => 'phyla']); // The key is singular form, value is plural form
+----------------------------------------
+
+Code Block 43 ():
+Cake/Utility/Inflector
+----------------------------------------
+
+Code Block 44 ():
+Inflector::reset()
+----------------------------------------
+

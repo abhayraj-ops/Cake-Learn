@@ -1,0 +1,1459 @@
+URL: https://book.cakephp.org/5.x/appendices/5-0-migration-guide.html
+Title: 5.0 Migration Guide | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - 5.0 Migration Guide ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Deprecated Features Removed ​
+  - Breaking Changes ​
+  - Deprecations ​
+  - New Features ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Global ​
+  - Auth ​
+  - Cache ​
+  - Collection ​
+  - Console ​
+  - Connection ​
+  - Controller ​
+  - Core ​
+  - Database ​
+  - Datasource ​
+  - Event ​
+  - Error ​
+  - Filesystem ​
+  - Http ​
+  - I18n ​
+  - Log ​
+  - Mailer ​
+  - ORM ​
+  - Known Issues ​
+  - Routing ​
+  - TestSuite ​
+  - Validation ​
+  - View ​
+  - Database ​
+  - ORM ​
+  - Improved type checking ​
+  - Collection ​
+  - Core ​
+  - Database ​
+  - Http ​
+  - ORM ​
+  - Required Entity Fields ​
+  - Typed Finder Parameters ​
+  - TestSuite ​
+  - Plugin Installer ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+CakePHP 5.0 contains breaking changes, and is not backwards compatible with 4.x releases. Before attempting to upgrade to 5.0, first upgrade to 4.5 and resolve all deprecation warnings.
+
+Refer to the 5.0 Upgrade Guide for step by step instructions on how to upgrade to 5.0.
+
+All methods, properties and functionality that were emitting deprecation warnings as of 4.5 have been removed.
+
+In addition to the removal of deprecated features there have been breaking changes made:
+
+Type declarations were added to all function parameter and returns where possible. These are intended to match the docblock annotations, but include fixes for incorrect annotations.
+
+Type declarations were added to all class properties where possible. These also include some fixes for incorrect annotations.
+
+The SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, YEAR constants were removed.
+
+Use of #[\AllowDynamicProperties] removed everywhere. It was used for the following classes:
+
+The supported database engine versions were updated:
+
+Memory usage with large result sets
+
+Compared to CakePHP 4.x, when working with large data sets (especially when calling collection methods like extract() on the result set), you may encounter high memory usage due to the entire result set being buffered in memory.
+
+You can work around this issue by disabling results buffering for the query:
+
+Depending on your use case, you may also consider using disabling hydration:
+
+The above will disable creation of entity objects and return rows as arrays instead.
+
+The following is a list of deprecated methods, properties and behaviors. These features will continue to function in 5.x and will be removed in 6.0.
+
+CakePHP 5 leverages the expanded type system feature available in PHP 8.1+. CakePHP also uses assert() to provide improved error messages and additional type soundness. In production mode, you can configure PHP to not generate code for assert() yielding improved application performance. See the Symlink Assets for how to do this.
+
+Entities have a new opt-in functionality that allows making entities handle properties more strictly. The new behavior is called 'required fields'. When enabled, accessing properties that are not defined in the entity will raise exceptions. This impacts the following usage:
+
+Fields are considered defined if they pass array_key_exists. This includes null values. Because this can be a tedious to enable feature, it was deferred to 5.0. We'd like any feedback you have on this feature as we're considering making this the default behavior in the future.
+
+Table finders can now have typed arguments as required instead of an options array. For e.g. a finder for fetching posts by category or user:
+
+can now be written as:
+
+The finder can then be called as find('byCategoryOrUser', userId: $somevar). You can even include the special named arguments for setting query clauses. find('byCategoryOrUser', userId: $somevar, conditions: ['enabled' => true]).
+
+A similar change has been applied to the RepositoryInterface::get() method:
+
+can now be written as:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+SECOND
+----------------------------------------
+
+Code Block 2 ():
+MINUTE
+----------------------------------------
+
+Code Block 3 ():
+HOUR
+----------------------------------------
+
+Code Block 4 ():
+DAY
+----------------------------------------
+
+Code Block 5 ():
+WEEK
+----------------------------------------
+
+Code Block 6 ():
+MONTH
+----------------------------------------
+
+Code Block 7 ():
+YEAR
+----------------------------------------
+
+Code Block 8 ():
+#[\AllowDynamicProperties]
+----------------------------------------
+
+Code Block 9 ():
+Command/Command
+----------------------------------------
+
+Code Block 10 ():
+Console/Shell
+----------------------------------------
+
+Code Block 11 ():
+Controller/Component
+----------------------------------------
+
+Code Block 12 ():
+Controller/Controller
+----------------------------------------
+
+Code Block 13 ():
+Mailer/Mailer
+----------------------------------------
+
+Code Block 14 ():
+View/Cell
+----------------------------------------
+
+Code Block 15 ():
+View/Helper
+----------------------------------------
+
+Code Block 16 ():
+View/View
+----------------------------------------
+
+Code Block 17 ():
+Auth
+----------------------------------------
+
+Code Block 18 ():
+Wincache
+----------------------------------------
+
+Code Block 19 ():
+combine()
+----------------------------------------
+
+Code Block 20 ():
+indexBy()
+----------------------------------------
+
+Code Block 21 ():
+groupBy()
+----------------------------------------
+
+Code Block 22 ():
+BaseCommand::__construct()
+----------------------------------------
+
+Code Block 23 ():
+ConsoleIntegrationTestTrait::useCommandRunner()
+----------------------------------------
+
+Code Block 24 ():
+Shell
+----------------------------------------
+
+Code Block 25 ():
+ConsoleOptionParser::addSubcommand()
+----------------------------------------
+
+Code Block 26 ():
+Shell
+----------------------------------------
+
+Code Block 27 ():
+Command
+----------------------------------------
+
+Code Block 28 ():
+Command::defaultName()
+----------------------------------------
+
+Code Block 29 ():
+BaseCommand
+----------------------------------------
+
+Code Block 30 ():
+Command.beforeExecute
+----------------------------------------
+
+Code Block 31 ():
+Command.afterExecute
+----------------------------------------
+
+Code Block 32 ():
+execute()
+----------------------------------------
+
+Code Block 33 ():
+Connection::prepare()
+----------------------------------------
+
+Code Block 34 ():
+Connection::execute()
+----------------------------------------
+
+Code Block 35 ():
+Connection::enableQueryLogging()
+----------------------------------------
+
+Code Block 36 ():
+$connection->getDriver()->setLogger()
+----------------------------------------
+
+Code Block 37 ():
+Controller::__construct()
+----------------------------------------
+
+Code Block 38 ():
+Controller
+----------------------------------------
+
+Code Block 39 ():
+__get()
+----------------------------------------
+
+Code Block 40 ():
+property_exists()
+----------------------------------------
+
+Code Block 41 ():
+Controller.shutdown
+----------------------------------------
+
+Code Block 42 ():
+shutdown
+----------------------------------------
+
+Code Block 43 ():
+afterFilter
+----------------------------------------
+
+Code Block 44 ():
+PaginatorComponent
+----------------------------------------
+
+Code Block 45 ():
+$this->paginate()
+----------------------------------------
+
+Code Block 46 ():
+Cake\Datasource\Paging\NumericPaginator
+----------------------------------------
+
+Code Block 47 ():
+RequestHandlerComponent
+----------------------------------------
+
+Code Block 48 ():
+SecurityComponent
+----------------------------------------
+
+Code Block 49 ():
+FormProtectionComponent
+----------------------------------------
+
+Code Block 50 ():
+HttpsEnforcerMiddleware
+----------------------------------------
+
+Code Block 51 ():
+Controller::paginate()
+----------------------------------------
+
+Code Block 52 ():
+contain
+----------------------------------------
+
+Code Block 53 ():
+$settings
+----------------------------------------
+
+Code Block 54 ():
+finder
+----------------------------------------
+
+Code Block 55 ():
+$this->paginate($this->Articles, ['finder' => 'published'])
+----------------------------------------
+
+Code Block 56 ():
+paginate()
+----------------------------------------
+
+Code Block 57 ():
+$query = $this->Articles->find()->where(['is_published' => true]); $this->paginate($query);
+----------------------------------------
+
+Code Block 58 ():
+getTypeName()
+----------------------------------------
+
+Code Block 59 ():
+get_debug_type()
+----------------------------------------
+
+Code Block 60 ():
+league/container
+----------------------------------------
+
+Code Block 61 ():
+4.x
+----------------------------------------
+
+Code Block 62 ():
+ServiceProvider
+----------------------------------------
+
+Code Block 63 ():
+deprecationWarning()
+----------------------------------------
+
+Code Block 64 ():
+$version
+----------------------------------------
+
+Code Block 65 ():
+App.uploadedFilesAsObjects
+----------------------------------------
+
+Code Block 66 ():
+ClassLoader
+----------------------------------------
+
+Code Block 67 ():
+DateTimeType
+----------------------------------------
+
+Code Block 68 ():
+DateType
+----------------------------------------
+
+Code Block 69 ():
+Date
+----------------------------------------
+
+Code Block 70 ():
+ChronosDate
+----------------------------------------
+
+Code Block 71 ():
+DateType::setLocaleFormat()
+----------------------------------------
+
+Code Block 72 ():
+Query
+----------------------------------------
+
+Code Block 73 ():
+\Closure
+----------------------------------------
+
+Code Block 74 ():
+callable
+----------------------------------------
+
+Code Block 75 ():
+Query::execute()
+----------------------------------------
+
+Code Block 76 ():
+Query::all()
+----------------------------------------
+
+Code Block 77 ():
+TableSchemaAwareInterface
+----------------------------------------
+
+Code Block 78 ():
+Driver::quote()
+----------------------------------------
+
+Code Block 79 ():
+Query::orderBy()
+----------------------------------------
+
+Code Block 80 ():
+Query::order()
+----------------------------------------
+
+Code Block 81 ():
+Query::groupBy()
+----------------------------------------
+
+Code Block 82 ():
+Query::group()
+----------------------------------------
+
+Code Block 83 ():
+SqlDialectTrait
+----------------------------------------
+
+Code Block 84 ():
+Driver
+----------------------------------------
+
+Code Block 85 ():
+CaseExpression
+----------------------------------------
+
+Code Block 86 ():
+QueryExpression::case()
+----------------------------------------
+
+Code Block 87 ():
+CaseStatementExpression
+----------------------------------------
+
+Code Block 88 ():
+Connection::connect()
+----------------------------------------
+
+Code Block 89 ():
+$connection->getDriver()->connect()
+----------------------------------------
+
+Code Block 90 ():
+Connection::disconnect()
+----------------------------------------
+
+Code Block 91 ():
+$connection->getDriver()->disconnect()
+----------------------------------------
+
+Code Block 92 ():
+cake.database.queries
+----------------------------------------
+
+Code Block 93 ():
+queriesLog
+----------------------------------------
+
+Code Block 94 ():
+getAccessible()
+----------------------------------------
+
+Code Block 95 ():
+EntityInterface
+----------------------------------------
+
+Code Block 96 ():
+aliasField()
+----------------------------------------
+
+Code Block 97 ():
+RepositoryInterface
+----------------------------------------
+
+Code Block 98 ():
+ArrayAccess
+----------------------------------------
+
+Code Block 99 ():
+TypeError
+----------------------------------------
+
+Code Block 100 ():
+$event->setResult()
+----------------------------------------
+
+Code Block 101 ():
+ErrorHandler
+----------------------------------------
+
+Code Block 102 ():
+ConsoleErrorHandler
+----------------------------------------
+
+Code Block 103 ():
+ExceptionRenderer
+----------------------------------------
+
+Code Block 104 ():
+WebExceptionRenderer
+----------------------------------------
+
+Code Block 105 ():
+ErrorLoggerInterface::log()
+----------------------------------------
+
+Code Block 106 ():
+ErrorLoggerInterface::logException()
+----------------------------------------
+
+Code Block 107 ():
+ErrorLoggerInterface::logMessage()
+----------------------------------------
+
+Code Block 108 ():
+ErrorLoggerInterface::logError()
+----------------------------------------
+
+Code Block 109 ():
+Filesystem
+----------------------------------------
+
+Code Block 110 ():
+ServerRequest
+----------------------------------------
+
+Code Block 111 ():
+files
+----------------------------------------
+
+Code Block 112 ():
+files
+----------------------------------------
+
+Code Block 113 ():
+UploadedFileInterfaces
+----------------------------------------
+
+Code Block 114 ():
+FrozenDate
+----------------------------------------
+
+Code Block 115 ():
+Date
+----------------------------------------
+
+Code Block 116 ():
+FrozenTime
+----------------------------------------
+
+Code Block 117 ():
+DateTime
+----------------------------------------
+
+Code Block 118 ():
+Time
+----------------------------------------
+
+Code Block 119 ():
+Cake\Chronos\ChronosTime
+----------------------------------------
+
+Code Block 120 ():
+Date
+----------------------------------------
+
+Code Block 121 ():
+DateTimeInterface
+----------------------------------------
+
+Code Block 122 ():
+DateTime
+----------------------------------------
+
+Code Block 123 ():
+Date::parseDateTime()
+----------------------------------------
+
+Code Block 124 ():
+Date::parseTime()
+----------------------------------------
+
+Code Block 125 ():
+Date::setToStringFormat()
+----------------------------------------
+
+Code Block 126 ():
+Date::setJsonEncodeFormat()
+----------------------------------------
+
+Code Block 127 ():
+Date::i18nFormat()
+----------------------------------------
+
+Code Block 128 ():
+Date::nice()
+----------------------------------------
+
+Code Block 129 ():
+FooBar/Awesome
+----------------------------------------
+
+Code Block 130 ():
+foo_bar_awesome.po
+----------------------------------------
+
+Code Block 131 ():
+awesome.po
+----------------------------------------
+
+Code Block 132 ():
+Awesome
+----------------------------------------
+
+Code Block 133 ():
+null
+----------------------------------------
+
+Code Block 134 ():
+false
+----------------------------------------
+
+Code Block 135 ():
+'scopes' => false
+----------------------------------------
+
+Code Block 136 ():
+'scopes' => null
+----------------------------------------
+
+Code Block 137 ():
+Email
+----------------------------------------
+
+Code Block 138 ():
+cake.mailer
+----------------------------------------
+
+Code Block 139 ():
+email
+----------------------------------------
+
+Code Block 140 ():
+EntityTrait::has()
+----------------------------------------
+
+Code Block 141 ():
+true
+----------------------------------------
+
+Code Block 142 ():
+null
+----------------------------------------
+
+Code Block 143 ():
+false
+----------------------------------------
+
+Code Block 144 ():
+EntityTrait::extractOriginal()
+----------------------------------------
+
+Code Block 145 ():
+extractOriginalChanged()
+----------------------------------------
+
+Code Block 146 ():
+TranslateBehavior
+----------------------------------------
+
+Code Block 147 ():
+ShadowTable
+----------------------------------------
+
+Code Block 148 ():
+Eav
+----------------------------------------
+
+Code Block 149 ():
+allowMultipleNulls
+----------------------------------------
+
+Code Block 150 ():
+isUnique
+----------------------------------------
+
+Code Block 151 ():
+Table::query()
+----------------------------------------
+
+Code Block 152 ():
+Table::updateQuery()
+----------------------------------------
+
+Code Block 153 ():
+Table::selectQuery()
+----------------------------------------
+
+Code Block 154 ():
+Table::insertQuery()
+----------------------------------------
+
+Code Block 155 ():
+Table::deleteQuery()
+----------------------------------------
+
+Code Block 156 ():
+SelectQuery
+----------------------------------------
+
+Code Block 157 ():
+InsertQuery
+----------------------------------------
+
+Code Block 158 ():
+UpdateQuery
+----------------------------------------
+
+Code Block 159 ():
+DeleteQuery
+----------------------------------------
+
+Code Block 160 ():
+Table::_initializeSchema()
+----------------------------------------
+
+Code Block 161 ():
+$this->getSchema()
+----------------------------------------
+
+Code Block 162 ():
+initialize()
+----------------------------------------
+
+Code Block 163 ():
+SaveOptionsBuilder
+----------------------------------------
+
+Code Block 164 ():
+extract()
+----------------------------------------
+
+Code Block 165 (shiki):
+$results = $articles->find()
+    ->disableBufferedResults()
+    ->all();
+----------------------------------------
+
+Code Block 166 ():
+$results = $articles->find()
+    ->disableBufferedResults()
+    ->all();
+----------------------------------------
+
+Code Block 167 (shiki):
+$results = $articles->find()
+    ->disableHydration()
+    ->all();
+----------------------------------------
+
+Code Block 168 ():
+$results = $articles->find()
+    ->disableHydration()
+    ->all();
+----------------------------------------
+
+Code Block 169 ():
+connect()
+----------------------------------------
+
+Code Block 170 ():
+prefix()
+----------------------------------------
+
+Code Block 171 ():
+scope()
+----------------------------------------
+
+Code Block 172 ():
+plugin()
+----------------------------------------
+
+Code Block 173 ():
+Router
+----------------------------------------
+
+Code Block 174 ():
+RouteBuilder
+----------------------------------------
+
+Code Block 175 ():
+RedirectException
+----------------------------------------
+
+Code Block 176 ():
+\Cake\Http\Exception\RedirectException
+----------------------------------------
+
+Code Block 177 ():
+TestSuite
+----------------------------------------
+
+Code Block 178 ():
+TestListenerTrait
+----------------------------------------
+
+Code Block 179 ():
+IntegrationTestTrait::configRequest()
+----------------------------------------
+
+Code Block 180 ():
+Validation::isEmpty()
+----------------------------------------
+
+Code Block 181 ():
+ServerRequest
+----------------------------------------
+
+Code Block 182 ():
+The provided value is invalid
+----------------------------------------
+
+Code Block 183 ():
+The provided value must be greater than or equal to `5`.
+----------------------------------------
+
+Code Block 184 ():
+ViewBuilder
+----------------------------------------
+
+Code Block 185 ():
+NumberHelper
+----------------------------------------
+
+Code Block 186 ():
+TextHelper
+----------------------------------------
+
+Code Block 187 ():
+engine
+----------------------------------------
+
+Code Block 188 ():
+ViewBuilder::setHelpers()
+----------------------------------------
+
+Code Block 189 ():
+$merge
+----------------------------------------
+
+Code Block 190 ():
+ViewBuilder::addHelpers()
+----------------------------------------
+
+Code Block 191 ():
+View::initialize()
+----------------------------------------
+
+Code Block 192 ():
+addHelper()
+----------------------------------------
+
+Code Block 193 ():
+loadHelper()
+----------------------------------------
+
+Code Block 194 ():
+View\Widget\FileWidget
+----------------------------------------
+
+Code Block 195 ():
+ServerRequest
+----------------------------------------
+
+Code Block 196 ():
+Validation
+----------------------------------------
+
+Code Block 197 ():
+FormHelper
+----------------------------------------
+
+Code Block 198 ():
+autocomplete=off
+----------------------------------------
+
+Code Block 199 ():
+Query::order()
+----------------------------------------
+
+Code Block 200 ():
+Query::orderBy()
+----------------------------------------
+
+Code Block 201 ():
+Connection
+----------------------------------------
+
+Code Block 202 ():
+Query::group()
+----------------------------------------
+
+Code Block 203 ():
+Query::groupBy()
+----------------------------------------
+
+Code Block 204 ():
+Connection
+----------------------------------------
+
+Code Block 205 ():
+Table::find()
+----------------------------------------
+
+Code Block 206 ():
+find('all', ['conditions' => $array])
+----------------------------------------
+
+Code Block 207 ():
+find('all', conditions: $array)
+----------------------------------------
+
+Code Block 208 ():
+find('list', ['valueField' => 'name'])
+----------------------------------------
+
+Code Block 209 ():
+find('list', valueField: 'name')
+----------------------------------------
+
+Code Block 210 ():
+find(type: 'list', valueField: 'name', conditions: $array)
+----------------------------------------
+
+Code Block 211 ():
+assert()
+----------------------------------------
+
+Code Block 212 ():
+assert()
+----------------------------------------
+
+Code Block 213 ():
+unique()
+----------------------------------------
+
+Code Block 214 ():
+reject()
+----------------------------------------
+
+Code Block 215 ():
+filter()
+----------------------------------------
+
+Code Block 216 ():
+services()
+----------------------------------------
+
+Code Block 217 ():
+PluginInterface
+----------------------------------------
+
+Code Block 218 ():
+PluginCollection::addFromConfig()
+----------------------------------------
+
+Code Block 219 ():
+ConnectionManager
+----------------------------------------
+
+Code Block 220 ():
+read
+----------------------------------------
+
+Code Block 221 ():
+write
+----------------------------------------
+
+Code Block 222 ():
+Query::all()
+----------------------------------------
+
+Code Block 223 ():
+Query::comment()
+----------------------------------------
+
+Code Block 224 ():
+EnumType
+----------------------------------------
+
+Code Block 225 ():
+getMaxAliasLength()
+----------------------------------------
+
+Code Block 226 ():
+getConnectionRetries()
+----------------------------------------
+
+Code Block 227 ():
+DriverInterface
+----------------------------------------
+
+Code Block 228 ():
+cakephp/http
+----------------------------------------
+
+Code Block 229 ():
+CookieCollection::__get()
+----------------------------------------
+
+Code Block 230 ():
+CookieCollection::__isset()
+----------------------------------------
+
+Code Block 231 (shiki):
+$entity->get();
+$entity->has();
+$entity->getOriginal();
+isset($entity->attribute);
+$entity->attribute;
+----------------------------------------
+
+Code Block 232 ():
+$entity->get();
+$entity->has();
+$entity->getOriginal();
+isset($entity->attribute);
+$entity->attribute;
+----------------------------------------
+
+Code Block 233 ():
+array_key_exists
+----------------------------------------
+
+Code Block 234 (shiki):
+public function findByCategoryOrUser(SelectQuery $query, array $options): SelectQuery
+{
+    if (isset($options['categoryId'])) {
+        $query->where(['category_id' => $options['categoryId']]);
+    }
+    if (isset($options['userId'])) {
+        $query->where(['user_id' => $options['userId']]);
+    }
+
+    return $query;
+}
+----------------------------------------
+
+Code Block 235 ():
+public function findByCategoryOrUser(SelectQuery $query, array $options): SelectQuery
+{
+    if (isset($options['categoryId'])) {
+        $query->where(['category_id' => $options['categoryId']]);
+    }
+    if (isset($options['userId'])) {
+        $query->where(['user_id' => $options['userId']]);
+    }
+
+    return $query;
+}
+----------------------------------------
+
+Code Block 236 (shiki):
+public function findByCategoryOrUser(SelectQuery $query, ?int $categoryId = null, ?int $userId = null): SelectQuery
+{
+    if ($categoryId) {
+        $query->where(['category_id' => $categoryId]);
+    }
+    if ($userId) {
+        $query->where(['user_id' => $userId]);
+    }
+
+    return $query;
+}
+----------------------------------------
+
+Code Block 237 ():
+public function findByCategoryOrUser(SelectQuery $query, ?int $categoryId = null, ?int $userId = null): SelectQuery
+{
+    if ($categoryId) {
+        $query->where(['category_id' => $categoryId]);
+    }
+    if ($userId) {
+        $query->where(['user_id' => $userId]);
+    }
+
+    return $query;
+}
+----------------------------------------
+
+Code Block 238 ():
+find('byCategoryOrUser', userId: $somevar)
+----------------------------------------
+
+Code Block 239 ():
+find('byCategoryOrUser', userId: $somevar, conditions: ['enabled' => true])
+----------------------------------------
+
+Code Block 240 ():
+RepositoryInterface::get()
+----------------------------------------
+
+Code Block 241 (shiki):
+public function view(int $id)
+{
+    $author = $this->Authors->get($id, [
+        'contain' => ['Books'],
+        'finder' => 'latest',
+    ]);
+}
+----------------------------------------
+
+Code Block 242 ():
+public function view(int $id)
+{
+    $author = $this->Authors->get($id, [
+        'contain' => ['Books'],
+        'finder' => 'latest',
+    ]);
+}
+----------------------------------------
+
+Code Block 243 (shiki):
+public function view(int $id)
+{
+    $author = $this->Authors->get($id, contain: ['Books'], finder: 'latest');
+}
+----------------------------------------
+
+Code Block 244 ():
+public function view(int $id)
+{
+    $author = $this->Authors->get($id, contain: ['Books'], finder: 'latest');
+}
+----------------------------------------
+
+Code Block 245 ():
+IntegrationTestTrait::requestAsJson()
+----------------------------------------
+
+Code Block 246 ():
+composer.json
+----------------------------------------
+
+Code Block 247 ():
+composer dumpautoload
+----------------------------------------
+

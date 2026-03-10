@@ -1,0 +1,968 @@
+URL: https://book.cakephp.org/5.x/controllers/middleware/rate-limit.html
+Title: Rate Limiting Middleware | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Rate Limiting Middleware ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Basic Usage ​
+  - Constants ​
+  - Configuration Options ​
+  - Identifier Types ​
+  - Custom Identifiers ​
+  - Rate Limiting Strategies ​
+  - Named Limiters ​
+  - Advanced Usage ​
+  - Rate Limit Headers ​
+  - Multiple Rate Limiters ​
+  - Cache Configuration ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Identifier Constants ​
+  - Strategy Constants ​
+  - IP Address ​
+  - User-based ​
+  - Route-based ​
+  - API Key / Token ​
+  - Sliding Window ​
+  - Fixed Window ​
+  - Token Bucket ​
+  - Custom Strategy ​
+  - Skip Rate Limiting ​
+  - Request Cost ​
+  - Dynamic Limits ​
+  - Custom Key Generation ​
+  - Resetting Rate Limits ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Added in version 5.3
+
+The RateLimitMiddleware provides configurable rate limiting for your application to protect against abuse and ensure fair usage of resources.
+
+To use rate limiting in your application, add the middleware to your middleware queue:
+
+When a client exceeds the rate limit, they will receive a 429 Too Many Requests response.
+
+The middleware provides constants for common identifier and strategy values:
+
+The middleware accepts the following configuration options:
+
+The default identifier type tracks requests by IP address:
+
+The middleware automatically handles proxy headers. You can configure which headers to check using the ipHeader option:
+
+Track requests per authenticated user:
+
+This requires authentication middleware to be loaded before rate limiting. The middleware checks for users implementing Authentication\IdentityInterface.
+
+Apply different limits to different routes:
+
+This creates separate limits for each controller/action combination.
+
+Track requests by API key or token:
+
+By default, the middleware looks for tokens in the Authorization and X-API-Key headers. You can customize which headers to check:
+
+You can create custom identifiers using a callback:
+
+The default strategy that provides smooth rate limiting by continuously adjusting the window based on request timing:
+
+Resets the counter at fixed intervals:
+
+Allows for burst capacity while maintaining an average rate:
+
+You can use a custom rate limiter strategy by specifying the strategyClass option. Your class must implement Cake\Http\RateLimiter\RateLimiterInterface:
+
+The strategyClass option takes precedence over the strategy option.
+
+For complex applications, you can define named limiter configurations and resolve them dynamically per request:
+
+Skip rate limiting for certain requests:
+
+Assign different costs to different types of requests:
+
+Set different limits for different users or plans:
+
+Customize how cache keys are generated:
+
+To programmatically reset a rate limit for a specific identifier, use the reset() method on the rate limiter strategy directly. This is useful for:
+
+NOTE
+
+The identifier format used internally is 'rate_limit_' . hash('xxh3', $value) where $value is the raw identifier (IP address, user ID, etc.).
+
+When enabled, the middleware adds the following headers to responses:
+
+When a client exceeds the limit, a Retry-After header is also included (controlled by the includeRetryAfter option).
+
+You can apply multiple rate limiters with different configurations:
+
+The rate limiter stores its data in cache. Make sure you have a persistent cache configured:
+
+Then use it in the middleware:
+
+WARNING
+
+The File cache engine is not recommended for production use with rate limiting as it may not handle concurrent requests properly.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+RateLimitMiddleware
+----------------------------------------
+
+Code Block 2 (shiki):
+// In src/Application.php
+use Cake\Http\Middleware\RateLimitMiddleware;
+
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $middlewareQueue
+        // ... other middleware
+        ->add(new RateLimitMiddleware([
+            'limit' => 60,        // 60 requests
+            'window' => 60,       // per 60 seconds
+            'identifier' => RateLimitMiddleware::IDENTIFIER_IP,
+        ]));
+
+    return $middlewareQueue;
+}
+----------------------------------------
+
+Code Block 3 ():
+// In src/Application.php
+use Cake\Http\Middleware\RateLimitMiddleware;
+
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $middlewareQueue
+        // ... other middleware
+        ->add(new RateLimitMiddleware([
+            'limit' => 60,        // 60 requests
+            'window' => 60,       // per 60 seconds
+            'identifier' => RateLimitMiddleware::IDENTIFIER_IP,
+        ]));
+
+    return $middlewareQueue;
+}
+----------------------------------------
+
+Code Block 4 ():
+429 Too Many Requests
+----------------------------------------
+
+Code Block 5 ():
+RateLimitMiddleware::IDENTIFIER_IP
+----------------------------------------
+
+Code Block 6 ():
+RateLimitMiddleware::IDENTIFIER_USER
+----------------------------------------
+
+Code Block 7 ():
+RateLimitMiddleware::IDENTIFIER_ROUTE
+----------------------------------------
+
+Code Block 8 ():
+RateLimitMiddleware::IDENTIFIER_API_KEY
+----------------------------------------
+
+Code Block 9 ():
+RateLimitMiddleware::IDENTIFIER_TOKEN
+----------------------------------------
+
+Code Block 10 ():
+RateLimitMiddleware::STRATEGY_SLIDING_WINDOW
+----------------------------------------
+
+Code Block 11 ():
+RateLimitMiddleware::STRATEGY_FIXED_WINDOW
+----------------------------------------
+
+Code Block 12 ():
+RateLimitMiddleware::STRATEGY_TOKEN_BUCKET
+----------------------------------------
+
+Code Block 13 ():
+IDENTIFIER_IP
+----------------------------------------
+
+Code Block 14 ():
+STRATEGY_SLIDING_WINDOW
+----------------------------------------
+
+Code Block 15 ():
+strategy
+----------------------------------------
+
+Code Block 16 ():
+['Authorization', 'X-API-Key']
+----------------------------------------
+
+Code Block 17 (shiki):
+use Cake\Http\Middleware\RateLimitMiddleware;
+
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_IP,
+    'limit' => 100,
+    'window' => 60,
+])
+----------------------------------------
+
+Code Block 18 ():
+use Cake\Http\Middleware\RateLimitMiddleware;
+
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_IP,
+    'limit' => 100,
+    'window' => 60,
+])
+----------------------------------------
+
+Code Block 19 ():
+ipHeader
+----------------------------------------
+
+Code Block 20 (shiki):
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_IP,
+    'ipHeader' => ['CF-Connecting-IP', 'X-Forwarded-For'],
+])
+----------------------------------------
+
+Code Block 21 ():
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_IP,
+    'ipHeader' => ['CF-Connecting-IP', 'X-Forwarded-For'],
+])
+----------------------------------------
+
+Code Block 22 (shiki):
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_USER,
+    'limit' => 1000,
+    'window' => 3600, // 1 hour
+])
+----------------------------------------
+
+Code Block 23 ():
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_USER,
+    'limit' => 1000,
+    'window' => 3600, // 1 hour
+])
+----------------------------------------
+
+Code Block 24 ():
+Authentication\IdentityInterface
+----------------------------------------
+
+Code Block 25 (shiki):
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_ROUTE,
+    'limit' => 10,
+    'window' => 60,
+])
+----------------------------------------
+
+Code Block 26 ():
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_ROUTE,
+    'limit' => 10,
+    'window' => 60,
+])
+----------------------------------------
+
+Code Block 27 (shiki):
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_API_KEY,
+    'limit' => 5000,
+    'window' => 3600,
+])
+----------------------------------------
+
+Code Block 28 ():
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_API_KEY,
+    'limit' => 5000,
+    'window' => 3600,
+])
+----------------------------------------
+
+Code Block 29 ():
+Authorization
+----------------------------------------
+
+Code Block 30 ():
+X-API-Key
+----------------------------------------
+
+Code Block 31 (shiki):
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_TOKEN,
+    'tokenHeaders' => ['Authorization', 'X-API-Key', 'X-Auth-Token'],
+])
+----------------------------------------
+
+Code Block 32 ():
+new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_TOKEN,
+    'tokenHeaders' => ['Authorization', 'X-API-Key', 'X-Auth-Token'],
+])
+----------------------------------------
+
+Code Block 33 (shiki):
+new RateLimitMiddleware([
+    'identifierCallback' => function ($request) {
+        // Custom logic to identify the client
+        $tenant = $request->getHeader('X-Tenant-ID');
+        return 'tenant_' . $tenant[0];
+    },
+])
+----------------------------------------
+
+Code Block 34 ():
+new RateLimitMiddleware([
+    'identifierCallback' => function ($request) {
+        // Custom logic to identify the client
+        $tenant = $request->getHeader('X-Tenant-ID');
+        return 'tenant_' . $tenant[0];
+    },
+])
+----------------------------------------
+
+Code Block 35 (shiki):
+new RateLimitMiddleware([
+    'strategy' => RateLimitMiddleware::STRATEGY_SLIDING_WINDOW,
+])
+----------------------------------------
+
+Code Block 36 ():
+new RateLimitMiddleware([
+    'strategy' => RateLimitMiddleware::STRATEGY_SLIDING_WINDOW,
+])
+----------------------------------------
+
+Code Block 37 (shiki):
+new RateLimitMiddleware([
+    'strategy' => RateLimitMiddleware::STRATEGY_FIXED_WINDOW,
+])
+----------------------------------------
+
+Code Block 38 ():
+new RateLimitMiddleware([
+    'strategy' => RateLimitMiddleware::STRATEGY_FIXED_WINDOW,
+])
+----------------------------------------
+
+Code Block 39 (shiki):
+new RateLimitMiddleware([
+    'strategy' => RateLimitMiddleware::STRATEGY_TOKEN_BUCKET,
+    'limit' => 100,    // bucket capacity
+    'window' => 60,    // refill rate
+])
+----------------------------------------
+
+Code Block 40 ():
+new RateLimitMiddleware([
+    'strategy' => RateLimitMiddleware::STRATEGY_TOKEN_BUCKET,
+    'limit' => 100,    // bucket capacity
+    'window' => 60,    // refill rate
+])
+----------------------------------------
+
+Code Block 41 ():
+strategyClass
+----------------------------------------
+
+Code Block 42 ():
+Cake\Http\RateLimiter\RateLimiterInterface
+----------------------------------------
+
+Code Block 43 (shiki):
+new RateLimitMiddleware([
+    'strategyClass' => App\RateLimiter\MyCustomRateLimiter::class,
+])
+----------------------------------------
+
+Code Block 44 ():
+new RateLimitMiddleware([
+    'strategyClass' => App\RateLimiter\MyCustomRateLimiter::class,
+])
+----------------------------------------
+
+Code Block 45 ():
+strategyClass
+----------------------------------------
+
+Code Block 46 ():
+strategy
+----------------------------------------
+
+Code Block 47 (shiki):
+new RateLimitMiddleware([
+    'limiters' => [
+        'default' => [
+            'limit' => 60,
+            'window' => 60,
+        ],
+        'api' => [
+            'limit' => 1000,
+            'window' => 3600,
+        ],
+        'premium' => [
+            'limit' => 10000,
+            'window' => 3600,
+        ],
+    ],
+    'limiterResolver' => function ($request) {
+        $user = $request->getAttribute('identity');
+        if ($user && $user->plan === 'premium') {
+            return 'premium';
+        }
+        if (str_starts_with($request->getPath(), '/api/')) {
+            return 'api';
+        }
+        return 'default';
+    },
+])
+----------------------------------------
+
+Code Block 48 ():
+new RateLimitMiddleware([
+    'limiters' => [
+        'default' => [
+            'limit' => 60,
+            'window' => 60,
+        ],
+        'api' => [
+            'limit' => 1000,
+            'window' => 3600,
+        ],
+        'premium' => [
+            'limit' => 10000,
+            'window' => 3600,
+        ],
+    ],
+    'limiterResolver' => function ($request) {
+        $user = $request->getAttribute('identity');
+        if ($user && $user->plan === 'premium') {
+            return 'premium';
+        }
+        if (str_starts_with($request->getPath(), '/api/')) {
+            return 'api';
+        }
+        return 'default';
+    },
+])
+----------------------------------------
+
+Code Block 49 (shiki):
+new RateLimitMiddleware([
+    'skipCheck' => function ($request) {
+        // Skip rate limiting for health checks
+        return $request->getParam('action') === 'health';
+    },
+])
+----------------------------------------
+
+Code Block 50 ():
+new RateLimitMiddleware([
+    'skipCheck' => function ($request) {
+        // Skip rate limiting for health checks
+        return $request->getParam('action') === 'health';
+    },
+])
+----------------------------------------
+
+Code Block 51 (shiki):
+new RateLimitMiddleware([
+    'costCallback' => function ($request) {
+        // POST requests cost 5x more
+        return $request->getMethod() === 'POST' ? 5 : 1;
+    },
+])
+----------------------------------------
+
+Code Block 52 ():
+new RateLimitMiddleware([
+    'costCallback' => function ($request) {
+        // POST requests cost 5x more
+        return $request->getMethod() === 'POST' ? 5 : 1;
+    },
+])
+----------------------------------------
+
+Code Block 53 (shiki):
+new RateLimitMiddleware([
+    'limitCallback' => function ($request, $identifier) {
+        $user = $request->getAttribute('identity');
+        if ($user && $user->plan === 'premium') {
+            return 10000; // Premium users get higher limit
+        }
+        return 100; // Free tier limit
+    },
+])
+----------------------------------------
+
+Code Block 54 ():
+new RateLimitMiddleware([
+    'limitCallback' => function ($request, $identifier) {
+        $user = $request->getAttribute('identity');
+        if ($user && $user->plan === 'premium') {
+            return 10000; // Premium users get higher limit
+        }
+        return 100; // Free tier limit
+    },
+])
+----------------------------------------
+
+Code Block 55 (shiki):
+new RateLimitMiddleware([
+    'keyGenerator' => function ($request, $identifier) {
+        // Include the HTTP method in the key for per-method limits
+        return $identifier . '_' . $request->getMethod();
+    },
+])
+----------------------------------------
+
+Code Block 56 ():
+new RateLimitMiddleware([
+    'keyGenerator' => function ($request, $identifier) {
+        // Include the HTTP method in the key for per-method limits
+        return $identifier . '_' . $request->getMethod();
+    },
+])
+----------------------------------------
+
+Code Block 57 ():
+reset()
+----------------------------------------
+
+Code Block 58 (shiki):
+use Cake\Cache\Cache;
+use Cake\Http\RateLimit\SlidingWindowRateLimiter;
+
+// Create a rate limiter with the same cache config as your middleware
+$limiter = new SlidingWindowRateLimiter(Cache::pool('default'));
+
+// Reset using the hashed identifier format
+$identifier = 'rate_limit_' . hash('xxh3', $userId);
+$limiter->reset($identifier);
+----------------------------------------
+
+Code Block 59 ():
+use Cake\Cache\Cache;
+use Cake\Http\RateLimit\SlidingWindowRateLimiter;
+
+// Create a rate limiter with the same cache config as your middleware
+$limiter = new SlidingWindowRateLimiter(Cache::pool('default'));
+
+// Reset using the hashed identifier format
+$identifier = 'rate_limit_' . hash('xxh3', $userId);
+$limiter->reset($identifier);
+----------------------------------------
+
+Code Block 60 ():
+'rate_limit_' . hash('xxh3', $value)
+----------------------------------------
+
+Code Block 61 ():
+$value
+----------------------------------------
+
+Code Block 62 ():
+X-RateLimit-Limit
+----------------------------------------
+
+Code Block 63 ():
+X-RateLimit-Remaining
+----------------------------------------
+
+Code Block 64 ():
+X-RateLimit-Reset
+----------------------------------------
+
+Code Block 65 ():
+Retry-After
+----------------------------------------
+
+Code Block 66 ():
+includeRetryAfter
+----------------------------------------
+
+Code Block 67 (shiki):
+// Strict limit for login attempts
+$middlewareQueue->add(new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_IP,
+    'limit' => 5,
+    'window' => 900, // 15 minutes
+    'skipCheck' => function ($request) {
+        return $request->getParam('action') !== 'login';
+    },
+]));
+
+// General API rate limit
+$middlewareQueue->add(new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_API_KEY,
+    'limit' => 1000,
+    'window' => 3600,
+]));
+----------------------------------------
+
+Code Block 68 ():
+// Strict limit for login attempts
+$middlewareQueue->add(new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_IP,
+    'limit' => 5,
+    'window' => 900, // 15 minutes
+    'skipCheck' => function ($request) {
+        return $request->getParam('action') !== 'login';
+    },
+]));
+
+// General API rate limit
+$middlewareQueue->add(new RateLimitMiddleware([
+    'identifier' => RateLimitMiddleware::IDENTIFIER_API_KEY,
+    'limit' => 1000,
+    'window' => 3600,
+]));
+----------------------------------------
+
+Code Block 69 (shiki):
+// In config/app.php
+'Cache' => [
+    'rate_limit' => [
+        'className' => 'Redis',
+        'prefix' => 'rate_limit_',
+        'duration' => '+1 hour',
+    ],
+],
+----------------------------------------
+
+Code Block 70 ():
+// In config/app.php
+'Cache' => [
+    'rate_limit' => [
+        'className' => 'Redis',
+        'prefix' => 'rate_limit_',
+        'duration' => '+1 hour',
+    ],
+],
+----------------------------------------
+
+Code Block 71 (shiki):
+new RateLimitMiddleware([
+    'cache' => 'rate_limit',
+])
+----------------------------------------
+
+Code Block 72 ():
+new RateLimitMiddleware([
+    'cache' => 'rate_limit',
+])
+----------------------------------------
+
+Code Block 73 ():
+File
+----------------------------------------
+

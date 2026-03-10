@@ -1,0 +1,997 @@
+URL: https://book.cakephp.org/5.x/console-commands/option-parsers.html
+Title: Option Parsers | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Option Parsers ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Defining an OptionParser ​
+  - Using Arguments ​
+  - Using Options ​
+  - Getting Help from Shells ​
+  - Customizing Help Output ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Adding Multiple Arguments ​
+  - Validating Arguments ​
+  - Adding Multiple Options ​
+  - Validating Options ​
+  - Using Boolean Options ​
+  - Building a ConsoleOptionParser from an Array ​
+  - Merging Option Parsers ​
+  - Getting Help as XML ​
+  - Set the Description ​
+  - Set the Epilog ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Console\ConsoleOptionParser
+
+Console applications typically take options and arguments as the primary way to get information from the terminal into your commands.
+
+Commands and Shells provide a buildOptionParser($parser) hook method that you can use to define the options and arguments for your commands:
+
+Shell classes use the getOptionParser() hook method to define their option parser:
+
+method Cake\Console\ConsoleOptionParser::addArgument(string $name, array $params = []): static
+
+Positional arguments are frequently used in command line tools, and ConsoleOptionParser allows you to define positional arguments as well as make them required. You can add arguments one at a time with $parser->addArgument(); or multiple at once with $parser->addArguments();:
+
+You can use the following options when creating an argument:
+
+Arguments that have been marked as required will throw an exception when parsing the command if they have been omitted. So you don't have to handle that in your shell.
+
+Added in version 5.2.0
+
+The separator option was added.
+
+method Cake\Console\ConsoleOptionParser::addArguments(array $args): static
+
+If you have an array with multiple arguments you can use $parser->addArguments() to add multiple arguments at once.
+
+As with all the builder methods on ConsoleOptionParser, addArguments can be used as part of a fluent method chain.
+
+When creating positional arguments, you can use the required flag, to indicate that an argument must be present when a shell is called. Additionally, you can use choices to force an argument to be from a list of valid choices:
+
+The above will create an argument that is required and has validation on the input. If the argument is either missing, or has an incorrect value an exception will be raised and the shell will be stopped.
+
+method Cake\Console\ConsoleOptionParser::addOption(string $name, array $options = []): static
+
+Options or flags are used in command line tools to provide unordered key/value arguments for your commands. Options can define both verbose and short aliases. They can accept a value (e.g --connection=default) or be boolean options (e.g --verbose). Options are defined with the addOption() method:
+
+The above would allow you to use either cake myshell --connection=other, cake myshell --connection other, or cake myshell -c other when invoking the shell.
+
+Boolean switches do not accept or consume values, and their presence just enables them in the parsed parameters:
+
+This option when used like cake mycommand --no-commit something would have a value of true, and 'something' would be a treated as a positional argument.
+
+When creating options you can use the following options to define the behavior of the option:
+
+Added in version 5.2.0
+
+The separator option was added.
+
+method Cake\Console\ConsoleOptionParser::addOptions(array $options): static
+
+If you have an array with multiple options you can use $parser->addOptions() to add multiple options at once.
+
+As with all the builder methods on ConsoleOptionParser, addOptions can be used as part of a fluent method chain.
+
+Options can be provided with a set of choices much like positional arguments can be. When an option has defined choices, those are the only valid choices for an option. All other values will raise an InvalidArgumentException:
+
+Options can be defined as boolean options, which are useful when you need to create some flag options. Like options with defaults, boolean options always include themselves into the parsed parameters. When the flags are present they are set to true, when they are absent they are set to false:
+
+The following option would always have a value in the parsed parameter. When not included its default value would be false, and when defined it will be true.
+
+method Cake\Console\ConsoleOptionParser::buildFromArray($spec): static
+
+Option parsers can also be defined as arrays. Within the array, you can define keys for arguments, options, description and epilog. The values for arguments, and options, should follow the format that Cake\Console\ConsoleOptionParser::addArguments() and Cake\Console\ConsoleOptionParser::addOptions() use. You can also use buildFromArray on its own, to build an option parser:
+
+method Cake\Console\ConsoleOptionParser::merge(ConsoleOptionParser $spec): static
+
+When building a group command, you maybe want to combine several parsers for this:
+
+Note that the order of arguments for each parser must be the same, and that options must also be compatible for it work. So do not use keys for different things.
+
+By defining your options and arguments with the option parser CakePHP can automatically generate rudimentary help information and add a --help and -h to each of your commands. Using one of these options will allow you to see the generated help content:
+
+Would both generate the help for bake. You can also get help for nested commands:
+
+The above would get you the help specific to bake's model command.
+
+When building automated tools or development tools that need to interact with CakePHP shell commands, it's nice to have help available in a machine parse-able format. By providing the xml option when requesting help you can have help content returned as XML:
+
+The above would return an XML document with the generated help, options, and arguments for the selected shell. A sample XML document would look like:
+
+You can further enrich the generated help content by adding a description, and epilog.
+
+method Cake\Console\ConsoleOptionParser::setDescription(array|string $text): static
+
+The description displays above the argument and option information. By passing in either an array or a string, you can set the value of the description:
+
+method Cake\Console\ConsoleOptionParser::setEpilog(array|string $text): static
+
+Gets or sets the epilog for the option parser. The epilog is displayed after the argument and option information. By passing in either an array or a string, you can set the value of the epilog:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+buildOptionParser($parser)
+----------------------------------------
+
+Code Block 3 (shiki):
+protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+{
+    // Define your options and arguments.
+
+    // Return the completed parser
+    return $parser;
+}
+----------------------------------------
+
+Code Block 4 ():
+protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+{
+    // Define your options and arguments.
+
+    // Return the completed parser
+    return $parser;
+}
+----------------------------------------
+
+Code Block 5 ():
+getOptionParser()
+----------------------------------------
+
+Code Block 6 (shiki):
+public function getOptionParser()
+{
+    // Get an empty parser from the framework.
+    $parser = parent::getOptionParser();
+
+    // Define your options and arguments.
+
+    // Return the completed parser
+    return $parser;
+}
+----------------------------------------
+
+Code Block 7 ():
+public function getOptionParser()
+{
+    // Get an empty parser from the framework.
+    $parser = parent::getOptionParser();
+
+    // Define your options and arguments.
+
+    // Return the completed parser
+    return $parser;
+}
+----------------------------------------
+
+Code Block 8 ():
+method
+----------------------------------------
+
+Code Block 9 ():
+ConsoleOptionParser
+----------------------------------------
+
+Code Block 10 ():
+$parser->addArgument();
+----------------------------------------
+
+Code Block 11 ():
+$parser->addArguments();
+----------------------------------------
+
+Code Block 12 (shiki):
+$parser->addArgument('model', ['help' => 'The model to bake']);
+----------------------------------------
+
+Code Block 13 ():
+$parser->addArgument('model', ['help' => 'The model to bake']);
+----------------------------------------
+
+Code Block 14 ():
+help
+----------------------------------------
+
+Code Block 15 ():
+required
+----------------------------------------
+
+Code Block 16 ():
+index
+----------------------------------------
+
+Code Block 17 ():
+choices
+----------------------------------------
+
+Code Block 18 ():
+separator
+----------------------------------------
+
+Code Block 19 ():
+separator
+----------------------------------------
+
+Code Block 20 ():
+method
+----------------------------------------
+
+Code Block 21 ():
+$parser->addArguments()
+----------------------------------------
+
+Code Block 22 (shiki):
+$parser->addArguments([
+    'node' => ['help' => 'The node to create', 'required' => true],
+    'parent' => ['help' => 'The parent node', 'required' => true],
+]);
+----------------------------------------
+
+Code Block 23 ():
+$parser->addArguments([
+    'node' => ['help' => 'The node to create', 'required' => true],
+    'parent' => ['help' => 'The parent node', 'required' => true],
+]);
+----------------------------------------
+
+Code Block 24 ():
+required
+----------------------------------------
+
+Code Block 25 ():
+choices
+----------------------------------------
+
+Code Block 26 (shiki):
+$parser->addArgument('type', [
+    'help' => 'The type of node to interact with.',
+    'required' => true,
+    'choices' => ['aro', 'aco'],
+]);
+----------------------------------------
+
+Code Block 27 ():
+$parser->addArgument('type', [
+    'help' => 'The type of node to interact with.',
+    'required' => true,
+    'choices' => ['aro', 'aco'],
+]);
+----------------------------------------
+
+Code Block 28 ():
+method
+----------------------------------------
+
+Code Block 29 ():
+--connection=default
+----------------------------------------
+
+Code Block 30 ():
+--verbose
+----------------------------------------
+
+Code Block 31 ():
+addOption()
+----------------------------------------
+
+Code Block 32 (shiki):
+$parser->addOption('connection', [
+    'short' => 'c',
+    'help' => 'connection',
+    'default' => 'default',
+]);
+----------------------------------------
+
+Code Block 33 ():
+$parser->addOption('connection', [
+    'short' => 'c',
+    'help' => 'connection',
+    'default' => 'default',
+]);
+----------------------------------------
+
+Code Block 34 ():
+cake myshell --connection=other
+----------------------------------------
+
+Code Block 35 ():
+cake myshell --connection other
+----------------------------------------
+
+Code Block 36 ():
+cake myshell -c other
+----------------------------------------
+
+Code Block 37 (shiki):
+$parser->addOption('no-commit', ['boolean' => true]);
+----------------------------------------
+
+Code Block 38 ():
+$parser->addOption('no-commit', ['boolean' => true]);
+----------------------------------------
+
+Code Block 39 ():
+cake mycommand --no-commit something
+----------------------------------------
+
+Code Block 40 ():
+true
+----------------------------------------
+
+Code Block 41 ():
+short
+----------------------------------------
+
+Code Block 42 ():
+help
+----------------------------------------
+
+Code Block 43 ():
+default
+----------------------------------------
+
+Code Block 44 ():
+true
+----------------------------------------
+
+Code Block 45 ():
+boolean
+----------------------------------------
+
+Code Block 46 ():
+false
+----------------------------------------
+
+Code Block 47 ():
+multiple
+----------------------------------------
+
+Code Block 48 ():
+separator
+----------------------------------------
+
+Code Block 49 ():
+choices
+----------------------------------------
+
+Code Block 50 ():
+separator
+----------------------------------------
+
+Code Block 51 ():
+method
+----------------------------------------
+
+Code Block 52 ():
+$parser->addOptions()
+----------------------------------------
+
+Code Block 53 (shiki):
+$parser->addOptions([
+    'node' => ['short' => 'n', 'help' => 'The node to create'],
+    'parent' => ['short' => 'p', 'help' => 'The parent node'],
+]);
+----------------------------------------
+
+Code Block 54 ():
+$parser->addOptions([
+    'node' => ['short' => 'n', 'help' => 'The node to create'],
+    'parent' => ['short' => 'p', 'help' => 'The parent node'],
+]);
+----------------------------------------
+
+Code Block 55 ():
+InvalidArgumentException
+----------------------------------------
+
+Code Block 56 (shiki):
+$parser->addOption('accept', [
+    'help' => 'What version to accept.',
+    'choices' => ['working', 'theirs', 'mine'],
+]);
+----------------------------------------
+
+Code Block 57 ():
+$parser->addOption('accept', [
+    'help' => 'What version to accept.',
+    'choices' => ['working', 'theirs', 'mine'],
+]);
+----------------------------------------
+
+Code Block 58 ():
+true
+----------------------------------------
+
+Code Block 59 ():
+false
+----------------------------------------
+
+Code Block 60 (shiki):
+$parser->addOption('verbose', [
+    'help' => 'Enable verbose output.',
+    'boolean' => true,
+]);
+----------------------------------------
+
+Code Block 61 ():
+$parser->addOption('verbose', [
+    'help' => 'Enable verbose output.',
+    'boolean' => true,
+]);
+----------------------------------------
+
+Code Block 62 ():
+false
+----------------------------------------
+
+Code Block 63 ():
+true
+----------------------------------------
+
+Code Block 64 ():
+method
+----------------------------------------
+
+Code Block 65 ():
+arguments
+----------------------------------------
+
+Code Block 66 ():
+options
+----------------------------------------
+
+Code Block 67 ():
+description
+----------------------------------------
+
+Code Block 68 ():
+epilog
+----------------------------------------
+
+Code Block 69 ():
+Cake\Console\ConsoleOptionParser::addArguments()
+----------------------------------------
+
+Code Block 70 ():
+Cake\Console\ConsoleOptionParser::addOptions()
+----------------------------------------
+
+Code Block 71 ():
+buildFromArray
+----------------------------------------
+
+Code Block 72 (shiki):
+public function getOptionParser()
+{
+    return ConsoleOptionParser::buildFromArray([
+        'description' => [
+            __("Use this command to grant ACL permissions. Once executed, the "),
+            __("ARO specified (and its children, if any) will have ALLOW access "),
+            __("to the specified ACO action (and the ACO's children, if any)."),
+        ],
+        'arguments' => [
+            'aro' => ['help' => __('ARO to check.'), 'required' => true],
+            'aco' => ['help' => __('ACO to check.'), 'required' => true],
+            'action' => ['help' => __('Action to check')],
+        ],
+    ]);
+}
+----------------------------------------
+
+Code Block 73 ():
+public function getOptionParser()
+{
+    return ConsoleOptionParser::buildFromArray([
+        'description' => [
+            __("Use this command to grant ACL permissions. Once executed, the "),
+            __("ARO specified (and its children, if any) will have ALLOW access "),
+            __("to the specified ACO action (and the ACO's children, if any)."),
+        ],
+        'arguments' => [
+            'aro' => ['help' => __('ARO to check.'), 'required' => true],
+            'aco' => ['help' => __('ACO to check.'), 'required' => true],
+            'action' => ['help' => __('Action to check')],
+        ],
+    ]);
+}
+----------------------------------------
+
+Code Block 74 ():
+method
+----------------------------------------
+
+Code Block 75 (shiki):
+$parser->merge($anotherParser);
+----------------------------------------
+
+Code Block 76 ():
+$parser->merge($anotherParser);
+----------------------------------------
+
+Code Block 77 ():
+--help
+----------------------------------------
+
+Code Block 78 ():
+-h
+----------------------------------------
+
+Code Block 79 (shiki):
+bin/cake bake --help
+bin/cake bake -h
+----------------------------------------
+
+Code Block 80 ():
+bin/cake bake --help
+bin/cake bake -h
+----------------------------------------
+
+Code Block 81 (shiki):
+bin/cake bake model --help
+bin/cake bake model -h
+----------------------------------------
+
+Code Block 82 ():
+bin/cake bake model --help
+bin/cake bake model -h
+----------------------------------------
+
+Code Block 83 ():
+xml
+----------------------------------------
+
+Code Block 84 (shiki):
+cake bake --help xml
+cake bake -h xml
+----------------------------------------
+
+Code Block 85 ():
+cake bake --help xml
+cake bake -h xml
+----------------------------------------
+
+Code Block 86 (shiki):
+<?xml version="1.0"?>
+<shell>
+    <command>bake fixture</command>
+    <description>Generate fixtures for use with the test suite. You can use
+        `bake fixture all` to bake all fixtures.</description>
+    <epilog>
+        Omitting all arguments and options will enter into an interactive
+        mode.
+    </epilog>
+    <options>
+        <option name="--help" short="-h" boolean="1">
+            <default/>
+            <choices/>
+        </option>
+        <option name="--verbose" short="-v" boolean="1">
+            <default/>
+            <choices/>
+        </option>
+        <option name="--quiet" short="-q" boolean="1">
+            <default/>
+            <choices/>
+        </option>
+        <option name="--count" short="-n" boolean="">
+            <default>10</default>
+            <choices/>
+        </option>
+        <option name="--connection" short="-c" boolean="">
+            <default>default</default>
+            <choices/>
+        </option>
+        <option name="--plugin" short="-p" boolean="">
+            <default/>
+            <choices/>
+        </option>
+        <option name="--records" short="-r" boolean="1">
+            <default/>
+            <choices/>
+        </option>
+    </options>
+    <arguments>
+        <argument name="name" help="Name of the fixture to bake.
+            Can use Plugin.name to bake plugin fixtures." required="">
+            <choices/>
+        </argument>
+    </arguments>
+</shell>
+----------------------------------------
+
+Code Block 87 ():
+<?xml version="1.0"?>
+<shell>
+    <command>bake fixture</command>
+    <description>Generate fixtures for use with the test suite. You can use
+        `bake fixture all` to bake all fixtures.</description>
+    <epilog>
+        Omitting all arguments and options will enter into an interactive
+        mode.
+    </epilog>
+    <options>
+        <option name="--help" short="-h" boolean="1">
+            <default/>
+            <choices/>
+        </option>
+        <option name="--verbose" short="-v" boolean="1">
+            <default/>
+            <choices/>
+        </option>
+        <option name="--quiet" short="-q" boolean="1">
+            <default/>
+            <choices/>
+        </option>
+        <option name="--count" short="-n" boolean="">
+            <default>10</default>
+            <choices/>
+        </option>
+        <option name="--connection" short="-c" boolean="">
+            <default>default</default>
+            <choices/>
+        </option>
+        <option name="--plugin" short="-p" boolean="">
+            <default/>
+            <choices/>
+        </option>
+        <option name="--records" short="-r" boolean="1">
+            <default/>
+            <choices/>
+        </option>
+    </options>
+    <arguments>
+        <argument name="name" help="Name of the fixture to bake.
+            Can use Plugin.name to bake plugin fixtures." required="">
+            <choices/>
+        </argument>
+    </arguments>
+</shell>
+----------------------------------------
+
+Code Block 88 ():
+method
+----------------------------------------
+
+Code Block 89 (shiki):
+// Set multiple lines at once
+$parser->setDescription(['line one', 'line two']);
+
+// Read the current value
+$parser->getDescription();
+----------------------------------------
+
+Code Block 90 ():
+// Set multiple lines at once
+$parser->setDescription(['line one', 'line two']);
+
+// Read the current value
+$parser->getDescription();
+----------------------------------------
+
+Code Block 91 ():
+method
+----------------------------------------
+
+Code Block 92 (shiki):
+// Set multiple lines at once
+$parser->setEpilog(['line one', 'line two']);
+
+// Read the current value
+$parser->getEpilog();
+----------------------------------------
+
+Code Block 93 ():
+// Set multiple lines at once
+$parser->setEpilog(['line one', 'line two']);
+
+// Read the current value
+$parser->getEpilog();
+----------------------------------------
+

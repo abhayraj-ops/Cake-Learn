@@ -1,0 +1,1414 @@
+URL: https://book.cakephp.org/5.x/contributing/cakephp-coding-conventions.html
+Title: Coding Standards | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Coding Standards ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Adding New Features ​
+  - IDE Setup ​
+  - Indentation ​
+  - Line Length ​
+  - Control Structures ​
+  - Comparison ​
+  - Function Calls ​
+  - Method Definition ​
+  - Bail Early ​
+  - Method Chaining ​
+  - Commenting Code ​
+  - Including Files ​
+  - PHP Tags ​
+  - Naming Convention ​
+  - Careful when using empty()/isset() ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Ternary Operator ​
+  - Template Files ​
+  - Typehinting ​
+  - Anonymous Functions (Closures) ​
+  - Variable Types ​
+  - Short Echo ​
+  - Functions ​
+  - Classes ​
+  - Variables ​
+  - Member Visibility ​
+  - Example Addresses ​
+  - Files ​
+  - Casting ​
+  - Constants ​
+  - Enums ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+CakePHP developers will use the PSR-12 coding style guide in addition to the following rules as coding standards.
+
+It is recommended that others developing CakeIngredients follow the same standards.
+
+You can use the CakePHP Code Sniffer to check that your code follows required standards.
+
+No new features should be added, without having their own tests – which should be passed before committing them to the repository.
+
+Please make sure your IDE is set up to "trim right" on whitespaces. There should be no trailing spaces per line.
+
+Most modern IDEs also support an .editorconfig file. The CakePHP app skeleton ships with it by default. It already contains best practise defaults.
+
+We recommend to use the IdeHelper plugin if you want to maximize IDE compatibility. It will assist to keep the annotations up-to-date which will make the IDE fully understand how all classes work together and provides better type-hinting and auto-completion.
+
+Four spaces will be used for indentation.
+
+So, indentation should look like this:
+
+Or:
+
+In cases where you're using a multi-line function call use the following guidelines:
+
+As an example, instead of using the following formatting:
+
+Use this instead:
+
+It is recommended to keep lines at approximately 100 characters long for better code readability. A limit of 80 or 120 characters makes it necessary to distribute complex logic or expressions by function, as well as give functions and objects shorter, more expressive names. Lines must not be longer than 120 characters.
+
+In short:
+
+Control structures are for example "if", "for", "foreach", "while", "switch" etc. Below, an example with "if":
+
+Ternary operators are permissible when the entire ternary operation fits on one line. Longer ternaries should be split into if else statements. Ternary operators should not ever be nested. Optionally parentheses can be used around the condition check of the ternary for clarity:
+
+In template files developers should use keyword control structures. Keyword control structures are easier to read in complex template files. Control structures can either be contained in a larger PHP block, or in separate PHP tags:
+
+Always try to be as strict as possible. If a non-strict test is deliberate it might be wise to comment it as such to avoid confusing it for a mistake.
+
+For testing if a variable is null, it is recommended to use a strict check:
+
+The value to check against should be placed on the right side:
+
+Functions should be called without space between function's name and starting parenthesis. There should be one space between every parameter of a function call:
+
+As you can see above there should be one space on both sides of equals sign (=).
+
+Example of a method definition:
+
+Parameters with a default value, should be placed last in function definition. Try to make your functions return something, at least true or false, so it can be determined whether the function call was successful:
+
+There are spaces on both side of the equals sign.
+
+Try to avoid unnecessary nesting by bailing early:
+
+This helps to keep the logic sequential which improves readability.
+
+Arguments that expect objects, arrays or callbacks (callable) can be typehinted. We only typehint public methods, though, as typehinting is not cost-free:
+
+Here $table must be an instance of \Cake\ORM\Table, $array must be an array and $callback must be of type callable (a valid callback).
+
+Note that if you want to allow $array to be also an instance of \ArrayObject you should not typehint as array accepts only the primitive type:
+
+Defining anonymous functions follows the PSR-12 coding style guide, where they are declared with a space after the function keyword, and a space before and after the use keyword:
+
+Method chaining should have multiple methods spread across separate lines, and indented with four spaces:
+
+All comments should be written in English, and should in a clear way describe the commented block of code.
+
+Comments can include the following phpDocumentor tags:
+
+PhpDoc tags are very much like JavaDoc tags in Java. Tags are only processed if they are the first thing in a DocBlock line, for example:
+
+Comment blocks, with the exception of the first block in a file, should always be preceded by a newline.
+
+Variable types for use in DocBlocks:
+
+You can also combine types using the pipe char:
+
+For more than two types it is usually best to just use mixed.
+
+When returning the object itself (for example, for chaining), one should use $this instead:
+
+include, require, include_once and require_once do not have parentheses:
+
+When including files with classes or libraries, use only and always the require_once function.
+
+Always use long tags (<?php ?>) instead of short tags (<? ?>). The short echo should be used in template files where appropriate.
+
+The short echo should be used in template files in place of <?php echo. It should be immediately followed by a single space, the variable or function value to echo, a single space, and the php closing tag:
+
+The short echo tag (<?=) is always available regardless of the short_open_tag ini directive.
+
+Write all functions in camelBack:
+
+Class names should be written in CamelCase, for example:
+
+Variable names should be as descriptive as possible, but also as short as possible. All variables should start with a lowercase letter, and should be written in camelBack in case of multiple words. Variables referencing objects should in some way associate to the class the variable is an object of. Example:
+
+Use PHP's public, protected and private keywords for methods and variables.
+
+For all example URL and mail addresses use "example.com", "example.org" and "example.net", for example:
+
+The "example.com" domain name has been reserved for this (see 2606) and is recommended for use in documentation or as examples.
+
+File names which do not contain classes should be lowercased and underscored, for example:
+
+For casting we use:
+
+Type Description
+
+(bool) Cast to boolean.
+
+(int) Cast to integer.
+
+(float) Cast to float.
+
+(string) Cast to string.
+
+(array) Cast to array.
+
+(object) Cast to object.
+
+Please use (int)$var instead of intval($var) and (float)$var instead of floatval($var) when applicable.
+
+Constants should be defined in capital letters:
+
+If a constant name consists of multiple words, they should be separated by an underscore character, for example:
+
+Enum cases are defined in CamelCase style:
+
+While empty() often seems correct to use, it can mask errors and cause unintended effects when '0' and 0 are given. When variables or properties are already defined, the usage of empty() is not recommended. When working with variables, it is better to rely on type-coercion to boolean instead of empty():
+
+When dealing with defined properties you should favour null checks over empty()/isset() checks:
+
+When working with arrays, it is better to merge in defaults over using empty() checks. By merging in defaults, you can ensure that required keys are defined:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+.editorconfig
+----------------------------------------
+
+Code Block 2 (shiki):
+// base level
+    // level 1
+        // level 2
+    // level 1
+// base level
+----------------------------------------
+
+Code Block 3 ():
+// base level
+    // level 1
+        // level 2
+    // level 1
+// base level
+----------------------------------------
+
+Code Block 4 (shiki):
+$booleanVariable = true;
+$stringVariable = 'moose';
+if ($booleanVariable) {
+    echo 'Boolean value is true';
+    if ($stringVariable === 'moose') {
+        echo 'We have encountered a moose';
+    }
+}
+----------------------------------------
+
+Code Block 5 ():
+$booleanVariable = true;
+$stringVariable = 'moose';
+if ($booleanVariable) {
+    echo 'Boolean value is true';
+    if ($stringVariable === 'moose') {
+        echo 'We have encountered a moose';
+    }
+}
+----------------------------------------
+
+Code Block 6 (shiki):
+$matches = array_intersect_key($this->_listeners,
+                array_flip(preg_grep($matchPattern,
+                    array_keys($this->_listeners), 0)));
+----------------------------------------
+
+Code Block 7 ():
+$matches = array_intersect_key($this->_listeners,
+                array_flip(preg_grep($matchPattern,
+                    array_keys($this->_listeners), 0)));
+----------------------------------------
+
+Code Block 8 (shiki):
+$matches = array_intersect_key(
+    $this->_listeners,
+    array_flip(
+        preg_grep($matchPattern, array_keys($this->_listeners), 0),
+    )
+);
+----------------------------------------
+
+Code Block 9 ():
+$matches = array_intersect_key(
+    $this->_listeners,
+    array_flip(
+        preg_grep($matchPattern, array_keys($this->_listeners), 0),
+    )
+);
+----------------------------------------
+
+Code Block 10 ():
+if
+----------------------------------------
+
+Code Block 11 ():
+for
+----------------------------------------
+
+Code Block 12 ():
+foreach
+----------------------------------------
+
+Code Block 13 ():
+while
+----------------------------------------
+
+Code Block 14 ():
+switch
+----------------------------------------
+
+Code Block 15 ():
+if
+----------------------------------------
+
+Code Block 16 (shiki):
+if ((expr_1) || (expr_2)) {
+    // action_1;
+} elseif (!(expr_3) && (expr_4)) {
+    // action_2;
+} else {
+    // default_action;
+}
+----------------------------------------
+
+Code Block 17 ():
+if ((expr_1) || (expr_2)) {
+    // action_1;
+} elseif (!(expr_3) && (expr_4)) {
+    // action_2;
+} else {
+    // default_action;
+}
+----------------------------------------
+
+Code Block 18 (shiki):
+// wrong = no brackets, badly placed statement
+if (expr) statement;
+
+// wrong = no brackets
+if (expr)
+    statement;
+
+// good
+if (expr) {
+    statement;
+}
+
+// wrong = inline assignment
+if ($variable = Class::function()) {
+    statement;
+}
+
+// good
+$variable = Class::function();
+if ($variable) {
+    statement;
+}
+----------------------------------------
+
+Code Block 19 ():
+// wrong = no brackets, badly placed statement
+if (expr) statement;
+
+// wrong = no brackets
+if (expr)
+    statement;
+
+// good
+if (expr) {
+    statement;
+}
+
+// wrong = inline assignment
+if ($variable = Class::function()) {
+    statement;
+}
+
+// good
+$variable = Class::function();
+if ($variable) {
+    statement;
+}
+----------------------------------------
+
+Code Block 20 ():
+if else
+----------------------------------------
+
+Code Block 21 (shiki):
+// Good, simple and readable
+$variable = isset($options['variable']) ? $options['variable'] : true;
+
+// Nested ternaries are bad
+$variable = isset($options['variable']) ? isset($options['othervar']) ? true : false : false;
+----------------------------------------
+
+Code Block 22 ():
+// Good, simple and readable
+$variable = isset($options['variable']) ? $options['variable'] : true;
+
+// Nested ternaries are bad
+$variable = isset($options['variable']) ? isset($options['othervar']) ? true : false : false;
+----------------------------------------
+
+Code Block 23 (shiki):
+<?php
+if ($isAdmin):
+    echo '<p>You are the admin user.</p>';
+endif;
+?>
+<p>The following is also acceptable:</p>
+<?php if ($isAdmin): ?>
+    <p>You are the admin user.</p>
+<?php endif; ?>
+----------------------------------------
+
+Code Block 24 ():
+<?php
+if ($isAdmin):
+    echo '<p>You are the admin user.</p>';
+endif;
+?>
+<p>The following is also acceptable:</p>
+<?php if ($isAdmin): ?>
+    <p>You are the admin user.</p>
+<?php endif; ?>
+----------------------------------------
+
+Code Block 25 (shiki):
+if ($value === null) {
+    // ...
+}
+----------------------------------------
+
+Code Block 26 ():
+if ($value === null) {
+    // ...
+}
+----------------------------------------
+
+Code Block 27 (shiki):
+// not recommended
+if (null === $this->foo()) {
+    // ...
+}
+
+// recommended
+if ($this->foo() === null) {
+    // ...
+}
+----------------------------------------
+
+Code Block 28 ():
+// not recommended
+if (null === $this->foo()) {
+    // ...
+}
+
+// recommended
+if ($this->foo() === null) {
+    // ...
+}
+----------------------------------------
+
+Code Block 29 (shiki):
+$var = foo($bar, $bar2, $bar3);
+----------------------------------------
+
+Code Block 30 ():
+$var = foo($bar, $bar2, $bar3);
+----------------------------------------
+
+Code Block 31 (shiki):
+public function someFunction(string $arg1, string $arg2 = ''): mixed
+{
+    if (expr) {
+        statement;
+    }
+
+    return $var;
+}
+----------------------------------------
+
+Code Block 32 ():
+public function someFunction(string $arg1, string $arg2 = ''): mixed
+{
+    if (expr) {
+        statement;
+    }
+
+    return $var;
+}
+----------------------------------------
+
+Code Block 33 ():
+true
+----------------------------------------
+
+Code Block 34 ():
+false
+----------------------------------------
+
+Code Block 35 (shiki):
+public function connection(string|array $dns, bool $persistent = false): bool
+{
+    if (is_array($dns)) {
+        $dnsInfo = $dns;
+    } else {
+        $dnsInfo = BD::parseDNS($dns);
+    }
+
+    if (!($dnsInfo) || !($dnsInfo['phpType'])) {
+        return $this->addError();
+    }
+
+    return true;
+}
+----------------------------------------
+
+Code Block 36 ():
+public function connection(string|array $dns, bool $persistent = false): bool
+{
+    if (is_array($dns)) {
+        $dnsInfo = $dns;
+    } else {
+        $dnsInfo = BD::parseDNS($dns);
+    }
+
+    if (!($dnsInfo) || !($dnsInfo['phpType'])) {
+        return $this->addError();
+    }
+
+    return true;
+}
+----------------------------------------
+
+Code Block 37 (shiki):
+public function run(array $data): bool
+{
+    ...
+    if (!$success) {
+        return false;
+    }
+
+    ...
+}
+
+public function check(array $data): void
+{
+    ...
+    if (!$success) {
+        throw new RuntimeException(/* ... */);
+    }
+
+    ...
+}
+----------------------------------------
+
+Code Block 38 ():
+public function run(array $data): bool
+{
+    ...
+    if (!$success) {
+        return false;
+    }
+
+    ...
+}
+
+public function check(array $data): void
+{
+    ...
+    if (!$success) {
+        throw new RuntimeException(/* ... */);
+    }
+
+    ...
+}
+----------------------------------------
+
+Code Block 39 (shiki):
+/**
+ * Some method description.
+ *
+ * @param \Cake\ORM\Table $table The table class to use.
+ * @param array $array Some array value.
+ * @param callable $callback Some callback.
+ * @param bool $boolean Some boolean value.
+ */
+public function foo(Table $table, array $array, callable $callback, bool $boolean): void
+{
+}
+----------------------------------------
+
+Code Block 40 ():
+/**
+ * Some method description.
+ *
+ * @param \Cake\ORM\Table $table The table class to use.
+ * @param array $array Some array value.
+ * @param callable $callback Some callback.
+ * @param bool $boolean Some boolean value.
+ */
+public function foo(Table $table, array $array, callable $callback, bool $boolean): void
+{
+}
+----------------------------------------
+
+Code Block 41 ():
+$table
+----------------------------------------
+
+Code Block 42 ():
+\Cake\ORM\Table
+----------------------------------------
+
+Code Block 43 ():
+$array
+----------------------------------------
+
+Code Block 44 ():
+array
+----------------------------------------
+
+Code Block 45 ():
+$callback
+----------------------------------------
+
+Code Block 46 ():
+callable
+----------------------------------------
+
+Code Block 47 ():
+$array
+----------------------------------------
+
+Code Block 48 ():
+\ArrayObject
+----------------------------------------
+
+Code Block 49 ():
+array
+----------------------------------------
+
+Code Block 50 (shiki):
+/**
+ * Some method description.
+ *
+ * @param array|\ArrayObject $array Some array value.
+ */
+public function foo(array|\ArrayObject $array): void
+{
+}
+----------------------------------------
+
+Code Block 51 ():
+/**
+ * Some method description.
+ *
+ * @param array|\ArrayObject $array Some array value.
+ */
+public function foo(array|\ArrayObject $array): void
+{
+}
+----------------------------------------
+
+Code Block 52 ():
+function
+----------------------------------------
+
+Code Block 53 ():
+use
+----------------------------------------
+
+Code Block 54 (shiki):
+$closure = function ($arg1, $arg2) use ($var1, $var2) {
+    // code
+};
+----------------------------------------
+
+Code Block 55 ():
+$closure = function ($arg1, $arg2) use ($var1, $var2) {
+    // code
+};
+----------------------------------------
+
+Code Block 56 (shiki):
+$email->from('[email protected]')
+    ->to('[email protected]')
+    ->subject('A great message')
+    ->send();
+----------------------------------------
+
+Code Block 57 ():
+$email->from('[email protected]')
+    ->to('[email protected]')
+    ->subject('A great message')
+    ->send();
+----------------------------------------
+
+Code Block 58 ():
+@version <vector> <description>
+----------------------------------------
+
+Code Block 59 ():
+version
+----------------------------------------
+
+Code Block 60 ():
+description
+----------------------------------------
+
+Code Block 61 (shiki):
+/**
+ * Tag example.
+ *
+ * @author this tag is parsed, but this @version is ignored
+ * @version 1.0 this tag is also parsed
+ */
+----------------------------------------
+
+Code Block 62 ():
+/**
+ * Tag example.
+ *
+ * @author this tag is parsed, but this @version is ignored
+ * @version 1.0 this tag is also parsed
+ */
+----------------------------------------
+
+Code Block 63 (shiki):
+/**
+ * Example of inline phpDoc tags.
+ *
+ * This function works hard with foo() to rule the world.
+ *
+ * @return void
+ */
+function bar()
+{
+}
+
+/**
+ * Foo function.
+ *
+ * @return void
+ */
+function foo()
+{
+}
+----------------------------------------
+
+Code Block 64 ():
+/**
+ * Example of inline phpDoc tags.
+ *
+ * This function works hard with foo() to rule the world.
+ *
+ * @return void
+ */
+function bar()
+{
+}
+
+/**
+ * Foo function.
+ *
+ * @return void
+ */
+function foo()
+{
+}
+----------------------------------------
+
+Code Block 65 ():
+int|bool
+----------------------------------------
+
+Code Block 66 ():
+int|bool
+----------------------------------------
+
+Code Block 67 ():
+mixed
+----------------------------------------
+
+Code Block 68 ():
+$this
+----------------------------------------
+
+Code Block 69 (shiki):
+/**
+ * Foo function.
+ *
+ * @return $this
+ */
+public function foo(): static
+{
+    return $this;
+}
+----------------------------------------
+
+Code Block 70 ():
+/**
+ * Foo function.
+ *
+ * @return $this
+ */
+public function foo(): static
+{
+    return $this;
+}
+----------------------------------------
+
+Code Block 71 ():
+include
+----------------------------------------
+
+Code Block 72 ():
+require
+----------------------------------------
+
+Code Block 73 ():
+include_once
+----------------------------------------
+
+Code Block 74 ():
+require_once
+----------------------------------------
+
+Code Block 75 (shiki):
+// wrong = parentheses
+require_once('ClassFileName.php');
+require_once ($class);
+
+// good = no parentheses
+require_once 'ClassFileName.php';
+require_once $class;
+----------------------------------------
+
+Code Block 76 ():
+// wrong = parentheses
+require_once('ClassFileName.php');
+require_once ($class);
+
+// good = no parentheses
+require_once 'ClassFileName.php';
+require_once $class;
+----------------------------------------
+
+Code Block 77 ():
+<?php ?>
+----------------------------------------
+
+Code Block 78 ():
+<? ?>
+----------------------------------------
+
+Code Block 79 ():
+<?php echo
+----------------------------------------
+
+Code Block 80 ():
+echo
+----------------------------------------
+
+Code Block 81 (shiki):
+// wrong = semicolon, no spaces
+<td><?=$name;?></td>
+
+// good = spaces, no semicolon
+<td><?= $name ?></td>
+----------------------------------------
+
+Code Block 82 ():
+// wrong = semicolon, no spaces
+<td><?=$name;?></td>
+
+// good = spaces, no semicolon
+<td><?= $name ?></td>
+----------------------------------------
+
+Code Block 83 ():
+<?=
+----------------------------------------
+
+Code Block 84 ():
+short_open_tag
+----------------------------------------
+
+Code Block 85 (shiki):
+function longFunctionName()
+{
+}
+----------------------------------------
+
+Code Block 86 ():
+function longFunctionName()
+{
+}
+----------------------------------------
+
+Code Block 87 (shiki):
+class ExampleClass
+{
+}
+----------------------------------------
+
+Code Block 88 ():
+class ExampleClass
+{
+}
+----------------------------------------
+
+Code Block 89 (shiki):
+$user = 'John';
+$users = ['John', 'Hans', 'Arne'];
+
+$dispatcher = new Dispatcher();
+----------------------------------------
+
+Code Block 90 ():
+$user = 'John';
+$users = ['John', 'Hans', 'Arne'];
+
+$dispatcher = new Dispatcher();
+----------------------------------------
+
+Code Block 91 ():
+public
+----------------------------------------
+
+Code Block 92 ():
+protected
+----------------------------------------
+
+Code Block 93 ():
+private
+----------------------------------------
+
+Code Block 94 ():
+2606
+----------------------------------------
+
+Code Block 95 ():
+long_file_name.php
+----------------------------------------
+
+Code Block 96 ():
+long_file_name.php
+----------------------------------------
+
+Code Block 97 ():
+(int)$var
+----------------------------------------
+
+Code Block 98 ():
+intval($var)
+----------------------------------------
+
+Code Block 99 ():
+(float)$var
+----------------------------------------
+
+Code Block 100 ():
+floatval($var)
+----------------------------------------
+
+Code Block 101 (shiki):
+define('CONSTANT', 1);
+----------------------------------------
+
+Code Block 102 ():
+define('CONSTANT', 1);
+----------------------------------------
+
+Code Block 103 (shiki):
+define('LONG_NAMED_CONSTANT', 2);
+----------------------------------------
+
+Code Block 104 ():
+define('LONG_NAMED_CONSTANT', 2);
+----------------------------------------
+
+Code Block 105 ():
+CamelCase
+----------------------------------------
+
+Code Block 106 (shiki):
+enum ArticleStatus: string
+{
+    case Published = 'Y';
+    case NotPublishedYet = 'N';
+}
+----------------------------------------
+
+Code Block 107 ():
+enum ArticleStatus: string
+{
+    case Published = 'Y';
+    case NotPublishedYet = 'N';
+}
+----------------------------------------
+
+Code Block 108 ():
+empty()
+----------------------------------------
+
+Code Block 109 ():
+'0'
+----------------------------------------
+
+Code Block 110 ():
+0
+----------------------------------------
+
+Code Block 111 ():
+empty()
+----------------------------------------
+
+Code Block 112 ():
+empty()
+----------------------------------------
+
+Code Block 113 (shiki):
+function manipulate($var)
+{
+    // Not recommended, $var is already defined in the scope
+    if (empty($var)) {
+        // ...
+    }
+
+    // Use boolean type coercion
+    if (!$var) {
+        // ...
+    }
+    if ($var) {
+        // ...
+    }
+}
+----------------------------------------
+
+Code Block 114 ():
+function manipulate($var)
+{
+    // Not recommended, $var is already defined in the scope
+    if (empty($var)) {
+        // ...
+    }
+
+    // Use boolean type coercion
+    if (!$var) {
+        // ...
+    }
+    if ($var) {
+        // ...
+    }
+}
+----------------------------------------
+
+Code Block 115 ():
+null
+----------------------------------------
+
+Code Block 116 ():
+empty()
+----------------------------------------
+
+Code Block 117 ():
+isset()
+----------------------------------------
+
+Code Block 118 (shiki):
+class Thing
+{
+    private $property; // Defined
+
+    public function readProperty(): void
+    {
+        // Not recommended as the property is defined in the class
+        if (!isset($this->property)) {
+            // ...
+        }
+        // Recommended
+        if ($this->property === null) {
+
+        }
+    }
+}
+----------------------------------------
+
+Code Block 119 ():
+class Thing
+{
+    private $property; // Defined
+
+    public function readProperty(): void
+    {
+        // Not recommended as the property is defined in the class
+        if (!isset($this->property)) {
+            // ...
+        }
+        // Recommended
+        if ($this->property === null) {
+
+        }
+    }
+}
+----------------------------------------
+
+Code Block 120 ():
+empty()
+----------------------------------------
+
+Code Block 121 (shiki):
+function doWork(array $array)
+{
+    // Merge defaults to remove need for empty checks.
+    $array += [
+        'key' => null,
+    ];
+
+    // Not recommended, the key is already set
+    if (isset($array['key'])) {
+        // ...
+    }
+
+    // Recommended
+    if ($array['key'] !== null) {
+        // ...
+    }
+}
+----------------------------------------
+
+Code Block 122 ():
+function doWork(array $array)
+{
+    // Merge defaults to remove need for empty checks.
+    $array += [
+        'key' => null,
+    ];
+
+    // Not recommended, the key is already set
+    if (isset($array['key'])) {
+        // ...
+    }
+
+    // Recommended
+    if ($array['key'] !== null) {
+        // ...
+    }
+}
+----------------------------------------
+

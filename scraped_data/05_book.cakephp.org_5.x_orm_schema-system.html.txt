@@ -1,0 +1,759 @@
+URL: https://book.cakephp.org/5.x/orm/schema-system.html
+Title: Schema System | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Schema System ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Schema\TableSchema Objects ​
+  - Schema Collections ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Accessing Column Data ​
+  - Indexes and Constraints ​
+  - Reading Indexes and Constraints ​
+  - Adding Table Options ​
+  - Converting Tables into SQL ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+CakePHP features a schema system that is capable of reflecting and generating schema information for tables in SQL datastores. The schema system can generate/reflect a schema for any SQL platform that CakePHP supports.
+
+The main pieces of the schema system are Cake\Database\Schema\Collection and Cake\Database\Schema\TableSchema. These classes give you access to database-wide and individual Table object features respectively.
+
+The primary use of the schema system is for Test Fixtures. However, it can also be used in your application if required.
+
+class Cake\Database\Schema\TableSchema
+
+The schema subsystem provides a simple TableSchema object to hold data about a table in a database. This object is returned by the schema reflection features:
+
+Schema\TableSchema objects allow you to build up information about a table's schema. It helps to normalize and validate the data used to describe a table. For example, the following two forms are equivalent:
+
+While equivalent, the 2nd form allows more detail and control. This emulates the existing features available in Schema files + the fixture schema in 2.x.
+
+Columns are either added as constructor arguments, or via addColumn(). Once fields are added information can be fetched using column() or columns():
+
+Indexes are added using the addIndex(). Constraints are added using addConstraint(). Indexes and constraints cannot be added for columns that do not exist, as it would result in an invalid state. Indexes are different from constraints, and exceptions will be raised if you try to mix types between the methods. An example of both methods is:
+
+If you add a primary key constraint to a single integer column it will automatically be converted into an auto-increment/serial column depending on the database platform:
+
+In the above example the id column would generate the following SQL in MySQL:
+
+If your primary key contains more than one column, none of them will automatically be converted to an auto-increment value. Instead you will need to tell the table object which column in the composite key you want to auto-increment:
+
+The autoIncrement option only works with integer and biginteger columns.
+
+Indexes and constraints can be read out of a table object using accessor methods. Assuming that $schema is a populated TableSchema instance you could do the following:
+
+Some drivers (primarily MySQL) support and require additional table metadata. In the case of MySQL the CHARSET, COLLATE and ENGINE properties are required for maintaining a table's structure in MySQL. The following could be used to add table options:
+
+Platform dialects only handle the keys they are interested in and ignore the rest. Not all options are supported on all platforms.
+
+Using the createSql() or dropSql() you can get platform specific SQL for creating or dropping a specific table:
+
+By using a connection's driver the schema data can be converted into platform specific SQL. The return of createSql and dropSql is a list of SQL queries required to create a table and the required indexes. Some platforms may require multiple statements to create tables with comments and/or indexes. An array of queries is always returned.
+
+class Cake\Database\Schema\Collection
+
+Collection provides access to the various tables available on a connection. You can use it to get the list of tables or reflect tables into TableSchema objects. Basic usage of the class looks like:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+Cake\Database\Schema\Collection
+----------------------------------------
+
+Code Block 2 ():
+Cake\Database\Schema\TableSchema
+----------------------------------------
+
+Code Block 3 ():
+class
+----------------------------------------
+
+Code Block 4 (shiki):
+use Cake\Database\Schema\TableSchema;
+
+// Create a table one column at a time.
+$schema = new TableSchema('posts');
+$schema->addColumn('id', [
+    'type' => 'integer',
+    'length' => 11,
+    'null' => false,
+    'default' => null,
+])->addColumn('title', [
+    'type' => 'string',
+    'length' => 255,
+    // Create a fixed length (char field)
+    'fixed' => true,
+])->addConstraint('primary', [
+    'type' => 'primary',
+    'columns' => ['id'],
+]);
+
+// Schema\TableSchema classes could also be created with array data
+$schema = new TableSchema('posts', $columns);
+----------------------------------------
+
+Code Block 5 ():
+use Cake\Database\Schema\TableSchema;
+
+// Create a table one column at a time.
+$schema = new TableSchema('posts');
+$schema->addColumn('id', [
+    'type' => 'integer',
+    'length' => 11,
+    'null' => false,
+    'default' => null,
+])->addColumn('title', [
+    'type' => 'string',
+    'length' => 255,
+    // Create a fixed length (char field)
+    'fixed' => true,
+])->addConstraint('primary', [
+    'type' => 'primary',
+    'columns' => ['id'],
+]);
+
+// Schema\TableSchema classes could also be created with array data
+$schema = new TableSchema('posts', $columns);
+----------------------------------------
+
+Code Block 6 ():
+Schema\TableSchema
+----------------------------------------
+
+Code Block 7 (shiki):
+$schema->addColumn('title', 'string');
+// and
+$schema->addColumn('title', [
+    'type' => 'string',
+]);
+----------------------------------------
+
+Code Block 8 ():
+$schema->addColumn('title', 'string');
+// and
+$schema->addColumn('title', [
+    'type' => 'string',
+]);
+----------------------------------------
+
+Code Block 9 ():
+addColumn()
+----------------------------------------
+
+Code Block 10 ():
+column()
+----------------------------------------
+
+Code Block 11 ():
+columns()
+----------------------------------------
+
+Code Block 12 (shiki):
+// Get the array of data about a column
+$c = $schema->column('title');
+
+// Get the list of all columns.
+$cols = $schema->columns();
+----------------------------------------
+
+Code Block 13 ():
+// Get the array of data about a column
+$c = $schema->column('title');
+
+// Get the list of all columns.
+$cols = $schema->columns();
+----------------------------------------
+
+Code Block 14 ():
+addIndex()
+----------------------------------------
+
+Code Block 15 ():
+addConstraint()
+----------------------------------------
+
+Code Block 16 (shiki):
+$schema = new TableSchema('posts');
+$schema->addColumn('id', 'integer')
+    ->addColumn('author_id', 'integer')
+    ->addColumn('title', 'string')
+    ->addColumn('slug', 'string');
+
+// Add a primary key.
+$schema->addConstraint('primary', [
+    'type' => 'primary',
+    'columns' => ['id'],
+]);
+// Add a unique key
+$schema->addConstraint('slug_idx', [
+    'columns' => ['slug'],
+    'type' => 'unique',
+]);
+// Add index
+$schema->addIndex('slug_title', [
+    'columns' => ['slug', 'title'],
+    'type' => 'index',
+]);
+// Add a foreign key
+$schema->addConstraint('author_id_idx', [
+    'columns' => ['author_id'],
+    'type' => 'foreign',
+    'references' => ['authors', 'id'],
+    'update' => 'cascade',
+    'delete' => 'cascade',
+]);
+----------------------------------------
+
+Code Block 17 ():
+$schema = new TableSchema('posts');
+$schema->addColumn('id', 'integer')
+    ->addColumn('author_id', 'integer')
+    ->addColumn('title', 'string')
+    ->addColumn('slug', 'string');
+
+// Add a primary key.
+$schema->addConstraint('primary', [
+    'type' => 'primary',
+    'columns' => ['id'],
+]);
+// Add a unique key
+$schema->addConstraint('slug_idx', [
+    'columns' => ['slug'],
+    'type' => 'unique',
+]);
+// Add index
+$schema->addIndex('slug_title', [
+    'columns' => ['slug', 'title'],
+    'type' => 'index',
+]);
+// Add a foreign key
+$schema->addConstraint('author_id_idx', [
+    'columns' => ['author_id'],
+    'type' => 'foreign',
+    'references' => ['authors', 'id'],
+    'update' => 'cascade',
+    'delete' => 'cascade',
+]);
+----------------------------------------
+
+Code Block 18 (shiki):
+$schema = new TableSchema('posts');
+$schema->addColumn('id', 'integer')
+->addConstraint('primary', [
+    'type' => 'primary',
+    'columns' => ['id'],
+]);
+----------------------------------------
+
+Code Block 19 ():
+$schema = new TableSchema('posts');
+$schema->addColumn('id', 'integer')
+->addConstraint('primary', [
+    'type' => 'primary',
+    'columns' => ['id'],
+]);
+----------------------------------------
+
+Code Block 20 ():
+id
+----------------------------------------
+
+Code Block 21 (shiki):
+CREATE TABLE `posts` (
+    `id` INTEGER AUTO_INCREMENT,
+    PRIMARY KEY (`id`)
+)
+----------------------------------------
+
+Code Block 22 ():
+CREATE TABLE `posts` (
+    `id` INTEGER AUTO_INCREMENT,
+    PRIMARY KEY (`id`)
+)
+----------------------------------------
+
+Code Block 23 (shiki):
+$schema = new TableSchema('posts');
+$schema->addColumn('id', [
+    'type' => 'integer',
+    'autoIncrement' => true,
+])
+->addColumn('account_id', 'integer')
+->addConstraint('primary', [
+    'type' => 'primary',
+    'columns' => ['id', 'account_id'],
+]);
+----------------------------------------
+
+Code Block 24 ():
+$schema = new TableSchema('posts');
+$schema->addColumn('id', [
+    'type' => 'integer',
+    'autoIncrement' => true,
+])
+->addColumn('account_id', 'integer')
+->addConstraint('primary', [
+    'type' => 'primary',
+    'columns' => ['id', 'account_id'],
+]);
+----------------------------------------
+
+Code Block 25 ():
+autoIncrement
+----------------------------------------
+
+Code Block 26 ():
+integer
+----------------------------------------
+
+Code Block 27 ():
+biginteger
+----------------------------------------
+
+Code Block 28 ():
+$schema
+----------------------------------------
+
+Code Block 29 (shiki):
+// Get constraints. Will return the
+// names of all constraints.
+$constraints = $schema->constraints()
+
+// Get data about a single constraint.
+$constraint = $schema->constraint('author_id_idx')
+
+// Get indexes. Will return the
+// names of all indexes.
+$indexes = $schema->indexes()
+
+// Get data about a single index.
+$index = $schema->index('author_id_idx')
+----------------------------------------
+
+Code Block 30 ():
+// Get constraints. Will return the
+// names of all constraints.
+$constraints = $schema->constraints()
+
+// Get data about a single constraint.
+$constraint = $schema->constraint('author_id_idx')
+
+// Get indexes. Will return the
+// names of all indexes.
+$indexes = $schema->indexes()
+
+// Get data about a single index.
+$index = $schema->index('author_id_idx')
+----------------------------------------
+
+Code Block 31 ():
+CHARSET
+----------------------------------------
+
+Code Block 32 ():
+COLLATE
+----------------------------------------
+
+Code Block 33 ():
+ENGINE
+----------------------------------------
+
+Code Block 34 (shiki):
+$schema->options([
+    'engine' => 'InnoDB',
+    'collate' => 'utf8_unicode_ci',
+]);
+----------------------------------------
+
+Code Block 35 ():
+$schema->options([
+    'engine' => 'InnoDB',
+    'collate' => 'utf8_unicode_ci',
+]);
+----------------------------------------
+
+Code Block 36 ():
+createSql()
+----------------------------------------
+
+Code Block 37 ():
+dropSql()
+----------------------------------------
+
+Code Block 38 (shiki):
+$db = ConnectionManager::get('default');
+$schema = new TableSchema('posts', $fields, $indexes);
+
+// Create a table
+$queries = $schema->createSql($db);
+foreach ($queries as $sql) {
+    $db->execute($sql);
+}
+
+// Drop a table
+$sql = $schema->dropSql($db);
+$db->execute($sql);
+----------------------------------------
+
+Code Block 39 ():
+$db = ConnectionManager::get('default');
+$schema = new TableSchema('posts', $fields, $indexes);
+
+// Create a table
+$queries = $schema->createSql($db);
+foreach ($queries as $sql) {
+    $db->execute($sql);
+}
+
+// Drop a table
+$sql = $schema->dropSql($db);
+$db->execute($sql);
+----------------------------------------
+
+Code Block 40 ():
+createSql
+----------------------------------------
+
+Code Block 41 ():
+dropSql
+----------------------------------------
+
+Code Block 42 ():
+class
+----------------------------------------
+
+Code Block 43 ():
+Collection
+----------------------------------------
+
+Code Block 44 ():
+TableSchema
+----------------------------------------
+
+Code Block 45 (shiki):
+$db = ConnectionManager::get('default');
+
+// Create a schema collection.
+$collection = $db->getSchemaCollection();
+
+// Get the table names
+$tables = $collection->listTables();
+
+// Get a single table (instance of Schema\TableSchema)
+$tableSchema = $collection->describe('posts');
+----------------------------------------
+
+Code Block 46 ():
+$db = ConnectionManager::get('default');
+
+// Create a schema collection.
+$collection = $db->getSchemaCollection();
+
+// Get the table names
+$tables = $collection->listTables();
+
+// Get a single table (instance of Schema\TableSchema)
+$tableSchema = $collection->describe('posts');
+----------------------------------------
+

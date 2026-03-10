@@ -1,0 +1,814 @@
+URL: https://book.cakephp.org/5.x/tutorials-and-examples/cms/authorization.html
+Title: CMS Tutorial - Authorization | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - CMS Tutorial - Authorization ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Installing Authorization Plugin ​
+  - Enabling the Authorization Plugin ​
+  - Creating our First Policy ​
+  - Checking Authorization in the ArticlesController ​
+  - Fixing the Add & Edit Actions ​
+  - Wrapping Up ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+With users now able to login to our CMS, we want to apply authorization rules to ensure that each user only edits the posts they own. We'll use the authorization plugin to do this.
+
+Use composer to install the Authorization Plugin:
+
+Load the plugin by adding the following statement to the bootstrap() method in src/Application.php:
+
+The Authorization plugin integrates into your application as a middleware layer and optionally a component to make checking authorization easier. First, lets apply the middleware. In src/Application.php add the following to the class imports:
+
+Add the AuthorizationServiceProviderInterface to the implemented interfaces on your application:
+
+Then add the following to your middleware() method:
+
+The AuthorizationMiddleware will call a hook method on your application when it starts handling the request. This hook method allows your application to define the AuthorizationService it wants to use. Add the following method your src/Application.php:
+
+The OrmResolver lets the authorization plugin find policy classes for ORM entities and queries. Other resolvers can be used to find policies for other resources types.
+
+Next, lets add the AuthorizationComponent to AppController. In src/Controller/AppController.php add the following to the initialize() method:
+
+Lastly we'll mark the add, login, and logout actions as not requiring authorization by adding the following to src/Controller/UsersController.php:
+
+The skipAuthorization() method should be called in any controller action that should be accessible to all users even those who have not logged in yet.
+
+The Authorization plugin models authorization and permissions as Policy classes. These classes implement the logic to check whether or not a identity is allowed to perform an action on a given resource. Our identity is going to be our logged in user, and our resources are our ORM entities and queries. Lets use bake to generate a basic policy:
+
+This will generate an empty policy class for our Article entity. You can find the generated policy in src/Policy/ArticlePolicy.php. Next update the policy to look like the following:
+
+While we've defined some very simple rules, you can use as complex logic as your application requires in your policies.
+
+With our policy created we can start checking authorization in each controller action. If we forget to check or skip authorization in an controller action the Authorization plugin will raise an exception letting us know we forgot to apply authorization. In src/Controller/ArticlesController.php add the following to the add, edit and delete methods:
+
+The AuthorizationComponent::authorize() method will use the current controller action name to generate the policy method to call. If you'd like to call a different policy method you can call authorize with the operation name:
+
+Lastly add the following to the tags, view, and index methods on the ArticlesController:
+
+While we've blocked access to the edit action, we're still open to users changing the user_id attribute of articles during edit. We will solve these problems next. First up is the add action.
+
+When creating articles, we want to fix the user_id to be the currently logged in user. Replace your add action with the following:
+
+Next we'll update the edit action. Replace the edit method with the following:
+
+Here we're modifying which properties can be mass-assigned, via the options for patchEntity(). See the Changing Accessible Fields section for more information. Remember to remove the user_id control from templates/Articles/edit.php as we no longer need it.
+
+We've built a simple CMS application that allows users to login, post articles, tag them, explore posted articles by tag, and applied basic access control to articles. We've also added some nice UX improvements by leveraging the FormHelper and ORM capabilities.
+
+Thank you for taking the time to explore CakePHP. Next, you should learn more about the Database Access & ORM, or you peruse the Using CakePHP.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+composer require "cakephp/authorization:^3.0"
+----------------------------------------
+
+Code Block 2 ():
+composer require "cakephp/authorization:^3.0"
+----------------------------------------
+
+Code Block 3 ():
+bootstrap()
+----------------------------------------
+
+Code Block 4 (shiki):
+$this->addPlugin('Authorization');
+----------------------------------------
+
+Code Block 5 ():
+$this->addPlugin('Authorization');
+----------------------------------------
+
+Code Block 6 (shiki):
+use Authorization\AuthorizationService;
+use Authorization\AuthorizationServiceInterface;
+use Authorization\AuthorizationServiceProviderInterface;
+use Authorization\Middleware\AuthorizationMiddleware;
+use Authorization\Policy\OrmResolver;
+----------------------------------------
+
+Code Block 7 ():
+use Authorization\AuthorizationService;
+use Authorization\AuthorizationServiceInterface;
+use Authorization\AuthorizationServiceProviderInterface;
+use Authorization\Middleware\AuthorizationMiddleware;
+use Authorization\Policy\OrmResolver;
+----------------------------------------
+
+Code Block 8 ():
+AuthorizationServiceProviderInterface
+----------------------------------------
+
+Code Block 9 (shiki):
+class Application extends BaseApplication
+    implements AuthenticationServiceProviderInterface,
+    AuthorizationServiceProviderInterface
+----------------------------------------
+
+Code Block 10 ():
+class Application extends BaseApplication
+    implements AuthenticationServiceProviderInterface,
+    AuthorizationServiceProviderInterface
+----------------------------------------
+
+Code Block 11 ():
+middleware()
+----------------------------------------
+
+Code Block 12 (shiki):
+// Add authorization **after** authentication
+$middlewareQueue->add(new AuthorizationMiddleware($this));
+----------------------------------------
+
+Code Block 13 ():
+// Add authorization **after** authentication
+$middlewareQueue->add(new AuthorizationMiddleware($this));
+----------------------------------------
+
+Code Block 14 ():
+AuthorizationMiddleware
+----------------------------------------
+
+Code Block 15 ():
+AuthorizationService
+----------------------------------------
+
+Code Block 16 (shiki):
+public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface
+{
+    $resolver = new OrmResolver();
+
+    return new AuthorizationService($resolver);
+}
+----------------------------------------
+
+Code Block 17 ():
+public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface
+{
+    $resolver = new OrmResolver();
+
+    return new AuthorizationService($resolver);
+}
+----------------------------------------
+
+Code Block 18 ():
+AuthorizationComponent
+----------------------------------------
+
+Code Block 19 ():
+AppController
+----------------------------------------
+
+Code Block 20 ():
+initialize()
+----------------------------------------
+
+Code Block 21 (shiki):
+$this->loadComponent('Authorization.Authorization');
+----------------------------------------
+
+Code Block 22 ():
+$this->loadComponent('Authorization.Authorization');
+----------------------------------------
+
+Code Block 23 (shiki):
+// In the add, login, and logout methods
+$this->Authorization->skipAuthorization();
+----------------------------------------
+
+Code Block 24 ():
+// In the add, login, and logout methods
+$this->Authorization->skipAuthorization();
+----------------------------------------
+
+Code Block 25 ():
+skipAuthorization()
+----------------------------------------
+
+Code Block 26 (shiki):
+bin/cake bake policy --type entity Article
+----------------------------------------
+
+Code Block 27 ():
+bin/cake bake policy --type entity Article
+----------------------------------------
+
+Code Block 28 ():
+Article
+----------------------------------------
+
+Code Block 29 (shiki):
+<?php
+namespace App\Policy;
+
+use App\Model\Entity\Article;
+use Authorization\IdentityInterface;
+
+class ArticlePolicy
+{
+    public function canAdd(IdentityInterface $user, Article $article): bool
+    {
+        // All logged in users can create articles.
+        return true;
+    }
+
+    public function canEdit(IdentityInterface $user, Article $article): bool
+    {
+        // logged in users can edit their own articles.
+        return $this->isAuthor($user, $article);
+    }
+
+    public function canDelete(IdentityInterface $user, Article $article): bool
+    {
+        // logged in users can delete their own articles.
+        return $this->isAuthor($user, $article);
+    }
+
+    protected function isAuthor(IdentityInterface $user, Article $article): bool
+    {
+        return $article->user_id === $user->getIdentifier();
+    }
+}
+----------------------------------------
+
+Code Block 30 ():
+<?php
+namespace App\Policy;
+
+use App\Model\Entity\Article;
+use Authorization\IdentityInterface;
+
+class ArticlePolicy
+{
+    public function canAdd(IdentityInterface $user, Article $article): bool
+    {
+        // All logged in users can create articles.
+        return true;
+    }
+
+    public function canEdit(IdentityInterface $user, Article $article): bool
+    {
+        // logged in users can edit their own articles.
+        return $this->isAuthor($user, $article);
+    }
+
+    public function canDelete(IdentityInterface $user, Article $article): bool
+    {
+        // logged in users can delete their own articles.
+        return $this->isAuthor($user, $article);
+    }
+
+    protected function isAuthor(IdentityInterface $user, Article $article): bool
+    {
+        return $article->user_id === $user->getIdentifier();
+    }
+}
+----------------------------------------
+
+Code Block 31 ():
+add
+----------------------------------------
+
+Code Block 32 ():
+edit
+----------------------------------------
+
+Code Block 33 ():
+delete
+----------------------------------------
+
+Code Block 34 (shiki):
+public function add()
+{
+    $article = $this->Articles->newEmptyEntity();
+    $this->Authorization->authorize($article);
+    // Rest of the method
+}
+
+public function edit($slug)
+{
+    $article = $this->Articles
+        ->findBySlug($slug)
+        ->contain('Tags') // load associated Tags
+        ->firstOrFail();
+    $this->Authorization->authorize($article);
+    // Rest of the method.
+}
+
+public function delete($slug)
+{
+    $this->request->allowMethod(['post', 'delete']);
+
+    $article = $this->Articles->findBySlug($slug)->firstOrFail();
+    $this->Authorization->authorize($article);
+    // Rest of the method.
+}
+----------------------------------------
+
+Code Block 35 ():
+public function add()
+{
+    $article = $this->Articles->newEmptyEntity();
+    $this->Authorization->authorize($article);
+    // Rest of the method
+}
+
+public function edit($slug)
+{
+    $article = $this->Articles
+        ->findBySlug($slug)
+        ->contain('Tags') // load associated Tags
+        ->firstOrFail();
+    $this->Authorization->authorize($article);
+    // Rest of the method.
+}
+
+public function delete($slug)
+{
+    $this->request->allowMethod(['post', 'delete']);
+
+    $article = $this->Articles->findBySlug($slug)->firstOrFail();
+    $this->Authorization->authorize($article);
+    // Rest of the method.
+}
+----------------------------------------
+
+Code Block 36 ():
+AuthorizationComponent::authorize()
+----------------------------------------
+
+Code Block 37 ():
+authorize
+----------------------------------------
+
+Code Block 38 (shiki):
+$this->Authorization->authorize($article, 'update');
+----------------------------------------
+
+Code Block 39 ():
+$this->Authorization->authorize($article, 'update');
+----------------------------------------
+
+Code Block 40 ():
+tags
+----------------------------------------
+
+Code Block 41 ():
+view
+----------------------------------------
+
+Code Block 42 ():
+index
+----------------------------------------
+
+Code Block 43 ():
+ArticlesController
+----------------------------------------
+
+Code Block 44 (shiki):
+// View, index and tags actions are public methods
+// and don't require authorization checks.
+$this->Authorization->skipAuthorization();
+----------------------------------------
+
+Code Block 45 ():
+// View, index and tags actions are public methods
+// and don't require authorization checks.
+$this->Authorization->skipAuthorization();
+----------------------------------------
+
+Code Block 46 ():
+user_id
+----------------------------------------
+
+Code Block 47 ():
+add
+----------------------------------------
+
+Code Block 48 ():
+user_id
+----------------------------------------
+
+Code Block 49 (shiki):
+// in src/Controller/ArticlesController.php
+
+public function add()
+{
+    $article = $this->Articles->newEmptyEntity();
+    $this->Authorization->authorize($article);
+
+    if ($this->request->is('post')) {
+        $article = $this->Articles->patchEntity($article, $this->request->getData());
+
+        // Changed: Set the user_id from the current user.
+        $article->user_id = $this->request->getAttribute('identity')->getIdentifier();
+
+        if ($this->Articles->save($article)) {
+            $this->Flash->success(__('Your article has been saved.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+        $this->Flash->error(__('Unable to add your article.'));
+    }
+    $tags = $this->Articles->Tags->find('list')->all();
+    $this->set(compact('article', 'tags'));
+}
+----------------------------------------
+
+Code Block 50 ():
+// in src/Controller/ArticlesController.php
+
+public function add()
+{
+    $article = $this->Articles->newEmptyEntity();
+    $this->Authorization->authorize($article);
+
+    if ($this->request->is('post')) {
+        $article = $this->Articles->patchEntity($article, $this->request->getData());
+
+        // Changed: Set the user_id from the current user.
+        $article->user_id = $this->request->getAttribute('identity')->getIdentifier();
+
+        if ($this->Articles->save($article)) {
+            $this->Flash->success(__('Your article has been saved.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+        $this->Flash->error(__('Unable to add your article.'));
+    }
+    $tags = $this->Articles->Tags->find('list')->all();
+    $this->set(compact('article', 'tags'));
+}
+----------------------------------------
+
+Code Block 51 ():
+edit
+----------------------------------------
+
+Code Block 52 (shiki):
+// in src/Controller/ArticlesController.php
+
+public function edit($slug)
+{
+    $article = $this->Articles
+        ->findBySlug($slug)
+        ->contain('Tags') // load associated Tags
+        ->firstOrFail();
+    $this->Authorization->authorize($article);
+
+    if ($this->request->is(['post', 'put'])) {
+        $this->Articles->patchEntity($article, $this->request->getData(), [
+            // Added: Disable modification of user_id.
+            'accessibleFields' => ['user_id' => false],
+        ]);
+        if ($this->Articles->save($article)) {
+            $this->Flash->success(__('Your article has been updated.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+        $this->Flash->error(__('Unable to update your article.'));
+    }
+    $tags = $this->Articles->Tags->find('list')->all();
+    $this->set(compact('article', 'tags'));
+}
+----------------------------------------
+
+Code Block 53 ():
+// in src/Controller/ArticlesController.php
+
+public function edit($slug)
+{
+    $article = $this->Articles
+        ->findBySlug($slug)
+        ->contain('Tags') // load associated Tags
+        ->firstOrFail();
+    $this->Authorization->authorize($article);
+
+    if ($this->request->is(['post', 'put'])) {
+        $this->Articles->patchEntity($article, $this->request->getData(), [
+            // Added: Disable modification of user_id.
+            'accessibleFields' => ['user_id' => false],
+        ]);
+        if ($this->Articles->save($article)) {
+            $this->Flash->success(__('Your article has been updated.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+        $this->Flash->error(__('Unable to update your article.'));
+    }
+    $tags = $this->Articles->Tags->find('list')->all();
+    $this->set(compact('article', 'tags'));
+}
+----------------------------------------
+
+Code Block 54 ():
+patchEntity()
+----------------------------------------
+
+Code Block 55 ():
+user_id
+----------------------------------------
+

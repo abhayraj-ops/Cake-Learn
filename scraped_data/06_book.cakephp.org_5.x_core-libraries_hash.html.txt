@@ -1,0 +1,2286 @@
+URL: https://book.cakephp.org/5.x/core-libraries/hash.html
+Title: Hash Utility | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Hash Utility ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Hash Path Syntax ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Expression Types ​
+  - Attribute Matching Types ​
+  - Hash::get() ​
+  - Hash::extract() ​
+  - Hash::insert() ​
+  - Hash::remove() ​
+  - Hash::combine() ​
+  - Hash::format() ​
+  - Hash::contains() ​
+  - Hash::check() ​
+  - Hash::filter() ​
+  - Hash::flatten() ​
+  - Hash::expand() ​
+  - Hash::merge() ​
+  - Hash::numeric() ​
+  - Hash::dimensions() ​
+  - Hash::maxDimensions() ​
+  - Hash::map() ​
+  - Hash::reduce() ​
+  - Hash::apply() ​
+  - Hash::sort() ​
+  - Hash::diff() ​
+  - Hash::mergeDiff() ​
+  - Hash::normalize() ​
+  - Hash::nest() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Utility\Hash
+
+Array management, if done right, can be a very powerful and useful tool for building smarter, more optimized code. CakePHP offers a very useful set of static utilities in the Hash class that allow you to do just that.
+
+CakePHP's Hash class can be called from any model or controller in the same way Inflector is called. Example: Hash::combine().
+
+The path syntax described below is used by all the methods in Hash. Not all parts of the path syntax are available in all methods. A path expression is made of any number of tokens. Tokens are composed of two groups. Expressions, are used to traverse the array data, while matchers are used to qualify elements. You apply matchers to expression elements.
+
+All expression elements are supported by all methods. In addition to expression elements, you can use attribute matching with certain methods. They are extract(), combine(), format(), check(), map(), reduce(), apply(), sort(), insert(), remove() and nest().
+
+static Cake\Utility\Hash::get(ArrayAccess|array $data, array|string|int|null $path, mixed $default = null): mixed
+
+get() is a simplified version of extract(), it only supports direct path expressions. Paths with {n}, {s}, {*} or matchers are not supported. Use get() when you want exactly one value out of an array. If a matching path is not found the default value will be returned.
+
+static Cake\Utility\Hash::extract(ArrayAccess|array $data, string $path): ArrayAccess|array
+
+Hash::extract() supports all expression, and matcher components of Hash Path Syntax. You can use extract to retrieve data from arrays or object implementing ArrayAccess interface, along arbitrary paths quickly without having to loop through the data structures. Instead you use path expressions to qualify which elements you want returned:
+
+static Cake\Utility\Hash::insert(ArrayAccess|array $data, string $path, mixed $values = null): ArrayAccess|array
+
+Inserts $values into an array as defined by $path:
+
+You can use paths using {n}, {s} and {*} to insert data into multiple points:
+
+Attribute matchers work with insert() as well:
+
+static Cake\Utility\Hash::remove(ArrayAccess|array $data, string $path): ArrayAccess|array
+
+Removes all elements from an array that match $path:
+
+Using {n}, {s} and {*} will allow you to remove multiple values at once. You can also use attribute matchers with remove():
+
+static Cake\Utility\Hash::combine(array $data, array|string|null $keyPath, array|string|null $valuePath = null, ?string $groupPath = null): array
+
+Creates an associative array using a $keyPath as the path to build its keys, and optionally $valuePath as path to get the values. If $valuePath is not specified, or doesn't match anything, values will be initialized to null. You can optionally group the values by what is obtained when following the path specified in $groupPath:
+
+You can provide arrays for both $keyPath and $valuePath. If you do this, the first value will be used as a format string, for values extracted by the other paths:
+
+static Cake\Utility\Hash::format(array $data, array $paths, string $format): ?array
+
+Returns a series of values extracted from an array, formatted with a format string:
+
+static Cake\Utility\Hash::contains(array $data, array $needle): bool
+
+Determines if one Hash or array contains the exact keys and values of another:
+
+static Cake\Utility\Hash::check(array $data, string $path): bool
+
+Checks if a particular path is set in an array:
+
+static Cake\Utility\Hash::filter(array $data, ?callable $callback = null): array
+
+Filters empty elements out of array, excluding '0'. You can also supply a custom $callback to filter the array elements. The callback should return false to remove elements from the resulting array:
+
+static Cake\Utility\Hash::flatten(array $data, string $separator = '.'): array
+
+Collapses a multi-dimensional array into a single dimension:
+
+static Cake\Utility\Hash::expand(array $data, string $separator = '.'): array
+
+Expands an array that was previously flattened with Hash::flatten():
+
+static Cake\Utility\Hash::merge(array $data, array $merge[, array $n]): array
+
+This function can be thought of as a hybrid between PHP's array_merge and array_merge_recursive. The difference to the two is that if an array key contains another array then the function behaves recursive (unlike array_merge) but does not do if for keys containing strings (unlike array_merge_recursive).
+
+NOTE
+
+This function will work with an unlimited amount of arguments and typecasts non-array parameters into arrays.
+
+static Cake\Utility\Hash::numeric(array $data): bool
+
+Checks to see if all the values in the array are numeric:
+
+static Cake\Utility\Hash::dimensions(array $data): int
+
+Counts the dimensions of an array. This method will only consider the dimension of the first element in the array:
+
+static Cake\Utility\Hash::maxDimensions(array $data): int
+
+Similar to ~Hash::dimensions(), however this method returns, the deepest number of dimensions of any element in the array:
+
+static Cake\Utility\Hash::map(array $data, string $path, callable $function): array
+
+Creates a new array, by extracting $path, and mapping $function across the results. You can use both expression and matching elements with this method:
+
+static Cake\Utility\Hash::reduce(array $data, string $path, callable $function): mixed
+
+Creates a single value, by extracting $path, and reducing the extracted results with $function. You can use both expression and matching elements with this method.
+
+static Cake\Utility\Hash::apply(array $data, string $path, callable $function): mixed
+
+Apply a callback to a set of extracted values using $function. The function will get the extracted values as the first argument:
+
+static Cake\Utility\Hash::sort(array $data, string $path, string|int $dir = 'asc', array|string $type = 'regular'): array
+
+Sorts an array by any value, determined by a Hash Path Syntax Only expression elements are supported by this method:
+
+$dir can be either asc or desc. $type can be one of the following values:
+
+static Cake\Utility\Hash::diff(array $data, array $compare): array
+
+Computes the difference between two arrays:
+
+static Cake\Utility\Hash::mergeDiff(array $data, array $compare): array
+
+This function merges two arrays and pushes the differences in data to the bottom of the resultant array.
+
+Example 1:
+
+Example 2:
+
+static Cake\Utility\Hash::normalize(array $data, bool $assoc = true, mixed $default = null): array
+
+Normalizes an array. If $assoc is true, the resulting array will be normalized to be an associative array. Numeric keys with values, will be converted to string keys with $default values. Normalizing an array, makes using the results with Hash::merge() easier:
+
+Changed in version 4.5.0
+
+The $default parameter was added.
+
+static Cake\Utility\Hash::nest(array $data, array $options = []): array
+
+Takes a flat array set, and creates a nested, or threaded data structure.
+
+Options:
+
+For example, if you had the following array of data:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+Hash::combine()
+----------------------------------------
+
+Code Block 3 ():
+Hash
+----------------------------------------
+
+Code Block 4 ():
+{n}
+----------------------------------------
+
+Code Block 5 ():
+{s}
+----------------------------------------
+
+Code Block 6 ():
+{*}
+----------------------------------------
+
+Code Block 7 ():
+Foo
+----------------------------------------
+
+Code Block 8 ():
+extract()
+----------------------------------------
+
+Code Block 9 ():
+combine()
+----------------------------------------
+
+Code Block 10 ():
+format()
+----------------------------------------
+
+Code Block 11 ():
+check()
+----------------------------------------
+
+Code Block 12 ():
+map()
+----------------------------------------
+
+Code Block 13 ():
+reduce()
+----------------------------------------
+
+Code Block 14 ():
+apply()
+----------------------------------------
+
+Code Block 15 ():
+sort()
+----------------------------------------
+
+Code Block 16 ():
+insert()
+----------------------------------------
+
+Code Block 17 ():
+remove()
+----------------------------------------
+
+Code Block 18 ():
+nest()
+----------------------------------------
+
+Code Block 19 ():
+[id]
+----------------------------------------
+
+Code Block 20 ():
+[id=2]
+----------------------------------------
+
+Code Block 21 ():
+[id!=2]
+----------------------------------------
+
+Code Block 22 ():
+[id>2]
+----------------------------------------
+
+Code Block 23 ():
+[id>=2]
+----------------------------------------
+
+Code Block 24 ():
+[id<2]
+----------------------------------------
+
+Code Block 25 ():
+[id<=2]
+----------------------------------------
+
+Code Block 26 ():
+[text=/.../]
+----------------------------------------
+
+Code Block 27 ():
+...
+----------------------------------------
+
+Code Block 28 ():
+static
+----------------------------------------
+
+Code Block 29 ():
+get()
+----------------------------------------
+
+Code Block 30 ():
+extract()
+----------------------------------------
+
+Code Block 31 ():
+{n}
+----------------------------------------
+
+Code Block 32 ():
+{s}
+----------------------------------------
+
+Code Block 33 ():
+{*}
+----------------------------------------
+
+Code Block 34 ():
+get()
+----------------------------------------
+
+Code Block 35 ():
+static
+----------------------------------------
+
+Code Block 36 ():
+Hash::extract()
+----------------------------------------
+
+Code Block 37 ():
+ArrayAccess
+----------------------------------------
+
+Code Block 38 (shiki):
+// Common Usage:
+$users = [
+    ['id' => 1, 'name' => 'mark'],
+    ['id' => 2, 'name' => 'jane'],
+    ['id' => 3, 'name' => 'sally'],
+    ['id' => 4, 'name' => 'jose'],
+];
+$results = Hash::extract($users, '{n}.id');
+// $results equals:
+// [1,2,3,4];
+----------------------------------------
+
+Code Block 39 ():
+// Common Usage:
+$users = [
+    ['id' => 1, 'name' => 'mark'],
+    ['id' => 2, 'name' => 'jane'],
+    ['id' => 3, 'name' => 'sally'],
+    ['id' => 4, 'name' => 'jose'],
+];
+$results = Hash::extract($users, '{n}.id');
+// $results equals:
+// [1,2,3,4];
+----------------------------------------
+
+Code Block 40 ():
+static
+----------------------------------------
+
+Code Block 41 ():
+$values
+----------------------------------------
+
+Code Block 42 ():
+$path
+----------------------------------------
+
+Code Block 43 (shiki):
+$a = [
+    'pages' => ['name' => 'page'],
+];
+$result = Hash::insert($a, 'files', ['name' => 'files']);
+// $result now looks like:
+[
+    [pages] => [
+        [name] => page
+    ]
+    [files] => [
+        [name] => files
+    ]
+]
+----------------------------------------
+
+Code Block 44 ():
+$a = [
+    'pages' => ['name' => 'page'],
+];
+$result = Hash::insert($a, 'files', ['name' => 'files']);
+// $result now looks like:
+[
+    [pages] => [
+        [name] => page
+    ]
+    [files] => [
+        [name] => files
+    ]
+]
+----------------------------------------
+
+Code Block 45 ():
+{n}
+----------------------------------------
+
+Code Block 46 ():
+{s}
+----------------------------------------
+
+Code Block 47 ():
+{*}
+----------------------------------------
+
+Code Block 48 (shiki):
+$users = Hash::insert($users, '{n}.new', 'value');
+----------------------------------------
+
+Code Block 49 ():
+$users = Hash::insert($users, '{n}.new', 'value');
+----------------------------------------
+
+Code Block 50 ():
+insert()
+----------------------------------------
+
+Code Block 51 (shiki):
+$data = [
+    0 => ['up' => true, 'Item' => ['id' => 1, 'title' => 'first']],
+    1 => ['Item' => ['id' => 2, 'title' => 'second']],
+    2 => ['Item' => ['id' => 3, 'title' => 'third']],
+    3 => ['up' => true, 'Item' => ['id' => 4, 'title' => 'fourth']],
+    4 => ['Item' => ['id' => 5, 'title' => 'fifth']],
+];
+$result = Hash::insert($data, '{n}[up].Item[id=4].new', 9);
+/* $result now looks like:
+    [
+        ['up' => true, 'Item' => ['id' => 1, 'title' => 'first']],
+        ['Item' => ['id' => 2, 'title' => 'second']],
+        ['Item' => ['id' => 3, 'title' => 'third']],
+        ['up' => true, 'Item' => ['id' => 4, 'title' => 'fourth', 'new' => 9]],
+        ['Item' => ['id' => 5, 'title' => 'fifth']],
+    ]
+*/
+----------------------------------------
+
+Code Block 52 ():
+$data = [
+    0 => ['up' => true, 'Item' => ['id' => 1, 'title' => 'first']],
+    1 => ['Item' => ['id' => 2, 'title' => 'second']],
+    2 => ['Item' => ['id' => 3, 'title' => 'third']],
+    3 => ['up' => true, 'Item' => ['id' => 4, 'title' => 'fourth']],
+    4 => ['Item' => ['id' => 5, 'title' => 'fifth']],
+];
+$result = Hash::insert($data, '{n}[up].Item[id=4].new', 9);
+/* $result now looks like:
+    [
+        ['up' => true, 'Item' => ['id' => 1, 'title' => 'first']],
+        ['Item' => ['id' => 2, 'title' => 'second']],
+        ['Item' => ['id' => 3, 'title' => 'third']],
+        ['up' => true, 'Item' => ['id' => 4, 'title' => 'fourth', 'new' => 9]],
+        ['Item' => ['id' => 5, 'title' => 'fifth']],
+    ]
+*/
+----------------------------------------
+
+Code Block 53 ():
+static
+----------------------------------------
+
+Code Block 54 ():
+$path
+----------------------------------------
+
+Code Block 55 (shiki):
+$a = [
+    'pages' => ['name' => 'page'],
+    'files' => ['name' => 'files'],
+];
+$result = Hash::remove($a, 'files');
+/* $result now looks like:
+    [
+        [pages] => [
+            [name] => page
+        ]
+
+    ]
+*/
+----------------------------------------
+
+Code Block 56 ():
+$a = [
+    'pages' => ['name' => 'page'],
+    'files' => ['name' => 'files'],
+];
+$result = Hash::remove($a, 'files');
+/* $result now looks like:
+    [
+        [pages] => [
+            [name] => page
+        ]
+
+    ]
+*/
+----------------------------------------
+
+Code Block 57 ():
+{n}
+----------------------------------------
+
+Code Block 58 ():
+{s}
+----------------------------------------
+
+Code Block 59 ():
+{*}
+----------------------------------------
+
+Code Block 60 ():
+remove()
+----------------------------------------
+
+Code Block 61 (shiki):
+$data = [
+    0 => ['clear' => true, 'Item' => ['id' => 1, 'title' => 'first']],
+    1 => ['Item' => ['id' => 2, 'title' => 'second']],
+    2 => ['Item' => ['id' => 3, 'title' => 'third']],
+    3 => ['clear' => true, 'Item' => ['id' => 4, 'title' => 'fourth']],
+    4 => ['Item' => ['id' => 5, 'title' => 'fifth']],
+];
+$result = Hash::remove($data, '{n}[clear].Item[id=4]');
+/* $result now looks like:
+    [
+        ['clear' => true, 'Item' => ['id' => 1, 'title' => 'first']],
+        ['Item' => ['id' => 2, 'title' => 'second']],
+        ['Item' => ['id' => 3, 'title' => 'third']],
+        ['clear' => true],
+        ['Item' => ['id' => 5, 'title' => 'fifth']],
+    ]
+*/
+----------------------------------------
+
+Code Block 62 ():
+$data = [
+    0 => ['clear' => true, 'Item' => ['id' => 1, 'title' => 'first']],
+    1 => ['Item' => ['id' => 2, 'title' => 'second']],
+    2 => ['Item' => ['id' => 3, 'title' => 'third']],
+    3 => ['clear' => true, 'Item' => ['id' => 4, 'title' => 'fourth']],
+    4 => ['Item' => ['id' => 5, 'title' => 'fifth']],
+];
+$result = Hash::remove($data, '{n}[clear].Item[id=4]');
+/* $result now looks like:
+    [
+        ['clear' => true, 'Item' => ['id' => 1, 'title' => 'first']],
+        ['Item' => ['id' => 2, 'title' => 'second']],
+        ['Item' => ['id' => 3, 'title' => 'third']],
+        ['clear' => true],
+        ['Item' => ['id' => 5, 'title' => 'fifth']],
+    ]
+*/
+----------------------------------------
+
+Code Block 63 ():
+static
+----------------------------------------
+
+Code Block 64 ():
+$keyPath
+----------------------------------------
+
+Code Block 65 ():
+$valuePath
+----------------------------------------
+
+Code Block 66 ():
+$valuePath
+----------------------------------------
+
+Code Block 67 ():
+$groupPath
+----------------------------------------
+
+Code Block 68 (shiki):
+$a = [
+    [
+        'User' => [
+            'id' => 2,
+            'group_id' => 1,
+            'Data' => [
+                'user' => 'mariano.iglesias',
+                'name' => 'Mariano Iglesias',
+            ]
+        ]
+    ],
+    [
+        'User' => [
+            'id' => 14,
+            'group_id' => 2,
+            'Data' => [
+                'user' => 'phpnut',
+                'name' => 'Larry E. Masters',
+            ]
+        ]
+    ],
+];
+
+$result = Hash::combine($a, '{n}.User.id');
+/* $result now looks like:
+    [
+        [2] =>
+        [14] =>
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data.user');
+/* $result now looks like:
+    [
+        [2] => 'mariano.iglesias'
+        [14] => 'phpnut'
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data');
+/* $result now looks like:
+    [
+        [2] => [
+                [user] => mariano.iglesias
+                [name] => Mariano Iglesias
+        ]
+        [14] => [
+                [user] => phpnut
+                [name] => Larry E. Masters
+        ]
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data.name');
+/* $result now looks like:
+    [
+        [2] => Mariano Iglesias
+        [14] => Larry E. Masters
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data', '{n}.User.group_id');
+/* $result now looks like:
+    [
+        [1] => [
+                [2] => [
+                        [user] => mariano.iglesias
+                        [name] => Mariano Iglesias
+                ]
+        ]
+        [2] => [
+                [14] => [
+                        [user] => phpnut
+                        [name] => Larry E. Masters
+                ]
+        ]
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data.name', '{n}.User.group_id');
+/* $result now looks like:
+    [
+        [1] => [
+                [2] => Mariano Iglesias
+        ]
+        [2] => [
+                [14] => Larry E. Masters
+        ]
+    ]
+*/
+
+// As of 3.9.0 $keyPath can be null
+$result = Hash::combine($a, null, '{n}.User.Data.name');
+/* $result now looks like:
+    [
+        [0] => Mariano Iglesias
+        [1] => Larry E. Masters
+    ]
+*/
+----------------------------------------
+
+Code Block 69 ():
+$a = [
+    [
+        'User' => [
+            'id' => 2,
+            'group_id' => 1,
+            'Data' => [
+                'user' => 'mariano.iglesias',
+                'name' => 'Mariano Iglesias',
+            ]
+        ]
+    ],
+    [
+        'User' => [
+            'id' => 14,
+            'group_id' => 2,
+            'Data' => [
+                'user' => 'phpnut',
+                'name' => 'Larry E. Masters',
+            ]
+        ]
+    ],
+];
+
+$result = Hash::combine($a, '{n}.User.id');
+/* $result now looks like:
+    [
+        [2] =>
+        [14] =>
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data.user');
+/* $result now looks like:
+    [
+        [2] => 'mariano.iglesias'
+        [14] => 'phpnut'
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data');
+/* $result now looks like:
+    [
+        [2] => [
+                [user] => mariano.iglesias
+                [name] => Mariano Iglesias
+        ]
+        [14] => [
+                [user] => phpnut
+                [name] => Larry E. Masters
+        ]
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data.name');
+/* $result now looks like:
+    [
+        [2] => Mariano Iglesias
+        [14] => Larry E. Masters
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data', '{n}.User.group_id');
+/* $result now looks like:
+    [
+        [1] => [
+                [2] => [
+                        [user] => mariano.iglesias
+                        [name] => Mariano Iglesias
+                ]
+        ]
+        [2] => [
+                [14] => [
+                        [user] => phpnut
+                        [name] => Larry E. Masters
+                ]
+        ]
+    ]
+*/
+
+$result = Hash::combine($a, '{n}.User.id', '{n}.User.Data.name', '{n}.User.group_id');
+/* $result now looks like:
+    [
+        [1] => [
+                [2] => Mariano Iglesias
+        ]
+        [2] => [
+                [14] => Larry E. Masters
+        ]
+    ]
+*/
+
+// As of 3.9.0 $keyPath can be null
+$result = Hash::combine($a, null, '{n}.User.Data.name');
+/* $result now looks like:
+    [
+        [0] => Mariano Iglesias
+        [1] => Larry E. Masters
+    ]
+*/
+----------------------------------------
+
+Code Block 70 ():
+$keyPath
+----------------------------------------
+
+Code Block 71 ():
+$valuePath
+----------------------------------------
+
+Code Block 72 (shiki):
+$result = Hash::combine(
+    $a,
+    '{n}.User.id',
+    ['%s: %s', '{n}.User.Data.user', '{n}.User.Data.name'],
+    '{n}.User.group_id',
+);
+/* $result now looks like:
+    [
+        [1] => [
+                [2] => mariano.iglesias: Mariano Iglesias
+        ]
+        [2] => [
+                [14] => phpnut: Larry E. Masters
+        ]
+    ]
+*/
+
+$result = Hash::combine(
+    $a,
+    ['%s: %s', '{n}.User.Data.user', '{n}.User.Data.name'],
+    '{n}.User.id',
+);
+/* $result now looks like:
+    [
+        [mariano.iglesias: Mariano Iglesias] => 2
+        [phpnut: Larry E. Masters] => 14
+    ]
+*/
+----------------------------------------
+
+Code Block 73 ():
+$result = Hash::combine(
+    $a,
+    '{n}.User.id',
+    ['%s: %s', '{n}.User.Data.user', '{n}.User.Data.name'],
+    '{n}.User.group_id',
+);
+/* $result now looks like:
+    [
+        [1] => [
+                [2] => mariano.iglesias: Mariano Iglesias
+        ]
+        [2] => [
+                [14] => phpnut: Larry E. Masters
+        ]
+    ]
+*/
+
+$result = Hash::combine(
+    $a,
+    ['%s: %s', '{n}.User.Data.user', '{n}.User.Data.name'],
+    '{n}.User.id',
+);
+/* $result now looks like:
+    [
+        [mariano.iglesias: Mariano Iglesias] => 2
+        [phpnut: Larry E. Masters] => 14
+    ]
+*/
+----------------------------------------
+
+Code Block 74 ():
+static
+----------------------------------------
+
+Code Block 75 (shiki):
+$data = [
+    [
+        'Person' => [
+            'first_name' => 'Nate',
+            'last_name' => 'Abele',
+            'city' => 'Boston',
+            'state' => 'MA',
+            'something' => '42',
+        ]
+    ],
+    [
+        'Person' => [
+            'first_name' => 'Larry',
+            'last_name' => 'Masters',
+            'city' => 'Boondock',
+            'state' => 'TN',
+            'something' => '{0}',
+        ]
+    ],
+    [
+        'Person' => [
+            'first_name' => 'Garrett',
+            'last_name' => 'Woodworth',
+            'city' => 'Venice Beach',
+            'state' => 'CA',
+            'something' => '{1}',
+        ]
+    ]
+];
+
+$res = Hash::format($data, ['{n}.Person.first_name', '{n}.Person.something'], '%2$d, %1$s');
+/*
+[
+    [0] => 42, Nate
+    [1] => 0, Larry
+    [2] => 0, Garrett
+]
+*/
+
+$res = Hash::format($data, ['{n}.Person.first_name', '{n}.Person.something'], '%1$s, %2$d');
+/*
+[
+    [0] => Nate, 42
+    [1] => Larry, 0
+    [2] => Garrett, 0
+]
+*/
+----------------------------------------
+
+Code Block 76 ():
+$data = [
+    [
+        'Person' => [
+            'first_name' => 'Nate',
+            'last_name' => 'Abele',
+            'city' => 'Boston',
+            'state' => 'MA',
+            'something' => '42',
+        ]
+    ],
+    [
+        'Person' => [
+            'first_name' => 'Larry',
+            'last_name' => 'Masters',
+            'city' => 'Boondock',
+            'state' => 'TN',
+            'something' => '{0}',
+        ]
+    ],
+    [
+        'Person' => [
+            'first_name' => 'Garrett',
+            'last_name' => 'Woodworth',
+            'city' => 'Venice Beach',
+            'state' => 'CA',
+            'something' => '{1}',
+        ]
+    ]
+];
+
+$res = Hash::format($data, ['{n}.Person.first_name', '{n}.Person.something'], '%2$d, %1$s');
+/*
+[
+    [0] => 42, Nate
+    [1] => 0, Larry
+    [2] => 0, Garrett
+]
+*/
+
+$res = Hash::format($data, ['{n}.Person.first_name', '{n}.Person.something'], '%1$s, %2$d');
+/*
+[
+    [0] => Nate, 42
+    [1] => Larry, 0
+    [2] => Garrett, 0
+]
+*/
+----------------------------------------
+
+Code Block 77 ():
+static
+----------------------------------------
+
+Code Block 78 (shiki):
+$a = [
+    0 => ['name' => 'main'],
+    1 => ['name' => 'about'],
+];
+$b = [
+    0 => ['name' => 'main'],
+    1 => ['name' => 'about'],
+    2 => ['name' => 'contact'],
+    'a' => 'b',
+];
+
+$result = Hash::contains($a, $a);
+// true
+$result = Hash::contains($a, $b);
+// false
+$result = Hash::contains($b, $a);
+// true
+----------------------------------------
+
+Code Block 79 ():
+$a = [
+    0 => ['name' => 'main'],
+    1 => ['name' => 'about'],
+];
+$b = [
+    0 => ['name' => 'main'],
+    1 => ['name' => 'about'],
+    2 => ['name' => 'contact'],
+    'a' => 'b',
+];
+
+$result = Hash::contains($a, $a);
+// true
+$result = Hash::contains($a, $b);
+// false
+$result = Hash::contains($b, $a);
+// true
+----------------------------------------
+
+Code Block 80 ():
+static
+----------------------------------------
+
+Code Block 81 (shiki):
+$set = [
+    'My Index 1' => ['First' => 'The first item'],
+];
+$result = Hash::check($set, 'My Index 1.First');
+// $result == true
+
+$result = Hash::check($set, 'My Index 1');
+// $result == true
+
+$set = [
+    'My Index 1' => [
+        'First' => [
+            'Second' => [
+                'Third' => [
+                    'Fourth' => 'Heavy. Nesting.',
+                ]
+            ]
+        ]
+    ]
+];
+$result = Hash::check($set, 'My Index 1.First.Second');
+// $result == true
+
+$result = Hash::check($set, 'My Index 1.First.Second.Third');
+// $result == true
+
+$result = Hash::check($set, 'My Index 1.First.Second.Third.Fourth');
+// $result == true
+
+$result = Hash::check($set, 'My Index 1.First.Seconds.Third.Fourth');
+// $result == false
+----------------------------------------
+
+Code Block 82 ():
+$set = [
+    'My Index 1' => ['First' => 'The first item'],
+];
+$result = Hash::check($set, 'My Index 1.First');
+// $result == true
+
+$result = Hash::check($set, 'My Index 1');
+// $result == true
+
+$set = [
+    'My Index 1' => [
+        'First' => [
+            'Second' => [
+                'Third' => [
+                    'Fourth' => 'Heavy. Nesting.',
+                ]
+            ]
+        ]
+    ]
+];
+$result = Hash::check($set, 'My Index 1.First.Second');
+// $result == true
+
+$result = Hash::check($set, 'My Index 1.First.Second.Third');
+// $result == true
+
+$result = Hash::check($set, 'My Index 1.First.Second.Third.Fourth');
+// $result == true
+
+$result = Hash::check($set, 'My Index 1.First.Seconds.Third.Fourth');
+// $result == false
+----------------------------------------
+
+Code Block 83 ():
+static
+----------------------------------------
+
+Code Block 84 ():
+$callback
+----------------------------------------
+
+Code Block 85 ():
+false
+----------------------------------------
+
+Code Block 86 (shiki):
+$data = [
+    '0',
+    false,
+    true,
+    0,
+    ['one thing', 'I can tell you', 'is you got to be', false],
+];
+$res = Hash::filter($data);
+
+/* $res now looks like:
+    [
+        [0] => 0
+        [2] => true
+        [3] => 0
+        [4] => [
+                [0] => one thing
+                [1] => I can tell you
+                [2] => is you got to be
+        ]
+    ]
+*/
+----------------------------------------
+
+Code Block 87 ():
+$data = [
+    '0',
+    false,
+    true,
+    0,
+    ['one thing', 'I can tell you', 'is you got to be', false],
+];
+$res = Hash::filter($data);
+
+/* $res now looks like:
+    [
+        [0] => 0
+        [2] => true
+        [3] => 0
+        [4] => [
+                [0] => one thing
+                [1] => I can tell you
+                [2] => is you got to be
+        ]
+    ]
+*/
+----------------------------------------
+
+Code Block 88 ():
+static
+----------------------------------------
+
+Code Block 89 (shiki):
+$arr = [
+    [
+        'Post' => ['id' => '1', 'title' => 'First Post'],
+        'Author' => ['id' => '1', 'user' => 'Kyle'],
+    ],
+    [
+        'Post' => ['id' => '2', 'title' => 'Second Post'],
+        'Author' => ['id' => '3', 'user' => 'Crystal'],
+    ],
+];
+$res = Hash::flatten($arr);
+/* $res now looks like:
+    [
+        [0.Post.id] => 1
+        [0.Post.title] => First Post
+        [0.Author.id] => 1
+        [0.Author.user] => Kyle
+        [1.Post.id] => 2
+        [1.Post.title] => Second Post
+        [1.Author.id] => 3
+        [1.Author.user] => Crystal
+    ]
+*/
+----------------------------------------
+
+Code Block 90 ():
+$arr = [
+    [
+        'Post' => ['id' => '1', 'title' => 'First Post'],
+        'Author' => ['id' => '1', 'user' => 'Kyle'],
+    ],
+    [
+        'Post' => ['id' => '2', 'title' => 'Second Post'],
+        'Author' => ['id' => '3', 'user' => 'Crystal'],
+    ],
+];
+$res = Hash::flatten($arr);
+/* $res now looks like:
+    [
+        [0.Post.id] => 1
+        [0.Post.title] => First Post
+        [0.Author.id] => 1
+        [0.Author.user] => Kyle
+        [1.Post.id] => 2
+        [1.Post.title] => Second Post
+        [1.Author.id] => 3
+        [1.Author.user] => Crystal
+    ]
+*/
+----------------------------------------
+
+Code Block 91 ():
+static
+----------------------------------------
+
+Code Block 92 ():
+Hash::flatten()
+----------------------------------------
+
+Code Block 93 (shiki):
+$data = [
+    '0.Post.id' => 1,
+    '0.Post.title' => First Post,
+    '0.Author.id' => 1,
+    '0.Author.user' => Kyle,
+    '1.Post.id' => 2,
+    '1.Post.title' => Second Post,
+    '1.Author.id' => 3,
+    '1.Author.user' => Crystal,
+];
+$res = Hash::expand($data);
+/* $res now looks like:
+[
+    [
+        'Post' => ['id' => '1', 'title' => 'First Post'],
+        'Author' => ['id' => '1', 'user' => 'Kyle'],
+    ],
+    [
+        'Post' => ['id' => '2', 'title' => 'Second Post'],
+        'Author' => ['id' => '3', 'user' => 'Crystal'],
+    ],
+];
+*/
+----------------------------------------
+
+Code Block 94 ():
+$data = [
+    '0.Post.id' => 1,
+    '0.Post.title' => First Post,
+    '0.Author.id' => 1,
+    '0.Author.user' => Kyle,
+    '1.Post.id' => 2,
+    '1.Post.title' => Second Post,
+    '1.Author.id' => 3,
+    '1.Author.user' => Crystal,
+];
+$res = Hash::expand($data);
+/* $res now looks like:
+[
+    [
+        'Post' => ['id' => '1', 'title' => 'First Post'],
+        'Author' => ['id' => '1', 'user' => 'Kyle'],
+    ],
+    [
+        'Post' => ['id' => '2', 'title' => 'Second Post'],
+        'Author' => ['id' => '3', 'user' => 'Crystal'],
+    ],
+];
+*/
+----------------------------------------
+
+Code Block 95 ():
+static
+----------------------------------------
+
+Code Block 96 ():
+array_merge
+----------------------------------------
+
+Code Block 97 ():
+array_merge_recursive
+----------------------------------------
+
+Code Block 98 ():
+array_merge
+----------------------------------------
+
+Code Block 99 ():
+array_merge_recursive
+----------------------------------------
+
+Code Block 100 (shiki):
+$array = [
+    [
+        'id' => '48c2570e-dfa8-4c32-a35e-0d71cbdd56cb',
+        'name' => 'mysql raleigh-workshop-08 < 2008-09-05.sql ',
+        'description' => 'Importing an sql dump',
+    ],
+    [
+        'id' => '48c257a8-cf7c-4af2-ac2f-114ecbdd56cb',
+        'name' => 'pbpaste | grep -i Unpaid | pbcopy',
+        'description' => 'Remove all lines that say "Unpaid".',
+    ]
+];
+$arrayB = 4;
+$arrayC = [0 => "test array", "cats" => "dogs", "people" => 1267];
+$arrayD = ["cats" => "felines", "dog" => "angry"];
+$res = Hash::merge($array, $arrayB, $arrayC, $arrayD);
+
+/* $res now looks like:
+[
+    [0] => [
+            [id] => 48c2570e-dfa8-4c32-a35e-0d71cbdd56cb
+            [name] => mysql raleigh-workshop-08 < 2008-09-05.sql
+            [description] => Importing an sql dump
+    ]
+    [1] => [
+            [id] => 48c257a8-cf7c-4af2-ac2f-114ecbdd56cb
+            [name] => pbpaste | grep -i Unpaid | pbcopy
+            [description] => Remove all lines that say "Unpaid".
+    ]
+    [2] => 4
+    [3] => test array
+    [cats] => felines
+    [people] => 1267
+    [dog] => angry
+]
+*/
+----------------------------------------
+
+Code Block 101 ():
+$array = [
+    [
+        'id' => '48c2570e-dfa8-4c32-a35e-0d71cbdd56cb',
+        'name' => 'mysql raleigh-workshop-08 < 2008-09-05.sql ',
+        'description' => 'Importing an sql dump',
+    ],
+    [
+        'id' => '48c257a8-cf7c-4af2-ac2f-114ecbdd56cb',
+        'name' => 'pbpaste | grep -i Unpaid | pbcopy',
+        'description' => 'Remove all lines that say "Unpaid".',
+    ]
+];
+$arrayB = 4;
+$arrayC = [0 => "test array", "cats" => "dogs", "people" => 1267];
+$arrayD = ["cats" => "felines", "dog" => "angry"];
+$res = Hash::merge($array, $arrayB, $arrayC, $arrayD);
+
+/* $res now looks like:
+[
+    [0] => [
+            [id] => 48c2570e-dfa8-4c32-a35e-0d71cbdd56cb
+            [name] => mysql raleigh-workshop-08 < 2008-09-05.sql
+            [description] => Importing an sql dump
+    ]
+    [1] => [
+            [id] => 48c257a8-cf7c-4af2-ac2f-114ecbdd56cb
+            [name] => pbpaste | grep -i Unpaid | pbcopy
+            [description] => Remove all lines that say "Unpaid".
+    ]
+    [2] => 4
+    [3] => test array
+    [cats] => felines
+    [people] => 1267
+    [dog] => angry
+]
+*/
+----------------------------------------
+
+Code Block 102 ():
+static
+----------------------------------------
+
+Code Block 103 (shiki):
+$data = ['one'];
+$res = Hash::numeric(array_keys($data));
+// $res is true
+
+$data = [1 => 'one'];
+$res = Hash::numeric($data);
+// $res is false
+----------------------------------------
+
+Code Block 104 ():
+$data = ['one'];
+$res = Hash::numeric(array_keys($data));
+// $res is true
+
+$data = [1 => 'one'];
+$res = Hash::numeric($data);
+// $res is false
+----------------------------------------
+
+Code Block 105 ():
+static
+----------------------------------------
+
+Code Block 106 (shiki):
+$data = ['one', '2', 'three'];
+$result = Hash::dimensions($data);
+// $result == 1
+
+$data = ['1' => '1.1', '2', '3'];
+$result = Hash::dimensions($data);
+// $result == 1
+
+$data = ['1' => ['1.1' => '1.1.1'], '2', '3' => ['3.1' => '3.1.1']];
+$result = Hash::dimensions($data);
+// $result == 2
+
+$data = ['1' => '1.1', '2', '3' => ['3.1' => '3.1.1']];
+$result = Hash::dimensions($data);
+// $result == 1
+
+$data = ['1' => ['1.1' => '1.1.1'], '2', '3' => ['3.1' => ['3.1.1' => '3.1.1.1']]];
+$result = Hash::dimensions($data);
+// $result == 2
+----------------------------------------
+
+Code Block 107 ():
+$data = ['one', '2', 'three'];
+$result = Hash::dimensions($data);
+// $result == 1
+
+$data = ['1' => '1.1', '2', '3'];
+$result = Hash::dimensions($data);
+// $result == 1
+
+$data = ['1' => ['1.1' => '1.1.1'], '2', '3' => ['3.1' => '3.1.1']];
+$result = Hash::dimensions($data);
+// $result == 2
+
+$data = ['1' => '1.1', '2', '3' => ['3.1' => '3.1.1']];
+$result = Hash::dimensions($data);
+// $result == 1
+
+$data = ['1' => ['1.1' => '1.1.1'], '2', '3' => ['3.1' => ['3.1.1' => '3.1.1.1']]];
+$result = Hash::dimensions($data);
+// $result == 2
+----------------------------------------
+
+Code Block 108 ():
+static
+----------------------------------------
+
+Code Block 109 ():
+~Hash::dimensions()
+----------------------------------------
+
+Code Block 110 (shiki):
+$data = ['1' => '1.1', '2', '3' => ['3.1' => '3.1.1']];
+$result = Hash::maxDimensions($data);
+// $result == 2
+
+$data = ['1' => ['1.1' => '1.1.1'], '2', '3' => ['3.1' => ['3.1.1' => '3.1.1.1']]];
+$result = Hash::maxDimensions($data);
+// $result == 3
+----------------------------------------
+
+Code Block 111 ():
+$data = ['1' => '1.1', '2', '3' => ['3.1' => '3.1.1']];
+$result = Hash::maxDimensions($data);
+// $result == 2
+
+$data = ['1' => ['1.1' => '1.1.1'], '2', '3' => ['3.1' => ['3.1.1' => '3.1.1.1']]];
+$result = Hash::maxDimensions($data);
+// $result == 3
+----------------------------------------
+
+Code Block 112 ():
+static
+----------------------------------------
+
+Code Block 113 ():
+$path
+----------------------------------------
+
+Code Block 114 ():
+$function
+----------------------------------------
+
+Code Block 115 (shiki):
+// Call the noop function $this->noop() on every element of $data
+$result = Hash::map($data, "{n}", [$this, 'noop']);
+
+public function noop(array $array): array
+{
+    // Do stuff to array and return the result
+    return $array;
+}
+----------------------------------------
+
+Code Block 116 ():
+// Call the noop function $this->noop() on every element of $data
+$result = Hash::map($data, "{n}", [$this, 'noop']);
+
+public function noop(array $array): array
+{
+    // Do stuff to array and return the result
+    return $array;
+}
+----------------------------------------
+
+Code Block 117 ():
+static
+----------------------------------------
+
+Code Block 118 ():
+$path
+----------------------------------------
+
+Code Block 119 ():
+$function
+----------------------------------------
+
+Code Block 120 ():
+static
+----------------------------------------
+
+Code Block 121 ():
+$function
+----------------------------------------
+
+Code Block 122 (shiki):
+$data = [
+    ['date' => '01-01-2016', 'booked' => true],
+    ['date' => '01-01-2016', 'booked' => false],
+    ['date' => '02-01-2016', 'booked' => true],
+];
+$result = Hash::apply($data, '{n}[booked=true].date', 'array_count_values');
+/* $result now looks like:
+    [
+        '01-01-2016' => 1,
+        '02-01-2016' => 1,
+    ]
+*/
+----------------------------------------
+
+Code Block 123 ():
+$data = [
+    ['date' => '01-01-2016', 'booked' => true],
+    ['date' => '01-01-2016', 'booked' => false],
+    ['date' => '02-01-2016', 'booked' => true],
+];
+$result = Hash::apply($data, '{n}[booked=true].date', 'array_count_values');
+/* $result now looks like:
+    [
+        '01-01-2016' => 1,
+        '02-01-2016' => 1,
+    ]
+*/
+----------------------------------------
+
+Code Block 124 ():
+static
+----------------------------------------
+
+Code Block 125 (shiki):
+$a = [
+    0 => ['Person' => ['name' => 'Jeff']],
+    1 => ['Shirt' => ['color' => 'black']],
+];
+$result = Hash::sort($a, '{n}.Person.name', 'asc');
+/* $result now looks like:
+    [
+        [0] => [
+                [Shirt] => [
+                        [color] => black
+                ]
+        ]
+        [1] => [
+                [Person] => [
+                        [name] => Jeff
+                ]
+        ]
+    ]
+*/
+----------------------------------------
+
+Code Block 126 ():
+$a = [
+    0 => ['Person' => ['name' => 'Jeff']],
+    1 => ['Shirt' => ['color' => 'black']],
+];
+$result = Hash::sort($a, '{n}.Person.name', 'asc');
+/* $result now looks like:
+    [
+        [0] => [
+                [Shirt] => [
+                        [color] => black
+                ]
+        ]
+        [1] => [
+                [Person] => [
+                        [name] => Jeff
+                ]
+        ]
+    ]
+*/
+----------------------------------------
+
+Code Block 127 ():
+$dir
+----------------------------------------
+
+Code Block 128 ():
+asc
+----------------------------------------
+
+Code Block 129 ():
+desc
+----------------------------------------
+
+Code Block 130 ():
+$type
+----------------------------------------
+
+Code Block 131 ():
+regular
+----------------------------------------
+
+Code Block 132 ():
+numeric
+----------------------------------------
+
+Code Block 133 ():
+string
+----------------------------------------
+
+Code Block 134 ():
+natural
+----------------------------------------
+
+Code Block 135 ():
+foo10
+----------------------------------------
+
+Code Block 136 ():
+foo2
+----------------------------------------
+
+Code Block 137 ():
+static
+----------------------------------------
+
+Code Block 138 (shiki):
+$a = [
+    0 => ['name' => 'main'],
+    1 => ['name' => 'about'],
+];
+$b = [
+    0 => ['name' => 'main'],
+    1 => ['name' => 'about'],
+    2 => ['name' => 'contact'],
+];
+
+$result = Hash::diff($a, $b);
+/* $result now looks like:
+    [
+        [2] => [
+                [name] => contact
+        ]
+    ]
+*/
+----------------------------------------
+
+Code Block 139 ():
+$a = [
+    0 => ['name' => 'main'],
+    1 => ['name' => 'about'],
+];
+$b = [
+    0 => ['name' => 'main'],
+    1 => ['name' => 'about'],
+    2 => ['name' => 'contact'],
+];
+
+$result = Hash::diff($a, $b);
+/* $result now looks like:
+    [
+        [2] => [
+                [name] => contact
+        ]
+    ]
+*/
+----------------------------------------
+
+Code Block 140 ():
+static
+----------------------------------------
+
+Code Block 141 (shiki):
+$array1 = ['ModelOne' => ['id' => 1001, 'field_one' => 'a1.m1.f1', 'field_two' => 'a1.m1.f2']];
+$array2 = ['ModelOne' => ['id' => 1003, 'field_one' => 'a3.m1.f1', 'field_two' => 'a3.m1.f2', 'field_three' => 'a3.m1.f3']];
+$res = Hash::mergeDiff($array1, $array2);
+
+/* $res now looks like:
+    [
+        [ModelOne] => [
+                [id] => 1001
+                [field_one] => a1.m1.f1
+                [field_two] => a1.m1.f2
+                [field_three] => a3.m1.f3
+            ]
+    ]
+*/
+----------------------------------------
+
+Code Block 142 ():
+$array1 = ['ModelOne' => ['id' => 1001, 'field_one' => 'a1.m1.f1', 'field_two' => 'a1.m1.f2']];
+$array2 = ['ModelOne' => ['id' => 1003, 'field_one' => 'a3.m1.f1', 'field_two' => 'a3.m1.f2', 'field_three' => 'a3.m1.f3']];
+$res = Hash::mergeDiff($array1, $array2);
+
+/* $res now looks like:
+    [
+        [ModelOne] => [
+                [id] => 1001
+                [field_one] => a1.m1.f1
+                [field_two] => a1.m1.f2
+                [field_three] => a3.m1.f3
+            ]
+    ]
+*/
+----------------------------------------
+
+Code Block 143 (shiki):
+$array1 = ["a" => "b", 1 => 20938, "c" => "string"];
+$array2 = ["b" => "b", 3 => 238, "c" => "string", ["extra_field"]];
+$res = Hash::mergeDiff($array1, $array2);
+/* $res now looks like:
+    [
+        [a] => b
+        [1] => 20938
+        [c] => string
+        [b] => b
+        [3] => 238
+        [4] => [
+                [0] => extra_field
+        ]
+    ]
+*/
+----------------------------------------
+
+Code Block 144 ():
+$array1 = ["a" => "b", 1 => 20938, "c" => "string"];
+$array2 = ["b" => "b", 3 => 238, "c" => "string", ["extra_field"]];
+$res = Hash::mergeDiff($array1, $array2);
+/* $res now looks like:
+    [
+        [a] => b
+        [1] => 20938
+        [c] => string
+        [b] => b
+        [3] => 238
+        [4] => [
+                [0] => extra_field
+        ]
+    ]
+*/
+----------------------------------------
+
+Code Block 145 ():
+static
+----------------------------------------
+
+Code Block 146 ():
+$assoc
+----------------------------------------
+
+Code Block 147 ():
+true
+----------------------------------------
+
+Code Block 148 ():
+$default
+----------------------------------------
+
+Code Block 149 ():
+Hash::merge()
+----------------------------------------
+
+Code Block 150 (shiki):
+$a = ['Tree', 'CounterCache',
+    'Upload' => [
+        'folder' => 'products',
+        'fields' => ['image_1_id', 'image_2_id'],
+    ]
+];
+$result = Hash::normalize($a);
+/* $result now looks like:
+    [
+        [Tree] => null
+        [CounterCache] => null
+        [Upload] => [
+                [folder] => products
+                [fields] => [
+                        [0] => image_1_id
+                        [1] => image_2_id
+                ]
+        ]
+    ]
+*/
+
+$b = [
+    'Cacheable' => ['enabled' => false],
+    'Limit',
+    'Bindable',
+    'Validator',
+    'Transactional',
+];
+$result = Hash::normalize($b);
+/* $result now looks like:
+    [
+        [Cacheable] => [
+                [enabled] => false
+        ]
+
+        [Limit] => null
+        [Bindable] => null
+        [Validator] => null
+        [Transactional] => null
+    ]
+*/
+----------------------------------------
+
+Code Block 151 ():
+$a = ['Tree', 'CounterCache',
+    'Upload' => [
+        'folder' => 'products',
+        'fields' => ['image_1_id', 'image_2_id'],
+    ]
+];
+$result = Hash::normalize($a);
+/* $result now looks like:
+    [
+        [Tree] => null
+        [CounterCache] => null
+        [Upload] => [
+                [folder] => products
+                [fields] => [
+                        [0] => image_1_id
+                        [1] => image_2_id
+                ]
+        ]
+    ]
+*/
+
+$b = [
+    'Cacheable' => ['enabled' => false],
+    'Limit',
+    'Bindable',
+    'Validator',
+    'Transactional',
+];
+$result = Hash::normalize($b);
+/* $result now looks like:
+    [
+        [Cacheable] => [
+                [enabled] => false
+        ]
+
+        [Limit] => null
+        [Bindable] => null
+        [Validator] => null
+        [Transactional] => null
+    ]
+*/
+----------------------------------------
+
+Code Block 152 ():
+$default
+----------------------------------------
+
+Code Block 153 ():
+static
+----------------------------------------
+
+Code Block 154 ():
+children
+----------------------------------------
+
+Code Block 155 ():
+idPath
+----------------------------------------
+
+Code Block 156 ():
+Hash::extract()
+----------------------------------------
+
+Code Block 157 ():
+{n}.$alias.id
+----------------------------------------
+
+Code Block 158 ():
+parentPath
+----------------------------------------
+
+Code Block 159 ():
+Hash::extract()
+----------------------------------------
+
+Code Block 160 ():
+{n}.$alias.parent_id
+----------------------------------------
+
+Code Block 161 ():
+root
+----------------------------------------
+
+Code Block 162 (shiki):
+$data = [
+    ['ThreadPost' => ['id' => 1, 'parent_id' => null]],
+    ['ThreadPost' => ['id' => 2, 'parent_id' => 1]],
+    ['ThreadPost' => ['id' => 3, 'parent_id' => 1]],
+    ['ThreadPost' => ['id' => 4, 'parent_id' => 1]],
+    ['ThreadPost' => ['id' => 5, 'parent_id' => 1]],
+    ['ThreadPost' => ['id' => 6, 'parent_id' => null]],
+    ['ThreadPost' => ['id' => 7, 'parent_id' => 6]],
+    ['ThreadPost' => ['id' => 8, 'parent_id' => 6]],
+    ['ThreadPost' => ['id' => 9, 'parent_id' => 6]],
+    ['ThreadPost' => ['id' => 10, 'parent_id' => 6]],
+];
+
+$result = Hash::nest($data, ['root' => 6]);
+/* $result now looks like:
+    [
+        (int) 0 => [
+            'ThreadPost' => [
+                'id' => (int) 6,
+                'parent_id' => null
+            ],
+            'children' => [
+                (int) 0 => [
+                    'ThreadPost' => [
+                        'id' => (int) 7,
+                        'parent_id' => (int) 6
+                    ],
+                    'children' => []
+                ],
+                (int) 1 => [
+                    'ThreadPost' => [
+                        'id' => (int) 8,
+                        'parent_id' => (int) 6
+                    ],
+                    'children' => []
+                ],
+                (int) 2 => [
+                    'ThreadPost' => [
+                        'id' => (int) 9,
+                        'parent_id' => (int) 6
+                    ],
+                    'children' => []
+                ],
+                (int) 3 => [
+                    'ThreadPost' => [
+                        'id' => (int) 10,
+                        'parent_id' => (int) 6
+                    ],
+                    'children' => []
+                ]
+            ]
+        ]
+    ]
+    */
+----------------------------------------
+
+Code Block 163 ():
+$data = [
+    ['ThreadPost' => ['id' => 1, 'parent_id' => null]],
+    ['ThreadPost' => ['id' => 2, 'parent_id' => 1]],
+    ['ThreadPost' => ['id' => 3, 'parent_id' => 1]],
+    ['ThreadPost' => ['id' => 4, 'parent_id' => 1]],
+    ['ThreadPost' => ['id' => 5, 'parent_id' => 1]],
+    ['ThreadPost' => ['id' => 6, 'parent_id' => null]],
+    ['ThreadPost' => ['id' => 7, 'parent_id' => 6]],
+    ['ThreadPost' => ['id' => 8, 'parent_id' => 6]],
+    ['ThreadPost' => ['id' => 9, 'parent_id' => 6]],
+    ['ThreadPost' => ['id' => 10, 'parent_id' => 6]],
+];
+
+$result = Hash::nest($data, ['root' => 6]);
+/* $result now looks like:
+    [
+        (int) 0 => [
+            'ThreadPost' => [
+                'id' => (int) 6,
+                'parent_id' => null
+            ],
+            'children' => [
+                (int) 0 => [
+                    'ThreadPost' => [
+                        'id' => (int) 7,
+                        'parent_id' => (int) 6
+                    ],
+                    'children' => []
+                ],
+                (int) 1 => [
+                    'ThreadPost' => [
+                        'id' => (int) 8,
+                        'parent_id' => (int) 6
+                    ],
+                    'children' => []
+                ],
+                (int) 2 => [
+                    'ThreadPost' => [
+                        'id' => (int) 9,
+                        'parent_id' => (int) 6
+                    ],
+                    'children' => []
+                ],
+                (int) 3 => [
+                    'ThreadPost' => [
+                        'id' => (int) 10,
+                        'parent_id' => (int) 6
+                    ],
+                    'children' => []
+                ]
+            ]
+        ]
+    ]
+    */
+----------------------------------------
+

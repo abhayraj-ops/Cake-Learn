@@ -1,0 +1,1661 @@
+URL: https://book.cakephp.org/5.x/views.html
+Title: Views | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Views ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - The App View ​
+  - View Templates ​
+  - Extending Layouts ​
+  - Using View Blocks ​
+  - Layouts ​
+  - Elements ​
+  - View Events ​
+  - Creating Your Own View Classes ​
+  - More About Views ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Alternative Echos ​
+  - Alternative Control Structures ​
+  - View Variables ​
+  - Setting View Variables ​
+  - Extending Views ​
+  - Displaying Blocks ​
+  - Using Blocks for Script and CSS Files ​
+  - Using Layouts from Plugins ​
+  - Passing Variables into an Element ​
+  - Caching Elements ​
+  - Requesting Elements from a Plugin ​
+  - Routing prefix and Elements ​
+  - Caching Sections of Your View ​
+  - Event List ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\View\View
+
+Views are the V in MVC. Views are responsible for generating the specific output required for the request. Often this is in the form of HTML, XML, or JSON, but streaming files and creating PDFs that users can download are also responsibilities of the View Layer.
+
+CakePHP comes with a few built-in View classes for handling the most common rendering scenarios:
+
+AppView is your application’s default View class. AppView itself extends the Cake\View\View class included in CakePHP and is defined in src/View/AppView.php as follows:
+
+You can use your AppView to load helpers that will be used for every view rendered in your application. CakePHP provides an initialize() method that is invoked at the end of a View’s constructor for this kind of use:
+
+The view layer of CakePHP is how you speak to your users. Most of the time your views will be rendering HTML/XHTML documents to browsers, but you might also need to reply to a remote application via JSON, or output a CSV file for a user.
+
+CakePHP template files are regular PHP files and utilize the alternative PHP syntax for control structures and output. These files contain the logic necessary to prepare the data received from the controller into a presentation format that is ready for your audience.
+
+Echo, or print a variable in your template:
+
+Using Short Tag support:
+
+Control structures, like if, for, foreach, switch, and while can be written in a simplified format. Notice that there are no braces. Instead, the end brace for the foreach is replaced with endforeach. Each of the control structures listed above has a similar closing syntax: endif, endfor, endforeach, and endwhile. Also notice that instead of using a semicolon after each structure (except the last one), there is a colon.
+
+The following is an example using foreach:
+
+Another example, using if/elseif/else. Notice the colons:
+
+If you'd prefer to use a templating language like Twig, checkout the CakePHP Twig Plugin
+
+Template files are stored in templates/, in a folder named after the controller that uses the files, and named after the action it corresponds to. For example, the view file for the Products controller's view() action, would normally be found in templates/Products/view.php.
+
+The view layer in CakePHP can be made up of a number of different parts. Each part has different uses, and will be covered in this chapter:
+
+Any variables you set in your controller with set() will be available in both the view and the layout your action renders. In addition, any set variables will also be available in any element. If you need to pass additional variables from the view to the layout you can either call set() in the view template, or use View Blocks.
+
+You should remember to always escape any user data before outputting it as CakePHP does not automatically escape output. You can escape user content with the h() function:
+
+method Cake\View\View::set(array|string $name, mixed $value = null): static
+
+Views have a set() method that is analogous to the set() found in Controller objects. Using set() from your view file will add the variables to the layout and elements that will be rendered later. See Setting View Variables for more information on using set().
+
+In your view file you can do:
+
+Then, in your layout, the $activeMenuButton variable will be available and contain the value 'posts'.
+
+View extending allows you to wrap one view in another. Combining this with view blocks gives you a powerful way to keep your views DRY. For example, your application has a sidebar that needs to change depending on the specific view being rendered. By extending a common view file, you can avoid repeating the common markup for your sidebar, and only define the parts that change:
+
+The above view file could be used as a parent view. It expects that the view extending it will define the sidebar and title blocks. The content block is a special block that CakePHP creates. It will contain all the uncaptured content from the extending view. Assuming our view file has a $post variable with the data about our post, the view could look like:
+
+The post view above shows how you can extend a view, and populate a set of blocks. Any content not already in a defined block will be captured and put into a special block named content. When a view contains a call to extend(), execution continues to the bottom of the current view file. Once it is complete, the extended view will be rendered. Calling extend() more than once in a view file will override the parent view that will be processed next:
+
+The above will result in /Common/index.php being rendered as the parent view to the current view.
+
+You can nest extended views as many times as necessary. Each view can extend another view if desired. Each parent view will get the previous view's content as the content block.
+
+NOTE
+
+You should avoid using content as a block name in your application. CakePHP uses this for uncaptured content in extended views.
+
+Just like views, layouts can also be extended. Like views, you use extend() to extend layouts. Layout extensions can update or replace blocks, and update or replace the content rendered by the child layout. For example if we wanted to wrap a block with additional markup you could do:
+
+View blocks provide a flexible API that allows you to define slots or blocks in your views/layouts that will be defined elsewhere. For example, blocks are ideal for implementing things such as sidebars, or regions to load assets at the bottom/top of the layout. Blocks can be defined in two ways: either as a capturing block, or by direct assignment. The start(), append(), prepend(), assign(), fetch(), and end() methods allow you to work with capturing blocks:
+
+You can also append into a block using append():
+
+If you need to clear or overwrite a block there are a couple of alternatives. The reset() method will clear or overwrite a block at any time. The assign() method with an empty content string can also be used to clear the specified block.
+
+Assigning a block's content is often useful when you want to convert a view variable into a block. For example, you may want to use a block for the page title, and sometimes assign the title as a view variable in the controller:
+
+The prepend() method allows you to prepend content to an existing block:
+
+You can display blocks using the fetch() method. fetch() will output a block, returning '' if a block does not exist:
+
+You can also use fetch to conditionally show content that should surround a block should it exist. This is helpful in layouts, or extended views where you want to conditionally show headings or other markup:
+
+You can also provide a default value for a block if it does not exist. This allows you to add placeholder content when a block does not exist. You can provide a default value using the second argument:
+
+The HtmlHelper ties into view blocks, and its script(), css(), and meta() methods each update a block with the same name when used with the block = true option:
+
+The Cake\View\Helper\HtmlHelper also allows you to control which block the scripts and CSS go to:
+
+A layout contains presentation code that wraps around a view. Anything you want to see in all of your views should be placed in a layout.
+
+CakePHP's default layout is located at templates/layout/default.php. If you want to change the overall look of your application, then this is the right place to start, because controller-rendered view code is placed inside of the default layout when the page is rendered.
+
+Other layout files should be placed in templates/layout. When you create a layout, you need to tell CakePHP where to place the output of your views. To do so, make sure your layout includes a place for $this->fetch('content') Here's an example of what a default layout might look like:
+
+The script, css and meta blocks contain any content defined in the views using the built-in HTML helper. Useful for including JavaScript and CSS files from views.
+
+NOTE
+
+When using HtmlHelper::css() or HtmlHelper::script() in template files, specify 'block' => true to place the HTML source in a block with the same name. (See API for more details on usage).
+
+The content block contains the contents of the rendered view.
+
+You can set the title block content from inside your view file:
+
+Empty values for the title block will be automatically replaced with a representation of the current template path, such as 'Admin/Articles'.
+
+You can create as many layouts as you wish: just place them in the templates/layout directory, and switch between them inside of your controller actions using the controller or view's $layout property:
+
+For example, if a section of my site included a smaller ad banner space, I might create a new layout with the smaller advertising space and specify it as the layout for all controllers' actions using something like:
+
+Besides a default layout CakePHP's official skeleton app also has an 'ajax' layout. The Ajax layout is handy for crafting AJAX responses - it's an empty layout. (Most AJAX calls only require a bit of markup in return, rather than a fully-rendered interface.)
+
+The skeleton app also has a default layout to help generate RSS.
+
+If you want to use a layout that exists in a plugin, you can use plugin syntax. For example, to use the contact layout from the Contacts plugin:
+
+method Cake\View\View::element(string $elementPath, array $data, array $options = []): string
+
+Many applications have small blocks of presentation code that need to be repeated from page to page, sometimes in different places in the layout. CakePHP can help you repeat parts of your website that need to be reused. These reusable parts are called Elements. Ads, help boxes, navigational controls, extra menus, login forms, and callouts are often implemented in CakePHP as elements. An element is basically a mini-view that can be included in other views, in layouts, and even within other elements. Elements can be used to make a view more readable, placing the rendering of repeating elements in its own file. They can also help you re-use content fragments in your application.
+
+Elements live in the templates/element/ folder, and have the .php filename extension. They are output using the element method of the view:
+
+You can pass data to an element through the element's second argument:
+
+Inside the element file, all the passed variables are available as members of the parameter array (in the same way that Controller::set() in the controller works with template files). In the above example, the templates/element/helpbox.php file can use the $helptext variable:
+
+Keep in mind that in those view vars are merged with the view vars from the view itself. So all view vars set using Controller::set() in the controller and View::set() in the view itself are also available inside the element.
+
+The View::element() method also supports options for the element. The options supported are 'cache' and 'callbacks'. An example:
+
+Element caching is facilitated through the Cache class. You can configure elements to be stored in any Cache configuration you've set up. This gives you a great amount of flexibility to decide where and for how long elements are stored. To cache different versions of the same element in an application, provide a unique cache key value using the following format:
+
+If you need more logic in your element, such as dynamic data from a datasource, consider using a View Cell instead of an element. Find out more about View Cells.
+
+You can take advantage of CakePHP view caching if you supply a cache parameter. If set to true, it will cache the element in the 'default' Cache configuration. Otherwise, you can set which cache configuration should be used. See Caching for more information on configuring Cache. A simple example of caching an element would be:
+
+If you render the same element more than once in a view and have caching enabled, be sure to set the 'key' parameter to a different name each time. This will prevent each successive call from overwriting the previous element() call's cached result. For example:
+
+The above will ensure that both element results are cached separately. If you want all element caching to use the same cache configuration, you can avoid some repetition by setting View::$elementCache to the cache configuration you want to use. CakePHP will use this configuration when none is given.
+
+If you are using a plugin and wish to use elements from within the plugin, just use the familiar plugin syntax. If the view is being rendered for a plugin controller/action, the plugin name will automatically be prefixed onto all elements used, unless another plugin name is present. If the element doesn't exist in the plugin, it will look in the main APP folder:
+
+If your view is a part of a plugin, you can omit the plugin name. For example, if you are in the ContactsController of the Contacts plugin, the following:
+
+are equivalent and will result in the same element being rendered.
+
+For elements inside subfolder of a plugin (for example, plugins/Contacts/Template/element/sidebar/helpbox.php), use the following:
+
+If you have a Routing prefix configured, the Element path resolution can switch to a prefix location, as Layouts and action View do. Assuming you have a prefix "Admin" configured and you call:
+
+The element first be looked for in templates/Admin/element/. If such a file does not exist, it will be looked for in the default location.
+
+method Cake\View\View::cache(callable $block, array $options = []): string
+
+Sometimes generating a section of your view output can be expensive because of rendered View Cells or expensive helper operations. To help make your application run faster CakePHP provides a way to cache view sections:
+
+By default, cached view content will go into the View::$elementCache cache config, but you can use the config option to change this.
+
+Like Controller, view trigger several events/callbacks that you can use to insert logic around the rendering life-cycle:
+
+You can attach application event listeners to these events or use Helper Callbacks.
+
+You may need to create custom view classes to enable new types of data views, or add additional custom view-rendering logic to your application. Like most components of CakePHP, view classes have a few conventions:
+
+You'll also want to extend View to ensure things work correctly:
+
+Replacing the render method lets you take full control over how your content is rendered.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+AppView
+----------------------------------------
+
+Code Block 3 ():
+AppView
+----------------------------------------
+
+Code Block 4 ():
+Cake\View\View
+----------------------------------------
+
+Code Block 5 (shiki):
+<?php
+namespace App\View;
+
+use Cake\View\View;
+
+class AppView extends View
+{
+}
+----------------------------------------
+
+Code Block 6 ():
+<?php
+namespace App\View;
+
+use Cake\View\View;
+
+class AppView extends View
+{
+}
+----------------------------------------
+
+Code Block 7 ():
+AppView
+----------------------------------------
+
+Code Block 8 ():
+initialize()
+----------------------------------------
+
+Code Block 9 (shiki):
+<?php
+namespace App\View;
+
+use Cake\View\View;
+
+class AppView extends View
+{
+    public function initialize(): void
+    {
+        // Always enable the MyUtils Helper
+        $this->addHelper('MyUtils');
+    }
+}
+----------------------------------------
+
+Code Block 10 ():
+<?php
+namespace App\View;
+
+use Cake\View\View;
+
+class AppView extends View
+{
+    public function initialize(): void
+    {
+        // Always enable the MyUtils Helper
+        $this->addHelper('MyUtils');
+    }
+}
+----------------------------------------
+
+Code Block 11 (shiki):
+<?php echo $variable; ?>
+----------------------------------------
+
+Code Block 12 ():
+<?php echo $variable; ?>
+----------------------------------------
+
+Code Block 13 (shiki):
+<?= $variable ?>
+----------------------------------------
+
+Code Block 14 ():
+<?= $variable ?>
+----------------------------------------
+
+Code Block 15 ():
+if
+----------------------------------------
+
+Code Block 16 ():
+for
+----------------------------------------
+
+Code Block 17 ():
+foreach
+----------------------------------------
+
+Code Block 18 ():
+switch
+----------------------------------------
+
+Code Block 19 ():
+while
+----------------------------------------
+
+Code Block 20 ():
+foreach
+----------------------------------------
+
+Code Block 21 ():
+endforeach
+----------------------------------------
+
+Code Block 22 ():
+endif
+----------------------------------------
+
+Code Block 23 ():
+endfor
+----------------------------------------
+
+Code Block 24 ():
+endforeach
+----------------------------------------
+
+Code Block 25 ():
+endwhile
+----------------------------------------
+
+Code Block 26 ():
+semicolon
+----------------------------------------
+
+Code Block 27 ():
+colon
+----------------------------------------
+
+Code Block 28 ():
+foreach
+----------------------------------------
+
+Code Block 29 (shiki):
+<ul>
+<?php foreach ($todo as $item): ?>
+    <li><?= $item ?></li>
+<?php endforeach; ?>
+</ul>
+----------------------------------------
+
+Code Block 30 ():
+<ul>
+<?php foreach ($todo as $item): ?>
+    <li><?= $item ?></li>
+<?php endforeach; ?>
+</ul>
+----------------------------------------
+
+Code Block 31 (shiki):
+<?php if ($username === 'sally'): ?>
+    <h3>Hi Sally</h3>
+<?php elseif ($username === 'joe'): ?>
+    <h3>Hi Joe</h3>
+<?php else: ?>
+    <h3>Hi unknown user</h3>
+<?php endif; ?>
+----------------------------------------
+
+Code Block 32 ():
+<?php if ($username === 'sally'): ?>
+    <h3>Hi Sally</h3>
+<?php elseif ($username === 'joe'): ?>
+    <h3>Hi Joe</h3>
+<?php else: ?>
+    <h3>Hi unknown user</h3>
+<?php endif; ?>
+----------------------------------------
+
+Code Block 33 ():
+Products
+----------------------------------------
+
+Code Block 34 ():
+view()
+----------------------------------------
+
+Code Block 35 ():
+set()
+----------------------------------------
+
+Code Block 36 ():
+set()
+----------------------------------------
+
+Code Block 37 ():
+h()
+----------------------------------------
+
+Code Block 38 (shiki):
+<?= h($user->bio); ?>
+----------------------------------------
+
+Code Block 39 ():
+<?= h($user->bio); ?>
+----------------------------------------
+
+Code Block 40 ():
+method
+----------------------------------------
+
+Code Block 41 ():
+set()
+----------------------------------------
+
+Code Block 42 ():
+set()
+----------------------------------------
+
+Code Block 43 ():
+set()
+----------------------------------------
+
+Code Block 44 (shiki):
+$this->set('activeMenuButton', 'posts');
+----------------------------------------
+
+Code Block 45 ():
+$this->set('activeMenuButton', 'posts');
+----------------------------------------
+
+Code Block 46 ():
+$activeMenuButton
+----------------------------------------
+
+Code Block 47 ():
+DRY
+----------------------------------------
+
+Code Block 48 (shiki):
+<!-- templates/Common/view.php -->
+<h1><?= h($this->fetch('title')) ?></h1>
+<?= $this->fetch('content') ?>
+
+<div class="actions">
+    <h3>Related actions</h3>
+    <ul>
+    <?= $this->fetch('sidebar') ?>
+    </ul>
+</div>
+----------------------------------------
+
+Code Block 49 ():
+<!-- templates/Common/view.php -->
+<h1><?= h($this->fetch('title')) ?></h1>
+<?= $this->fetch('content') ?>
+
+<div class="actions">
+    <h3>Related actions</h3>
+    <ul>
+    <?= $this->fetch('sidebar') ?>
+    </ul>
+</div>
+----------------------------------------
+
+Code Block 50 ():
+sidebar
+----------------------------------------
+
+Code Block 51 ():
+title
+----------------------------------------
+
+Code Block 52 ():
+content
+----------------------------------------
+
+Code Block 53 ():
+$post
+----------------------------------------
+
+Code Block 54 (shiki):
+<!-- templates/Posts/view.php -->
+<?php
+$this->extend('/Common/view');
+
+$this->assign('title', $post->title);
+
+$this->start('sidebar');
+?>
+<li>
+<?php
+echo $this->Html->link('edit', [
+    'action' => 'edit',
+    $post->id,
+]);
+?>
+</li>
+<?php $this->end(); ?>
+
+// The remaining content will be available as the 'content' block
+// In the parent view.
+<?= h($post->body) ?>
+----------------------------------------
+
+Code Block 55 ():
+<!-- templates/Posts/view.php -->
+<?php
+$this->extend('/Common/view');
+
+$this->assign('title', $post->title);
+
+$this->start('sidebar');
+?>
+<li>
+<?php
+echo $this->Html->link('edit', [
+    'action' => 'edit',
+    $post->id,
+]);
+?>
+</li>
+<?php $this->end(); ?>
+
+// The remaining content will be available as the 'content' block
+// In the parent view.
+<?= h($post->body) ?>
+----------------------------------------
+
+Code Block 56 ():
+content
+----------------------------------------
+
+Code Block 57 ():
+extend()
+----------------------------------------
+
+Code Block 58 ():
+extend()
+----------------------------------------
+
+Code Block 59 (shiki):
+$this->extend('/Common/view');
+$this->extend('/Common/index');
+----------------------------------------
+
+Code Block 60 ():
+$this->extend('/Common/view');
+$this->extend('/Common/index');
+----------------------------------------
+
+Code Block 61 ():
+content
+----------------------------------------
+
+Code Block 62 ():
+content
+----------------------------------------
+
+Code Block 63 ():
+extend()
+----------------------------------------
+
+Code Block 64 (shiki):
+// Our layout extends the application layout.
+$this->extend('application');
+$this->prepend('content', '<main class="nosidebar">');
+$this->append('content', '</main>');
+
+// Output more markup.
+
+// Remember to echo the contents of the previous layout.
+echo $this->fetch('content');
+----------------------------------------
+
+Code Block 65 ():
+// Our layout extends the application layout.
+$this->extend('application');
+$this->prepend('content', '<main class="nosidebar">');
+$this->append('content', '</main>');
+
+// Output more markup.
+
+// Remember to echo the contents of the previous layout.
+echo $this->fetch('content');
+----------------------------------------
+
+Code Block 66 ():
+start()
+----------------------------------------
+
+Code Block 67 ():
+append()
+----------------------------------------
+
+Code Block 68 ():
+prepend()
+----------------------------------------
+
+Code Block 69 ():
+assign()
+----------------------------------------
+
+Code Block 70 ():
+fetch()
+----------------------------------------
+
+Code Block 71 ():
+end()
+----------------------------------------
+
+Code Block 72 (shiki):
+// Create the sidebar block.
+$this->start('sidebar');
+echo $this->element('sidebar/recent_topics');
+echo $this->element('sidebar/recent_comments');
+$this->end();
+
+// Append into the sidebar later on.
+$this->start('sidebar');
+echo $this->fetch('sidebar');
+echo $this->element('sidebar/popular_topics');
+$this->end();
+----------------------------------------
+
+Code Block 73 ():
+// Create the sidebar block.
+$this->start('sidebar');
+echo $this->element('sidebar/recent_topics');
+echo $this->element('sidebar/recent_comments');
+$this->end();
+
+// Append into the sidebar later on.
+$this->start('sidebar');
+echo $this->fetch('sidebar');
+echo $this->element('sidebar/popular_topics');
+$this->end();
+----------------------------------------
+
+Code Block 74 ():
+append()
+----------------------------------------
+
+Code Block 75 (shiki):
+$this->append('sidebar');
+echo $this->element('sidebar/popular_topics');
+$this->end();
+
+// The same as the above.
+$this->append('sidebar', $this->element('sidebar/popular_topics'));
+----------------------------------------
+
+Code Block 76 ():
+$this->append('sidebar');
+echo $this->element('sidebar/popular_topics');
+$this->end();
+
+// The same as the above.
+$this->append('sidebar', $this->element('sidebar/popular_topics'));
+----------------------------------------
+
+Code Block 77 ():
+reset()
+----------------------------------------
+
+Code Block 78 ():
+assign()
+----------------------------------------
+
+Code Block 79 (shiki):
+// Clear the previous content from the sidebar block.
+$this->reset('sidebar');
+
+// Assigning an empty string will also clear the sidebar block.
+$this->assign('sidebar', '');
+----------------------------------------
+
+Code Block 80 ():
+// Clear the previous content from the sidebar block.
+$this->reset('sidebar');
+
+// Assigning an empty string will also clear the sidebar block.
+$this->assign('sidebar', '');
+----------------------------------------
+
+Code Block 81 (shiki):
+// In view file or layout above $this->fetch('title')
+$this->assign('title', $title);
+----------------------------------------
+
+Code Block 82 ():
+// In view file or layout above $this->fetch('title')
+$this->assign('title', $title);
+----------------------------------------
+
+Code Block 83 ():
+prepend()
+----------------------------------------
+
+Code Block 84 (shiki):
+// Prepend to sidebar
+$this->prepend('sidebar', 'this content goes on top of sidebar');
+----------------------------------------
+
+Code Block 85 ():
+// Prepend to sidebar
+$this->prepend('sidebar', 'this content goes on top of sidebar');
+----------------------------------------
+
+Code Block 86 ():
+fetch()
+----------------------------------------
+
+Code Block 87 ():
+fetch()
+----------------------------------------
+
+Code Block 88 (shiki):
+<?= $this->fetch('sidebar') ?>
+----------------------------------------
+
+Code Block 89 ():
+<?= $this->fetch('sidebar') ?>
+----------------------------------------
+
+Code Block 90 (shiki):
+// In templates/layout/default.php
+<?php if ($this->fetch('menu')): ?>
+<div class="menu">
+    <h3>Menu options</h3>
+    <?= $this->fetch('menu') ?>
+</div>
+<?php endif; ?>
+----------------------------------------
+
+Code Block 91 ():
+// In templates/layout/default.php
+<?php if ($this->fetch('menu')): ?>
+<div class="menu">
+    <h3>Menu options</h3>
+    <?= $this->fetch('menu') ?>
+</div>
+<?php endif; ?>
+----------------------------------------
+
+Code Block 92 (shiki):
+<div class="shopping-cart">
+    <h3>Your Cart</h3>
+    <?= $this->fetch('cart', 'Your cart is empty') ?>
+</div>
+----------------------------------------
+
+Code Block 93 ():
+<div class="shopping-cart">
+    <h3>Your Cart</h3>
+    <?= $this->fetch('cart', 'Your cart is empty') ?>
+</div>
+----------------------------------------
+
+Code Block 94 ():
+HtmlHelper
+----------------------------------------
+
+Code Block 95 ():
+script()
+----------------------------------------
+
+Code Block 96 ():
+css()
+----------------------------------------
+
+Code Block 97 ():
+meta()
+----------------------------------------
+
+Code Block 98 ():
+block = true
+----------------------------------------
+
+Code Block 99 (shiki):
+<?php
+// In your view file
+$this->Html->script('carousel', ['block' => true]);
+$this->Html->css('carousel', ['block' => true]);
+?>
+
+// In your layout file.
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <title><?= h($this->fetch('title')) ?></title>
+    <?= $this->fetch('script') ?>
+    <?= $this->fetch('css') ?>
+    </head>
+    // Rest of the layout follows
+----------------------------------------
+
+Code Block 100 ():
+<?php
+// In your view file
+$this->Html->script('carousel', ['block' => true]);
+$this->Html->css('carousel', ['block' => true]);
+?>
+
+// In your layout file.
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <title><?= h($this->fetch('title')) ?></title>
+    <?= $this->fetch('script') ?>
+    <?= $this->fetch('css') ?>
+    </head>
+    // Rest of the layout follows
+----------------------------------------
+
+Code Block 101 ():
+Cake\View\Helper\HtmlHelper
+----------------------------------------
+
+Code Block 102 (shiki):
+// In your view
+$this->Html->script('carousel', ['block' => 'scriptBottom']);
+
+// In your layout
+<?= $this->fetch('scriptBottom') ?>
+----------------------------------------
+
+Code Block 103 ():
+// In your view
+$this->Html->script('carousel', ['block' => 'scriptBottom']);
+
+// In your layout
+<?= $this->fetch('scriptBottom') ?>
+----------------------------------------
+
+Code Block 104 ():
+$this->fetch('content')
+----------------------------------------
+
+Code Block 105 (shiki):
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title><?= h($this->fetch('title')) ?></title>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<!-- Include external files and scripts here (See HTML helper for more info.) -->
+<?php
+echo $this->fetch('meta');
+echo $this->fetch('css');
+echo $this->fetch('script');
+?>
+</head>
+<body>
+
+<!-- If you'd like some sort of menu to
+show up on all of your views, include it here -->
+<div id="header">
+    <div id="menu">...</div>
+</div>
+
+<!-- Here's where I want my views to be displayed -->
+<?= $this->fetch('content') ?>
+
+<!-- Add a footer to each displayed page -->
+<div id="footer">...</div>
+
+</body>
+</html>
+----------------------------------------
+
+Code Block 106 ():
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title><?= h($this->fetch('title')) ?></title>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<!-- Include external files and scripts here (See HTML helper for more info.) -->
+<?php
+echo $this->fetch('meta');
+echo $this->fetch('css');
+echo $this->fetch('script');
+?>
+</head>
+<body>
+
+<!-- If you'd like some sort of menu to
+show up on all of your views, include it here -->
+<div id="header">
+    <div id="menu">...</div>
+</div>
+
+<!-- Here's where I want my views to be displayed -->
+<?= $this->fetch('content') ?>
+
+<!-- Add a footer to each displayed page -->
+<div id="footer">...</div>
+
+</body>
+</html>
+----------------------------------------
+
+Code Block 107 ():
+script
+----------------------------------------
+
+Code Block 108 ():
+css
+----------------------------------------
+
+Code Block 109 ():
+meta
+----------------------------------------
+
+Code Block 110 ():
+HtmlHelper::css()
+----------------------------------------
+
+Code Block 111 ():
+HtmlHelper::script()
+----------------------------------------
+
+Code Block 112 ():
+'block' => true
+----------------------------------------
+
+Code Block 113 ():
+content
+----------------------------------------
+
+Code Block 114 ():
+title
+----------------------------------------
+
+Code Block 115 (shiki):
+$this->assign('title', 'View Active Users');
+----------------------------------------
+
+Code Block 116 ():
+$this->assign('title', 'View Active Users');
+----------------------------------------
+
+Code Block 117 ():
+title
+----------------------------------------
+
+Code Block 118 ():
+'Admin/Articles'
+----------------------------------------
+
+Code Block 119 ():
+$layout
+----------------------------------------
+
+Code Block 120 (shiki):
+// From a controller
+public function view()
+{
+    // Set the layout.
+    $this->viewBuilder()->setLayout('admin');
+}
+
+// From a view file
+$this->layout = 'loggedin';
+----------------------------------------
+
+Code Block 121 ():
+// From a controller
+public function view()
+{
+    // Set the layout.
+    $this->viewBuilder()->setLayout('admin');
+}
+
+// From a view file
+$this->layout = 'loggedin';
+----------------------------------------
+
+Code Block 122 (shiki):
+namespace App\Controller;
+
+class UsersController extends AppController
+{
+    public function viewActive()
+    {
+        $this->set('title', 'View Active Users');
+        $this->viewBuilder()->setLayout('default_small_ad');
+    }
+
+    public function viewImage()
+    {
+        $this->viewBuilder()->setLayout('image');
+
+        // Output user image
+    }
+}
+----------------------------------------
+
+Code Block 123 ():
+namespace App\Controller;
+
+class UsersController extends AppController
+{
+    public function viewActive()
+    {
+        $this->set('title', 'View Active Users');
+        $this->viewBuilder()->setLayout('default_small_ad');
+    }
+
+    public function viewImage()
+    {
+        $this->viewBuilder()->setLayout('image');
+
+        // Output user image
+    }
+}
+----------------------------------------
+
+Code Block 124 ():
+plugin syntax
+----------------------------------------
+
+Code Block 125 (shiki):
+namespace App\Controller;
+
+class UsersController extends AppController
+{
+    public function viewActive()
+    {
+        $this->viewBuilder()->setLayout('Contacts.contact');
+    }
+}
+----------------------------------------
+
+Code Block 126 ():
+namespace App\Controller;
+
+class UsersController extends AppController
+{
+    public function viewActive()
+    {
+        $this->viewBuilder()->setLayout('Contacts.contact');
+    }
+}
+----------------------------------------
+
+Code Block 127 ():
+method
+----------------------------------------
+
+Code Block 128 (shiki):
+echo $this->element('helpbox');
+----------------------------------------
+
+Code Block 129 ():
+echo $this->element('helpbox');
+----------------------------------------
+
+Code Block 130 (shiki):
+echo $this->element('helpbox', [
+    'helptext' => 'Oh, this text is very helpful.',
+]);
+----------------------------------------
+
+Code Block 131 ():
+echo $this->element('helpbox', [
+    'helptext' => 'Oh, this text is very helpful.',
+]);
+----------------------------------------
+
+Code Block 132 ():
+Controller::set()
+----------------------------------------
+
+Code Block 133 ():
+$helptext
+----------------------------------------
+
+Code Block 134 (shiki):
+// Inside templates/element/helpbox.php
+echo $helptext; // Outputs `Oh, this text is very helpful.`
+----------------------------------------
+
+Code Block 135 ():
+// Inside templates/element/helpbox.php
+echo $helptext; // Outputs `Oh, this text is very helpful.`
+----------------------------------------
+
+Code Block 136 ():
+Controller::set()
+----------------------------------------
+
+Code Block 137 ():
+View::set()
+----------------------------------------
+
+Code Block 138 ():
+View::element()
+----------------------------------------
+
+Code Block 139 (shiki):
+echo $this->element('helpbox', [
+        'helptext' => "This is passed to the element as $helptext",
+        'foobar' => "This is passed to the element as $foobar",
+    ],
+    [
+        // uses the `long_view` cache configuration
+        'cache' => 'long_view',
+        // set to true to have before/afterRender called for the element
+        'callbacks' => true,
+    ]
+);
+----------------------------------------
+
+Code Block 140 ():
+echo $this->element('helpbox', [
+        'helptext' => "This is passed to the element as $helptext",
+        'foobar' => "This is passed to the element as $foobar",
+    ],
+    [
+        // uses the `long_view` cache configuration
+        'cache' => 'long_view',
+        // set to true to have before/afterRender called for the element
+        'callbacks' => true,
+    ]
+);
+----------------------------------------
+
+Code Block 141 ():
+Cache
+----------------------------------------
+
+Code Block 142 (shiki):
+$this->element('helpbox', [], [
+        'cache' => ['config' => 'short', 'key' => 'unique value'],
+    ]
+);
+----------------------------------------
+
+Code Block 143 ():
+$this->element('helpbox', [], [
+        'cache' => ['config' => 'short', 'key' => 'unique value'],
+    ]
+);
+----------------------------------------
+
+Code Block 144 ():
+true
+----------------------------------------
+
+Code Block 145 ():
+Cache
+----------------------------------------
+
+Code Block 146 (shiki):
+echo $this->element('helpbox', [], ['cache' => true]);
+----------------------------------------
+
+Code Block 147 ():
+echo $this->element('helpbox', [], ['cache' => true]);
+----------------------------------------
+
+Code Block 148 ():
+element()
+----------------------------------------
+
+Code Block 149 (shiki):
+echo $this->element(
+    'helpbox',
+    ['var' => $var],
+    ['cache' => ['key' => 'first_use', 'config' => 'view_long']],
+);
+
+echo $this->element(
+    'helpbox',
+    ['var' => $differentVar],
+    ['cache' => ['key' => 'second_use', 'config' => 'view_long']],
+);
+----------------------------------------
+
+Code Block 150 ():
+echo $this->element(
+    'helpbox',
+    ['var' => $var],
+    ['cache' => ['key' => 'first_use', 'config' => 'view_long']],
+);
+
+echo $this->element(
+    'helpbox',
+    ['var' => $differentVar],
+    ['cache' => ['key' => 'second_use', 'config' => 'view_long']],
+);
+----------------------------------------
+
+Code Block 151 ():
+View::$elementCache
+----------------------------------------
+
+Code Block 152 ():
+plugin syntax
+----------------------------------------
+
+Code Block 153 (shiki):
+echo $this->element('Contacts.helpbox');
+----------------------------------------
+
+Code Block 154 ():
+echo $this->element('Contacts.helpbox');
+----------------------------------------
+
+Code Block 155 ():
+ContactsController
+----------------------------------------
+
+Code Block 156 (shiki):
+echo $this->element('helpbox');
+// and
+echo $this->element('Contacts.helpbox');
+----------------------------------------
+
+Code Block 157 ():
+echo $this->element('helpbox');
+// and
+echo $this->element('Contacts.helpbox');
+----------------------------------------
+
+Code Block 158 (shiki):
+echo $this->element('Contacts.sidebar/helpbox');
+----------------------------------------
+
+Code Block 159 ():
+echo $this->element('Contacts.sidebar/helpbox');
+----------------------------------------
+
+Code Block 160 (shiki):
+echo $this->element('my_element');
+----------------------------------------
+
+Code Block 161 ():
+echo $this->element('my_element');
+----------------------------------------
+
+Code Block 162 ():
+method
+----------------------------------------
+
+Code Block 163 (shiki):
+// Assuming some local variables
+echo $this->cache(function () use ($user, $article) {
+    echo $this->cell('UserProfile', [$user]);
+    echo $this->cell('ArticleFull', [$article]);
+}, ['key' => 'my_view_key']);
+----------------------------------------
+
+Code Block 164 ():
+// Assuming some local variables
+echo $this->cache(function () use ($user, $article) {
+    echo $this->cell('UserProfile', [$user]);
+    echo $this->cell('ArticleFull', [$article]);
+}, ['key' => 'my_view_key']);
+----------------------------------------
+
+Code Block 165 ():
+View::$elementCache
+----------------------------------------
+
+Code Block 166 ():
+config
+----------------------------------------
+
+Code Block 167 ():
+View.beforeRender
+----------------------------------------
+
+Code Block 168 ():
+View.beforeRenderFile
+----------------------------------------
+
+Code Block 169 ():
+View.afterRenderFile
+----------------------------------------
+
+Code Block 170 ():
+View.afterRender
+----------------------------------------
+
+Code Block 171 ():
+View.beforeLayout
+----------------------------------------
+
+Code Block 172 ():
+View.afterLayout
+----------------------------------------
+
+Code Block 173 ():
+View
+----------------------------------------
+
+Code Block 174 ():
+PdfView
+----------------------------------------
+
+Code Block 175 ():
+View
+----------------------------------------
+
+Code Block 176 ():
+$this->viewBuilder()->setClassName('Pdf');
+----------------------------------------
+
+Code Block 177 ():
+View
+----------------------------------------
+
+Code Block 178 (shiki):
+// In src/View/PdfView.php
+namespace App\View;
+
+use Cake\View\View;
+
+class PdfView extends View
+{
+    protected string $layoutPath = 'pdf';
+
+    protected string $subDir = 'pdf';
+
+    public static function contentType(): string
+    {
+        return 'application/pdf';
+    }
+
+    public function render(?string $view = null, ?string $layout = null): string
+    {
+        // Custom logic here.
+    }
+}
+----------------------------------------
+
+Code Block 179 ():
+// In src/View/PdfView.php
+namespace App\View;
+
+use Cake\View\View;
+
+class PdfView extends View
+{
+    protected string $layoutPath = 'pdf';
+
+    protected string $subDir = 'pdf';
+
+    public static function contentType(): string
+    {
+        return 'application/pdf';
+    }
+
+    public function render(?string $view = null, ?string $layout = null): string
+    {
+        // Custom logic here.
+    }
+}
+----------------------------------------
+

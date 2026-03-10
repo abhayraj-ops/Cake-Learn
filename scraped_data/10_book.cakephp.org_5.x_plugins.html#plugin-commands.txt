@@ -1,0 +1,1575 @@
+URL: https://book.cakephp.org/5.x/plugins.html#plugin-commands
+Title: Plugins | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Plugins ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Installing a Plugin With Composer ​
+  - Manually Installing a Plugin ​
+  - Loading a Plugin ​
+  - Plugin Hook Configuration ​
+  - Plugin Loading Options ​
+  - Loading plugins through Application::bootstrap() ​
+  - Using Plugin Classes ​
+  - Creating Your Own Plugins ​
+  - Plugin Classes ​
+  - Plugin Routes ​
+  - Plugin Controllers ​
+  - Plugin Models ​
+  - Plugin Templates ​
+  - Plugin Assets ​
+  - Components, Helpers and Behaviors ​
+  - Commands ​
+  - Testing your Plugin ​
+  - Publishing your Plugin ​
+  - Plugin Map File ​
+  - Manage Your Plugins using Mixer ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Manually Autoloading Plugin Classes ​
+  - Creating a Plugin Using Bake ​
+  - Plugin Elements ​
+  - Overriding Plugin Templates from Inside Your Application ​
+  - Linking to Assets in Plugins ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+CakePHP allows you to set up a combination of controllers, models, and views and release them as a pre-packaged application plugin that others can use in their CakePHP applications. If you've created great user management, a simple blog, or web service adapters in one of your applications, why not package it as a CakePHP plugin? This way you can reuse it in your other applications, and share with the community!
+
+A CakePHP plugin is separate from the host application itself and generally provides some well-defined functionality that can be packaged up neatly, and reused with little effort in other applications. The application and the plugin operate in their own respective spaces, but share the application's configuration data (for example, database connections, email transports)
+
+Plugins should define their own top-level namespace. For example: DebugKit. By convention, plugins use their package name as their namespace. If you'd like to use a different namespace, you can configure the plugin namespace, when plugins are loaded.
+
+Many plugins are available on Packagist and can be installed with Composer. To install DebugKit, you would do the following:
+
+This would install the latest version of DebugKit and update your composer.json, composer.lock file, update vendor/cakephp-plugins.php, and update your autoloader.
+
+If the plugin you want to install is not available on packagist.org, you can clone or copy the plugin code into your plugins directory. Assuming you want to install a plugin named 'ContactManager', you should have a folder in plugins named 'ContactManager'. In this directory are the plugin's src, tests and any other directories.
+
+If you install your plugins via composer or bake you shouldn't need to configure class autoloading for your plugins.
+
+If you create a plugin manually under the plugins/ folder then you will need to tell composer to refresh its autoloading cache:
+
+If you are using vendor namespaces for your plugins, you'll have to add the namespace to path mapping to the composer.json resembling the following before running the above composer command:
+
+If you want to use a plugin's routes, console commands, middlewares, event listeners, templates or webroot assets you will need to load the plugin.
+
+If you just want to use helpers, behaviors or components from a plugin you do not need to explicitly load a plugin yet it's recommended to always do so.
+
+There is also a handy console command to load the plugin. Execute the following line:
+
+This would update the array in your application's config/plugins.php with an entry similar to 'ContactManager' => [].
+
+Plugins offer several hooks that allow a plugin to inject itself into the appropriate parts of your application. The hooks are:
+
+By default, all plugins hooks are enabled. You can disable hooks by using the related options of the plugin load command:
+
+This would update the array in your application's config/plugins.php with an entry similar to 'ContactManager' => ['routes' => false].
+
+Apart from the options for plugin hooks the plugin load command has the following options to control plugin loading:
+
+Apart from the config array in config/plugins.php, plugins can also be loaded in your application's bootstrap() method:
+
+You can configure hooks with array options, or the methods provided by plugin classes:
+
+Plugin classes also know their names and path information:
+
+You can reference a plugin's controllers, models, components, behaviors, and helpers by prefixing the name of the plugin.
+
+For example, say you wanted to use the ContactManager plugin's ContactInfoHelper to output formatted contact information in one of your views. In your controller, using addHelper() could look like this:
+
+NOTE
+
+This dot separated class name is referred to as plugin syntax.
+
+You would then be able to access the ContactInfoHelper just like any other helper in your view, such as:
+
+Plugins can use the models, components, behaviors and helpers provided by the application, or other plugins if necessary:
+
+As a working example, let's begin to create the ContactManager plugin referenced above. To start out, we'll set up our plugin's basic directory structure. It should look like this:
+
+Note the name of the plugin folder, 'ContactManager'. It is important that this folder has the same name as the plugin.
+
+Inside the plugin folder, you'll notice it looks a lot like a CakePHP application, and that's basically what it is. Just instead of an Application.php you have a ContactManagerPlugin.php. You don't have to include any of the folders you are not using. Some plugins might only define a Component and a Behavior, and in that case they can completely omit the 'templates' directory.
+
+A plugin can also have basically any of the other directories that your application can, such as Config, Console, webroot, etc.
+
+The process of creating plugins can be greatly simplified by using bake.
+
+In order to bake a plugin, use the following command:
+
+Bake can be used to create classes in your plugin. For example to generate a plugin controller you could run:
+
+Please refer to the chapter Code Generation with Bake if you have any problems with using the command line. Be sure to re-generate your autoloader once you've created your plugin:
+
+Plugin classes allow a plugin author to define set-up logic, define default hooks, load routes, middleware and console commands. Plugin classes live in src/{PluginName}Plugin.php. For our ContactManager plugin, our plugin class could look like:
+
+Plugins can provide routes files containing their routes. Each plugin can contain a config/routes.php file. This routes file can be loaded when the plugin is added, or in the application's routes file. To create the ContactManager plugin routes, put the following into plugins/ContactManager/config/routes.php:
+
+The above will connect default routes for your plugin. You can customize this file with more specific routes later on.
+
+You can also load plugin routes in your application's routes list. Doing this provides you more control on how plugin routes are loaded and allows you to wrap plugin routes in additional scopes or prefixes:
+
+The above would result in URLs like /backend/contact-manager/contacts.
+
+Controllers for our ContactManager plugin will be stored in plugins/ContactManager/src/Controller/. Since the main thing we'll be doing is managing contacts, we'll need a ContactsController for this plugin.
+
+So, we place our new ContactsController in plugins/ContactManager/src/Controller and it looks like so:
+
+Also make the AppController if you don't have one already:
+
+A plugin's AppController can hold controller logic common to all controllers in a plugin but is not required if you don't want to use one.
+
+If you want to access what we've got going thus far, visit /contact-manager/contacts. You should get a "Missing Model" error because we don't have a Contact model defined yet.
+
+If your application includes the default routing CakePHP provides you will be able to access your plugin controllers using URLs like:
+
+If your application defines routing prefixes, CakePHP's default routing will also connect routes that use the following pattern:
+
+See the section on Plugin Configuration for information on how to load plugin specific route files.
+
+Models for the plugin are stored in plugins/ContactManager/src/Model. We've already defined a ContactsController for this plugin, so let's create the table and entity for that controller:
+
+If you need to reference a model within your plugin when building associations or defining entity classes, you need to include the plugin name with the class name, separated with a dot. For example:
+
+If you would prefer that the array keys for the association not have the plugin prefix on them, use the alternative syntax:
+
+You can use Cake\ORM\Locator\LocatorAwareTrait to load your plugin tables using the familiar plugin syntax:
+
+Views behave exactly as they do in normal applications. Just place them in the right folder inside of the plugins/[PluginName]/templates/ folder. For our ContactManager plugin, we'll need a view for our ContactsController::index() action, so let's include that as well:
+
+Plugins can provide their own layouts. To add plugin layouts, place your template files inside plugins/[PluginName]/templates/layout. To use a plugin layout in your controller you can do the following:
+
+If the plugin prefix is omitted, the layout/view file will be located normally.
+
+To render an element from a plugin, use the plugin syntax to reference a plugin. You do not need to use plugin syntax for elements in the current active plugin.
+
+If the element doesn't exist in the plugin, it will look in the main APP folder:
+
+If your view is a part of a plugin, you can omit the plugin name. For example, if you are in the ContactsController of the Contacts plugin, the following:
+
+are equivalent and will result in the same element being rendered.
+
+For elements inside subfolder of a plugin (for example, plugins/Contacts/Template/element/sidebar/helpbox.php), use the following:
+
+NOTE
+
+See View Elements for more information on rendering elements.
+
+You can override any plugin views from inside your app using special paths. If you have a plugin called 'ContactManager' you can override the template files of the plugin with application specific view logic by creating files using the following template templates/plugin/[Plugin]/[Controller]/[view].php. For the Contacts controller you could make the following file:
+
+Creating this file would allow you to override plugins/ContactManager/templates/Contacts/index.php.
+
+To override plugin elements, create an element with the same name in:
+
+This file would override plugins/ContactManager/templates/element/helpbox.ctp.
+
+If your plugin is in a composer dependency (i.e. 'Company/ContactManager'), the path to the 'index' view of the Contacts controller will be:
+
+Creating this file would allow you to override vendor/thevendor/theplugin/templates/Custom/index.php.
+
+If the plugin implements a routing prefix, you must include the routing prefix in your application template overrides. For example, if the 'ContactManager' plugin implemented an 'Admin' prefix the overriding path would be:
+
+A plugin's web assets (but not PHP files) can be served through the plugin's webroot/ directory, just like the main application's assets:
+
+You may put any type of file in any directory, just like a regular webroot.
+
+WARNING
+
+Handling static assets (such as images, JavaScript and CSS files) through the Dispatcher is very inefficient. See Symlink Assets for more information.
+
+You can use the plugin syntax when linking to plugin assets using the Cake\View\Helper\HtmlHelper's script, image, or css methods:
+
+Plugin assets are served using the AssetMiddleware middleware by default. This is only recommended for development. In production you should symlink plugin assets to improve performance.
+
+If you are not using the helpers, you can prepend /plugin-name/ to the beginning of the URL for an asset within that plugin to serve it. Linking to '/contact_manager/js/some_file.js' would serve the asset plugins/ContactManager/webroot/js/some_file.js.
+
+A plugin can have Components, Helpers and Behaviors just like a CakePHP application. You can even create plugins that consist only of Components, Helpers or Behaviors which can be a great way to build reusable components that can be dropped into any project.
+
+Building these components is exactly the same as building it within a regular application, with no special naming convention.
+
+Referring to your component from inside or outside of your plugin requires only that you prefix the plugin name before the name of the component. For example:
+
+The same technique applies to Helpers and Behaviors.
+
+Plugins can register their commands inside the console() hook. By default all console commands in the plugin are auto-discovered and added to the application's command list. Plugin commands are prefixed with the plugin name. For example, the UserCommand provided by the ContactManager plugin would be registered as both contact_manager.user and user. The un-prefixed name will only be taken by a plugin if it is not used by the application, or another plugin.
+
+You can customize the command names by defining each command in your plugin:
+
+If you are testing controllers or generating URLs, make sure your plugin connects routes tests/bootstrap.php.
+
+For more information see testing plugins page.
+
+CakePHP plugins should be published to the packagist. This way other people can use it as composer dependency. You can also propose your plugin to the awesome-cakephp list.
+
+Choose a semantically meaningful name for the package name. This should ideally be prefixed with the dependency, in this case "cakephp" as the framework. The vendor name will usually be your GitHub username. Do not use the CakePHP namespace (cakephp) as this is reserved to CakePHP owned plugins. The convention is to use lowercase letters and dashes as separator.
+
+So if you created a plugin "Logging" with your GitHub account "FooBar", a good name would be foo-bar/cakephp-logging. And the CakePHP owned "Localized" plugin can be found under cakephp/localized respectively.
+
+When installing plugins via Composer, you may notice that vendor/cakephp-plugins.php is created. This configuration file contains a map of plugin names and their paths on the filesystem. It makes it possible for plugins to be installed into the standard vendor directory which is outside of the normal search paths. The Plugin class will use this file to locate plugins when they are loaded with addPlugin(). You generally won't need to edit this file by hand, as Composer and the plugin-installer package will manage it for you.
+
+Another way to discover and manage plugins into your CakePHP application is Mixer. It is a CakePHP plugin which helps you to install plugins from Packagist. It also helps you to manage your existing plugins.
+
+NOTE
+
+IMPORTANT: Do not use this in production environment.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+DebugKit
+----------------------------------------
+
+Code Block 2 ():
+Composer
+----------------------------------------
+
+Code Block 3 (shiki):
+php composer.phar require cakephp/debug_kit
+----------------------------------------
+
+Code Block 4 ():
+php composer.phar require cakephp/debug_kit
+----------------------------------------
+
+Code Block 5 ():
+composer
+----------------------------------------
+
+Code Block 6 ():
+bake
+----------------------------------------
+
+Code Block 7 ():
+plugins/
+----------------------------------------
+
+Code Block 8 ():
+composer
+----------------------------------------
+
+Code Block 9 (shiki):
+php composer.phar dumpautoload
+----------------------------------------
+
+Code Block 10 ():
+php composer.phar dumpautoload
+----------------------------------------
+
+Code Block 11 ():
+composer.json
+----------------------------------------
+
+Code Block 12 (shiki):
+{
+    "autoload": {
+        "psr-4": {
+            "AcmeCorp\\Users\\": "plugins/AcmeCorp/Users/src/",
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AcmeCorp\\Users\\Test\\": "plugins/AcmeCorp/Users/tests/"
+        }
+    }
+}
+----------------------------------------
+
+Code Block 13 ():
+{
+    "autoload": {
+        "psr-4": {
+            "AcmeCorp\\Users\\": "plugins/AcmeCorp/Users/src/",
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AcmeCorp\\Users\\Test\\": "plugins/AcmeCorp/Users/tests/"
+        }
+    }
+}
+----------------------------------------
+
+Code Block 14 (shiki):
+bin/cake plugin load ContactManager
+----------------------------------------
+
+Code Block 15 ():
+bin/cake plugin load ContactManager
+----------------------------------------
+
+Code Block 16 ():
+config/plugins.php
+----------------------------------------
+
+Code Block 17 ():
+'ContactManager' => []
+----------------------------------------
+
+Code Block 18 ():
+bootstrap
+----------------------------------------
+
+Code Block 19 ():
+bootstrap
+----------------------------------------
+
+Code Block 20 ():
+Application
+----------------------------------------
+
+Code Block 21 ():
+routes
+----------------------------------------
+
+Code Block 22 ():
+middleware
+----------------------------------------
+
+Code Block 23 ():
+console
+----------------------------------------
+
+Code Block 24 ():
+services
+----------------------------------------
+
+Code Block 25 ():
+plugin load
+----------------------------------------
+
+Code Block 26 (shiki):
+bin/cake plugin load ContactManager --no-routes
+----------------------------------------
+
+Code Block 27 ():
+bin/cake plugin load ContactManager --no-routes
+----------------------------------------
+
+Code Block 28 ():
+config/plugins.php
+----------------------------------------
+
+Code Block 29 ():
+'ContactManager' => ['routes' => false]
+----------------------------------------
+
+Code Block 30 ():
+plugin load
+----------------------------------------
+
+Code Block 31 ():
+--only-debug
+----------------------------------------
+
+Code Block 32 ():
+--only-cli
+----------------------------------------
+
+Code Block 33 ():
+--optional
+----------------------------------------
+
+Code Block 34 ():
+Application::bootstrap()
+----------------------------------------
+
+Code Block 35 ():
+config/plugins.php
+----------------------------------------
+
+Code Block 36 ():
+bootstrap()
+----------------------------------------
+
+Code Block 37 (shiki):
+// In src/Application.php
+use Cake\Http\BaseApplication;
+use ContactManager\ContactManagerPlugin;
+
+class Application extends BaseApplication
+{
+    public function bootstrap(): void
+    {
+        parent::bootstrap();
+
+        // Load the contact manager plugin by class name
+        $this->addPlugin(ContactManagerPlugin::class);
+
+        // Load a plugin with a vendor namespace by 'short name' with options
+        $this->addPlugin('AcmeCorp/ContactManager', ['console' => false]);
+
+        // Load a dev dependency that will not exist in production builds.
+        $this->addOptionalPlugin('AcmeCorp/ContactManager');
+    }
+}
+----------------------------------------
+
+Code Block 38 ():
+// In src/Application.php
+use Cake\Http\BaseApplication;
+use ContactManager\ContactManagerPlugin;
+
+class Application extends BaseApplication
+{
+    public function bootstrap(): void
+    {
+        parent::bootstrap();
+
+        // Load the contact manager plugin by class name
+        $this->addPlugin(ContactManagerPlugin::class);
+
+        // Load a plugin with a vendor namespace by 'short name' with options
+        $this->addPlugin('AcmeCorp/ContactManager', ['console' => false]);
+
+        // Load a dev dependency that will not exist in production builds.
+        $this->addOptionalPlugin('AcmeCorp/ContactManager');
+    }
+}
+----------------------------------------
+
+Code Block 39 (shiki):
+// In Application::bootstrap()
+use ContactManager\ContactManagerPlugin;
+
+// Use the disable/enable to configure hooks.
+$plugin = new ContactManagerPlugin();
+
+$plugin->disable('bootstrap');
+$plugin->enable('routes');
+$this->addPlugin($plugin);
+----------------------------------------
+
+Code Block 40 ():
+// In Application::bootstrap()
+use ContactManager\ContactManagerPlugin;
+
+// Use the disable/enable to configure hooks.
+$plugin = new ContactManagerPlugin();
+
+$plugin->disable('bootstrap');
+$plugin->enable('routes');
+$this->addPlugin($plugin);
+----------------------------------------
+
+Code Block 41 (shiki):
+$plugin = new ContactManagerPlugin();
+
+// Get the plugin name.
+$name = $plugin->getName();
+
+// Path to the plugin root, and other paths.
+$path = $plugin->getPath();
+$path = $plugin->getConfigPath();
+$path = $plugin->getClassPath();
+----------------------------------------
+
+Code Block 42 ():
+$plugin = new ContactManagerPlugin();
+
+// Get the plugin name.
+$name = $plugin->getName();
+
+// Path to the plugin root, and other paths.
+$path = $plugin->getPath();
+$path = $plugin->getConfigPath();
+$path = $plugin->getClassPath();
+----------------------------------------
+
+Code Block 43 ():
+ContactInfoHelper
+----------------------------------------
+
+Code Block 44 ():
+addHelper()
+----------------------------------------
+
+Code Block 45 (shiki):
+$this->viewBuilder()->addHelper('ContactManager.ContactInfo');
+----------------------------------------
+
+Code Block 46 ():
+$this->viewBuilder()->addHelper('ContactManager.ContactInfo');
+----------------------------------------
+
+Code Block 47 ():
+plugin syntax
+----------------------------------------
+
+Code Block 48 ():
+ContactInfoHelper
+----------------------------------------
+
+Code Block 49 (shiki):
+echo $this->ContactInfo->address($contact);
+----------------------------------------
+
+Code Block 50 ():
+echo $this->ContactInfo->address($contact);
+----------------------------------------
+
+Code Block 51 (shiki):
+// Use an application component
+$this->loadComponent('AppFlash');
+
+// Use another plugin's behavior
+$this->addBehavior('OtherPlugin.AuditLog');
+----------------------------------------
+
+Code Block 52 ():
+// Use an application component
+$this->loadComponent('AppFlash');
+
+// Use another plugin's behavior
+$this->addBehavior('OtherPlugin.AuditLog');
+----------------------------------------
+
+Code Block 53 ():
+/src
+/plugins
+    /ContactManager
+        /config
+        /src
+            /ContactManagerPlugin.php
+            /Controller
+                /Component
+            /Model
+                /Table
+                /Entity
+                /Behavior
+            /View
+                /Helper
+        /templates
+            /layout
+        /tests
+            /TestCase
+            /Fixture
+        /webroot
+----------------------------------------
+
+Code Block 54 ():
+/src
+/plugins
+    /ContactManager
+        /config
+        /src
+            /ContactManagerPlugin.php
+            /Controller
+                /Component
+            /Model
+                /Table
+                /Entity
+                /Behavior
+            /View
+                /Helper
+        /templates
+            /layout
+        /tests
+            /TestCase
+            /Fixture
+        /webroot
+----------------------------------------
+
+Code Block 55 ():
+Application.php
+----------------------------------------
+
+Code Block 56 ():
+ContactManagerPlugin.php
+----------------------------------------
+
+Code Block 57 (shiki):
+bin/cake bake plugin ContactManager
+----------------------------------------
+
+Code Block 58 ():
+bin/cake bake plugin ContactManager
+----------------------------------------
+
+Code Block 59 (shiki):
+bin/cake bake controller --plugin ContactManager Contacts
+----------------------------------------
+
+Code Block 60 ():
+bin/cake bake controller --plugin ContactManager Contacts
+----------------------------------------
+
+Code Block 61 (shiki):
+php composer.phar dumpautoload
+----------------------------------------
+
+Code Block 62 ():
+php composer.phar dumpautoload
+----------------------------------------
+
+Code Block 63 (shiki):
+namespace ContactManager;
+
+use Cake\Core\BasePlugin;
+use Cake\Core\ContainerInterface;
+use Cake\Core\PluginApplicationInterface;
+use Cake\Console\CommandCollection;
+use Cake\Http\MiddlewareQueue;
+use Cake\Routing\RouteBuilder;
+
+class ContactManagerPlugin extends BasePlugin
+{
+    /**
+     * @inheritDoc
+     */
+    public function middleware(MiddlewareQueue $middleware): MiddlewareQueue
+    {
+        // Add middleware here.
+        $middleware = parent::middleware($middleware);
+
+        return $middleware;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function console(CommandCollection $commands): CommandCollection
+    {
+        // Add console commands here.
+        $commands = parent::console($commands);
+
+        return $commands;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function bootstrap(PluginApplicationInterface $app): void
+    {
+        // Add constants, load configuration defaults.
+        // By default, will load `config/bootstrap.php` in the plugin.
+        parent::bootstrap($app);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function routes(RouteBuilder $routes): void
+    {
+        // Add routes.
+        // By default, will load `config/routes.php` in the plugin.
+        parent::routes($routes);
+    }
+
+    /**
+     * Register application container services.
+     *
+     * @param \Cake\Core\ContainerInterface $container The Container to update.
+     * @return void
+     * @link https://book.cakephp.org/5/en/development/dependency-injection.html#dependency-injection
+     */
+    public function services(ContainerInterface $container): void
+    {
+        // Add your services here
+    }
+}
+----------------------------------------
+
+Code Block 64 ():
+namespace ContactManager;
+
+use Cake\Core\BasePlugin;
+use Cake\Core\ContainerInterface;
+use Cake\Core\PluginApplicationInterface;
+use Cake\Console\CommandCollection;
+use Cake\Http\MiddlewareQueue;
+use Cake\Routing\RouteBuilder;
+
+class ContactManagerPlugin extends BasePlugin
+{
+    /**
+     * @inheritDoc
+     */
+    public function middleware(MiddlewareQueue $middleware): MiddlewareQueue
+    {
+        // Add middleware here.
+        $middleware = parent::middleware($middleware);
+
+        return $middleware;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function console(CommandCollection $commands): CommandCollection
+    {
+        // Add console commands here.
+        $commands = parent::console($commands);
+
+        return $commands;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function bootstrap(PluginApplicationInterface $app): void
+    {
+        // Add constants, load configuration defaults.
+        // By default, will load `config/bootstrap.php` in the plugin.
+        parent::bootstrap($app);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function routes(RouteBuilder $routes): void
+    {
+        // Add routes.
+        // By default, will load `config/routes.php` in the plugin.
+        parent::routes($routes);
+    }
+
+    /**
+     * Register application container services.
+     *
+     * @param \Cake\Core\ContainerInterface $container The Container to update.
+     * @return void
+     * @link https://book.cakephp.org/5/en/development/dependency-injection.html#dependency-injection
+     */
+    public function services(ContainerInterface $container): void
+    {
+        // Add your services here
+    }
+}
+----------------------------------------
+
+Code Block 65 (shiki):
+<?php
+use Cake\Routing\Route\DashedRoute;
+
+$routes->plugin(
+    'ContactManager',
+    ['path' => '/contact-manager'],
+    function ($routes) {
+        $routes->setRouteClass(DashedRoute::class);
+
+        $routes->get('/contacts', ['controller' => 'Contacts']);
+        $routes->get('/contacts/{id}', ['controller' => 'Contacts', 'action' => 'view']);
+        $routes->put('/contacts/{id}', ['controller' => 'Contacts', 'action' => 'update']);
+    }
+);
+----------------------------------------
+
+Code Block 66 ():
+<?php
+use Cake\Routing\Route\DashedRoute;
+
+$routes->plugin(
+    'ContactManager',
+    ['path' => '/contact-manager'],
+    function ($routes) {
+        $routes->setRouteClass(DashedRoute::class);
+
+        $routes->get('/contacts', ['controller' => 'Contacts']);
+        $routes->get('/contacts/{id}', ['controller' => 'Contacts', 'action' => 'view']);
+        $routes->put('/contacts/{id}', ['controller' => 'Contacts', 'action' => 'update']);
+    }
+);
+----------------------------------------
+
+Code Block 67 (shiki):
+$routes->scope('/', function ($routes) {
+    // Connect other routes.
+    $routes->scope('/backend', function ($routes) {
+        $routes->loadPlugin('ContactManager');
+    });
+});
+----------------------------------------
+
+Code Block 68 ():
+$routes->scope('/', function ($routes) {
+    // Connect other routes.
+    $routes->scope('/backend', function ($routes) {
+        $routes->loadPlugin('ContactManager');
+    });
+});
+----------------------------------------
+
+Code Block 69 ():
+/backend/contact-manager/contacts
+----------------------------------------
+
+Code Block 70 (shiki):
+// plugins/ContactManager/src/Controller/ContactsController.php
+namespace ContactManager\Controller;
+
+use ContactManager\Controller\AppController;
+
+class ContactsController extends AppController
+{
+    public function index()
+    {
+        //...
+    }
+}
+----------------------------------------
+
+Code Block 71 ():
+// plugins/ContactManager/src/Controller/ContactsController.php
+namespace ContactManager\Controller;
+
+use ContactManager\Controller\AppController;
+
+class ContactsController extends AppController
+{
+    public function index()
+    {
+        //...
+    }
+}
+----------------------------------------
+
+Code Block 72 ():
+AppController
+----------------------------------------
+
+Code Block 73 (shiki):
+// plugins/ContactManager/src/Controller/AppController.php
+namespace ContactManager\Controller;
+
+use App\Controller\AppController as BaseController;
+
+class AppController extends BaseController
+{
+}
+----------------------------------------
+
+Code Block 74 ():
+// plugins/ContactManager/src/Controller/AppController.php
+namespace ContactManager\Controller;
+
+use App\Controller\AppController as BaseController;
+
+class AppController extends BaseController
+{
+}
+----------------------------------------
+
+Code Block 75 ():
+AppController
+----------------------------------------
+
+Code Block 76 ():
+/contact-manager/contacts
+----------------------------------------
+
+Code Block 77 (shiki):
+// Access the index route of a plugin controller.
+/contact-manager/contacts
+
+// Any action on a plugin controller.
+/contact-manager/contacts/view/1
+----------------------------------------
+
+Code Block 78 ():
+// Access the index route of a plugin controller.
+/contact-manager/contacts
+
+// Any action on a plugin controller.
+/contact-manager/contacts/view/1
+----------------------------------------
+
+Code Block 79 (shiki):
+/{prefix}/{plugin}/{controller}
+/{prefix}/{plugin}/{controller}/{action}
+----------------------------------------
+
+Code Block 80 ():
+/{prefix}/{plugin}/{controller}
+/{prefix}/{plugin}/{controller}/{action}
+----------------------------------------
+
+Code Block 81 (shiki):
+// plugins/ContactManager/src/Model/Entity/Contact.php:
+namespace ContactManager\Model\Entity;
+
+use Cake\ORM\Entity;
+
+class Contact extends Entity
+{
+}
+
+// plugins/ContactManager/src/Model/Table/ContactsTable.php:
+namespace ContactManager\Model\Table;
+
+use Cake\ORM\Table;
+
+class ContactsTable extends Table
+{
+}
+----------------------------------------
+
+Code Block 82 ():
+// plugins/ContactManager/src/Model/Entity/Contact.php:
+namespace ContactManager\Model\Entity;
+
+use Cake\ORM\Entity;
+
+class Contact extends Entity
+{
+}
+
+// plugins/ContactManager/src/Model/Table/ContactsTable.php:
+namespace ContactManager\Model\Table;
+
+use Cake\ORM\Table;
+
+class ContactsTable extends Table
+{
+}
+----------------------------------------
+
+Code Block 83 (shiki):
+// plugins/ContactManager/src/Model/Table/ContactsTable.php:
+namespace ContactManager\Model\Table;
+
+use Cake\ORM\Table;
+
+class ContactsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('ContactManager.AltName');
+    }
+}
+----------------------------------------
+
+Code Block 84 ():
+// plugins/ContactManager/src/Model/Table/ContactsTable.php:
+namespace ContactManager\Model\Table;
+
+use Cake\ORM\Table;
+
+class ContactsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('ContactManager.AltName');
+    }
+}
+----------------------------------------
+
+Code Block 85 (shiki):
+// plugins/ContactManager/src/Model/Table/ContactsTable.php:
+namespace ContactManager\Model\Table;
+
+use Cake\ORM\Table;
+
+class ContactsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('AltName', [
+            'className' => 'ContactManager.AltName',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 86 ():
+// plugins/ContactManager/src/Model/Table/ContactsTable.php:
+namespace ContactManager\Model\Table;
+
+use Cake\ORM\Table;
+
+class ContactsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('AltName', [
+            'className' => 'ContactManager.AltName',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 87 ():
+Cake\ORM\Locator\LocatorAwareTrait
+----------------------------------------
+
+Code Block 88 ():
+plugin syntax
+----------------------------------------
+
+Code Block 89 (shiki):
+// Controllers already use LocatorAwareTrait, so you don't need this.
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$contacts = $this->fetchTable('ContactManager.Contacts');
+----------------------------------------
+
+Code Block 90 ():
+// Controllers already use LocatorAwareTrait, so you don't need this.
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$contacts = $this->fetchTable('ContactManager.Contacts');
+----------------------------------------
+
+Code Block 91 ():
+plugins/[PluginName]/templates/
+----------------------------------------
+
+Code Block 92 ():
+ContactsController::index()
+----------------------------------------
+
+Code Block 93 (shiki):
+// plugins/ContactManager/templates/Contacts/index.php:
+<h1>Contacts</h1>
+<p>Following is a sortable list of your contacts</p>
+<!-- A sortable list of contacts would go here....-->
+----------------------------------------
+
+Code Block 94 ():
+// plugins/ContactManager/templates/Contacts/index.php:
+<h1>Contacts</h1>
+<p>Following is a sortable list of your contacts</p>
+<!-- A sortable list of contacts would go here....-->
+----------------------------------------
+
+Code Block 95 ():
+plugins/[PluginName]/templates/layout
+----------------------------------------
+
+Code Block 96 (shiki):
+$this->viewBuilder()->setLayout('ContactManager.admin');
+----------------------------------------
+
+Code Block 97 ():
+$this->viewBuilder()->setLayout('ContactManager.admin');
+----------------------------------------
+
+Code Block 98 ():
+plugin syntax
+----------------------------------------
+
+Code Block 99 (shiki):
+echo $this->element('Contacts.helpbox');
+----------------------------------------
+
+Code Block 100 ():
+echo $this->element('Contacts.helpbox');
+----------------------------------------
+
+Code Block 101 ():
+ContactsController
+----------------------------------------
+
+Code Block 102 (shiki):
+echo $this->element('helpbox');
+// and
+echo $this->element('Contacts.helpbox');
+----------------------------------------
+
+Code Block 103 ():
+echo $this->element('helpbox');
+// and
+echo $this->element('Contacts.helpbox');
+----------------------------------------
+
+Code Block 104 (shiki):
+echo $this->element('Contacts.sidebar/helpbox');
+----------------------------------------
+
+Code Block 105 ():
+echo $this->element('Contacts.sidebar/helpbox');
+----------------------------------------
+
+Code Block 106 ():
+[Plugin]/[Controller]/[view]
+----------------------------------------
+
+Code Block 107 ():
+templates/plugin/ContactManager/Contacts/index.php
+----------------------------------------
+
+Code Block 108 ():
+templates/plugin/ContactManager/Contacts/index.php
+----------------------------------------
+
+Code Block 109 ():
+templates/plugin/ContactManager/element/helpbox.php
+----------------------------------------
+
+Code Block 110 ():
+templates/plugin/ContactManager/element/helpbox.php
+----------------------------------------
+
+Code Block 111 ():
+templates/plugin/TheVendor/ThePlugin/Custom/index.php
+----------------------------------------
+
+Code Block 112 ():
+templates/plugin/TheVendor/ThePlugin/Custom/index.php
+----------------------------------------
+
+Code Block 113 ():
+templates/plugin/ContactManager/Admin/ContactManager/index.php
+----------------------------------------
+
+Code Block 114 ():
+templates/plugin/ContactManager/Admin/ContactManager/index.php
+----------------------------------------
+
+Code Block 115 ():
+webroot/
+----------------------------------------
+
+Code Block 116 ():
+/plugins/ContactManager/webroot/
+                               css/
+                               js/
+                               img/
+                               flash/
+                               pdf/
+----------------------------------------
+
+Code Block 117 ():
+/plugins/ContactManager/webroot/
+                               css/
+                               js/
+                               img/
+                               flash/
+                               pdf/
+----------------------------------------
+
+Code Block 118 ():
+plugin syntax
+----------------------------------------
+
+Code Block 119 ():
+Cake\View\Helper\HtmlHelper
+----------------------------------------
+
+Code Block 120 (shiki):
+// Generates a URL of /contact_manager/css/styles.css
+echo $this->Html->css('ContactManager.styles');
+
+// Generates a URL of /contact_manager/js/widget.js
+echo $this->Html->script('ContactManager.widget');
+
+// Generates a URL of /contact_manager/img/logo.jpg
+echo $this->Html->image('ContactManager.logo');
+----------------------------------------
+
+Code Block 121 ():
+// Generates a URL of /contact_manager/css/styles.css
+echo $this->Html->css('ContactManager.styles');
+
+// Generates a URL of /contact_manager/js/widget.js
+echo $this->Html->script('ContactManager.widget');
+
+// Generates a URL of /contact_manager/img/logo.jpg
+echo $this->Html->image('ContactManager.logo');
+----------------------------------------
+
+Code Block 122 ():
+AssetMiddleware
+----------------------------------------
+
+Code Block 123 (shiki):
+// Component defined in 'ContactManager' plugin
+namespace ContactManager\Controller\Component;
+
+use Cake\Controller\Component;
+
+class ExampleComponent extends Component
+{
+}
+
+// Within your controllers
+public function initialize(): void
+{
+    parent::initialize();
+    $this->loadComponent('ContactManager.Example');
+}
+----------------------------------------
+
+Code Block 124 ():
+// Component defined in 'ContactManager' plugin
+namespace ContactManager\Controller\Component;
+
+use Cake\Controller\Component;
+
+class ExampleComponent extends Component
+{
+}
+
+// Within your controllers
+public function initialize(): void
+{
+    parent::initialize();
+    $this->loadComponent('ContactManager.Example');
+}
+----------------------------------------
+
+Code Block 125 ():
+console()
+----------------------------------------
+
+Code Block 126 ():
+UserCommand
+----------------------------------------
+
+Code Block 127 ():
+ContactManager
+----------------------------------------
+
+Code Block 128 ():
+contact_manager.user
+----------------------------------------
+
+Code Block 129 ():
+user
+----------------------------------------
+
+Code Block 130 (shiki):
+public function console($commands)
+{
+    // Create nested commands
+    $commands->add('bake model', ModelCommand::class);
+    $commands->add('bake controller', ControllerCommand::class);
+
+    return $commands;
+}
+----------------------------------------
+
+Code Block 131 ():
+public function console($commands)
+{
+    // Create nested commands
+    $commands->add('bake model', ModelCommand::class);
+    $commands->add('bake controller', ControllerCommand::class);
+
+    return $commands;
+}
+----------------------------------------
+
+Code Block 132 ():
+tests/bootstrap.php
+----------------------------------------
+
+Code Block 133 ():
+foo-bar/cakephp-logging
+----------------------------------------
+
+Code Block 134 ():
+cakephp/localized
+----------------------------------------
+
+Code Block 135 ():
+Plugin
+----------------------------------------
+
+Code Block 136 ():
+addPlugin()
+----------------------------------------
+
+Code Block 137 ():
+plugin-installer
+----------------------------------------
+

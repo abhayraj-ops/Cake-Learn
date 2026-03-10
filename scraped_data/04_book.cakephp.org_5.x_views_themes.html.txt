@@ -1,0 +1,401 @@
+URL: https://book.cakephp.org/5.x/views/themes.html
+Title: Themes | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Themes ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Theme Assets ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Themes in CakePHP are simply plugins that focus on providing template files. See the section on Plugin Create Your Own. You can take advantage of themes, allowing you to switch the look and feel of your page quickly. In addition to template files, they can also provide helpers and cells if your theming requires that. When using cells and helpers from your theme, you will need to continue using the plugin syntax.
+
+First ensure your theme plugin is loaded in your application's bootstrap method. For example:
+
+To use themes, set the theme name in your controller's action or beforeRender() callback:
+
+Theme template files need to be within a plugin with the same name. For example, the above theme would be found in plugins/Modern/templates. It's important to remember that CakePHP expects PascalCase plugin/theme names. Beyond that, the folder structure within the plugins/Modern/templates folder is exactly the same as templates/.
+
+For example, the view file for an edit action of a Posts controller would reside at plugins/Modern/templates/Posts/edit.php. Layout files would reside in plugins/Modern/templates/layout/. You can provide customized templates for plugins with a theme as well. If you had a plugin named 'Cms', that contained a TagsController, the Modern theme could provide plugins/Modern/templates/plugin/Cms/Tags/edit.php to replace the edit template in the plugin.
+
+If a view file can't be found in the theme, CakePHP will try to locate the view file in the templates/ folder. This way, you can create master template files and simply override them on a case-by-case basis within your theme folder.
+
+Because themes are standard CakePHP plugins, they can include any necessary assets in their webroot directory. This allows for packaging and distribution of themes. Whilst in development, requests for theme assets will be handled by Cake\Routing\Middleware\AssetMiddleware (which is loaded by default in cakephp/app Application::middleware()). To improve performance for production environments, it's recommended that you Symlink Assets.
+
+All of CakePHP's built-in helpers are aware of themes and will create the correct paths automatically. Like template files, if a file isn't in the theme folder, it will default to the main webroot folder:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+plugin syntax
+----------------------------------------
+
+Code Block 2 ():
+bootstrap
+----------------------------------------
+
+Code Block 3 (shiki):
+// Load our plugin theme residing in the folder /plugins/Modern
+$this->addPlugin('Modern');
+----------------------------------------
+
+Code Block 4 ():
+// Load our plugin theme residing in the folder /plugins/Modern
+$this->addPlugin('Modern');
+----------------------------------------
+
+Code Block 5 ():
+beforeRender()
+----------------------------------------
+
+Code Block 6 (shiki):
+class ExamplesController extends AppController
+{
+    public function beforeRender(\Cake\Event\EventInterface $event): void
+    {
+        $this->viewBuilder()->setTheme('Modern');
+    }
+}
+----------------------------------------
+
+Code Block 7 ():
+class ExamplesController extends AppController
+{
+    public function beforeRender(\Cake\Event\EventInterface $event): void
+    {
+        $this->viewBuilder()->setTheme('Modern');
+    }
+}
+----------------------------------------
+
+Code Block 8 ():
+Cake\Routing\Middleware\AssetMiddleware
+----------------------------------------
+
+Code Block 9 ():
+Application::middleware()
+----------------------------------------
+
+Code Block 10 (shiki):
+// When in a theme with the name of 'purple_cupcake'
+$this->Html->css('main.css');
+
+// creates a path like
+/purple_cupcake/css/main.css
+
+// and links to
+plugins/PurpleCupcake/webroot/css/main.css
+----------------------------------------
+
+Code Block 11 ():
+// When in a theme with the name of 'purple_cupcake'
+$this->Html->css('main.css');
+
+// creates a path like
+/purple_cupcake/css/main.css
+
+// and links to
+plugins/PurpleCupcake/webroot/css/main.css
+----------------------------------------
+

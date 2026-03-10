@@ -1,0 +1,631 @@
+URL: https://book.cakephp.org/5.x/appendices/phpunit-upgrade.html
+Title: PHPUnit Upgrade | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - PHPUnit Upgrade ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Current Requirements ​
+  - phpunit.xml Adjustments ​
+  - PHPUnit 9 to 10 ​
+  - PHPUnit 10 to 11 ​
+  - PHPUnit 11 to 12 ​
+  - Using Rector for Automated Migration ​
+  - Upgrade Checklist ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Extension Configuration ​
+  - ->withConsecutive() Removed ​
+  - Data Providers Must Be Static ​
+  - Annotations Deprecated ​
+  - Test Doubles for Abstract Classes Deprecated ​
+  - Stub Expectations Deprecated ​
+  - Test Class Naming ​
+  - Annotations Removed ​
+  - Test Doubles for Abstract Classes Removed ​
+  - Stub Expectations Removed ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+This guide covers the PHPUnit version requirements and migration steps for CakePHP 5.x applications.
+
+CakePHP 5.x requires PHPUnit ^11.5.3 or ^12.1.3. This means:
+
+NOTE
+
+PHPUnit 10 is no longer supported in CakePHP 5.x. If you are still on PHPUnit 10, you must upgrade to PHPUnit 11 or 12.
+
+It is recommended to let PHPUnit update its configuration file via the following command:
+
+NOTE
+
+Run vendor/bin/phpunit --version to check your current PHPUnit version before executing migration commands.
+
+With this command out of the way your phpunit.xml already has most of the recommended changes present.
+
+PHPUnit 10 removed the old hook system and introduced a new Event system which requires the following code in your phpunit.xml to be adjusted from:
+
+to:
+
+You can convert the removed ->withConsecutive() method to a working interim solution like you can see here:
+
+should be converted to:
+
+The static self::withConsecutive() method has been added via the Cake\TestSuite\PHPUnitConsecutiveTrait to the base Cake\TestSuite\TestCase class so you don't have to manually add that trait to your TestCase classes.
+
+If your test cases leverage the data provider feature of PHPUnit then you have to adjust your data providers to be static:
+
+should be converted to:
+
+PHPUnit 11 requires PHP 8.2 or later.
+
+PHPUnit 11 deprecates annotations in docblocks. You should migrate to PHP 8 attributes:
+
+Common attribute replacements:
+
+Remember to import the attribute classes from PHPUnit\Framework\Attributes.
+
+Methods for creating mock objects for abstract classes and traits are hard-deprecated. Testing traits in isolation from the classes that use them is discouraged.
+
+Configuring expectations on an object created with createStub() triggers a deprecation warning:
+
+Test class names must match their file names. A test in FooTest.php must have a class named FooTest.
+
+PHPUnit 12 requires PHP 8.3 or later.
+
+Support for docblock annotations has been removed. All tests must use PHP 8 attributes.
+
+Methods for creating mock objects for abstract classes and traits have been removed entirely.
+
+Configuring expectations on objects created with createStub() no longer works. Use createMock() for test doubles that need expectation configuration.
+
+Rector can automate many of these changes:
+
+Configure Rector with PHPUnit rulesets to handle data provider static conversion, annotation to attribute migration, and other changes automatically.
+
+Before upgrading PHPUnit versions, ensure:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+vendor/bin/phpunit --migrate-configuration
+----------------------------------------
+
+Code Block 2 ():
+vendor/bin/phpunit --migrate-configuration
+----------------------------------------
+
+Code Block 3 ():
+vendor/bin/phpunit --version
+----------------------------------------
+
+Code Block 4 ():
+phpunit.xml
+----------------------------------------
+
+Code Block 5 ():
+phpunit.xml
+----------------------------------------
+
+Code Block 6 (shiki):
+<extensions>
+  <extension class="Cake\TestSuite\Fixture\PHPUnitExtension"/>
+</extensions>
+----------------------------------------
+
+Code Block 7 ():
+<extensions>
+  <extension class="Cake\TestSuite\Fixture\PHPUnitExtension"/>
+</extensions>
+----------------------------------------
+
+Code Block 8 (shiki):
+<extensions>
+  <bootstrap class="Cake\TestSuite\Fixture\Extension\PHPUnitExtension"/>
+</extensions>
+----------------------------------------
+
+Code Block 9 ():
+<extensions>
+  <bootstrap class="Cake\TestSuite\Fixture\Extension\PHPUnitExtension"/>
+</extensions>
+----------------------------------------
+
+Code Block 10 ():
+->withConsecutive()
+----------------------------------------
+
+Code Block 11 ():
+->withConsecutive()
+----------------------------------------
+
+Code Block 12 (shiki):
+->withConsecutive(['firstCallArg'], ['secondCallArg'])
+----------------------------------------
+
+Code Block 13 ():
+->withConsecutive(['firstCallArg'], ['secondCallArg'])
+----------------------------------------
+
+Code Block 14 (shiki):
+->with(
+    ...self::withConsecutive(['firstCallArg'], ['secondCallArg']),
+)
+----------------------------------------
+
+Code Block 15 ():
+->with(
+    ...self::withConsecutive(['firstCallArg'], ['secondCallArg']),
+)
+----------------------------------------
+
+Code Block 16 ():
+self::withConsecutive()
+----------------------------------------
+
+Code Block 17 ():
+Cake\TestSuite\PHPUnitConsecutiveTrait
+----------------------------------------
+
+Code Block 18 ():
+Cake\TestSuite\TestCase
+----------------------------------------
+
+Code Block 19 (shiki):
+public function myProvider(): array
+----------------------------------------
+
+Code Block 20 ():
+public function myProvider(): array
+----------------------------------------
+
+Code Block 21 (shiki):
+public static function myProvider(): array
+----------------------------------------
+
+Code Block 22 ():
+public static function myProvider(): array
+----------------------------------------
+
+Code Block 23 (shiki):
+// Before (deprecated)
+/**
+ * @dataProvider myProvider
+ */
+public function testSomething(): void
+
+// After
+#[DataProvider('myProvider')]
+public function testSomething(): void
+----------------------------------------
+
+Code Block 24 ():
+// Before (deprecated)
+/**
+ * @dataProvider myProvider
+ */
+public function testSomething(): void
+
+// After
+#[DataProvider('myProvider')]
+public function testSomething(): void
+----------------------------------------
+
+Code Block 25 ():
+@dataProvider
+----------------------------------------
+
+Code Block 26 ():
+#[DataProvider('methodName')]
+----------------------------------------
+
+Code Block 27 ():
+@depends
+----------------------------------------
+
+Code Block 28 ():
+#[Depends('methodName')]
+----------------------------------------
+
+Code Block 29 ():
+@group
+----------------------------------------
+
+Code Block 30 ():
+#[Group('name')]
+----------------------------------------
+
+Code Block 31 ():
+@covers
+----------------------------------------
+
+Code Block 32 ():
+#[CoversClass(ClassName::class)]
+----------------------------------------
+
+Code Block 33 ():
+@test
+----------------------------------------
+
+Code Block 34 ():
+#[Test]
+----------------------------------------
+
+Code Block 35 ():
+PHPUnit\Framework\Attributes
+----------------------------------------
+
+Code Block 36 ():
+createStub()
+----------------------------------------
+
+Code Block 37 (shiki):
+// Avoid - will warn in PHPUnit 11
+$stub = $this->createStub(SomeClass::class);
+$stub->expects($this->once())->method('foo');
+
+// Use createMock() instead when you need expectations
+$mock = $this->createMock(SomeClass::class);
+$mock->expects($this->once())->method('foo');
+----------------------------------------
+
+Code Block 38 ():
+// Avoid - will warn in PHPUnit 11
+$stub = $this->createStub(SomeClass::class);
+$stub->expects($this->once())->method('foo');
+
+// Use createMock() instead when you need expectations
+$mock = $this->createMock(SomeClass::class);
+$mock->expects($this->once())->method('foo');
+----------------------------------------
+
+Code Block 39 ():
+FooTest.php
+----------------------------------------
+
+Code Block 40 ():
+FooTest
+----------------------------------------
+
+Code Block 41 ():
+createStub()
+----------------------------------------
+
+Code Block 42 ():
+createMock()
+----------------------------------------
+
+Code Block 43 (shiki):
+composer require --dev rector/rector rector/rector-phpunit
+
+# Create rector.php config
+vendor/bin/rector init
+
+# Run rector
+vendor/bin/rector process tests/
+----------------------------------------
+
+Code Block 44 ():
+composer require --dev rector/rector rector/rector-phpunit
+
+# Create rector.php config
+vendor/bin/rector init
+
+# Run rector
+vendor/bin/rector process tests/
+----------------------------------------
+
+Code Block 45 ():
+public static
+----------------------------------------
+
+Code Block 46 ():
+createMock()
+----------------------------------------
+
+Code Block 47 ():
+createStub()
+----------------------------------------
+
+Code Block 48 ():
+vendor/bin/phpunit --migrate-configuration
+----------------------------------------
+

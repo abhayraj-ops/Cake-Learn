@@ -1,0 +1,428 @@
+URL: https://book.cakephp.org/5.x/security/content-security-policy.html
+Title: Content Security Policy Middleware | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Content Security Policy Middleware ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The CspMiddleware makes it simpler to add Content-Security-Policy headers in your application. Before using it you should install paragonie/csp-builder:
+
+You can then configure the middleware using an array, or passing in a built CSPBuilder object:
+
+If you want to use a more strict CSP configuration, you can enable nonce based CSP rules with the scriptNonce and styleNonce options. When enabled these options will modify your CSP policy and set the cspScriptNonce and cspStyleNonce attributes in the request. These attributes are applied to the nonce attribute of all script and CSS link elements created by HtmlHelper. This simplifies the adoption of policies that use a nonce-base64 and strict-dynamic for increased security and easier maintenance:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+CspMiddleware
+----------------------------------------
+
+Code Block 2 ():
+paragonie/csp-builder
+----------------------------------------
+
+Code Block 3 (shiki):
+composer require paragonie/csp-builder
+----------------------------------------
+
+Code Block 4 ():
+composer require paragonie/csp-builder
+----------------------------------------
+
+Code Block 5 ():
+CSPBuilder
+----------------------------------------
+
+Code Block 6 (shiki):
+use Cake\Http\Middleware\CspMiddleware;
+
+$csp = new CspMiddleware([
+    'script-src' => [
+        'allow' => [
+            'https://www.google-analytics.com',
+        ],
+        'self' => true,
+        'unsafe-inline' => false,
+        'unsafe-eval' => false,
+    ],
+]);
+
+$middlewareQueue->add($csp);
+----------------------------------------
+
+Code Block 7 ():
+use Cake\Http\Middleware\CspMiddleware;
+
+$csp = new CspMiddleware([
+    'script-src' => [
+        'allow' => [
+            'https://www.google-analytics.com',
+        ],
+        'self' => true,
+        'unsafe-inline' => false,
+        'unsafe-eval' => false,
+    ],
+]);
+
+$middlewareQueue->add($csp);
+----------------------------------------
+
+Code Block 8 ():
+scriptNonce
+----------------------------------------
+
+Code Block 9 ():
+styleNonce
+----------------------------------------
+
+Code Block 10 ():
+cspScriptNonce
+----------------------------------------
+
+Code Block 11 ():
+cspStyleNonce
+----------------------------------------
+
+Code Block 12 ():
+nonce
+----------------------------------------
+
+Code Block 13 ():
+HtmlHelper
+----------------------------------------
+
+Code Block 14 ():
+strict-dynamic
+----------------------------------------
+
+Code Block 15 (shiki):
+$policy = [
+    // Must exist even if empty to set nonce for script-src
+    'script-src' => [],
+    'style-src' => [],
+];
+// Enable automatic nonce addition to script & CSS link tags.
+$csp = new CspMiddleware($policy, [
+    'scriptNonce' => true,
+    'styleNonce' => true,
+]);
+$middlewareQueue->add($csp);
+----------------------------------------
+
+Code Block 16 ():
+$policy = [
+    // Must exist even if empty to set nonce for script-src
+    'script-src' => [],
+    'style-src' => [],
+];
+// Enable automatic nonce addition to script & CSS link tags.
+$csp = new CspMiddleware($policy, [
+    'scriptNonce' => true,
+    'styleNonce' => true,
+]);
+$middlewareQueue->add($csp);
+----------------------------------------
+

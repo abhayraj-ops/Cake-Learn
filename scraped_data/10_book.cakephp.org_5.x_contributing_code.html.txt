@@ -1,0 +1,502 @@
+URL: https://book.cakephp.org/5.x/contributing/code.html
+Title: Code | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Code ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Initial Setup ​
+  - Working on a Patch ​
+  - Submitting a Pull Request ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Choosing Where Your Changes will be Merged Into ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Patches and pull requests are a great way to contribute code back to CakePHP. Pull requests can be created in GitHub, and are preferred over patch files in ticket comments.
+
+Before working on patches for CakePHP, it's a good idea to get your environment setup. You'll need the following software:
+
+Set up your user information with your name/handle and working email address:
+
+NOTE
+
+If you are new to Git, we highly recommend you to read the excellent and free ProGit book.
+
+Get a clone of the CakePHP source code from GitHub:
+
+After your fork is made, clone your fork to your local machine:
+
+Add the original CakePHP repository as a remote repository. You'll use this later to fetch changes from the CakePHP repository. This will let you stay up to date with CakePHP:
+
+Now that you have CakePHP setup you should be able to define a $testdatabase connection, and run all the tests.
+
+Each time you want to work on a bug, feature or enhancement create a topic branch.
+
+The branch you create should be based on the version that your fix/enhancement is for. For example if you are fixing a bug in 3.x you would want to use the master branch as the base for your branch. If your change is a bug fix for the 2.x release series, you should use the 2.x branch:
+
+TIP
+
+Use a descriptive name for your branch. Referencing the ticket or feature name is a good convention. Examples include ticket-1234 and feature-awesome.
+
+The above will create a local branch based on the upstream (CakePHP) 2.x branch. Work on your fix, and make as many commits as you need; but keep in mind the following:
+
+Once your changes are done and you're ready for them to be merged into CakePHP, you'll want to update your branch:
+
+This will fetch + merge in any changes that have happened in CakePHP since you started. It will then rebase - or replay your changes on top of the current code. You might encounter a conflict during the rebase. If the rebase quits early you can see which files are conflicted/un-merged with git status. Resolve each conflict, and then continue the rebase:
+
+Check that all your tests continue to pass. Then push your branch to your fork:
+
+If you've rebased after pushing your branch, you'll need to use force push:
+
+Once your branch is on GitHub, you can submit a pull request on GitHub.
+
+When making pull requests you should make sure you select the correct base branch, as you cannot edit it once the pull request is created.
+
+NOTE
+
+Remember that all code you contribute to CakePHP will be licensed under the MIT License, and the Cake Software Foundation will become the owner of any contributed code. Contributors should follow the CakePHP Community Guidelines.
+
+All bug fixes merged into a maintenance branch will also be merged into upcoming releases periodically by the core team.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+git config --global user.name 'Bob Barker'
+git config --global user.email '[email protected]'
+----------------------------------------
+
+Code Block 2 ():
+git config --global user.name 'Bob Barker'
+git config --global user.email '[email protected]'
+----------------------------------------
+
+Code Block 3 ():
+git clone [email protected]:YOURNAME/cakephp.git
+----------------------------------------
+
+Code Block 4 ():
+git clone [email protected]:YOURNAME/cakephp.git
+----------------------------------------
+
+Code Block 5 ():
+cd cakephp
+git remote add upstream git://github.com/cakephp/cakephp.git
+----------------------------------------
+
+Code Block 6 ():
+cd cakephp
+git remote add upstream git://github.com/cakephp/cakephp.git
+----------------------------------------
+
+Code Block 7 ():
+$test
+----------------------------------------
+
+Code Block 8 ():
+3.x
+----------------------------------------
+
+Code Block 9 ():
+master
+----------------------------------------
+
+Code Block 10 ():
+2.x
+----------------------------------------
+
+Code Block 11 (shiki):
+# fixing a bug on 3.x
+git fetch upstream
+git checkout -b ticket-1234 upstream/master
+
+# fixing a bug on 2.x
+git fetch upstream
+git checkout -b ticket-1234 upstream/2.x
+----------------------------------------
+
+Code Block 12 ():
+# fixing a bug on 3.x
+git fetch upstream
+git checkout -b ticket-1234 upstream/master
+
+# fixing a bug on 2.x
+git fetch upstream
+git checkout -b ticket-1234 upstream/2.x
+----------------------------------------
+
+Code Block 13 ():
+ticket-1234
+----------------------------------------
+
+Code Block 14 ():
+feature-awesome
+----------------------------------------
+
+Code Block 15 (shiki):
+# Rebase fix on top of master
+git checkout master
+git fetch upstream
+git merge upstream/master
+git checkout <branch_name>
+git rebase master
+----------------------------------------
+
+Code Block 16 ():
+# Rebase fix on top of master
+git checkout master
+git fetch upstream
+git merge upstream/master
+git checkout <branch_name>
+git rebase master
+----------------------------------------
+
+Code Block 17 ():
+rebase
+----------------------------------------
+
+Code Block 18 ():
+git status
+----------------------------------------
+
+Code Block 19 (shiki):
+git add <filename> # do this for each conflicted file.
+git rebase --continue
+----------------------------------------
+
+Code Block 20 ():
+git add <filename> # do this for each conflicted file.
+git rebase --continue
+----------------------------------------
+
+Code Block 21 (shiki):
+git push origin <branch-name>
+----------------------------------------
+
+Code Block 22 ():
+git push origin <branch-name>
+----------------------------------------
+
+Code Block 23 (shiki):
+git push --force origin <branch-name>
+----------------------------------------
+
+Code Block 24 ():
+git push --force origin <branch-name>
+----------------------------------------
+
+Code Block 25 ():
+4.0.0
+----------------------------------------
+
+Code Block 26 ():
+4.next
+----------------------------------------
+
+Code Block 27 ():
+4.0.0
+----------------------------------------
+
+Code Block 28 ():
+5.x
+----------------------------------------
+

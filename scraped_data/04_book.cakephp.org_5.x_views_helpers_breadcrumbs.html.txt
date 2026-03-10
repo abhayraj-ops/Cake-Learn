@@ -1,0 +1,720 @@
+URL: https://book.cakephp.org/5.x/views/helpers/breadcrumbs.html
+Title: Breadcrumbs | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Breadcrumbs ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Creating a Breadcrumbs Trail ​
+  - Rendering the Breadcrumbs Trail ​
+  - Clearing the Breadcrumbs ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Adding Multiple Crumbs ​
+  - Customizing the Output ​
+  - Defining Attributes for the Item ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\View\Helper\BreadcrumbsHelper(View $view, array $config = [])
+
+BreadcrumbsHelper provides a way to easily deal with the creation and rendering of a breadcrumbs trail for your app.
+
+You can add a crumb to the list using the add() method. It takes three arguments:
+
+In addition to adding to the end of the trail, you can do a variety of operations:
+
+Added in version 5.3
+
+You can add or prepend multiple crumbs at once using addMany() and prependMany(). These methods accept an array of crumbs and optional shared options that apply to all crumbs:
+
+The shared options are merged with any options specified on individual crumbs, with individual crumb options taking precedence.
+
+Using these methods gives you the ability to work with CakePHP's 2-step rendering process. Since templates and layouts are rendered from the inside out (meaning, included elements are rendered first), this allows you to define precisely where you want to add a breadcrumb.
+
+After adding crumbs to the trail, you can easily render it using the render() method. This method accepts two array arguments:
+
+$attributes : An array of attributes that will be applied to the wrapper template. This gives you the ability to add attributes to the HTML tag. It accepts the special templateVars key to allow the insertion of custom template variables in the template.
+
+$separator : An array of attributes for the separator template. Possible properties are:
+
+All other properties will be converted as HTML attributes and will replace the attrs key in the template. If you use the default for this option (empty), it will not render a separator.
+
+Here is an example of how to render a trail:
+
+The BreadcrumbsHelper internally uses the StringTemplateTrait, which gives the ability to easily customize output of various HTML strings. It includes four templates, with the following default declaration:
+
+You can easily customize them using the setTemplates() method from the StringTemplateTrait:
+
+Since your templates will be rendered, the templateVars option allows you to add your own template variables in the various templates:
+
+And to define the  parameter, just specify it when adding the crumb to the trail:
+
+If you want to apply specific HTML attributes to both the item and its sub-item , you can leverage the innerAttrs key, which the $options argument provides. Everything except innerAttrs and templateVars will be rendered as HTML attributes:
+
+You can clear the bread crumbs using the reset() method. This can be useful when you want to transform the crumbs and overwrite the list:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+add()
+----------------------------------------
+
+Code Block 3 ():
+item
+----------------------------------------
+
+Code Block 4 ():
+itemWithoutLink
+----------------------------------------
+
+Code Block 5 (shiki):
+// Add at the end of the trail
+$this->Breadcrumbs->add(
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+);
+
+// Prepended crumbs will be put at the top of the list
+$this->Breadcrumbs->prepend(
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+);
+
+// Insert in a specific slot. If the slot is out of
+// bounds, an exception will be raised.
+$this->Breadcrumbs->insertAt(
+    2,
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+);
+
+// Insert before another crumb, based on the title.
+// If the named crumb title cannot be found,
+// an exception will be raised.
+$this->Breadcrumbs->insertBefore(
+    'Products',
+    'A product name 1', // the title of the crumb to insert before
+    ['controller' => 'products', 'action' => 'index'],
+);
+
+// Insert after another crumb, based on the title.
+// If the named crumb title cannot be found,
+// an exception will be raised.
+$this->Breadcrumbs->insertAfter(
+    'Products',
+    'A product name 2', // the title of the crumb to insert after
+    ['controller' => 'products', 'action' => 'index'],
+);
+----------------------------------------
+
+Code Block 6 ():
+// Add at the end of the trail
+$this->Breadcrumbs->add(
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+);
+
+// Prepended crumbs will be put at the top of the list
+$this->Breadcrumbs->prepend(
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+);
+
+// Insert in a specific slot. If the slot is out of
+// bounds, an exception will be raised.
+$this->Breadcrumbs->insertAt(
+    2,
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+);
+
+// Insert before another crumb, based on the title.
+// If the named crumb title cannot be found,
+// an exception will be raised.
+$this->Breadcrumbs->insertBefore(
+    'Products',
+    'A product name 1', // the title of the crumb to insert before
+    ['controller' => 'products', 'action' => 'index'],
+);
+
+// Insert after another crumb, based on the title.
+// If the named crumb title cannot be found,
+// an exception will be raised.
+$this->Breadcrumbs->insertAfter(
+    'Products',
+    'A product name 2', // the title of the crumb to insert after
+    ['controller' => 'products', 'action' => 'index'],
+);
+----------------------------------------
+
+Code Block 7 ():
+addMany()
+----------------------------------------
+
+Code Block 8 ():
+prependMany()
+----------------------------------------
+
+Code Block 9 (shiki):
+// Add multiple crumbs at the end of the trail
+$this->Breadcrumbs->addMany([
+    ['title' => 'Products', 'url' => ['controller' => 'products', 'action' => 'index']],
+    ['title' => 'Product name', 'url' => ['controller' => 'products', 'action' => 'view', 1234]],
+]);
+
+// Prepend multiple crumbs at the top of the trail, in the order given
+$this->Breadcrumbs->prependMany([
+    ['title' => 'Products', 'url' => ['controller' => 'products', 'action' => 'index']],
+    ['title' => 'Product name', 'url' => ['controller' => 'products', 'action' => 'view', 1234]],
+]);
+
+// Add multiple crumbs with shared options applied to all
+$this->Breadcrumbs->addMany([
+    ['title' => 'Home', 'url' => '/'],
+    ['title' => 'Products', 'url' => '/products'],
+    ['title' => 'Category'],
+], ['class' => 'breadcrumb-item']);
+----------------------------------------
+
+Code Block 10 ():
+// Add multiple crumbs at the end of the trail
+$this->Breadcrumbs->addMany([
+    ['title' => 'Products', 'url' => ['controller' => 'products', 'action' => 'index']],
+    ['title' => 'Product name', 'url' => ['controller' => 'products', 'action' => 'view', 1234]],
+]);
+
+// Prepend multiple crumbs at the top of the trail, in the order given
+$this->Breadcrumbs->prependMany([
+    ['title' => 'Products', 'url' => ['controller' => 'products', 'action' => 'index']],
+    ['title' => 'Product name', 'url' => ['controller' => 'products', 'action' => 'view', 1234]],
+]);
+
+// Add multiple crumbs with shared options applied to all
+$this->Breadcrumbs->addMany([
+    ['title' => 'Home', 'url' => '/'],
+    ['title' => 'Products', 'url' => '/products'],
+    ['title' => 'Category'],
+], ['class' => 'breadcrumb-item']);
+----------------------------------------
+
+Code Block 11 ():
+render()
+----------------------------------------
+
+Code Block 12 ():
+$attributes
+----------------------------------------
+
+Code Block 13 ():
+wrapper
+----------------------------------------
+
+Code Block 14 ():
+templateVars
+----------------------------------------
+
+Code Block 15 ():
+$separator
+----------------------------------------
+
+Code Block 16 ():
+separator
+----------------------------------------
+
+Code Block 17 ():
+separator
+----------------------------------------
+
+Code Block 18 ():
+innerAttrs
+----------------------------------------
+
+Code Block 19 ():
+templateVars
+----------------------------------------
+
+Code Block 20 ():
+attrs
+----------------------------------------
+
+Code Block 21 (shiki):
+echo $this->Breadcrumbs->render(
+    ['class' => 'breadcrumbs-trail'],
+    ['separator' => '<i class="fa fa-angle-right"></i>'],
+);
+----------------------------------------
+
+Code Block 22 ():
+echo $this->Breadcrumbs->render(
+    ['class' => 'breadcrumbs-trail'],
+    ['separator' => '<i class="fa fa-angle-right"></i>'],
+);
+----------------------------------------
+
+Code Block 23 ():
+StringTemplateTrait
+----------------------------------------
+
+Code Block 24 (shiki):
+[
+    'wrapper' => '<ul{{attrs}}>{{content}}</ul>',
+    'item' => '<li{{attrs}}><a href="{{url}}"{{innerAttrs}}>{{title}}</a></li>{{separator}}',
+    'itemWithoutLink' => '<li{{attrs}}><span{{innerAttrs}}>{{title}}</span></li>{{separator}}',
+    'separator' => '<li{{attrs}}><span{{innerAttrs}}>{{separator}}</span></li>',
+]
+----------------------------------------
+
+Code Block 25 ():
+[
+    'wrapper' => '<ul{{attrs}}>{{content}}</ul>',
+    'item' => '<li{{attrs}}><a href="{{url}}"{{innerAttrs}}>{{title}}</a></li>{{separator}}',
+    'itemWithoutLink' => '<li{{attrs}}><span{{innerAttrs}}>{{title}}</span></li>{{separator}}',
+    'separator' => '<li{{attrs}}><span{{innerAttrs}}>{{separator}}</span></li>',
+]
+----------------------------------------
+
+Code Block 26 ():
+setTemplates()
+----------------------------------------
+
+Code Block 27 ():
+StringTemplateTrait
+----------------------------------------
+
+Code Block 28 (shiki):
+$this->Breadcrumbs->setTemplates([
+    'wrapper' => '<nav class="breadcrumbs"><ul{{attrs}}>{{content}}</ul></nav>',
+]);
+----------------------------------------
+
+Code Block 29 ():
+$this->Breadcrumbs->setTemplates([
+    'wrapper' => '<nav class="breadcrumbs"><ul{{attrs}}>{{content}}</ul></nav>',
+]);
+----------------------------------------
+
+Code Block 30 ():
+templateVars
+----------------------------------------
+
+Code Block 31 (shiki):
+$this->Breadcrumbs->setTemplates([
+    'item' => '<li{{attrs}}>{{icon}}<a href="{{url}}"{{innerAttrs}}>{{title}}</a></li>{{separator}}',
+]);
+----------------------------------------
+
+Code Block 32 ():
+$this->Breadcrumbs->setTemplates([
+    'item' => '<li{{attrs}}>{{icon}}<a href="{{url}}"{{innerAttrs}}>{{title}}</a></li>{{separator}}',
+]);
+----------------------------------------
+
+Code Block 33 (shiki):
+$this->Breadcrumbs->add(
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+    [
+        'templateVars' => [
+            'icon' => '<i class="fa fa-money"></i>',
+        ],
+    ]
+);
+----------------------------------------
+
+Code Block 34 ():
+$this->Breadcrumbs->add(
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+    [
+        'templateVars' => [
+            'icon' => '<i class="fa fa-money"></i>',
+        ],
+    ]
+);
+----------------------------------------
+
+Code Block 35 ():
+innerAttrs
+----------------------------------------
+
+Code Block 36 ():
+$options
+----------------------------------------
+
+Code Block 37 ():
+innerAttrs
+----------------------------------------
+
+Code Block 38 ():
+templateVars
+----------------------------------------
+
+Code Block 39 (shiki):
+$this->Breadcrumbs->add(
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+    [
+        'class' => 'products-crumb',
+        'data-foo' => 'bar',
+        'innerAttrs' => [
+            'class' => 'inner-products-crumb',
+            'id' => 'the-products-crumb',
+        ],
+    ]
+);
+
+// Based on the default template, this will render the following HTML:
+<li class="products-crumb" data-foo="bar">
+    <a href="/products/index" class="inner-products-crumb" id="the-products-crumb">Products</a>
+</li>
+----------------------------------------
+
+Code Block 40 ():
+$this->Breadcrumbs->add(
+    'Products',
+    ['controller' => 'products', 'action' => 'index'],
+    [
+        'class' => 'products-crumb',
+        'data-foo' => 'bar',
+        'innerAttrs' => [
+            'class' => 'inner-products-crumb',
+            'id' => 'the-products-crumb',
+        ],
+    ]
+);
+
+// Based on the default template, this will render the following HTML:
+<li class="products-crumb" data-foo="bar">
+    <a href="/products/index" class="inner-products-crumb" id="the-products-crumb">Products</a>
+</li>
+----------------------------------------
+
+Code Block 41 ():
+reset()
+----------------------------------------
+
+Code Block 42 (shiki):
+$crumbs = $this->Breadcrumbs->getCrumbs();
+$crumbs = collection($crumbs)->map(function ($crumb) {
+    $crumb['options']['class'] = 'breadcrumb-item';
+
+    return $crumb;
+})->toArray();
+
+$this->Breadcrumbs->reset()->addMany($crumbs);
+----------------------------------------
+
+Code Block 43 ():
+$crumbs = $this->Breadcrumbs->getCrumbs();
+$crumbs = collection($crumbs)->map(function ($crumb) {
+    $crumb['options']['class'] = 'breadcrumb-item';
+
+    return $crumb;
+})->toArray();
+
+$this->Breadcrumbs->reset()->addMany($crumbs);
+----------------------------------------
+

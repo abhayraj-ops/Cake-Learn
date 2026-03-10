@@ -1,0 +1,3047 @@
+URL: https://book.cakephp.org/5.x/controllers/request-response.html#cake-request
+Title: Request & Response Objects | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Request & Response Objects ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Request ​
+  - Response ​
+  - Common Mistakes with Immutable Responses ​
+  - Cookie Collections ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Request Parameters ​
+  - Query String Parameters ​
+  - Request Body Data ​
+  - File Uploads ​
+  - POST, PUT, PATCH, and DELETE ​
+  - Environment Variables (from $_SERVER and $_ENV) ​
+  - Reading XML and JSON Payloads ​
+  - Path Information ​
+  - Checking Request Conditions with is() ​
+  - Session Data ​
+  - Host and Domain Name ​
+  - Reading the HTTP Method ​
+  - Restricting HTTP Methods per Action ​
+  - Reading HTTP Headers ​
+  - Trusting Proxy Headers ​
+  - Checking Accept Headers ​
+  - Reading Request Cookies ​
+  - Uploaded Files Quick Reference ​
+  - Working with the Request URI ​
+  - Setting Content Types ​
+  - Sending Files ​
+  - Sending a String as a File ​
+  - Setting Headers ​
+  - Setting the Body ​
+  - Setting the Character Set ​
+  - Interacting with Browser Caching ​
+  - Fine-Tuning HTTP Cache ​
+  - Setting Cookies ​
+  - Setting Cross-Origin Request Headers (CORS) ​
+  - Running Logic After the Response Is Sent ​
+  - Creating Cookies ​
+  - Reading Cookies from a CookieCollection ​
+H4:
+  - CMS Tutorial
+  - The Cache Control Header ​
+  - The Expiration Header ​
+  - The Etag Header ​
+  - The Last Modified Header ​
+  - The Vary Header ​
+  - Sending Not-Modified Responses ​
+  - CorsBuilder Methods ​
+  - Practical CORS Examples ​
+  - Creating CORS Middleware ​
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The request and response objects provide an abstraction around HTTP requests and responses. The request object in CakePHP allows you to introspect an incoming request, while the response object allows you to effortlessly create HTTP responses from your controllers.
+
+class Cake\Http\ServerRequest
+
+ServerRequest is the default request object used in CakePHP. It centralizes a number of features for interrogating and interacting with request data. On each request one Request is created and then passed by reference to the various layers of an application that use request data. By default, the request is assigned to $this->request, and is available in Controllers, Cells, Views and Helpers. You can also access it in Components using the controller reference.
+
+Changed in version 4.4.0
+
+The ServerRequest is available via DI. So you can get it from container or use it as a dependency for your service.
+
+Some of the duties ServerRequest performs include:
+
+CakePHP's request object implements the PSR-7 ServerRequestInterface making it easier to use libraries from outside of CakePHP.
+
+The request exposes routing parameters through the getParam() method:
+
+To get all routing parameters as an array use getAttribute():
+
+All Route Elements are accessed through this interface.
+
+In addition to Route Elements, you also often need access to Passed Arguments. These are both available on the request object as well:
+
+This gives you access to passed arguments. There are several important parameters that CakePHP uses internally, and these are also all found in the routing parameters:
+
+method Cake\Http\ServerRequest::getQuery(?string $name = null, mixed $default = null): mixed
+
+Query string parameters can be read using the getQuery() method:
+
+You can either directly access the query property, or you can use getQuery() method to read the URL query array in an error-free manner. Any keys that do not exist will return null:
+
+If you want to access all the query parameters you can use getQueryParams():
+
+You can use the casting utility functions to provide typesafe access to request data and other input:
+
+Added in version 5.1.0
+
+Casting functions were added.
+
+method Cake\Http\ServerRequest::getData(?string $name = null, mixed $default = null): mixed
+
+All POST data normally available through PHP's $_POST global variable can be accessed using Cake\Http\ServerRequest::getData(). For example:
+
+You can use a dot separated names to access nested data. For example:
+
+For non-existent names the $default value will be returned:
+
+You can also use Body Parser Middleware to parse request body of different content types into an array, so that it's accessible through ServerRequest::getData().
+
+If you want to access all the data parameters you can use getParsedBody():
+
+Uploaded files can be accessed through the request body data, using the Cake\Http\ServerRequest::getData() method described above. For example, a file from an input element with a name attribute of attachment, can be accessed like this:
+
+By default, file uploads are represented in the request data as objects that implement \Psr\Http\Message\UploadedFileInterface. In the current implementation, the $attachment variable in the above example would by default hold an instance of \Laminas\Diactoros\UploadedFile.
+
+Accessing the uploaded file details is fairly simple, here's how you can obtain the same data as provided by the old style file upload array:
+
+Moving the uploaded file from its temporary location to the desired target location doesn't require manually accessing the temporary file. Instead, use the object's moveTo() method:
+
+In an HTTP environment, the moveTo() method automatically validates whether the file is an actual uploaded file, and throws an exception when necessary. In a CLI environment, where the concept of uploading files doesn't exist, it allows moving the referenced file regardless of its origin, which makes testing file uploads possible.
+
+method Cake\Http\ServerRequest::getUploadedFile(string $path): UploadedFileInterface|null
+
+Returns the uploaded file at a specific path. The path uses the same dot syntax as the Cake\Http\ServerRequest::getData() method:
+
+Unlike Cake\Http\ServerRequest::getData(), Cake\Http\ServerRequest::getUploadedFile() would only return data when an actual file upload exists for the given path, if there is regular, non-file request body data present at the given path, then this method will return null, just like it would for any non-existent path.
+
+method Cake\Http\ServerRequest::getUploadedFiles(): array
+
+Returns all uploaded files in a normalized array structure. For the above example with the file input name of attachment, the structure would look like:
+
+method Cake\Http\ServerRequest::withUploadedFiles(array $files): static
+
+This method sets the uploaded files of the request object, it accepts an array of objects that implement \Psr\Http\Message\UploadedFileInterface. It will replace all possibly existing uploaded files:
+
+NOTE
+
+Uploaded files that have been added to the request via this method, will not be available in the request body data, ie you cannot retrieve them via Cake\Http\ServerRequest::getData()! If you need them in the request data (too), then you have to set them via Cake\Http\ServerRequest::withData() or Cake\Http\ServerRequest::withParsedBody().
+
+method Cake\Http\ServerRequest::getBody(): StreamInterface
+
+When building REST services, you often accept request data on PUT and DELETE requests. Any application/x-www-form-urlencoded request body data will automatically be parsed and available via $request->getData() for PUT and DELETE requests. If you are accepting JSON or XML data, you can access the raw data with getBody():
+
+If your requests contain XML or JSON request content, you should consider using Body Parser Middleware to have CakePHP automatically parse those content types making the parsed data available in $request->getData() and $request->getParsedBody().
+
+method Cake\Http\ServerRequest::getEnv(string $key, ?string $default = null): string|null
+
+ServerRequest::getEnv() is a wrapper for getenv() global function and acts as a getter for environment variables without possible undefined keys:
+
+To access all the environment variables in a request use getServerParams():
+
+method Cake\Http\ServerRequest::withEnv(string $key, string $value): static
+
+ServerRequest::withEnv() is a wrapper for putenv() global function and acts as a setter for environment variables without having to modify globals $_SERVER and $_ENV:
+
+Applications employing REST often exchange data in non-URL-encoded post bodies. You can read input data in any format using Cake\Http\ServerRequest::input(). By providing a decoding function, you can receive the content in a deserialized format:
+
+Some deserializing methods require additional parameters when called, such as the 'as array' parameter on json_decode. If you want XML converted into a DOMDocument object, Cake\Http\ServerRequest::input() supports passing additional parameters as well:
+
+The request object also provides useful information about the paths in your application. The base and webroot attributes are useful for generating URLs, and determining whether or not your application is in a subdirectory. The attributes you can use are:
+
+method Cake\Http\ServerRequest::is(array|string $type, mixed ...$args): bool
+
+The request object provides a way to inspect certain conditions in a given request. By using the is() method you can check a number of common conditions, as well as inspect other application specific request criteria:
+
+You can also extend the request detectors that are available, by using Cake\Http\ServerRequest::addDetector() to create new kinds of detectors. There are different types of detectors that you can create:
+
+method Cake\Http\ServerRequest::addDetector(string $name, Closure|array $detector): void
+
+Some examples would be:
+
+There are several built-in detectors that you can use:
+
+ServerRequest also includes methods like Cake\Http\ServerRequest::domain(), Cake\Http\ServerRequest::subdomains() and Cake\Http\ServerRequest::host() to make applications that use subdomains simpler.
+
+To access the session for a given request use the getSession() method or use the session attribute:
+
+For more information, see the Sessions documentation for how to use the session object.
+
+method Cake\Http\ServerRequest::domain(int $tldLength = 1): string
+
+Returns the domain name your application is running on:
+
+method Cake\Http\ServerRequest::subdomains(int $tldLength = 1): array
+
+Returns the subdomains your application is running on as an array:
+
+method Cake\Http\ServerRequest::host(): string|null
+
+Returns the host your application is on:
+
+method Cake\Http\ServerRequest::getMethod(): string
+
+Returns the HTTP method the request was made with:
+
+method Cake\Http\ServerRequest::allowMethod(array|string $methods): bool
+
+Set allowed HTTP methods. If not matched, will throw MethodNotAllowedException. The 405 response will include the required Allow header with the passed methods:
+
+Allows you to access any of the HTTP_* headers that were used for the request. For example:
+
+While some apache installs don't make the Authorization header accessible, CakePHP will make it available through apache specific methods as required.
+
+method Cake\Http\ServerRequest::referer(bool $local = true): string|null
+
+Returns the referring address for the request.
+
+method Cake\Http\ServerRequest::clientIp(): string
+
+Returns the current visitor's IP address.
+
+If your application is behind a load balancer or running on a cloud service, you will often get the load balancer host, port and scheme in your requests. Often load balancers will also send HTTP-X-Forwarded-* headers with the original values. The forwarded headers will not be used by CakePHP out of the box. To have the request object use these headers set the trustProxy property to true:
+
+Once proxies are trusted the clientIp() method will use the last IP address in the X-Forwarded-For header. If your application is behind multiple proxies, you can use setTrustedProxies() to define the IP addresses of proxies in your control:
+
+After proxies are trusted clientIp() will use the first IP address in the X-Forwarded-For header providing it is the only value that isn't from a trusted proxy.
+
+method Cake\Http\ServerRequest::accepts(?string $type = null): array|bool
+
+Find out which content types the client accepts, or check whether it accepts a particular type of content.
+
+Get all types:
+
+Check for a single type:
+
+method Cake\Http\ServerRequest::acceptLanguage(?string $language = null): array|bool
+
+Get all the languages accepted by the client, or check whether a specific language is accepted.
+
+Get the list of accepted languages:
+
+Check whether a specific language is accepted:
+
+Request cookies can be read through a number of methods:
+
+See the Cake\Http\Cookie\CookieCollection documentation for how to work with a cookie collection.
+
+Requests expose the uploaded file data in getData() or getUploadedFiles() as UploadedFileInterface objects:
+
+Requests contain a URI object, which contains methods for interacting with the requested URI:
+
+class Cake\Http\Response
+
+Cake\Http\Response is the default response class in CakePHP. It encapsulates a number of features and functionality for generating HTTP responses in your application. It also assists in testing, as it can be mocked/stubbed allowing you to inspect headers that will be sent.
+
+Response provides an interface to wrap the common response-related tasks such as:
+
+method Cake\Http\Response::withType(string $contentType): static
+
+You can control the Content-Type of your application's responses with Cake\Http\Response::withType(). If your application needs to deal with content types that are not built into Response, you can map them with setTypeMap() as well:
+
+Usually, you'll want to map additional content types in your controller's ~Controller::beforeFilter() callback, so you can benefit from automatic view switching provided by Controller Viewclasses.
+
+method Cake\Http\Response::withFile(string $path, array $options = []): static
+
+There are times when you want to send files as responses for your requests. You can accomplish that by using Cake\Http\Response::withFile():
+
+As shown in the above example, you must pass the file path to the method. CakePHP will send a proper content type header if it's a known file type listed in Cake\Http\Response::$_mimeTypes. You can add new types prior to calling Cake\Http\Response::withFile() by using the Cake\Http\Response::withType() method.
+
+If you want, you can also force a file to be downloaded instead of displayed in the browser by specifying the options:
+
+The supported options are:
+
+name : The name allows you to specify an alternate file name to be sent to the user.
+
+download : A boolean value indicating whether headers should be set to force download.
+
+You can respond with a file that does not exist on the disk, such as a pdf or an ics generated on the fly from a string:
+
+method Cake\Http\Response::withHeader(string $name, string|array $value): static
+
+Setting headers is done with the Cake\Http\Response::withHeader() method. Like all the PSR-7 interface methods, this method returns a new instance with the new header:
+
+Headers are not sent when set. Instead, they are held until the response is emitted by Cake\Http\Server.
+
+You can now use the convenience method Cake\Http\Response::withLocation() to directly set or get the redirect location header.
+
+method Cake\Http\Response::withStringBody(?string $string): static
+
+To set a string as the response body, do the following:
+
+method Cake\Http\Response::withBody(StreamInterface $body): static
+
+To set the response body, use the withBody() method, which is provided by the Laminas\Diactoros\MessageTrait:
+
+Be sure that $stream is a Psr\Http\Message\StreamInterface object. See below on how to create a new stream.
+
+You can also stream responses from files using Laminas\Diactoros\Stream streams:
+
+You can also stream responses from a callback using the CallbackStream. This is useful when you have resources like images, CSV files or PDFs you need to stream to the client:
+
+method Cake\Http\Response::withCharset(string $charset): static
+
+Sets the charset that will be used in the response:
+
+method Cake\Http\Response::withDisabledCache(): static
+
+You sometimes need to force browsers not to cache the results of a controller action. Cake\Http\Response::withDisabledCache() is intended for just that:
+
+WARNING
+
+Disabling caching from SSL domains while trying to send files to Internet Explorer can result in errors.
+
+method Cake\Http\Response::withCache(string|int $since, string|int $time = '+1 day'): static
+
+You can also tell clients that you want them to cache responses. By using Cake\Http\Response::withCache():
+
+The above would tell clients to cache the resulting response for 5 days, hopefully speeding up your visitors' experience. The withCache() method sets the Last-Modified value to the first argument. Expires header and the max-age directive are set based on the second parameter. Cache-Control's public directive is set as well.
+
+One of the best and easiest ways of speeding up your application is to use HTTP cache. Under this caching model, you are only required to help clients decide if they should use a cached copy of the response by setting a few headers such as modified time and response entity tag.
+
+Rather than forcing you to code the logic for caching and for invalidating (refreshing) it once the data has changed, HTTP uses two models, expiration and validation, which usually are much simpler to use.
+
+Apart from using Cake\Http\Response::withCache(), you can also use many other methods to fine-tune HTTP cache headers to take advantage of browser or reverse proxy caching.
+
+method Cake\Http\Response::withSharable(bool $public, ?int $time = null): static
+
+Used under the expiration model, this header contains multiple indicators that can change the way browsers or proxies use the cached content. A Cache-Control header can look like this:
+
+Response class helps you set this header with some utility methods that will produce a final valid Cache-Control header. The first is the withSharable() method, which indicates whether a response is to be considered sharable across different users or clients. This method actually controls the public or private part of this header. Setting a response as private indicates that all or part of it is intended for a single user. To take advantage of shared caches, the control directive must be set as public.
+
+The second parameter of this method is used to specify a max-age for the cache, which is the number of seconds after which the response is no longer considered fresh:
+
+Response exposes separate methods for setting each of the directives in the Cache-Control header.
+
+method Cake\Http\Response::withExpires(DateTimeInterface|string|int|null $time): static
+
+You can set the Expires header to a date and time after which the response is no longer considered fresh. This header can be set using the withExpires() method:
+
+This method also accepts a DateTime instance or any string that can be parsed by the DateTime class.
+
+method Cake\Http\Response::withEtag(string $hash, bool $weak = false): static
+
+Cache validation in HTTP is often used when content is constantly changing, and asks the application to only generate the response contents if the cache is no longer fresh. Under this model, the client continues to store pages in the cache, but it asks the application every time whether the resource has changed, instead of using it directly. This is commonly used with static resources such as images and other assets.
+
+The withEtag() method (called entity tag) is a string that uniquely identifies the requested resource, as a checksum does for a file, in order to determine whether it matches a cached resource.
+
+To take advantage of this header, you must either call the isNotModified() method manually or include the Checking HTTP Cache in your controller:
+
+NOTE
+
+Most proxy users should probably consider using the Last Modified Header instead of Etags for performance and compatibility reasons.
+
+method Cake\Http\Response::withModified(DateTimeInterface|string|int $time): static
+
+Also, under the HTTP cache validation model, you can set the Last-Modified header to indicate the date and time at which the resource was modified for the last time. Setting this header helps CakePHP tell caching clients whether the response was modified or not based on their cache.
+
+To take advantage of this header, you must either call the isNotModified() method manually or include the Checking HTTP Cache in your controller:
+
+method Cake\Http\Response::withVary(array|string $cacheVariances): static
+
+In some cases, you might want to serve different content using the same URL. This is often the case if you have a multilingual page or respond with different HTML depending on the browser. Under such circumstances you can use the Vary header:
+
+method Cake\Http\Response::isNotModified(ServerRequest $request): bool
+
+Compares the cache headers for the request object with the cache header from the response and determines whether it can still be considered fresh. If so, deletes the response content, and sends the 304 Not Modified header:
+
+Cookies can be added to response using either an array or a Cake\Http\Cookie\Cookie object:
+
+See the Creating Cookies section for how to use the cookie object. You can use withExpiredCookie() to send an expired cookie in the response. This will make the browser remove its local cookie:
+
+The cors() method returns a CorsBuilder instance which provides a fluent interface for defining HTTP Access Control related headers:
+
+CORS related headers will only be applied to the response if the following criteria are met:
+
+class Cake\Http\CorsBuilder
+
+The CorsBuilder provides the following methods for configuring CORS:
+
+Here are some common CORS configurations:
+
+API accepting requests from a SPA frontend:
+
+Public API with relaxed CORS:
+
+For consistent CORS handling across your application, create a middleware:
+
+Then add it to your application middleware stack in src/Application.php:
+
+In FastCGI-based environments you can listen to the Server.terminate event to run logic after the response has been sent to the client. The terminate event will be passed a request and response. The request is fetched from the application's DI container, or from Router::getRequest() if the DI container does not have a request registered.
+
+WARNING
+
+In non-FastCGI environments the Server.terminate event is fired before the response is sent.
+
+Added in version 5.1.0
+
+Response objects offer a number of methods that treat responses as immutable objects. Immutable objects help prevent difficult-to- track accidental side effects, and reduce mistakes introduced during refactoring. While they offer a number of benefits, immutable objects can take some getting used to. Any method that starts with with operates on the response in an immutable fashion, and will always return a new instance. Forgetting to retain the modified instance is the most frequent mistake people make when working with immutable objects:
+
+In the above code, the response will be lacking the X-CakePHP header, as the return value of the withHeader() method was not retained. To correct the above code you would write:
+
+class Cake\Http\Cookie\CookieCollection
+
+CookieCollection objects are accessible from the request and response objects. They let you interact with groups of cookies using immutable patterns, which allow the immutability of the request and response to be preserved.
+
+class Cake\Http\Cookie\Cookie
+
+Cookie objects can be defined through constructor objects, or by using the fluent interface that follows immutable patterns:
+
+Once you have created a cookie, you can add it to a new or existing CookieCollection:
+
+NOTE
+
+Remember that collections are immutable and adding cookies into, or removing cookies from a collection, creates a new collection object.
+
+Cookie objects can be added to responses:
+
+Cookies set to responses can be encrypted using the Encrypted Cookie Middleware.
+
+Once you have a CookieCollection instance, you can access the cookies it contains:
+
+Once you have a Cookie object you can interact with its state and modify it. Keep in mind that cookies are immutable, so you'll need to update the collection if you modify a cookie:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+ServerRequest
+----------------------------------------
+
+Code Block 3 ():
+$this->request
+----------------------------------------
+
+Code Block 4 ():
+ServerRequest
+----------------------------------------
+
+Code Block 5 ():
+ServerRequest
+----------------------------------------
+
+Code Block 6 ():
+getParam()
+----------------------------------------
+
+Code Block 7 (shiki):
+$controllerName = $this->request->getParam('controller');
+----------------------------------------
+
+Code Block 8 ():
+$controllerName = $this->request->getParam('controller');
+----------------------------------------
+
+Code Block 9 ():
+getAttribute()
+----------------------------------------
+
+Code Block 10 (shiki):
+$parameters = $this->request->getAttribute('params');
+----------------------------------------
+
+Code Block 11 ():
+$parameters = $this->request->getAttribute('params');
+----------------------------------------
+
+Code Block 12 (shiki):
+// Passed arguments
+$passedArgs = $this->request->getParam('pass');
+----------------------------------------
+
+Code Block 13 ():
+// Passed arguments
+$passedArgs = $this->request->getParam('pass');
+----------------------------------------
+
+Code Block 14 ():
+plugin
+----------------------------------------
+
+Code Block 15 ():
+controller
+----------------------------------------
+
+Code Block 16 ():
+action
+----------------------------------------
+
+Code Block 17 ():
+prefix
+----------------------------------------
+
+Code Block 18 ():
+method
+----------------------------------------
+
+Code Block 19 ():
+getQuery()
+----------------------------------------
+
+Code Block 20 (shiki):
+// URL is /posts/index?page=1&sort=title
+$page = $this->request->getQuery('page');
+----------------------------------------
+
+Code Block 21 ():
+// URL is /posts/index?page=1&sort=title
+$page = $this->request->getQuery('page');
+----------------------------------------
+
+Code Block 22 ():
+getQuery()
+----------------------------------------
+
+Code Block 23 ():
+null
+----------------------------------------
+
+Code Block 24 (shiki):
+$foo = $this->request->getQuery('value_that_does_not_exist');
+// $foo === null
+
+// You can also provide default values
+$foo = $this->request->getQuery('does_not_exist', 'default val');
+----------------------------------------
+
+Code Block 25 ():
+$foo = $this->request->getQuery('value_that_does_not_exist');
+// $foo === null
+
+// You can also provide default values
+$foo = $this->request->getQuery('does_not_exist', 'default val');
+----------------------------------------
+
+Code Block 26 ():
+getQueryParams()
+----------------------------------------
+
+Code Block 27 (shiki):
+$query = $this->request->getQueryParams();
+----------------------------------------
+
+Code Block 28 ():
+$query = $this->request->getQueryParams();
+----------------------------------------
+
+Code Block 29 (shiki):
+use function Cake\Core\toBool;
+use function Cake\Core\toInt;
+use function Cake\Core\toString;
+use function Cake\I18n\toDate;
+use function Cake\I18n\toDateTime;
+
+// $active is bool|null.
+$active = toBool($this->request->getQuery('active'));
+
+// $page is int|null.
+$page = toInt($this->request->getQuery('page'));
+
+// $query is string|null.
+$query = toString($this->request->getQuery('query'));
+
+// Parse a date based on the format or null
+$date = toDate($this->request->getQuery('date'), 'Y-m-d');
+
+// Parse a datetime based on a format or null
+$date = toDateTime($this->request->getQuery('datetime'), 'Y-m-d H:i:s');
+----------------------------------------
+
+Code Block 30 ():
+use function Cake\Core\toBool;
+use function Cake\Core\toInt;
+use function Cake\Core\toString;
+use function Cake\I18n\toDate;
+use function Cake\I18n\toDateTime;
+
+// $active is bool|null.
+$active = toBool($this->request->getQuery('active'));
+
+// $page is int|null.
+$page = toInt($this->request->getQuery('page'));
+
+// $query is string|null.
+$query = toString($this->request->getQuery('query'));
+
+// Parse a date based on the format or null
+$date = toDate($this->request->getQuery('date'), 'Y-m-d');
+
+// Parse a datetime based on a format or null
+$date = toDateTime($this->request->getQuery('datetime'), 'Y-m-d H:i:s');
+----------------------------------------
+
+Code Block 31 ():
+method
+----------------------------------------
+
+Code Block 32 ():
+$_POST
+----------------------------------------
+
+Code Block 33 ():
+Cake\Http\ServerRequest::getData()
+----------------------------------------
+
+Code Block 34 (shiki):
+// An input with a name attribute equal to 'title' is accessible at
+$title = $this->request->getData('title');
+----------------------------------------
+
+Code Block 35 ():
+// An input with a name attribute equal to 'title' is accessible at
+$title = $this->request->getData('title');
+----------------------------------------
+
+Code Block 36 (shiki):
+$value = $this->request->getData('address.street_name');
+----------------------------------------
+
+Code Block 37 ():
+$value = $this->request->getData('address.street_name');
+----------------------------------------
+
+Code Block 38 ():
+$default
+----------------------------------------
+
+Code Block 39 (shiki):
+$foo = $this->request->getData('value.that.does.not.exist');
+// $foo == null
+----------------------------------------
+
+Code Block 40 ():
+$foo = $this->request->getData('value.that.does.not.exist');
+// $foo == null
+----------------------------------------
+
+Code Block 41 ():
+ServerRequest::getData()
+----------------------------------------
+
+Code Block 42 ():
+getParsedBody()
+----------------------------------------
+
+Code Block 43 (shiki):
+$data = $this->request->getParsedBody();
+----------------------------------------
+
+Code Block 44 ():
+$data = $this->request->getParsedBody();
+----------------------------------------
+
+Code Block 45 ():
+Cake\Http\ServerRequest::getData()
+----------------------------------------
+
+Code Block 46 ():
+attachment
+----------------------------------------
+
+Code Block 47 (shiki):
+$attachment = $this->request->getData('attachment');
+----------------------------------------
+
+Code Block 48 ():
+$attachment = $this->request->getData('attachment');
+----------------------------------------
+
+Code Block 49 ():
+$attachment
+----------------------------------------
+
+Code Block 50 ():
+\Laminas\Diactoros\UploadedFile
+----------------------------------------
+
+Code Block 51 (shiki):
+$name = $attachment->getClientFilename();
+$type = $attachment->getClientMediaType();
+$size = $attachment->getSize();
+$tmpName = $attachment->getStream()->getMetadata('uri');
+$error = $attachment->getError();
+----------------------------------------
+
+Code Block 52 ():
+$name = $attachment->getClientFilename();
+$type = $attachment->getClientMediaType();
+$size = $attachment->getSize();
+$tmpName = $attachment->getStream()->getMetadata('uri');
+$error = $attachment->getError();
+----------------------------------------
+
+Code Block 53 ():
+moveTo()
+----------------------------------------
+
+Code Block 54 (shiki):
+$attachment->moveTo($targetPath);
+----------------------------------------
+
+Code Block 55 ():
+$attachment->moveTo($targetPath);
+----------------------------------------
+
+Code Block 56 ():
+moveTo()
+----------------------------------------
+
+Code Block 57 ():
+method
+----------------------------------------
+
+Code Block 58 ():
+Cake\Http\ServerRequest::getData()
+----------------------------------------
+
+Code Block 59 (shiki):
+$attachment = $this->request->getUploadedFile('attachment');
+----------------------------------------
+
+Code Block 60 ():
+$attachment = $this->request->getUploadedFile('attachment');
+----------------------------------------
+
+Code Block 61 ():
+Cake\Http\ServerRequest::getData()
+----------------------------------------
+
+Code Block 62 ():
+Cake\Http\ServerRequest::getUploadedFile()
+----------------------------------------
+
+Code Block 63 ():
+null
+----------------------------------------
+
+Code Block 64 ():
+method
+----------------------------------------
+
+Code Block 65 ():
+attachment
+----------------------------------------
+
+Code Block 66 (shiki):
+[
+        'attachment' => object(Laminas\Diactoros\UploadedFile) {
+            // ...
+        }
+]
+----------------------------------------
+
+Code Block 67 ():
+[
+        'attachment' => object(Laminas\Diactoros\UploadedFile) {
+            // ...
+        }
+]
+----------------------------------------
+
+Code Block 68 ():
+method
+----------------------------------------
+
+Code Block 69 (shiki):
+$files = [
+    'MyModel' => [
+        'attachment' => new \Laminas\Diactoros\UploadedFile(
+            $streamOrFile,
+            $size,
+            $errorStatus,
+            $clientFilename,
+            $clientMediaType,
+        ),
+        'anotherAttachment' => new \Laminas\Diactoros\UploadedFile(
+            '/tmp/hfz6dbn.tmp',
+            123,
+            \UPLOAD_ERR_OK,
+            'attachment.txt',
+            'text/plain',
+        ),
+    ],
+];
+
+$this->request = $this->request->withUploadedFiles($files);
+----------------------------------------
+
+Code Block 70 ():
+$files = [
+    'MyModel' => [
+        'attachment' => new \Laminas\Diactoros\UploadedFile(
+            $streamOrFile,
+            $size,
+            $errorStatus,
+            $clientFilename,
+            $clientMediaType,
+        ),
+        'anotherAttachment' => new \Laminas\Diactoros\UploadedFile(
+            '/tmp/hfz6dbn.tmp',
+            123,
+            \UPLOAD_ERR_OK,
+            'attachment.txt',
+            'text/plain',
+        ),
+    ],
+];
+
+$this->request = $this->request->withUploadedFiles($files);
+----------------------------------------
+
+Code Block 71 ():
+Cake\Http\ServerRequest::getData()
+----------------------------------------
+
+Code Block 72 ():
+Cake\Http\ServerRequest::withData()
+----------------------------------------
+
+Code Block 73 ():
+Cake\Http\ServerRequest::withParsedBody()
+----------------------------------------
+
+Code Block 74 ():
+method
+----------------------------------------
+
+Code Block 75 ():
+PUT
+----------------------------------------
+
+Code Block 76 ():
+DELETE
+----------------------------------------
+
+Code Block 77 ():
+application/x-www-form-urlencoded
+----------------------------------------
+
+Code Block 78 ():
+$request->getData()
+----------------------------------------
+
+Code Block 79 ():
+PUT
+----------------------------------------
+
+Code Block 80 ():
+DELETE
+----------------------------------------
+
+Code Block 81 ():
+getBody()
+----------------------------------------
+
+Code Block 82 (shiki):
+// Get the stream wrapper on the request body
+$body = $request->getBody();
+
+// Get the request body as a string
+$bodyString = (string)$request->getBody();
+----------------------------------------
+
+Code Block 83 ():
+// Get the stream wrapper on the request body
+$body = $request->getBody();
+
+// Get the request body as a string
+$bodyString = (string)$request->getBody();
+----------------------------------------
+
+Code Block 84 ():
+$request->getData()
+----------------------------------------
+
+Code Block 85 ():
+$request->getParsedBody()
+----------------------------------------
+
+Code Block 86 ():
+method
+----------------------------------------
+
+Code Block 87 ():
+ServerRequest::getEnv()
+----------------------------------------
+
+Code Block 88 ():
+getenv()
+----------------------------------------
+
+Code Block 89 (shiki):
+$host = $this->request->getEnv('HTTP_HOST');
+----------------------------------------
+
+Code Block 90 ():
+$host = $this->request->getEnv('HTTP_HOST');
+----------------------------------------
+
+Code Block 91 ():
+getServerParams()
+----------------------------------------
+
+Code Block 92 (shiki):
+$env = $this->request->getServerParams();
+----------------------------------------
+
+Code Block 93 ():
+$env = $this->request->getServerParams();
+----------------------------------------
+
+Code Block 94 ():
+method
+----------------------------------------
+
+Code Block 95 ():
+ServerRequest::withEnv()
+----------------------------------------
+
+Code Block 96 ():
+putenv()
+----------------------------------------
+
+Code Block 97 ():
+$_SERVER
+----------------------------------------
+
+Code Block 98 ():
+$_ENV
+----------------------------------------
+
+Code Block 99 (shiki):
+// Set a value, generally helpful in testing.
+$this->request->withEnv('REQUEST_METHOD', 'POST');
+----------------------------------------
+
+Code Block 100 ():
+// Set a value, generally helpful in testing.
+$this->request->withEnv('REQUEST_METHOD', 'POST');
+----------------------------------------
+
+Code Block 101 ():
+Cake\Http\ServerRequest::input()
+----------------------------------------
+
+Code Block 102 ():
+json_decode
+----------------------------------------
+
+Code Block 103 ():
+Cake\Http\ServerRequest::input()
+----------------------------------------
+
+Code Block 104 (shiki):
+// Get JSON-encoded data submitted to a PUT/POST action
+$jsonData = $this->request->input('json_decode');
+----------------------------------------
+
+Code Block 105 ():
+// Get JSON-encoded data submitted to a PUT/POST action
+$jsonData = $this->request->input('json_decode');
+----------------------------------------
+
+Code Block 106 (shiki):
+// Get XML-encoded data submitted to a PUT/POST action
+$data = $this->request->input('Cake\Utility\Xml::build', ['return' => 'domdocument']);
+----------------------------------------
+
+Code Block 107 ():
+// Get XML-encoded data submitted to a PUT/POST action
+$data = $this->request->input('Cake\Utility\Xml::build', ['return' => 'domdocument']);
+----------------------------------------
+
+Code Block 108 ():
+base
+----------------------------------------
+
+Code Block 109 ():
+webroot
+----------------------------------------
+
+Code Block 110 (shiki):
+// Assume the current request URL is /subdir/articles/edit/1?page=1
+
+// Holds /subdir/articles/edit/1?page=1
+$here = $request->getRequestTarget();
+
+// Holds /subdir
+$base = $request->getAttribute('base');
+
+// Holds /subdir/
+$base = $request->getAttribute('webroot');
+----------------------------------------
+
+Code Block 111 ():
+// Assume the current request URL is /subdir/articles/edit/1?page=1
+
+// Holds /subdir/articles/edit/1?page=1
+$here = $request->getRequestTarget();
+
+// Holds /subdir
+$base = $request->getAttribute('base');
+
+// Holds /subdir/
+$base = $request->getAttribute('webroot');
+----------------------------------------
+
+Code Block 112 ():
+is()
+----------------------------------------
+
+Code Block 113 ():
+method
+----------------------------------------
+
+Code Block 114 ():
+is()
+----------------------------------------
+
+Code Block 115 (shiki):
+$isPost = $this->request->is('post');
+----------------------------------------
+
+Code Block 116 ():
+$isPost = $this->request->is('post');
+----------------------------------------
+
+Code Block 117 ():
+Cake\Http\ServerRequest::addDetector()
+----------------------------------------
+
+Code Block 118 ():
+env()
+----------------------------------------
+
+Code Block 119 ():
+env()
+----------------------------------------
+
+Code Block 120 ():
+method
+----------------------------------------
+
+Code Block 121 (shiki):
+// Add an environment detector.
+$this->request->addDetector(
+    'post',
+    ['env' => 'REQUEST_METHOD', 'value' => 'POST'],
+);
+
+// Add a pattern value detector.
+$this->request->addDetector(
+    'iphone',
+    ['env' => 'HTTP_USER_AGENT', 'pattern' => '/iPhone/i'],
+);
+
+// Add an option detector
+$this->request->addDetector('internalIp', [
+    'env' => 'CLIENT_IP',
+    'options' => ['192.168.0.101', '192.168.0.100'],
+]);
+
+
+// Add a header detector with value comparison
+$this->request->addDetector('fancy', [
+    'env' => 'CLIENT_IP',
+    'header' => ['X-Fancy' => 1],
+]);
+
+// Add a header detector with callable comparison
+$this->request->addDetector('fancy', [
+    'env' => 'CLIENT_IP',
+    'header' => ['X-Fancy' => function ($value, $header) {
+        return in_array($value, ['1', '0', 'yes', 'no'], true);
+    }],
+]);
+
+// Add a callback detector. Must be a valid callable.
+$this->request->addDetector(
+    'awesome',
+    function ($request) {
+        return $request->getParam('awesome');
+    }
+);
+
+// Add a detector that uses additional arguments.
+$this->request->addDetector(
+    'csv',
+    [
+        'accept' => ['text/csv'],
+        'param' => '_ext',
+        'value' => 'csv',
+    ]
+);
+----------------------------------------
+
+Code Block 122 ():
+// Add an environment detector.
+$this->request->addDetector(
+    'post',
+    ['env' => 'REQUEST_METHOD', 'value' => 'POST'],
+);
+
+// Add a pattern value detector.
+$this->request->addDetector(
+    'iphone',
+    ['env' => 'HTTP_USER_AGENT', 'pattern' => '/iPhone/i'],
+);
+
+// Add an option detector
+$this->request->addDetector('internalIp', [
+    'env' => 'CLIENT_IP',
+    'options' => ['192.168.0.101', '192.168.0.100'],
+]);
+
+
+// Add a header detector with value comparison
+$this->request->addDetector('fancy', [
+    'env' => 'CLIENT_IP',
+    'header' => ['X-Fancy' => 1],
+]);
+
+// Add a header detector with callable comparison
+$this->request->addDetector('fancy', [
+    'env' => 'CLIENT_IP',
+    'header' => ['X-Fancy' => function ($value, $header) {
+        return in_array($value, ['1', '0', 'yes', 'no'], true);
+    }],
+]);
+
+// Add a callback detector. Must be a valid callable.
+$this->request->addDetector(
+    'awesome',
+    function ($request) {
+        return $request->getParam('awesome');
+    }
+);
+
+// Add a detector that uses additional arguments.
+$this->request->addDetector(
+    'csv',
+    [
+        'accept' => ['text/csv'],
+        'param' => '_ext',
+        'value' => 'csv',
+    ]
+);
+----------------------------------------
+
+Code Block 123 ():
+is('get')
+----------------------------------------
+
+Code Block 124 ():
+is('put')
+----------------------------------------
+
+Code Block 125 ():
+is('patch')
+----------------------------------------
+
+Code Block 126 ():
+is('post')
+----------------------------------------
+
+Code Block 127 ():
+is('delete')
+----------------------------------------
+
+Code Block 128 ():
+is('head')
+----------------------------------------
+
+Code Block 129 ():
+is('options')
+----------------------------------------
+
+Code Block 130 ():
+is('ajax')
+----------------------------------------
+
+Code Block 131 ():
+is('ssl')
+----------------------------------------
+
+Code Block 132 ():
+is('flash')
+----------------------------------------
+
+Code Block 133 ():
+is('json')
+----------------------------------------
+
+Code Block 134 ():
+Accept
+----------------------------------------
+
+Code Block 135 ():
+is('xml')
+----------------------------------------
+
+Code Block 136 ():
+Accept
+----------------------------------------
+
+Code Block 137 ():
+ServerRequest
+----------------------------------------
+
+Code Block 138 ():
+Cake\Http\ServerRequest::domain()
+----------------------------------------
+
+Code Block 139 ():
+Cake\Http\ServerRequest::subdomains()
+----------------------------------------
+
+Code Block 140 ():
+Cake\Http\ServerRequest::host()
+----------------------------------------
+
+Code Block 141 ():
+getSession()
+----------------------------------------
+
+Code Block 142 ():
+session
+----------------------------------------
+
+Code Block 143 (shiki):
+$session = $this->request->getSession();
+$session = $this->request->getAttribute('session');
+
+$data = $session->read('sessionKey');
+----------------------------------------
+
+Code Block 144 ():
+$session = $this->request->getSession();
+$session = $this->request->getAttribute('session');
+
+$data = $session->read('sessionKey');
+----------------------------------------
+
+Code Block 145 ():
+method
+----------------------------------------
+
+Code Block 146 (shiki):
+// Prints 'example.org'
+echo $request->domain();
+----------------------------------------
+
+Code Block 147 ():
+// Prints 'example.org'
+echo $request->domain();
+----------------------------------------
+
+Code Block 148 ():
+method
+----------------------------------------
+
+Code Block 149 (shiki):
+// Returns ['my', 'dev'] for 'my.dev.example.org'
+$subdomains = $request->subdomains();
+----------------------------------------
+
+Code Block 150 ():
+// Returns ['my', 'dev'] for 'my.dev.example.org'
+$subdomains = $request->subdomains();
+----------------------------------------
+
+Code Block 151 ():
+method
+----------------------------------------
+
+Code Block 152 (shiki):
+// Prints 'my.dev.example.org'
+echo $request->host();
+----------------------------------------
+
+Code Block 153 ():
+// Prints 'my.dev.example.org'
+echo $request->host();
+----------------------------------------
+
+Code Block 154 ():
+method
+----------------------------------------
+
+Code Block 155 (shiki):
+// Output POST
+echo $request->getMethod();
+----------------------------------------
+
+Code Block 156 ():
+// Output POST
+echo $request->getMethod();
+----------------------------------------
+
+Code Block 157 ():
+method
+----------------------------------------
+
+Code Block 158 ():
+MethodNotAllowedException
+----------------------------------------
+
+Code Block 159 ():
+Allow
+----------------------------------------
+
+Code Block 160 (shiki):
+public function delete()
+{
+    // Only accept POST and DELETE requests
+    $this->request->allowMethod(['post', 'delete']); 
+    ...
+}
+----------------------------------------
+
+Code Block 161 ():
+public function delete()
+{
+    // Only accept POST and DELETE requests
+    $this->request->allowMethod(['post', 'delete']); 
+    ...
+}
+----------------------------------------
+
+Code Block 162 ():
+HTTP_*
+----------------------------------------
+
+Code Block 163 (shiki):
+// Get the header as a string
+$userAgent = $this->request->getHeaderLine('User-Agent');
+
+// Get an array of all values.
+$acceptHeader = $this->request->getHeader('Accept');
+
+// Check if a header exists
+$hasAcceptHeader = $this->request->hasHeader('Accept');
+----------------------------------------
+
+Code Block 164 ():
+// Get the header as a string
+$userAgent = $this->request->getHeaderLine('User-Agent');
+
+// Get an array of all values.
+$acceptHeader = $this->request->getHeader('Accept');
+
+// Check if a header exists
+$hasAcceptHeader = $this->request->hasHeader('Accept');
+----------------------------------------
+
+Code Block 165 ():
+Authorization
+----------------------------------------
+
+Code Block 166 ():
+method
+----------------------------------------
+
+Code Block 167 ():
+method
+----------------------------------------
+
+Code Block 168 ():
+HTTP-X-Forwarded-*
+----------------------------------------
+
+Code Block 169 ():
+trustProxy
+----------------------------------------
+
+Code Block 170 ():
+true
+----------------------------------------
+
+Code Block 171 (shiki):
+$this->request->trustProxy = true;
+
+// These methods will now use the proxied headers.
+$port = $this->request->port();
+$host = $this->request->host();
+$scheme = $this->request->scheme();
+$clientIp = $this->request->clientIp();
+----------------------------------------
+
+Code Block 172 ():
+$this->request->trustProxy = true;
+
+// These methods will now use the proxied headers.
+$port = $this->request->port();
+$host = $this->request->host();
+$scheme = $this->request->scheme();
+$clientIp = $this->request->clientIp();
+----------------------------------------
+
+Code Block 173 ():
+clientIp()
+----------------------------------------
+
+Code Block 174 ():
+X-Forwarded-For
+----------------------------------------
+
+Code Block 175 ():
+setTrustedProxies()
+----------------------------------------
+
+Code Block 176 (shiki):
+$request->setTrustedProxies(['127.1.1.1', '127.8.1.3']);
+----------------------------------------
+
+Code Block 177 ():
+$request->setTrustedProxies(['127.1.1.1', '127.8.1.3']);
+----------------------------------------
+
+Code Block 178 ():
+clientIp()
+----------------------------------------
+
+Code Block 179 ():
+X-Forwarded-For
+----------------------------------------
+
+Code Block 180 ():
+method
+----------------------------------------
+
+Code Block 181 (shiki):
+$accepts = $this->request->accepts();
+----------------------------------------
+
+Code Block 182 ():
+$accepts = $this->request->accepts();
+----------------------------------------
+
+Code Block 183 (shiki):
+$acceptsJson = $this->request->accepts('application/json');
+----------------------------------------
+
+Code Block 184 ():
+$acceptsJson = $this->request->accepts('application/json');
+----------------------------------------
+
+Code Block 185 ():
+method
+----------------------------------------
+
+Code Block 186 (shiki):
+$acceptsLanguages = $this->request->acceptLanguage();
+----------------------------------------
+
+Code Block 187 ():
+$acceptsLanguages = $this->request->acceptLanguage();
+----------------------------------------
+
+Code Block 188 (shiki):
+$acceptsSpanish = $this->request->acceptLanguage('es-es');
+----------------------------------------
+
+Code Block 189 ():
+$acceptsSpanish = $this->request->acceptLanguage('es-es');
+----------------------------------------
+
+Code Block 190 (shiki):
+// Get the cookie value, or null if the cookie is missing.
+$rememberMe = $this->request->getCookie('remember_me');
+
+// Read the value, or get the default of 0
+$rememberMe = $this->request->getCookie('remember_me', 0);
+
+// Get all cookies as a hash
+$cookies = $this->request->getCookieParams();
+
+// Get a CookieCollection instance
+$cookies = $this->request->getCookieCollection()
+----------------------------------------
+
+Code Block 191 ():
+// Get the cookie value, or null if the cookie is missing.
+$rememberMe = $this->request->getCookie('remember_me');
+
+// Read the value, or get the default of 0
+$rememberMe = $this->request->getCookie('remember_me', 0);
+
+// Get all cookies as a hash
+$cookies = $this->request->getCookieParams();
+
+// Get a CookieCollection instance
+$cookies = $this->request->getCookieCollection()
+----------------------------------------
+
+Code Block 192 ():
+Cake\Http\Cookie\CookieCollection
+----------------------------------------
+
+Code Block 193 ():
+getData()
+----------------------------------------
+
+Code Block 194 ():
+getUploadedFiles()
+----------------------------------------
+
+Code Block 195 ():
+UploadedFileInterface
+----------------------------------------
+
+Code Block 196 (shiki):
+// Get a list of UploadedFile objects
+$files = $request->getUploadedFiles();
+
+// Read the file data.
+$files[0]->getStream();
+$files[0]->getSize();
+$files[0]->getClientFilename();
+
+// Move the file.
+$files[0]->moveTo($targetPath);
+----------------------------------------
+
+Code Block 197 ():
+// Get a list of UploadedFile objects
+$files = $request->getUploadedFiles();
+
+// Read the file data.
+$files[0]->getStream();
+$files[0]->getSize();
+$files[0]->getClientFilename();
+
+// Move the file.
+$files[0]->moveTo($targetPath);
+----------------------------------------
+
+Code Block 198 (shiki):
+// Get the URI
+$uri = $request->getUri();
+
+// Read data out of the URI.
+$path = $uri->getPath();
+$query = $uri->getQuery();
+$host = $uri->getHost();
+----------------------------------------
+
+Code Block 199 ():
+// Get the URI
+$uri = $request->getUri();
+
+// Read data out of the URI.
+$path = $uri->getPath();
+$query = $uri->getQuery();
+$host = $uri->getHost();
+----------------------------------------
+
+Code Block 200 ():
+class
+----------------------------------------
+
+Code Block 201 ():
+Cake\Http\Response
+----------------------------------------
+
+Code Block 202 ():
+Response
+----------------------------------------
+
+Code Block 203 ():
+method
+----------------------------------------
+
+Code Block 204 ():
+Cake\Http\Response::withType()
+----------------------------------------
+
+Code Block 205 ():
+setTypeMap()
+----------------------------------------
+
+Code Block 206 (shiki):
+// Add a vCard type
+$this->response->setTypeMap('vcf', ['text/v-card']);
+
+// Set the response Content-Type to vcard.
+$this->response = $this->response->withType('vcf');
+----------------------------------------
+
+Code Block 207 ():
+// Add a vCard type
+$this->response->setTypeMap('vcf', ['text/v-card']);
+
+// Set the response Content-Type to vcard.
+$this->response = $this->response->withType('vcf');
+----------------------------------------
+
+Code Block 208 ():
+~Controller::beforeFilter()
+----------------------------------------
+
+Code Block 209 ():
+method
+----------------------------------------
+
+Code Block 210 ():
+Cake\Http\Response::withFile()
+----------------------------------------
+
+Code Block 211 (shiki):
+public function sendFile($id)
+{
+    $file = $this->Attachments->getFile($id);
+    $response = $this->response->withFile($file['path']);
+    // Return the response to prevent controller from trying to render
+    // a view.
+    return $response;
+}
+----------------------------------------
+
+Code Block 212 ():
+public function sendFile($id)
+{
+    $file = $this->Attachments->getFile($id);
+    $response = $this->response->withFile($file['path']);
+    // Return the response to prevent controller from trying to render
+    // a view.
+    return $response;
+}
+----------------------------------------
+
+Code Block 213 ():
+Cake\Http\Response::$_mimeTypes
+----------------------------------------
+
+Code Block 214 ():
+Cake\Http\Response::withFile()
+----------------------------------------
+
+Code Block 215 ():
+Cake\Http\Response::withType()
+----------------------------------------
+
+Code Block 216 (shiki):
+$response = $this->response->withFile(
+    $file['path'],
+    ['download' => true, 'name' => 'foo'],
+);
+----------------------------------------
+
+Code Block 217 ():
+$response = $this->response->withFile(
+    $file['path'],
+    ['download' => true, 'name' => 'foo'],
+);
+----------------------------------------
+
+Code Block 218 (shiki):
+public function sendIcs()
+{
+    $icsString = $this->Calendars->generateIcs();
+    $response = $this->response;
+
+    // Inject string content into response body
+    $response = $response->withStringBody($icsString);
+
+    $response = $response->withType('ics');
+
+    // Optionally force file download
+    $response = $response->withDownload('filename_for_download.ics');
+
+    // Return response object to prevent controller from trying to render
+    // a view.
+    return $response;
+}
+----------------------------------------
+
+Code Block 219 ():
+public function sendIcs()
+{
+    $icsString = $this->Calendars->generateIcs();
+    $response = $this->response;
+
+    // Inject string content into response body
+    $response = $response->withStringBody($icsString);
+
+    $response = $response->withType('ics');
+
+    // Optionally force file download
+    $response = $response->withDownload('filename_for_download.ics');
+
+    // Return response object to prevent controller from trying to render
+    // a view.
+    return $response;
+}
+----------------------------------------
+
+Code Block 220 ():
+method
+----------------------------------------
+
+Code Block 221 ():
+Cake\Http\Response::withHeader()
+----------------------------------------
+
+Code Block 222 (shiki):
+// Add/replace a header
+$response = $response->withHeader('X-Extra', 'My header');
+
+// Set multiple headers
+$response = $response->withHeader('X-Extra', 'My header')
+    ->withHeader('Location', 'https://example.com');
+
+// Append a value to an existing header
+$response = $response->withAddedHeader('Set-Cookie', 'remember_me=1');
+----------------------------------------
+
+Code Block 223 ():
+// Add/replace a header
+$response = $response->withHeader('X-Extra', 'My header');
+
+// Set multiple headers
+$response = $response->withHeader('X-Extra', 'My header')
+    ->withHeader('Location', 'https://example.com');
+
+// Append a value to an existing header
+$response = $response->withAddedHeader('Set-Cookie', 'remember_me=1');
+----------------------------------------
+
+Code Block 224 ():
+Cake\Http\Server
+----------------------------------------
+
+Code Block 225 ():
+Cake\Http\Response::withLocation()
+----------------------------------------
+
+Code Block 226 ():
+method
+----------------------------------------
+
+Code Block 227 (shiki):
+// Set a string into the body
+$response = $response->withStringBody('My Body');
+
+// If you want a json response
+$response = $response->withType('application/json')
+    ->withStringBody(json_encode(['Foo' => 'bar']));
+----------------------------------------
+
+Code Block 228 ():
+// Set a string into the body
+$response = $response->withStringBody('My Body');
+
+// If you want a json response
+$response = $response->withType('application/json')
+    ->withStringBody(json_encode(['Foo' => 'bar']));
+----------------------------------------
+
+Code Block 229 ():
+method
+----------------------------------------
+
+Code Block 230 ():
+withBody()
+----------------------------------------
+
+Code Block 231 ():
+Laminas\Diactoros\MessageTrait
+----------------------------------------
+
+Code Block 232 (shiki):
+$response = $response->withBody($stream);
+----------------------------------------
+
+Code Block 233 ():
+$response = $response->withBody($stream);
+----------------------------------------
+
+Code Block 234 ():
+$stream
+----------------------------------------
+
+Code Block 235 ():
+Psr\Http\Message\StreamInterface
+----------------------------------------
+
+Code Block 236 ():
+Laminas\Diactoros\Stream
+----------------------------------------
+
+Code Block 237 (shiki):
+// To stream from a file
+use Laminas\Diactoros\Stream;
+
+$stream = new Stream('/path/to/file', 'rb');
+$response = $response->withBody($stream);
+----------------------------------------
+
+Code Block 238 ():
+// To stream from a file
+use Laminas\Diactoros\Stream;
+
+$stream = new Stream('/path/to/file', 'rb');
+$response = $response->withBody($stream);
+----------------------------------------
+
+Code Block 239 ():
+CallbackStream
+----------------------------------------
+
+Code Block 240 (shiki):
+// Streaming from a callback
+use Cake\Http\CallbackStream;
+
+// Create an image.
+$img = imagecreate(100, 100);
+// ...
+
+$stream = new CallbackStream(function () use ($img) {
+    imagepng($img);
+});
+$response = $response->withBody($stream);
+----------------------------------------
+
+Code Block 241 ():
+// Streaming from a callback
+use Cake\Http\CallbackStream;
+
+// Create an image.
+$img = imagecreate(100, 100);
+// ...
+
+$stream = new CallbackStream(function () use ($img) {
+    imagepng($img);
+});
+$response = $response->withBody($stream);
+----------------------------------------
+
+Code Block 242 ():
+method
+----------------------------------------
+
+Code Block 243 (shiki):
+$this->response = $this->response->withCharset('UTF-8');
+----------------------------------------
+
+Code Block 244 ():
+$this->response = $this->response->withCharset('UTF-8');
+----------------------------------------
+
+Code Block 245 ():
+method
+----------------------------------------
+
+Code Block 246 ():
+Cake\Http\Response::withDisabledCache()
+----------------------------------------
+
+Code Block 247 (shiki):
+public function index()
+{
+    // Disable caching
+    $this->response = $this->response->withDisabledCache();
+}
+----------------------------------------
+
+Code Block 248 ():
+public function index()
+{
+    // Disable caching
+    $this->response = $this->response->withDisabledCache();
+}
+----------------------------------------
+
+Code Block 249 ():
+method
+----------------------------------------
+
+Code Block 250 ():
+Cake\Http\Response::withCache()
+----------------------------------------
+
+Code Block 251 (shiki):
+public function index()
+{
+    // Enable caching
+    $this->response = $this->response->withCache('-1 minute', '+5 days');
+}
+----------------------------------------
+
+Code Block 252 ():
+public function index()
+{
+    // Enable caching
+    $this->response = $this->response->withCache('-1 minute', '+5 days');
+}
+----------------------------------------
+
+Code Block 253 ():
+withCache()
+----------------------------------------
+
+Code Block 254 ():
+Last-Modified
+----------------------------------------
+
+Code Block 255 ():
+Expires
+----------------------------------------
+
+Code Block 256 ():
+max-age
+----------------------------------------
+
+Code Block 257 ():
+public
+----------------------------------------
+
+Code Block 258 ():
+Cake\Http\Response::withCache()
+----------------------------------------
+
+Code Block 259 ():
+method
+----------------------------------------
+
+Code Block 260 ():
+Cache-Control
+----------------------------------------
+
+Code Block 261 ():
+Cache-Control: private, max-age=3600, must-revalidate
+----------------------------------------
+
+Code Block 262 ():
+Cache-Control: private, max-age=3600, must-revalidate
+----------------------------------------
+
+Code Block 263 ():
+Response
+----------------------------------------
+
+Code Block 264 ():
+Cache-Control
+----------------------------------------
+
+Code Block 265 ():
+withSharable()
+----------------------------------------
+
+Code Block 266 ():
+public
+----------------------------------------
+
+Code Block 267 ():
+private
+----------------------------------------
+
+Code Block 268 ():
+max-age
+----------------------------------------
+
+Code Block 269 (shiki):
+public function view()
+{
+    // ...
+    // Set the Cache-Control as public for 3600 seconds
+    $this->response = $this->response->withSharable(true, 3600);
+}
+
+public function my_data()
+{
+    // ...
+    // Set the Cache-Control as private for 3600 seconds
+    $this->response = $this->response->withSharable(false, 3600);
+}
+----------------------------------------
+
+Code Block 270 ():
+public function view()
+{
+    // ...
+    // Set the Cache-Control as public for 3600 seconds
+    $this->response = $this->response->withSharable(true, 3600);
+}
+
+public function my_data()
+{
+    // ...
+    // Set the Cache-Control as private for 3600 seconds
+    $this->response = $this->response->withSharable(false, 3600);
+}
+----------------------------------------
+
+Code Block 271 ():
+Response
+----------------------------------------
+
+Code Block 272 ():
+Cache-Control
+----------------------------------------
+
+Code Block 273 ():
+method
+----------------------------------------
+
+Code Block 274 ():
+Expires
+----------------------------------------
+
+Code Block 275 ():
+withExpires()
+----------------------------------------
+
+Code Block 276 (shiki):
+public function view()
+{
+    $this->response = $this->response->withExpires('+5 days');
+}
+----------------------------------------
+
+Code Block 277 ():
+public function view()
+{
+    $this->response = $this->response->withExpires('+5 days');
+}
+----------------------------------------
+
+Code Block 278 ():
+DateTime
+----------------------------------------
+
+Code Block 279 ():
+DateTime
+----------------------------------------
+
+Code Block 280 ():
+method
+----------------------------------------
+
+Code Block 281 ():
+withEtag()
+----------------------------------------
+
+Code Block 282 ():
+isNotModified()
+----------------------------------------
+
+Code Block 283 (shiki):
+public function index()
+{
+    $articles = $this->Articles->find('all')->all();
+
+    // Simple checksum of the article contents.
+    // You should use a more efficient implementation
+    // in a real world application.
+    $checksum = md5(json_encode($articles));
+
+    $response = $this->response->withEtag($checksum);
+    if ($response->isNotModified($this->request)) {
+        return $response;
+    }
+
+    $this->response = $response;
+    // ...
+}
+----------------------------------------
+
+Code Block 284 ():
+public function index()
+{
+    $articles = $this->Articles->find('all')->all();
+
+    // Simple checksum of the article contents.
+    // You should use a more efficient implementation
+    // in a real world application.
+    $checksum = md5(json_encode($articles));
+
+    $response = $this->response->withEtag($checksum);
+    if ($response->isNotModified($this->request)) {
+        return $response;
+    }
+
+    $this->response = $response;
+    // ...
+}
+----------------------------------------
+
+Code Block 285 ():
+method
+----------------------------------------
+
+Code Block 286 ():
+Last-Modified
+----------------------------------------
+
+Code Block 287 ():
+isNotModified()
+----------------------------------------
+
+Code Block 288 (shiki):
+public function view()
+{
+    $article = $this->Articles->find()->first();
+    $response = $this->response->withModified($article->modified);
+    if ($response->isNotModified($this->request)) {
+        return $response;
+    }
+    $this->response = $response;
+    // ...
+}
+----------------------------------------
+
+Code Block 289 ():
+public function view()
+{
+    $article = $this->Articles->find()->first();
+    $response = $this->response->withModified($article->modified);
+    if ($response->isNotModified($this->request)) {
+        return $response;
+    }
+    $this->response = $response;
+    // ...
+}
+----------------------------------------
+
+Code Block 290 ():
+method
+----------------------------------------
+
+Code Block 291 ():
+Vary
+----------------------------------------
+
+Code Block 292 (shiki):
+$response = $this->response->withVary('User-Agent');
+$response = $this->response->withVary('Accept-Encoding', 'User-Agent');
+$response = $this->response->withVary('Accept-Language');
+----------------------------------------
+
+Code Block 293 ():
+$response = $this->response->withVary('User-Agent');
+$response = $this->response->withVary('Accept-Encoding', 'User-Agent');
+$response = $this->response->withVary('Accept-Language');
+----------------------------------------
+
+Code Block 294 ():
+method
+----------------------------------------
+
+Code Block 295 ():
+304 Not Modified
+----------------------------------------
+
+Code Block 296 (shiki):
+// In a controller action.
+if ($this->response->isNotModified($this->request)) {
+    return $this->response;
+}
+----------------------------------------
+
+Code Block 297 ():
+// In a controller action.
+if ($this->response->isNotModified($this->request)) {
+    return $this->response;
+}
+----------------------------------------
+
+Code Block 298 ():
+Cake\Http\Cookie\Cookie
+----------------------------------------
+
+Code Block 299 (shiki):
+use Cake\Http\Cookie\Cookie;
+use DateTime;
+
+// Add a cookie
+$this->response = $this->response->withCookie(Cookie::create(
+    'remember_me',
+    'yes',
+    // All keys are optional
+    [
+        'expires' => new DateTime('+1 year'),
+        'path' => '',
+        'domain' => '',
+        'secure' => false,
+        'httponly' => false,
+        'samesite' => null, // Or one of CookieInterface::SAMESITE_* constants
+    ]
+));
+----------------------------------------
+
+Code Block 300 ():
+use Cake\Http\Cookie\Cookie;
+use DateTime;
+
+// Add a cookie
+$this->response = $this->response->withCookie(Cookie::create(
+    'remember_me',
+    'yes',
+    // All keys are optional
+    [
+        'expires' => new DateTime('+1 year'),
+        'path' => '',
+        'domain' => '',
+        'secure' => false,
+        'httponly' => false,
+        'samesite' => null, // Or one of CookieInterface::SAMESITE_* constants
+    ]
+));
+----------------------------------------
+
+Code Block 301 ():
+withExpiredCookie()
+----------------------------------------
+
+Code Block 302 (shiki):
+$this->response = $this->response->withExpiredCookie(new Cookie('remember_me'));
+----------------------------------------
+
+Code Block 303 ():
+$this->response = $this->response->withExpiredCookie(new Cookie('remember_me'));
+----------------------------------------
+
+Code Block 304 ():
+cors()
+----------------------------------------
+
+Code Block 305 ():
+CorsBuilder
+----------------------------------------
+
+Code Block 306 (shiki):
+$this->response = $this->response->cors($this->request)
+    ->allowOrigin(['*.cakephp.org'])
+    ->allowMethods(['GET', 'POST'])
+    ->allowHeaders(['X-CSRF-Token'])
+    ->allowCredentials()
+    ->exposeHeaders(['Link'])
+    ->maxAge(300)
+    ->build();
+----------------------------------------
+
+Code Block 307 ():
+$this->response = $this->response->cors($this->request)
+    ->allowOrigin(['*.cakephp.org'])
+    ->allowMethods(['GET', 'POST'])
+    ->allowHeaders(['X-CSRF-Token'])
+    ->allowCredentials()
+    ->exposeHeaders(['Link'])
+    ->maxAge(300)
+    ->build();
+----------------------------------------
+
+Code Block 308 ():
+Origin
+----------------------------------------
+
+Code Block 309 ():
+Origin
+----------------------------------------
+
+Code Block 310 ():
+class
+----------------------------------------
+
+Code Block 311 ():
+CorsBuilder
+----------------------------------------
+
+Code Block 312 ():
+allowOrigin
+----------------------------------------
+
+Code Block 313 ():
+Cake\\Http\\CorsBuilder::allowOrigin(array|string $domains): static
+----------------------------------------
+
+Code Block 314 ():
+allowMethods
+----------------------------------------
+
+Code Block 315 ():
+Cake\\Http\\CorsBuilder::allowMethods(array $methods): static
+----------------------------------------
+
+Code Block 316 ():
+allowHeaders
+----------------------------------------
+
+Code Block 317 ():
+Cake\\Http\\CorsBuilder::allowHeaders(array $headers): static
+----------------------------------------
+
+Code Block 318 ():
+allowCredentials
+----------------------------------------
+
+Code Block 319 ():
+Cake\\Http\\CorsBuilder::allowCredentials(): static
+----------------------------------------
+
+Code Block 320 ():
+exposeHeaders
+----------------------------------------
+
+Code Block 321 ():
+Cake\\Http\\CorsBuilder::exposeHeaders(array $headers): static
+----------------------------------------
+
+Code Block 322 ():
+maxAge
+----------------------------------------
+
+Code Block 323 ():
+Cake\\Http\\CorsBuilder::maxAge(string|int $age): static
+----------------------------------------
+
+Code Block 324 ():
+build
+----------------------------------------
+
+Code Block 325 ():
+Cake\\Http\\CorsBuilder::build(): ResponseInterface
+----------------------------------------
+
+Code Block 326 (shiki):
+// In your controller
+public function beforeFilter(EventInterface $event)
+{
+    parent::beforeFilter($event);
+
+    if ($this->request->is('options')) {
+        // Handle preflight requests
+        $this->response = $this->response->cors($this->request)
+            ->allowOrigin(['https://app.example.com'])
+            ->allowMethods(['GET', 'POST', 'PUT', 'DELETE'])
+            ->allowHeaders(['Content-Type', 'Authorization'])
+            ->allowCredentials()
+            ->maxAge(86400)
+            ->build();
+
+        $event->setResult($this->response);
+    }
+}
+
+public function index()
+{
+    // Apply CORS to regular requests
+    $this->response = $this->response->cors($this->request)
+        ->allowOrigin(['https://app.example.com'])
+        ->allowCredentials()
+        ->build();
+
+    // Your regular controller logic...
+}
+----------------------------------------
+
+Code Block 327 ():
+// In your controller
+public function beforeFilter(EventInterface $event)
+{
+    parent::beforeFilter($event);
+
+    if ($this->request->is('options')) {
+        // Handle preflight requests
+        $this->response = $this->response->cors($this->request)
+            ->allowOrigin(['https://app.example.com'])
+            ->allowMethods(['GET', 'POST', 'PUT', 'DELETE'])
+            ->allowHeaders(['Content-Type', 'Authorization'])
+            ->allowCredentials()
+            ->maxAge(86400)
+            ->build();
+
+        $event->setResult($this->response);
+    }
+}
+
+public function index()
+{
+    // Apply CORS to regular requests
+    $this->response = $this->response->cors($this->request)
+        ->allowOrigin(['https://app.example.com'])
+        ->allowCredentials()
+        ->build();
+
+    // Your regular controller logic...
+}
+----------------------------------------
+
+Code Block 328 (shiki):
+$this->response = $this->response->cors($this->request)
+    ->allowOrigin('*')
+    ->allowMethods(['GET'])
+    ->exposeHeaders(['X-Total-Count', 'X-Page'])
+    ->maxAge(3600)
+    ->build();
+----------------------------------------
+
+Code Block 329 ():
+$this->response = $this->response->cors($this->request)
+    ->allowOrigin('*')
+    ->allowMethods(['GET'])
+    ->exposeHeaders(['X-Total-Count', 'X-Page'])
+    ->maxAge(3600)
+    ->build();
+----------------------------------------
+
+Code Block 330 (shiki):
+// src/Middleware/CorsMiddleware.php
+namespace App\Middleware;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class CorsMiddleware implements MiddlewareInterface
+{
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler,
+    ): ResponseInterface {
+        // Handle preflight requests
+        if ($request->getMethod() === 'OPTIONS') {
+            $response = new \Cake\Http\Response();
+            $response = $response->cors($request)
+                ->allowOrigin(['*.myapp.com'])
+                ->allowMethods(['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+                ->allowHeaders(['Content-Type', 'Authorization'])
+                ->allowCredentials()
+                ->maxAge(3600)
+                ->build();
+
+            return $response;
+        }
+
+        $response = $handler->handle($request);
+
+        // Add CORS headers to regular requests
+        return $response->cors($request)
+            ->allowOrigin(['*.myapp.com'])
+            ->allowCredentials()
+            ->build();
+    }
+}
+----------------------------------------
+
+Code Block 331 ():
+// src/Middleware/CorsMiddleware.php
+namespace App\Middleware;
+
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class CorsMiddleware implements MiddlewareInterface
+{
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler,
+    ): ResponseInterface {
+        // Handle preflight requests
+        if ($request->getMethod() === 'OPTIONS') {
+            $response = new \Cake\Http\Response();
+            $response = $response->cors($request)
+                ->allowOrigin(['*.myapp.com'])
+                ->allowMethods(['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+                ->allowHeaders(['Content-Type', 'Authorization'])
+                ->allowCredentials()
+                ->maxAge(3600)
+                ->build();
+
+            return $response;
+        }
+
+        $response = $handler->handle($request);
+
+        // Add CORS headers to regular requests
+        return $response->cors($request)
+            ->allowOrigin(['*.myapp.com'])
+            ->allowCredentials()
+            ->build();
+    }
+}
+----------------------------------------
+
+Code Block 332 ():
+src/Application.php
+----------------------------------------
+
+Code Block 333 (shiki):
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $middlewareQueue
+        // Add CORS middleware early in the stack
+        ->add(new \App\Middleware\CorsMiddleware())
+        // ... other middleware
+        ->add(new ErrorHandlerMiddleware(Configure::read('Error')))
+        ->add(new AssetMiddleware([
+            'cacheTime' => Configure::read('Asset.cacheTime'),
+        ]))
+        ->add(new RoutingMiddleware($this));
+
+    return $middlewareQueue;
+}
+----------------------------------------
+
+Code Block 334 ():
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $middlewareQueue
+        // Add CORS middleware early in the stack
+        ->add(new \App\Middleware\CorsMiddleware())
+        // ... other middleware
+        ->add(new ErrorHandlerMiddleware(Configure::read('Error')))
+        ->add(new AssetMiddleware([
+            'cacheTime' => Configure::read('Asset.cacheTime'),
+        ]))
+        ->add(new RoutingMiddleware($this));
+
+    return $middlewareQueue;
+}
+----------------------------------------
+
+Code Block 335 ():
+Server.terminate
+----------------------------------------
+
+Code Block 336 ():
+terminate
+----------------------------------------
+
+Code Block 337 ():
+request
+----------------------------------------
+
+Code Block 338 ():
+response
+----------------------------------------
+
+Code Block 339 ():
+request
+----------------------------------------
+
+Code Block 340 ():
+Router::getRequest()
+----------------------------------------
+
+Code Block 341 ():
+Server.terminate
+----------------------------------------
+
+Code Block 342 ():
+with
+----------------------------------------
+
+Code Block 343 (shiki):
+$this->response->withHeader('X-CakePHP', 'yes!'); 
+$this->response = $this->response->withHeader('X-CakePHP', 'yes!');
+----------------------------------------
+
+Code Block 344 ():
+$this->response->withHeader('X-CakePHP', 'yes!'); 
+$this->response = $this->response->withHeader('X-CakePHP', 'yes!');
+----------------------------------------
+
+Code Block 345 ():
+X-CakePHP
+----------------------------------------
+
+Code Block 346 ():
+withHeader()
+----------------------------------------
+
+Code Block 347 (shiki):
+$this->response = $this->response->withHeader('X-CakePHP', 'yes!');
+----------------------------------------
+
+Code Block 348 ():
+$this->response = $this->response->withHeader('X-CakePHP', 'yes!');
+----------------------------------------
+
+Code Block 349 ():
+class
+----------------------------------------
+
+Code Block 350 ():
+CookieCollection
+----------------------------------------
+
+Code Block 351 ():
+class
+----------------------------------------
+
+Code Block 352 ():
+Cookie
+----------------------------------------
+
+Code Block 353 (shiki):
+use Cake\Http\Cookie\Cookie;
+
+// All arguments in the constructor
+$cookie = new Cookie(
+    'remember_me', // name
+    1, // value
+    new DateTime('+1 year'), // expiration time, if applicable
+    '/', // path, if applicable
+    'example.com', // domain, if applicable
+    false, // secure only?
+    true, // http only ?
+);
+
+// Using the builder methods
+$cookie = (new Cookie('remember_me'))
+    ->withValue('1')
+    ->withExpiry(new DateTime('+1 year'))
+    ->withPath('/')
+    ->withDomain('example.com')
+    ->withSecure(false)
+    ->withHttpOnly(true);
+----------------------------------------
+
+Code Block 354 ():
+use Cake\Http\Cookie\Cookie;
+
+// All arguments in the constructor
+$cookie = new Cookie(
+    'remember_me', // name
+    1, // value
+    new DateTime('+1 year'), // expiration time, if applicable
+    '/', // path, if applicable
+    'example.com', // domain, if applicable
+    false, // secure only?
+    true, // http only ?
+);
+
+// Using the builder methods
+$cookie = (new Cookie('remember_me'))
+    ->withValue('1')
+    ->withExpiry(new DateTime('+1 year'))
+    ->withPath('/')
+    ->withDomain('example.com')
+    ->withSecure(false)
+    ->withHttpOnly(true);
+----------------------------------------
+
+Code Block 355 ():
+CookieCollection
+----------------------------------------
+
+Code Block 356 (shiki):
+use Cake\Http\Cookie\CookieCollection;
+
+// Create a new collection
+$cookies = new CookieCollection([$cookie]);
+
+// Add to an existing collection
+$cookies = $cookies->add($cookie);
+
+// Remove a cookie by name
+$cookies = $cookies->remove('remember_me');
+----------------------------------------
+
+Code Block 357 ():
+use Cake\Http\Cookie\CookieCollection;
+
+// Create a new collection
+$cookies = new CookieCollection([$cookie]);
+
+// Add to an existing collection
+$cookies = $cookies->add($cookie);
+
+// Remove a cookie by name
+$cookies = $cookies->remove('remember_me');
+----------------------------------------
+
+Code Block 358 (shiki):
+// Add one cookie
+$response = $this->response->withCookie($cookie);
+
+// Replace the entire cookie collection
+$response = $this->response->withCookieCollection($cookies);
+----------------------------------------
+
+Code Block 359 ():
+// Add one cookie
+$response = $this->response->withCookie($cookie);
+
+// Replace the entire cookie collection
+$response = $this->response->withCookieCollection($cookies);
+----------------------------------------
+
+Code Block 360 ():
+CookieCollection
+----------------------------------------
+
+Code Block 361 (shiki):
+// Check if a cookie exists
+$cookies->has('remember_me');
+
+// Get the number of cookies in the collection
+count($cookies);
+
+// Get a cookie instance. Will throw an error if the cookie is not found
+$cookie = $cookies->get('remember_me');
+
+// Get a cookie or null
+$cookie = $cookies->remember_me;
+
+// Check if a cookie exists
+$exists = isset($cookies->remember_me)
+----------------------------------------
+
+Code Block 362 ():
+// Check if a cookie exists
+$cookies->has('remember_me');
+
+// Get the number of cookies in the collection
+count($cookies);
+
+// Get a cookie instance. Will throw an error if the cookie is not found
+$cookie = $cookies->get('remember_me');
+
+// Get a cookie or null
+$cookie = $cookies->remember_me;
+
+// Check if a cookie exists
+$exists = isset($cookies->remember_me)
+----------------------------------------
+
+Code Block 363 ():
+Cookie
+----------------------------------------
+
+Code Block 364 (shiki):
+// Get the value
+$value = $cookie->getValue();
+
+// Access data inside a JSON value
+$id = $cookie->read('User.id');
+
+// Check state
+$cookie->isHttpOnly();
+$cookie->isSecure();
+----------------------------------------
+
+Code Block 365 ():
+// Get the value
+$value = $cookie->getValue();
+
+// Access data inside a JSON value
+$id = $cookie->read('User.id');
+
+// Check state
+$cookie->isHttpOnly();
+$cookie->isSecure();
+----------------------------------------
+

@@ -1,0 +1,535 @@
+URL: https://book.cakephp.org/5.x/orm/deleting-data.html
+Title: Deleting Data | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Deleting Data ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Deleting a Single Entity ​
+  - Cascading Deletes ​
+  - Bulk Deletes ​
+  - Strict Deletes ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - deleteAll() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\ORM\Table
+
+method Cake\ORM\Table::delete(EntityInterface $entity, array $options = []): bool
+
+Once you've loaded an entity you can delete it by calling the originating table's delete method:
+
+When deleting entities a few things happen:
+
+By default, all deletes happen within a transaction. You can disable the transaction with the atomic option:
+
+The $options parameter supports the following options:
+
+When deleting entities, associated data can also be deleted. If your HasOne and HasMany associations are configured as dependent, delete operations will 'cascade' to those entities as well. By default, entities in associated tables are removed using Cake\ORM\Table::deleteAll(). You can elect to have the ORM load related entities, and delete them individually by setting the cascadeCallbacks option to true. A sample HasMany association with both these options enabled would be:
+
+NOTE
+
+Setting cascadeCallbacks to true, results in considerably slower deletes when compared to bulk deletes. The cascadeCallbacks option should only be enabled when your application has important work handled by event listeners.
+
+method Cake\ORM\Table::deleteMany(iterable $entities, array $options = []): iterable|false
+
+If you have an array of entities you want to delete you can use deleteMany() to delete them in a single transaction:
+
+The $options for these methods are the same as delete(). Deleting records with these method will trigger events.
+
+method Cake\ORM\Table::deleteAll(QueryExpression|Closure|array|string|null $conditions): int
+
+There may be times when deleting rows one by one is not efficient or useful. In these cases it is more performant to use a bulk-delete to remove many rows at once:
+
+A bulk-delete will be considered successful if 1 or more rows are deleted. The function returns the number of deleted records as an integer.
+
+WARNING
+
+deleteAll will not trigger beforeDelete/afterDelete events. If you need callbacks triggered, first load the entities with find() and delete them in a loop.
+
+method Cake\ORM\Table::deleteOrFail(EntityInterface $entity, array $options = []): bool
+
+Using this method will throw an Cake\ORM\Exception\PersistenceFailedException if:
+
+If you want to track down the entity that failed to delete, you can use the Cake\ORM\Exception\PersistenceFailedException::getEntity() method:
+
+As this internally performs a Cake\ORM\Table::delete() call, all corresponding delete events will be triggered.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+method
+----------------------------------------
+
+Code Block 3 (shiki):
+// In a controller.
+$entity = $this->Articles->get(2);
+$result = $this->Articles->delete($entity);
+----------------------------------------
+
+Code Block 4 ():
+// In a controller.
+$entity = $this->Articles->get(2);
+$result = $this->Articles->delete($entity);
+----------------------------------------
+
+Code Block 5 ():
+Model.beforeDelete
+----------------------------------------
+
+Code Block 6 ():
+Model.afterDelete
+----------------------------------------
+
+Code Block 7 (shiki):
+$result = $this->Articles->delete($entity, ['atomic' => false]);
+----------------------------------------
+
+Code Block 8 ():
+$result = $this->Articles->delete($entity, ['atomic' => false]);
+----------------------------------------
+
+Code Block 9 ():
+$options
+----------------------------------------
+
+Code Block 10 ():
+atomic
+----------------------------------------
+
+Code Block 11 ():
+checkRules
+----------------------------------------
+
+Code Block 12 ():
+dependent
+----------------------------------------
+
+Code Block 13 ():
+Cake\ORM\Table::deleteAll()
+----------------------------------------
+
+Code Block 14 ():
+cascadeCallbacks
+----------------------------------------
+
+Code Block 15 ():
+true
+----------------------------------------
+
+Code Block 16 (shiki):
+// In a Table's initialize method.
+$this->hasMany('Comments', [
+    'dependent' => true,
+    'cascadeCallbacks' => true,
+]);
+----------------------------------------
+
+Code Block 17 ():
+// In a Table's initialize method.
+$this->hasMany('Comments', [
+    'dependent' => true,
+    'cascadeCallbacks' => true,
+]);
+----------------------------------------
+
+Code Block 18 ():
+cascadeCallbacks
+----------------------------------------
+
+Code Block 19 ():
+true
+----------------------------------------
+
+Code Block 20 ():
+method
+----------------------------------------
+
+Code Block 21 ():
+deleteMany()
+----------------------------------------
+
+Code Block 22 (shiki):
+// Get a boolean indicating success
+$success = $this->Articles->deleteMany($entities);
+
+// Will throw a PersistenceFailedException if any entity cannot be deleted.
+$this->Articles->deleteManyOrFail($entities);
+----------------------------------------
+
+Code Block 23 ():
+// Get a boolean indicating success
+$success = $this->Articles->deleteMany($entities);
+
+// Will throw a PersistenceFailedException if any entity cannot be deleted.
+$this->Articles->deleteManyOrFail($entities);
+----------------------------------------
+
+Code Block 24 ():
+$options
+----------------------------------------
+
+Code Block 25 ():
+delete()
+----------------------------------------
+
+Code Block 26 ():
+method
+----------------------------------------
+
+Code Block 27 (shiki):
+// Delete all the spam
+public function destroySpam()
+{
+    return $this->deleteAll(['is_spam' => true]);
+}
+----------------------------------------
+
+Code Block 28 ():
+// Delete all the spam
+public function destroySpam()
+{
+    return $this->deleteAll(['is_spam' => true]);
+}
+----------------------------------------
+
+Code Block 29 ():
+find()
+----------------------------------------
+
+Code Block 30 ():
+method
+----------------------------------------
+
+Code Block 31 ():
+Cake\ORM\Exception\PersistenceFailedException
+----------------------------------------
+
+Code Block 32 ():
+Cake\ORM\Exception\PersistenceFailedException::getEntity()
+----------------------------------------
+
+Code Block 33 (shiki):
+try {
+    $table->deleteOrFail($entity);
+} catch (\Cake\ORM\Exception\PersistenceFailedException $e) {
+    echo $e->getEntity();
+}
+----------------------------------------
+
+Code Block 34 ():
+try {
+    $table->deleteOrFail($entity);
+} catch (\Cake\ORM\Exception\PersistenceFailedException $e) {
+    echo $e->getEntity();
+}
+----------------------------------------
+
+Code Block 35 ():
+Cake\ORM\Table::delete()
+----------------------------------------
+

@@ -1,0 +1,425 @@
+URL: https://book.cakephp.org/5.x/security/https-enforcer.html
+Title: HTTPS Enforcer Middleware | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - HTTPS Enforcer Middleware ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Adding Strict-Transport-Security ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+If you want your application to only be available via HTTPS connections you can use the HttpsEnforcerMiddleware:
+
+If a non-HTTP request is received that does not use GET a BadRequestException will be raised.
+
+NOTE: The Strict-Transport-Security header is ignored by the browser when your site has only been accessed using HTTP. Once your site is accessed over HTTPS with no certificate errors, the browser knows your site is HTTPS capable and will honor the Strict-Transport-Security header.
+
+When your application requires SSL it is a good idea to set the Strict-Transport-Security header. This header value is cached in the browser, and informs browsers that they should always connect with HTTPS connections. You can configure this header with the hsts option:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+HttpsEnforcerMiddleware
+----------------------------------------
+
+Code Block 2 (shiki):
+use Cake\Http\Middleware\HttpsEnforcerMiddleware;
+
+// Always raise an exception and never redirect.
+$https = new HttpsEnforcerMiddleware([
+    'redirect' => false,
+]);
+
+// Send a 302 status code when redirecting
+$https = new HttpsEnforcerMiddleware([
+    'redirect' => true,
+    'statusCode' => 302,
+]);
+
+// Send additional headers in the redirect response.
+$https = new HttpsEnforcerMiddleware([
+    'headers' => ['X-Https-Upgrade' => 1],
+]);
+
+// Disable HTTPs enforcement when `debug` is on.
+$https = new HttpsEnforcerMiddleware([
+    'disableOnDebug' => true,
+]);
+
+// Only trust HTTP_X_ headers from the listed servers.
+$https = new HttpsEnforcerMiddleware([
+    'trustProxies' => ['192.168.1.1'],
+]);
+----------------------------------------
+
+Code Block 3 ():
+use Cake\Http\Middleware\HttpsEnforcerMiddleware;
+
+// Always raise an exception and never redirect.
+$https = new HttpsEnforcerMiddleware([
+    'redirect' => false,
+]);
+
+// Send a 302 status code when redirecting
+$https = new HttpsEnforcerMiddleware([
+    'redirect' => true,
+    'statusCode' => 302,
+]);
+
+// Send additional headers in the redirect response.
+$https = new HttpsEnforcerMiddleware([
+    'headers' => ['X-Https-Upgrade' => 1],
+]);
+
+// Disable HTTPs enforcement when `debug` is on.
+$https = new HttpsEnforcerMiddleware([
+    'disableOnDebug' => true,
+]);
+
+// Only trust HTTP_X_ headers from the listed servers.
+$https = new HttpsEnforcerMiddleware([
+    'trustProxies' => ['192.168.1.1'],
+]);
+----------------------------------------
+
+Code Block 4 ():
+BadRequestException
+----------------------------------------
+
+Code Block 5 ():
+Strict-Transport-Security
+----------------------------------------
+
+Code Block 6 ():
+hsts
+----------------------------------------
+
+Code Block 7 (shiki):
+$https = new HttpsEnforcerMiddleware([
+    'hsts' => [
+        // How long the header value should be cached for.
+        'maxAge' => 60 * 60 * 24 * 365,
+        // should this policy apply to subdomains?
+        'includeSubDomains' => true,
+        // Should the header value be cacheable in google's HSTS preload
+        // service? While not part of the spec it is widely implemented.
+        'preload' => true,
+    ],
+]);
+----------------------------------------
+
+Code Block 8 ():
+$https = new HttpsEnforcerMiddleware([
+    'hsts' => [
+        // How long the header value should be cached for.
+        'maxAge' => 60 * 60 * 24 * 365,
+        // should this policy apply to subdomains?
+        'includeSubDomains' => true,
+        // Should the header value be cacheable in google's HSTS preload
+        // service? While not part of the spec it is widely implemented.
+        'preload' => true,
+    ],
+]);
+----------------------------------------
+

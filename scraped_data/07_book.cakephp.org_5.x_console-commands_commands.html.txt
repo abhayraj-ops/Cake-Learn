@@ -1,0 +1,1704 @@
+URL: https://book.cakephp.org/5.x/console-commands/commands.html
+Title: Command Objects | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Command Objects ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Creating a Command ​
+  - Changing the Default Command Name ​
+  - Defining Arguments and Options ​
+  - Creating Output ​
+  - Using Models in Commands ​
+  - Exit Codes and Stopping Execution ​
+  - Calling other Commands ​
+  - Setting Command Description ​
+  - Grouping Commands ​
+  - Replacing Commands ​
+  - Tree Output Helper ​
+  - Testing Commands ​
+  - Lifecycle Callbacks ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Testing Interactive Commands ​
+  - Assertion methods ​
+  - Debug Helpers ​
+  - beforeExecute() ​
+  - afterExecute() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Console\Command
+
+CakePHP comes with a number of built-in commands for speeding up your development, and automating routine tasks. You can use these same libraries to create commands for your application and plugins.
+
+Let's create our first Command. For this example, we'll create a simple Hello world command. In your application's src/Command directory create HelloCommand.php. Put the following code inside it:
+
+Command classes must implement an execute() method that does the bulk of their work. This method is called when a command is invoked. Let's call our first command application directory, run:
+
+You should see the following output:
+
+Our execute() method isn't very interesting let's read some input from the command line:
+
+After saving this file, you should be able to run the following command:
+
+This outputs:
+
+CakePHP will use conventions to generate the name your commands use on the command line. If you want to overwrite the generated name implement the defaultName() method in your command:
+
+The above would make our HelloCommand accessible by cake oh_hi instead of cake hello.
+
+As we saw in the last example, we can use the buildOptionParser() hook method to define arguments. We can also define options. For example, we could add a yell option to our HelloCommand:
+
+See the Option Parsers section for more information.
+
+Commands are provided a ConsoleIo instance when executed. This object allows you to interact with Cake\Console\ConsoleIo::out() and Cake\Console\ConsoleIo::err() to emit on stdout, and stderr. Files can be created with overwrite confirmation with Cake\Console\ConsoleIo::createFile(). Command Helpers provide 'macros' for output generation. See the Command Input/Output section for more information.
+
+You'll often need access to your application's business logic in console commands. You can load models in commands, just as you would in a controller using $this->fetchTable() since command use the LocatorAwareTrait:
+
+The above command, will fetch a user by username and display the information stored in the database.
+
+When your commands hit an unrecoverable error you can use the abort() method to terminate execution:
+
+You can also use abort() on the $io object to emit a message and code:
+
+You can pass any desired exit code into abort().
+
+TIP
+
+Avoid exit codes 64 - 78, as they have specific meanings described by sysexits.h. Avoid exit codes above 127, as these are used to indicate process exit by signal, such as SIGKILL or SIGSEGV.
+
+You can read more about conventional exit codes in the sysexit manual page on most Unix systems (man sysexits), or the System Error Codes help page in Windows.
+
+You may need to call other commands from your command. You can use executeCommand to do that:
+
+NOTE
+
+When calling executeCommand() in a loop, it is recommended to pass in the parent command's ConsoleIo instance as the optional 3rd argument to avoid a potential "open files" limit that could occur in some environments.
+
+You may want to set a command description via:
+
+This will show your description in the Cake CLI:
+
+As well as in the help section of your command:
+
+By default, in the help output CakePHP will group commands into core, app, and plugin groups. You can customize the grouping of commands by implementing getGroup():
+
+Added in version 5.3.0
+
+Custom grouping support was added.
+
+CommandCollection::replace() allows you to replace an existing command in the collection without needing to remove and re-add it. This is particularly useful when using autoDiscover and you want to replace a command with a customized version:
+
+Added in version 5.3.0
+
+CommandCollection::replace() was added.
+
+The TreeHelper outputs an array as a tree structure. This is useful for displaying filesystem directories or any hierarchical data:
+
+Added in version 5.3.0
+
+The TreeHelper was added.
+
+To make testing console applications easier, CakePHP comes with a ConsoleIntegrationTestTrait trait that can be used to test console applications and assert against their results.
+
+To get started testing your console application, create a test case that uses the Cake\TestSuite\ConsoleIntegrationTestTrait trait. This trait contains a method exec() that is used to execute your command. You can pass the same string you would use in the CLI to this method.
+
+Let's start with a very simple command, located in src/Command/UpdateTableCommand.php:
+
+To write an integration test for this command, we would create a test case in tests/TestCase/Command/UpdateTableTest.php that uses the Cake\TestSuite\ConsoleIntegrationTestTrait trait. This command doesn't do much at the moment, but let's just test that our command's description is displayed in stdout:
+
+Our test passes! While this is very trivial example, it shows that creating an integration test case for console applications can follow command line conventions. Let's continue by adding more logic to our command:
+
+This is a more complete command that has required options and relevant logic. Modify your test case to the following snippet of code:
+
+As you can see from the testUpdateModified method, we are testing that our command updates the table that we are passing as the first argument. First, we assert that the command exited with the proper status code, 0. Then we check that our command did its work, that is, updated the table we provided and set the modified column to the current time.
+
+Remember, exec() will take the same string you type into your CLI, so you can include options and arguments in your command string.
+
+Consoles are often interactive. Testing interactive commands with the Cake\TestSuite\ConsoleIntegrationTestTrait trait only requires passing the inputs you expect as the second parameter of exec(). They should be included as an array in the order that you expect them.
+
+Continuing with our example command, let's add an interactive confirmation. Update the command class to the following:
+
+Now that we have an interactive command, we can add a test case that tests that we receive the proper response, and one that tests that we receive an incorrect response. Remove the testUpdateModified method and, add the following methods to tests/TestCase/Command/UpdateTableCommandTest.php:
+
+In the first test case, we confirm the question, and records are updated. In the second test we don't confirm and records are not updated, and we can check that our error message was written to stderr.
+
+The Cake\TestSuite\ConsoleIntegrationTestTrait trait provides a number of assertion methods that make help assert against console output:
+
+You can use debugOutput() to output the exit code, stdout and stderr of the last run command:
+
+Added in version 4.2.0
+
+The debugOutput() method was added.
+
+Like Controllers, Commands offer lifecycle events that allow you to observe the framework calling your application code. Commands have:
+
+Added in version 5.3.0
+
+The beforeExecute() and afterExecute() hook methods were added.
+
+method Cake\Console\Command::beforeExecute(EventInterface $event, Arguments $args, ConsoleIo $io): void
+
+Called before the execute() method runs. Useful for initialization and validation:
+
+method Cake\Console\Command::afterExecute(EventInterface $event, Arguments $args, ConsoleIo $io): void
+
+Called after the execute() method completes. Useful for cleanup and logging:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 (shiki):
+<?php
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+
+class HelloCommand extends Command
+{
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $io->out('Hello world.');
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 3 ():
+<?php
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+
+class HelloCommand extends Command
+{
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $io->out('Hello world.');
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 4 ():
+execute()
+----------------------------------------
+
+Code Block 5 (shiki):
+bin/cake hello
+----------------------------------------
+
+Code Block 6 ():
+bin/cake hello
+----------------------------------------
+
+Code Block 7 ():
+Hello world.
+----------------------------------------
+
+Code Block 8 ():
+Hello world.
+----------------------------------------
+
+Code Block 9 ():
+execute()
+----------------------------------------
+
+Code Block 10 (shiki):
+<?php
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+
+class HelloCommand extends Command
+{
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser->addArgument('name', [
+            'help' => 'What is your name',
+        ]);
+
+        return $parser;
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $name = $args->getArgument('name');
+        $io->out("Hello {$name}.");
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 11 ():
+<?php
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+
+class HelloCommand extends Command
+{
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser->addArgument('name', [
+            'help' => 'What is your name',
+        ]);
+
+        return $parser;
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $name = $args->getArgument('name');
+        $io->out("Hello {$name}.");
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 12 (shiki):
+bin/cake hello jillian
+----------------------------------------
+
+Code Block 13 ():
+bin/cake hello jillian
+----------------------------------------
+
+Code Block 14 (shiki):
+Hello jillian
+----------------------------------------
+
+Code Block 15 ():
+Hello jillian
+----------------------------------------
+
+Code Block 16 ():
+defaultName()
+----------------------------------------
+
+Code Block 17 (shiki):
+public static function defaultName(): string
+{
+    return 'oh_hi';
+}
+----------------------------------------
+
+Code Block 18 ():
+public static function defaultName(): string
+{
+    return 'oh_hi';
+}
+----------------------------------------
+
+Code Block 19 ():
+HelloCommand
+----------------------------------------
+
+Code Block 20 ():
+cake oh_hi
+----------------------------------------
+
+Code Block 21 ():
+cake hello
+----------------------------------------
+
+Code Block 22 ():
+buildOptionParser()
+----------------------------------------
+
+Code Block 23 ():
+yell
+----------------------------------------
+
+Code Block 24 ():
+HelloCommand
+----------------------------------------
+
+Code Block 25 (shiki):
+// ...
+protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+{
+    $parser
+        ->addArgument('name', [
+            'help' => 'What is your name',
+        ])
+        ->addOption('yell', [
+            'help' => 'Shout the name',
+            'boolean' => true,
+        ]);
+
+    return $parser;
+}
+
+public function execute(Arguments $args, ConsoleIo $io): int
+{
+    $name = $args->getArgument('name');
+    if ($args->getOption('yell')) {
+        $name = mb_strtoupper($name);
+    }
+    $io->out("Hello {$name}.");
+
+    return static::CODE_SUCCESS;
+}
+----------------------------------------
+
+Code Block 26 ():
+// ...
+protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+{
+    $parser
+        ->addArgument('name', [
+            'help' => 'What is your name',
+        ])
+        ->addOption('yell', [
+            'help' => 'Shout the name',
+            'boolean' => true,
+        ]);
+
+    return $parser;
+}
+
+public function execute(Arguments $args, ConsoleIo $io): int
+{
+    $name = $args->getArgument('name');
+    if ($args->getOption('yell')) {
+        $name = mb_strtoupper($name);
+    }
+    $io->out("Hello {$name}.");
+
+    return static::CODE_SUCCESS;
+}
+----------------------------------------
+
+Code Block 27 ():
+ConsoleIo
+----------------------------------------
+
+Code Block 28 ():
+Cake\Console\ConsoleIo::out()
+----------------------------------------
+
+Code Block 29 ():
+Cake\Console\ConsoleIo::err()
+----------------------------------------
+
+Code Block 30 ():
+stdout
+----------------------------------------
+
+Code Block 31 ():
+stderr
+----------------------------------------
+
+Code Block 32 ():
+Cake\Console\ConsoleIo::createFile()
+----------------------------------------
+
+Code Block 33 ():
+$this->fetchTable()
+----------------------------------------
+
+Code Block 34 ():
+LocatorAwareTrait
+----------------------------------------
+
+Code Block 35 (shiki):
+<?php
+declare(strict_types=1);
+
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+
+class UserCommand extends Command
+{
+    // Define the default table. This allows you to use `fetchTable()` without any argument.
+    protected ?string $defaultTable = 'Users';
+
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser
+            ->addArgument('name', [
+                'help' => 'What is your name',
+            ]);
+
+        return $parser;
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $name = $args->getArgument('name');
+        $user = $this->fetchTable()->findByUsername($name)->first();
+
+        $io->out(print_r($user, true));
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 36 ():
+<?php
+declare(strict_types=1);
+
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+
+class UserCommand extends Command
+{
+    // Define the default table. This allows you to use `fetchTable()` without any argument.
+    protected ?string $defaultTable = 'Users';
+
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser
+            ->addArgument('name', [
+                'help' => 'What is your name',
+            ]);
+
+        return $parser;
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $name = $args->getArgument('name');
+        $user = $this->fetchTable()->findByUsername($name)->first();
+
+        $io->out(print_r($user, true));
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 37 ():
+abort()
+----------------------------------------
+
+Code Block 38 (shiki):
+// ...
+public function execute(Arguments $args, ConsoleIo $io): int
+{
+    $name = $args->getArgument('name');
+    if (mb_strlen($name) < 5) {
+        // Halt execution, output to stderr, and set exit code to 1
+        $io->error('Name must be at least 4 characters long.');
+        $this->abort();
+    }
+
+    return static::CODE_SUCCESS;
+}
+----------------------------------------
+
+Code Block 39 ():
+// ...
+public function execute(Arguments $args, ConsoleIo $io): int
+{
+    $name = $args->getArgument('name');
+    if (mb_strlen($name) < 5) {
+        // Halt execution, output to stderr, and set exit code to 1
+        $io->error('Name must be at least 4 characters long.');
+        $this->abort();
+    }
+
+    return static::CODE_SUCCESS;
+}
+----------------------------------------
+
+Code Block 40 ():
+abort()
+----------------------------------------
+
+Code Block 41 ():
+$io
+----------------------------------------
+
+Code Block 42 (shiki):
+public function execute(Arguments $args, ConsoleIo $io): int
+{
+    $name = $args->getArgument('name');
+    if (mb_strlen($name) < 5) {
+        // Halt execution, output to stderr, and set exit code to 99
+        $io->abort('Name must be at least 4 characters long.', 99);
+    }
+
+    return static::CODE_SUCCESS;
+}
+----------------------------------------
+
+Code Block 43 ():
+public function execute(Arguments $args, ConsoleIo $io): int
+{
+    $name = $args->getArgument('name');
+    if (mb_strlen($name) < 5) {
+        // Halt execution, output to stderr, and set exit code to 99
+        $io->abort('Name must be at least 4 characters long.', 99);
+    }
+
+    return static::CODE_SUCCESS;
+}
+----------------------------------------
+
+Code Block 44 ():
+abort()
+----------------------------------------
+
+Code Block 45 ():
+sysexits.h
+----------------------------------------
+
+Code Block 46 ():
+man sysexits
+----------------------------------------
+
+Code Block 47 ():
+System Error Codes
+----------------------------------------
+
+Code Block 48 ():
+executeCommand
+----------------------------------------
+
+Code Block 49 (shiki):
+// You can pass an array of CLI options and arguments.
+$this->executeCommand(OtherCommand::class, ['--verbose', 'deploy']);
+
+// Can pass an instance of the command if it has constructor args
+$command = new OtherCommand($otherArgs);
+$this->executeCommand($command, ['--verbose', 'deploy']);
+----------------------------------------
+
+Code Block 50 ():
+// You can pass an array of CLI options and arguments.
+$this->executeCommand(OtherCommand::class, ['--verbose', 'deploy']);
+
+// Can pass an instance of the command if it has constructor args
+$command = new OtherCommand($otherArgs);
+$this->executeCommand($command, ['--verbose', 'deploy']);
+----------------------------------------
+
+Code Block 51 ():
+executeCommand()
+----------------------------------------
+
+Code Block 52 ():
+ConsoleIo
+----------------------------------------
+
+Code Block 53 (shiki):
+class UserCommand extends Command
+{
+    public static function getDescription(): string
+    {
+        return 'My custom description';
+    }
+}
+----------------------------------------
+
+Code Block 54 ():
+class UserCommand extends Command
+{
+    public static function getDescription(): string
+    {
+        return 'My custom description';
+    }
+}
+----------------------------------------
+
+Code Block 55 (shiki):
+bin/cake
+----------------------------------------
+
+Code Block 56 ():
+bin/cake
+----------------------------------------
+
+Code Block 57 (shiki):
+App:
+  - user
+  └─── My custom description
+----------------------------------------
+
+Code Block 58 ():
+App:
+  - user
+  └─── My custom description
+----------------------------------------
+
+Code Block 59 (shiki):
+cake user --help
+----------------------------------------
+
+Code Block 60 ():
+cake user --help
+----------------------------------------
+
+Code Block 61 (shiki):
+My custom description
+
+Usage:
+cake user [-h] [-q] [-v]
+----------------------------------------
+
+Code Block 62 ():
+My custom description
+
+Usage:
+cake user [-h] [-q] [-v]
+----------------------------------------
+
+Code Block 63 ():
+getGroup()
+----------------------------------------
+
+Code Block 64 (shiki):
+class CleanupCommand extends Command
+{
+    public static function getGroup(): string
+    {
+        return 'maintenance';
+    }
+}
+----------------------------------------
+
+Code Block 65 ():
+class CleanupCommand extends Command
+{
+    public static function getGroup(): string
+    {
+        return 'maintenance';
+    }
+}
+----------------------------------------
+
+Code Block 66 ():
+CommandCollection::replace()
+----------------------------------------
+
+Code Block 67 ():
+autoDiscover
+----------------------------------------
+
+Code Block 68 (shiki):
+// In your Application::console() method
+public function console(CommandCollection $commands): CommandCollection
+{
+    $commands = parent::console($commands);
+    $commands->replace('some_plugin_command', MyCustomCommand::class);
+
+    return $commands;
+}
+----------------------------------------
+
+Code Block 69 ():
+// In your Application::console() method
+public function console(CommandCollection $commands): CommandCollection
+{
+    $commands = parent::console($commands);
+    $commands->replace('some_plugin_command', MyCustomCommand::class);
+
+    return $commands;
+}
+----------------------------------------
+
+Code Block 70 ():
+CommandCollection::replace()
+----------------------------------------
+
+Code Block 71 ():
+TreeHelper
+----------------------------------------
+
+Code Block 72 (shiki):
+public function execute(Arguments $args, ConsoleIo $io): int
+{
+    $helper = $io->helper('Tree');
+    $helper->output([
+        'src' => [
+            'Controller',
+            'Model',
+            'View',
+        ],
+        'tests' => [
+            'TestCase',
+        ],
+    ]);
+
+    return static::CODE_SUCCESS;
+}
+----------------------------------------
+
+Code Block 73 ():
+public function execute(Arguments $args, ConsoleIo $io): int
+{
+    $helper = $io->helper('Tree');
+    $helper->output([
+        'src' => [
+            'Controller',
+            'Model',
+            'View',
+        ],
+        'tests' => [
+            'TestCase',
+        ],
+    ]);
+
+    return static::CODE_SUCCESS;
+}
+----------------------------------------
+
+Code Block 74 ():
+TreeHelper
+----------------------------------------
+
+Code Block 75 ():
+ConsoleIntegrationTestTrait
+----------------------------------------
+
+Code Block 76 ():
+Cake\TestSuite\ConsoleIntegrationTestTrait
+----------------------------------------
+
+Code Block 77 ():
+exec()
+----------------------------------------
+
+Code Block 78 (shiki):
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+
+class UpdateTableCommand extends Command
+{
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser->setDescription('My cool console app');
+
+        return $parser;
+    }
+}
+----------------------------------------
+
+Code Block 79 ():
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+
+class UpdateTableCommand extends Command
+{
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser->setDescription('My cool console app');
+
+        return $parser;
+    }
+}
+----------------------------------------
+
+Code Block 80 ():
+Cake\TestSuite\ConsoleIntegrationTestTrait
+----------------------------------------
+
+Code Block 81 ():
+stdout
+----------------------------------------
+
+Code Block 82 (shiki):
+namespace App\Test\TestCase\Command;
+
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+
+class UpdateTableCommandTest extends TestCase
+{
+    use ConsoleIntegrationTestTrait;
+
+    public function testDescriptionOutput()
+    {
+        $this->exec('update_table --help');
+        $this->assertOutputContains('My cool console app');
+    }
+}
+----------------------------------------
+
+Code Block 83 ():
+namespace App\Test\TestCase\Command;
+
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+
+class UpdateTableCommandTest extends TestCase
+{
+    use ConsoleIntegrationTestTrait;
+
+    public function testDescriptionOutput()
+    {
+        $this->exec('update_table --help');
+        $this->assertOutputContains('My cool console app');
+    }
+}
+----------------------------------------
+
+Code Block 84 (shiki):
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+use Cake\I18n\DateTime;
+
+class UpdateTableCommand extends Command
+{
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser
+            ->setDescription('My cool console app')
+            ->addArgument('table', [
+                'help' => 'Table to update',
+                'required' => true,
+            ]);
+
+        return $parser;
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $table = $args->getArgument('table');
+        $this->fetchTable($table)->updateQuery()
+            ->set([
+                'modified' => new DateTime(),
+            ])
+            ->execute();
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 85 ():
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+use Cake\I18n\DateTime;
+
+class UpdateTableCommand extends Command
+{
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser
+            ->setDescription('My cool console app')
+            ->addArgument('table', [
+                'help' => 'Table to update',
+                'required' => true,
+            ]);
+
+        return $parser;
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $table = $args->getArgument('table');
+        $this->fetchTable($table)->updateQuery()
+            ->set([
+                'modified' => new DateTime(),
+            ])
+            ->execute();
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 86 (shiki):
+namespace Cake\Test\TestCase\Command;
+
+use Cake\Command\Command;
+use Cake\I18n\DateTime;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+
+class UpdateTableCommandTest extends TestCase
+{
+    use ConsoleIntegrationTestTrait;
+
+    protected array $fixtures = [
+        // assumes you have a UsersFixture
+        'app.Users',
+    ];
+
+    public function testDescriptionOutput()
+    {
+        $this->exec('update_table --help');
+        $this->assertOutputContains('My cool console app');
+    }
+
+    public function testUpdateModified()
+    {
+        $now = new DateTime('2017-01-01 00:00:00');
+        DateTime::setTestNow($now);
+
+        $this->loadFixtures('Users');
+
+        $this->exec('update_table Users');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+
+        $user = $this->getTableLocator()->get('Users')->get(1);
+        $this->assertSame($user->modified->timestamp, $now->timestamp);
+
+        DateTime::setTestNow(null);
+    }
+}
+----------------------------------------
+
+Code Block 87 ():
+namespace Cake\Test\TestCase\Command;
+
+use Cake\Command\Command;
+use Cake\I18n\DateTime;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+
+class UpdateTableCommandTest extends TestCase
+{
+    use ConsoleIntegrationTestTrait;
+
+    protected array $fixtures = [
+        // assumes you have a UsersFixture
+        'app.Users',
+    ];
+
+    public function testDescriptionOutput()
+    {
+        $this->exec('update_table --help');
+        $this->assertOutputContains('My cool console app');
+    }
+
+    public function testUpdateModified()
+    {
+        $now = new DateTime('2017-01-01 00:00:00');
+        DateTime::setTestNow($now);
+
+        $this->loadFixtures('Users');
+
+        $this->exec('update_table Users');
+        $this->assertExitCode(Command::CODE_SUCCESS);
+
+        $user = $this->getTableLocator()->get('Users')->get(1);
+        $this->assertSame($user->modified->timestamp, $now->timestamp);
+
+        DateTime::setTestNow(null);
+    }
+}
+----------------------------------------
+
+Code Block 88 ():
+testUpdateModified
+----------------------------------------
+
+Code Block 89 ():
+0
+----------------------------------------
+
+Code Block 90 ():
+modified
+----------------------------------------
+
+Code Block 91 ():
+exec()
+----------------------------------------
+
+Code Block 92 ():
+Cake\TestSuite\ConsoleIntegrationTestTrait
+----------------------------------------
+
+Code Block 93 ():
+exec()
+----------------------------------------
+
+Code Block 94 (shiki):
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+use Cake\I18n\DateTime;
+
+class UpdateTableCommand extends Command
+{
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser
+            ->setDescription('My cool console app')
+            ->addArgument('table', [
+                'help' => 'Table to update',
+                'required' => true,
+            ]);
+
+        return $parser;
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $table = $args->getArgument('table');
+        if ($io->ask('Are you sure?', 'n', ['y', 'n']) !== 'y') {
+            $io->error('You need to be sure.');
+            $this->abort();
+        }
+        $this->fetchTable($table)->updateQuery()
+            ->set([
+                'modified' => new DateTime(),
+            ])
+            ->execute();
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 95 ():
+namespace App\Command;
+
+use Cake\Command\Command;
+use Cake\Console\Arguments;
+use Cake\Console\ConsoleIo;
+use Cake\Console\ConsoleOptionParser;
+use Cake\I18n\DateTime;
+
+class UpdateTableCommand extends Command
+{
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    {
+        $parser
+            ->setDescription('My cool console app')
+            ->addArgument('table', [
+                'help' => 'Table to update',
+                'required' => true,
+            ]);
+
+        return $parser;
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io): int
+    {
+        $table = $args->getArgument('table');
+        if ($io->ask('Are you sure?', 'n', ['y', 'n']) !== 'y') {
+            $io->error('You need to be sure.');
+            $this->abort();
+        }
+        $this->fetchTable($table)->updateQuery()
+            ->set([
+                'modified' => new DateTime(),
+            ])
+            ->execute();
+
+        return static::CODE_SUCCESS;
+    }
+}
+----------------------------------------
+
+Code Block 96 ():
+testUpdateModified
+----------------------------------------
+
+Code Block 97 (shiki):
+public function testUpdateModifiedSure()
+{
+    $now = new DateTime('2017-01-01 00:00:00');
+    DateTime::setTestNow($now);
+
+    $this->loadFixtures('Users');
+
+    $this->exec('update_table Users', ['y']);
+    $this->assertExitCode(Command::CODE_SUCCESS);
+
+    $user = $this->getTableLocator()->get('Users')->get(1);
+    $this->assertSame($user->modified->timestamp, $now->timestamp);
+
+    DateTime::setTestNow(null);
+}
+
+public function testUpdateModifiedUnsure()
+{
+    $user = $this->getTableLocator()->get('Users')->get(1);
+    $original = $user->modified->timestamp;
+
+    $this->exec('my_console best_framework', ['n']);
+    $this->assertExitCode(Command::CODE_ERROR);
+    $this->assertErrorContains('You need to be sure.');
+
+    $user = $this->getTableLocator()->get('Users')->get(1);
+    $this->assertSame($original, $user->timestamp);
+}
+----------------------------------------
+
+Code Block 98 ():
+public function testUpdateModifiedSure()
+{
+    $now = new DateTime('2017-01-01 00:00:00');
+    DateTime::setTestNow($now);
+
+    $this->loadFixtures('Users');
+
+    $this->exec('update_table Users', ['y']);
+    $this->assertExitCode(Command::CODE_SUCCESS);
+
+    $user = $this->getTableLocator()->get('Users')->get(1);
+    $this->assertSame($user->modified->timestamp, $now->timestamp);
+
+    DateTime::setTestNow(null);
+}
+
+public function testUpdateModifiedUnsure()
+{
+    $user = $this->getTableLocator()->get('Users')->get(1);
+    $original = $user->modified->timestamp;
+
+    $this->exec('my_console best_framework', ['n']);
+    $this->assertExitCode(Command::CODE_ERROR);
+    $this->assertErrorContains('You need to be sure.');
+
+    $user = $this->getTableLocator()->get('Users')->get(1);
+    $this->assertSame($original, $user->timestamp);
+}
+----------------------------------------
+
+Code Block 99 ():
+stderr
+----------------------------------------
+
+Code Block 100 ():
+Cake\TestSuite\ConsoleIntegrationTestTrait
+----------------------------------------
+
+Code Block 101 (shiki):
+// assert that the command exited as success
+$this->assertExitSuccess();
+
+// assert that the command exited as an error
+$this->assertExitError();
+
+// assert that the command exited with the expected code
+$this->assertExitCode($expected);
+
+// assert that stdout contains a string
+$this->assertOutputContains($expected);
+
+// assert that stderr contains a string
+$this->assertErrorContains($expected);
+
+// assert that stdout matches a regular expression
+$this->assertOutputRegExp($expected);
+
+// assert that stderr matches a regular expression
+$this->assertErrorRegExp($expected);
+----------------------------------------
+
+Code Block 102 ():
+// assert that the command exited as success
+$this->assertExitSuccess();
+
+// assert that the command exited as an error
+$this->assertExitError();
+
+// assert that the command exited with the expected code
+$this->assertExitCode($expected);
+
+// assert that stdout contains a string
+$this->assertOutputContains($expected);
+
+// assert that stderr contains a string
+$this->assertErrorContains($expected);
+
+// assert that stdout matches a regular expression
+$this->assertOutputRegExp($expected);
+
+// assert that stderr matches a regular expression
+$this->assertErrorRegExp($expected);
+----------------------------------------
+
+Code Block 103 ():
+debugOutput()
+----------------------------------------
+
+Code Block 104 (shiki):
+$this->exec('update_table Users');
+$this->assertExitCode(Command::CODE_SUCCESS);
+$this->debugOutput();
+----------------------------------------
+
+Code Block 105 ():
+$this->exec('update_table Users');
+$this->assertExitCode(Command::CODE_SUCCESS);
+$this->debugOutput();
+----------------------------------------
+
+Code Block 106 ():
+debugOutput()
+----------------------------------------
+
+Code Block 107 ():
+Command.beforeExecute
+----------------------------------------
+
+Code Block 108 ():
+execute()
+----------------------------------------
+
+Code Block 109 ():
+Arguments
+----------------------------------------
+
+Code Block 110 ():
+args
+----------------------------------------
+
+Code Block 111 ():
+ConsoleIo
+----------------------------------------
+
+Code Block 112 ():
+io
+----------------------------------------
+
+Code Block 113 ():
+Command.afterExecute
+----------------------------------------
+
+Code Block 114 ():
+execute()
+----------------------------------------
+
+Code Block 115 ():
+Arguments
+----------------------------------------
+
+Code Block 116 ():
+args
+----------------------------------------
+
+Code Block 117 ():
+ConsoleIo
+----------------------------------------
+
+Code Block 118 ():
+io
+----------------------------------------
+
+Code Block 119 ():
+result
+----------------------------------------
+
+Code Block 120 ():
+beforeExecute()
+----------------------------------------
+
+Code Block 121 ():
+afterExecute()
+----------------------------------------
+
+Code Block 122 ():
+method
+----------------------------------------
+
+Code Block 123 ():
+execute()
+----------------------------------------
+
+Code Block 124 (shiki):
+use Cake\Event\EventInterface;
+
+class MyCommand extends Command
+{
+    public function beforeExecute(EventInterface $event, Arguments $args, ConsoleIo $io): void
+    {
+        parent::beforeExecute($event);
+
+        $io->out('Starting command execution');
+
+        if (!$this->checkPrerequisites()) {
+            $io->abort('Prerequisites not met');
+        }
+    }
+}
+----------------------------------------
+
+Code Block 125 ():
+use Cake\Event\EventInterface;
+
+class MyCommand extends Command
+{
+    public function beforeExecute(EventInterface $event, Arguments $args, ConsoleIo $io): void
+    {
+        parent::beforeExecute($event);
+
+        $io->out('Starting command execution');
+
+        if (!$this->checkPrerequisites()) {
+            $io->abort('Prerequisites not met');
+        }
+    }
+}
+----------------------------------------
+
+Code Block 126 ():
+method
+----------------------------------------
+
+Code Block 127 ():
+execute()
+----------------------------------------
+
+Code Block 128 (shiki):
+public function afterExecute(EventInterface $event, Arguments $args, ConsoleIo $io, mixed $result): void
+{
+    parent::afterExecute($event);
+
+    $this->cleanup();
+    $io->out('Command execution completed');
+}
+----------------------------------------
+
+Code Block 129 ():
+public function afterExecute(EventInterface $event, Arguments $args, ConsoleIo $io, mixed $result): void
+{
+    parent::afterExecute($event);
+
+    $this->cleanup();
+    $io->out('Command execution completed');
+}
+----------------------------------------
+

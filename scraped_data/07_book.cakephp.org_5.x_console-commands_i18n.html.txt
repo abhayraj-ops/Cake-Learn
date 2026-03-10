@@ -1,0 +1,426 @@
+URL: https://book.cakephp.org/5.x/console-commands/i18n.html
+Title: I18N Tool | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - I18N Tool ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Generating POT Files ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Generating POT Files for Plugins ​
+  - Extracting from multiple folders at once ​
+  - Excluding Folders ​
+  - Skipping Overwrite Warnings for Existing POT Files ​
+  - Extracting Messages from the CakePHP Core Libraries ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The i18n features of CakePHP use po files as their translation source. PO files integrate with commonly used translation tools like Poedit.
+
+The i18n commands provides a quick way to generate po template files. These templates files can then be given to translators so they can translate the strings in your application. Once you have translations done, pot files can be merged with existing translations to help update your translations.
+
+POT files can be generated for an existing application using the extract command. This command will scan your entire application for __() style function calls, and extract the message string. Each unique string in your application will be combined into a single POT file:
+
+The above will run the extraction command. The result of this command will be the file resources/locales/default.pot. You use the pot file as a template for creating po files. If you are manually creating po files from the pot file, be sure to correctly set the Plural-Forms header line.
+
+You can generate a POT file for a specific plugin using:
+
+This will generate the required POT files used in the plugins.
+
+Sometimes, you might need to extract strings from more than one directory of your application. For instance, if you are defining some strings in the config/ directory of your application, you probably want to extract strings from this directory as well as from the src/ directory. You can do it by using the --paths option. It takes a comma-separated list of absolute paths to extract:
+
+You can pass a comma separated list of folders that you wish to be excluded. Any path containing a path segment with the provided values will be ignored:
+
+By adding --overwrite, the shell script will no longer warn you if a POT file already exists and will overwrite by default:
+
+By default, the extract shell script will ask you if you like to extract the messages used in the CakePHP core libraries. Set --extract-core to yes or no to set the default behavior:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+extract
+----------------------------------------
+
+Code Block 2 ():
+__()
+----------------------------------------
+
+Code Block 3 (shiki):
+bin/cake i18n extract
+----------------------------------------
+
+Code Block 4 ():
+bin/cake i18n extract
+----------------------------------------
+
+Code Block 5 ():
+Plural-Forms
+----------------------------------------
+
+Code Block 6 (shiki):
+bin/cake i18n extract --plugin <Plugin>
+----------------------------------------
+
+Code Block 7 ():
+bin/cake i18n extract --plugin <Plugin>
+----------------------------------------
+
+Code Block 8 ():
+config/
+----------------------------------------
+
+Code Block 9 ():
+src/
+----------------------------------------
+
+Code Block 10 ():
+--paths
+----------------------------------------
+
+Code Block 11 (shiki):
+bin/cake i18n extract --paths /var/www/app/config,/var/www/app/src
+----------------------------------------
+
+Code Block 12 ():
+bin/cake i18n extract --paths /var/www/app/config,/var/www/app/src
+----------------------------------------
+
+Code Block 13 (shiki):
+bin/cake i18n extract --exclude vendor,tests
+----------------------------------------
+
+Code Block 14 ():
+bin/cake i18n extract --exclude vendor,tests
+----------------------------------------
+
+Code Block 15 ():
+--overwrite
+----------------------------------------
+
+Code Block 16 (shiki):
+bin/cake i18n extract --overwrite
+----------------------------------------
+
+Code Block 17 ():
+bin/cake i18n extract --overwrite
+----------------------------------------
+
+Code Block 18 ():
+--extract-core
+----------------------------------------
+
+Code Block 19 (shiki):
+bin/cake i18n extract --extract-core yes
+
+// or
+
+bin/cake i18n extract --extract-core no
+----------------------------------------
+
+Code Block 20 ():
+bin/cake i18n extract --extract-core yes
+
+// or
+
+bin/cake i18n extract --extract-core no
+----------------------------------------
+

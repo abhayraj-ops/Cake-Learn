@@ -1,0 +1,750 @@
+URL: https://book.cakephp.org/5.x/core-libraries/form.html
+Title: Modelless Forms | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Modelless Forms ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Creating a Form ​
+  - Processing Request Data ​
+  - Setting Form Values ​
+  - Getting Form Errors ​
+  - Invalidating Individual Form Fields from Controller ​
+  - Creating HTML with FormHelper ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Form\Form
+
+Most of the time you will have forms backed by ORM entities and ORM tables or other persistent stores, but there are times when you'll need to validate user input and then perform an action if the data is valid. The most common example of this is a contact form.
+
+Generally when using the Form class you'll want to use a subclass to define your form. This makes testing easier, and lets you re-use your form. Forms are put into src/Form and usually have Form as a class suffix. For example, a simple contact form would look like:
+
+In the above example we see the 3 hook methods that forms provide:
+
+You can always define additional public methods as you need as well.
+
+Changed in version 5.3.0
+
+The _execute method was deprecated, and replaced by process.
+
+Once you've defined your form, you can use it in your controller to process and validate request data:
+
+In the above example, we use the execute() method to run our form's process() method only when the data is valid, and set flash messages accordingly. If we want to use a non-default validation set we can use the validate option:
+
+This option can also be set to false to disable validation.
+
+We could have also used the validate() method to only validate the request data:
+
+You can set default values for modelless forms using the setData() method. Values set with this method will overwrite existing data in the form object:
+
+Values should only be defined if the request method is GET, otherwise you will overwrite your previous POST Data which might have validation errors that need corrections. You can use set() to add or replace individual fields or a subset of fields:
+
+Once a form has been validated you can retrieve the errors from it:
+
+It is possible to invalidate individual fields from the controller without the use of the Validator class. The most common use case for this is when the validation is done on a remote server. In such case, you must manually invalidate the fields accordingly to the feedback from the remote server:
+
+According to how the validator class would have returned the errors, $errors must be in this format:
+
+Now you will be able to invalidate form fields by setting the fieldName, then set the error messages:
+
+Proceed to Creating HTML with FormHelper to see the results.
+
+Once you've created a Form class, you'll likely want to create an HTML form for it. FormHelper understands Form objects just like ORM entities:
+
+The above would create an HTML form for the ContactForm we defined earlier. HTML forms created with FormHelper will use the defined schema and validator to determine field types, maxlengths, and validation errors.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+Form
+----------------------------------------
+
+Code Block 3 (shiki):
+// in src/Form/ContactForm.php
+namespace App\Form;
+
+use Cake\Form\Form;
+use Cake\Form\Schema;
+use Cake\Validation\Validator;
+
+class ContactForm extends Form
+{
+    protected function _buildSchema(Schema $schema): Schema
+    {
+        return $schema->addField('name', 'string')
+            ->addField('email', ['type' => 'string'])
+            ->addField('body', ['type' => 'text']);
+    }
+
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator->minLength('name', 10)
+            ->email('email');
+
+        return $validator;
+    }
+
+    // Prior to 5.3.0 This should be
+    // `protected function _execute(array $data): bool`
+    protected function process(array $data): bool
+    {
+        // Send an email.
+        return true;
+    }
+}
+----------------------------------------
+
+Code Block 4 ():
+// in src/Form/ContactForm.php
+namespace App\Form;
+
+use Cake\Form\Form;
+use Cake\Form\Schema;
+use Cake\Validation\Validator;
+
+class ContactForm extends Form
+{
+    protected function _buildSchema(Schema $schema): Schema
+    {
+        return $schema->addField('name', 'string')
+            ->addField('email', ['type' => 'string'])
+            ->addField('body', ['type' => 'text']);
+    }
+
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator->minLength('name', 10)
+            ->email('email');
+
+        return $validator;
+    }
+
+    // Prior to 5.3.0 This should be
+    // `protected function _execute(array $data): bool`
+    protected function process(array $data): bool
+    {
+        // Send an email.
+        return true;
+    }
+}
+----------------------------------------
+
+Code Block 5 ():
+_buildSchema
+----------------------------------------
+
+Code Block 6 ():
+validationDefault
+----------------------------------------
+
+Code Block 7 ():
+Cake\Validation\Validator
+----------------------------------------
+
+Code Block 8 ():
+process
+----------------------------------------
+
+Code Block 9 ():
+execute()
+----------------------------------------
+
+Code Block 10 ():
+_execute
+----------------------------------------
+
+Code Block 11 ():
+process
+----------------------------------------
+
+Code Block 12 (shiki):
+// In a controller
+namespace App\Controller;
+
+use App\Controller\AppController;
+use App\Form\ContactForm;
+
+class ContactController extends AppController
+{
+    public function index()
+    {
+        $contact = new ContactForm();
+        if ($this->request->is('post')) {
+            if ($contact->execute($this->request->getData())) {
+                $this->Flash->success('We will get back to you soon.');
+            } else {
+                $this->Flash->error('There was a problem submitting your form.');
+            }
+        }
+        $this->set('contact', $contact);
+    }
+}
+----------------------------------------
+
+Code Block 13 ():
+// In a controller
+namespace App\Controller;
+
+use App\Controller\AppController;
+use App\Form\ContactForm;
+
+class ContactController extends AppController
+{
+    public function index()
+    {
+        $contact = new ContactForm();
+        if ($this->request->is('post')) {
+            if ($contact->execute($this->request->getData())) {
+                $this->Flash->success('We will get back to you soon.');
+            } else {
+                $this->Flash->error('There was a problem submitting your form.');
+            }
+        }
+        $this->set('contact', $contact);
+    }
+}
+----------------------------------------
+
+Code Block 14 ():
+execute()
+----------------------------------------
+
+Code Block 15 ():
+process()
+----------------------------------------
+
+Code Block 16 ():
+validate
+----------------------------------------
+
+Code Block 17 (shiki):
+if ($contact->execute($this->request->getData(), 'update')) {
+    // Handle form success.
+}
+----------------------------------------
+
+Code Block 18 ():
+if ($contact->execute($this->request->getData(), 'update')) {
+    // Handle form success.
+}
+----------------------------------------
+
+Code Block 19 ():
+false
+----------------------------------------
+
+Code Block 20 ():
+validate()
+----------------------------------------
+
+Code Block 21 (shiki):
+$isValid = $form->validate($this->request->getData());
+
+// You can also use other validation sets. The following
+// would use the rules defined by `validationUpdate()`
+$isValid = $form->validate($this->request->getData(), 'update');
+----------------------------------------
+
+Code Block 22 ():
+$isValid = $form->validate($this->request->getData());
+
+// You can also use other validation sets. The following
+// would use the rules defined by `validationUpdate()`
+$isValid = $form->validate($this->request->getData(), 'update');
+----------------------------------------
+
+Code Block 23 ():
+setData()
+----------------------------------------
+
+Code Block 24 (shiki):
+// In a controller
+namespace App\Controller;
+
+use App\Controller\AppController;
+use App\Form\ContactForm;
+
+class ContactController extends AppController
+{
+    public function index()
+    {
+        $contact = new ContactForm();
+        if ($this->request->is('post')) {
+            if ($contact->execute($this->request->getData())) {
+                $this->Flash->success('We will get back to you soon.');
+            } else {
+                $this->Flash->error('There was a problem submitting your form.');
+            }
+        }
+
+        if ($this->request->is('get')) {
+            $contact->setData([
+                'name' => 'John Doe',
+                'email' => '[email protected]',
+            ]);
+        }
+
+        $this->set('contact', $contact);
+    }
+}
+----------------------------------------
+
+Code Block 25 ():
+// In a controller
+namespace App\Controller;
+
+use App\Controller\AppController;
+use App\Form\ContactForm;
+
+class ContactController extends AppController
+{
+    public function index()
+    {
+        $contact = new ContactForm();
+        if ($this->request->is('post')) {
+            if ($contact->execute($this->request->getData())) {
+                $this->Flash->success('We will get back to you soon.');
+            } else {
+                $this->Flash->error('There was a problem submitting your form.');
+            }
+        }
+
+        if ($this->request->is('get')) {
+            $contact->setData([
+                'name' => 'John Doe',
+                'email' => '[email protected]',
+            ]);
+        }
+
+        $this->set('contact', $contact);
+    }
+}
+----------------------------------------
+
+Code Block 26 ():
+set()
+----------------------------------------
+
+Code Block 27 (shiki):
+// Set one field.
+$contact->set('name', 'John Doe');
+
+// Set multiple fields;
+$contact->set([
+    'name' => 'John Doe',
+    'email' => '[email protected]',
+]);
+----------------------------------------
+
+Code Block 28 ():
+// Set one field.
+$contact->set('name', 'John Doe');
+
+// Set multiple fields;
+$contact->set([
+    'name' => 'John Doe',
+    'email' => '[email protected]',
+]);
+----------------------------------------
+
+Code Block 29 (shiki):
+$errors = $form->getErrors();
+/* $errors contains
+[
+    'name' => ['length' => 'Name must be at least two characters long'],
+    'email' => ['format' => 'A valid email address is required'],
+]
+*/
+
+$error = $form->getError('email');
+/* $error contains
+[
+    'format' => 'A valid email address is required',
+]
+*/
+----------------------------------------
+
+Code Block 30 ():
+$errors = $form->getErrors();
+/* $errors contains
+[
+    'name' => ['length' => 'Name must be at least two characters long'],
+    'email' => ['format' => 'A valid email address is required'],
+]
+*/
+
+$error = $form->getError('email');
+/* $error contains
+[
+    'format' => 'A valid email address is required',
+]
+*/
+----------------------------------------
+
+Code Block 31 (shiki):
+// in src/Form/ContactForm.php
+public function setErrors(array $errors): void
+{
+    $this->_errors = $errors;
+}
+----------------------------------------
+
+Code Block 32 ():
+// in src/Form/ContactForm.php
+public function setErrors(array $errors): void
+{
+    $this->_errors = $errors;
+}
+----------------------------------------
+
+Code Block 33 ():
+$errors
+----------------------------------------
+
+Code Block 34 (shiki):
+['fieldName' => ['validatorName' => 'The error message to display']]
+----------------------------------------
+
+Code Block 35 ():
+['fieldName' => ['validatorName' => 'The error message to display']]
+----------------------------------------
+
+Code Block 36 (shiki):
+// In a controller
+$contact = new ContactForm();
+$contact->setErrors(['email' => ['_required' => 'Your email is required']]);
+----------------------------------------
+
+Code Block 37 ():
+// In a controller
+$contact = new ContactForm();
+$contact->setErrors(['email' => ['_required' => 'Your email is required']]);
+----------------------------------------
+
+Code Block 38 (shiki):
+echo $this->Form->create($contact);
+echo $this->Form->control('name');
+echo $this->Form->control('email');
+echo $this->Form->control('body');
+echo $this->Form->button('Submit');
+echo $this->Form->end();
+----------------------------------------
+
+Code Block 39 ():
+echo $this->Form->create($contact);
+echo $this->Form->control('name');
+echo $this->Form->control('email');
+echo $this->Form->control('body');
+echo $this->Form->button('Submit');
+echo $this->Form->end();
+----------------------------------------
+
+Code Block 40 ():
+ContactForm
+----------------------------------------
+

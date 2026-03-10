@@ -1,0 +1,367 @@
+URL: https://book.cakephp.org/5.x/console-commands/routes.html
+Title: Routes Tool | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Routes Tool ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Getting a List of all Routes ​
+  - Testing URL parsing ​
+  - Testing URL Generation ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The routes tool provides a simple to use CLI interface for testing and debugging routes. You can use it to test how routes are parsed, and what URLs routing parameters will generate.
+
+You can quickly see how a URL will be parsed using the check method:
+
+If your route contains any query string parameters remember to surround the URL in quotes:
+
+You can see the URL a routing array will generate using the generate method:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+bin/cake routes
+----------------------------------------
+
+Code Block 2 ():
+bin/cake routes
+----------------------------------------
+
+Code Block 3 ():
+check
+----------------------------------------
+
+Code Block 4 (shiki):
+bin/cake routes check /articles/edit/1
+----------------------------------------
+
+Code Block 5 ():
+bin/cake routes check /articles/edit/1
+----------------------------------------
+
+Code Block 6 (shiki):
+bin/cake routes check "/articles/?page=1&sort=title&direction=desc"
+----------------------------------------
+
+Code Block 7 ():
+bin/cake routes check "/articles/?page=1&sort=title&direction=desc"
+----------------------------------------
+
+Code Block 8 ():
+routing array
+----------------------------------------
+
+Code Block 9 ():
+generate
+----------------------------------------
+
+Code Block 10 (shiki):
+bin/cake routes generate controller:Articles action:edit 1
+----------------------------------------
+
+Code Block 11 ():
+bin/cake routes generate controller:Articles action:edit 1
+----------------------------------------
+

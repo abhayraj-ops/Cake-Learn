@@ -1,0 +1,934 @@
+URL: https://book.cakephp.org/5.x/controllers/components.html#redirect-component-events
+Title: Components | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Components ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Configuring Components ​
+  - Using Components ​
+  - Creating a Component ​
+  - Component Callbacks ​
+  - Using Redirects in Component Events ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Aliasing Components ​
+  - Loading Components on the Fly ​
+  - Including your Component in your Controllers ​
+  - Using Other Components in your Component ​
+  - Accessing a Component's Controller ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Components are packages of logic that are shared between controllers. CakePHP comes with a fantastic set of core components you can use to aid in various common tasks. You can also create your own components. If you find yourself wanting to copy and paste things between controllers, you should consider creating your own component to contain the functionality. Creating components keeps controller code clean and allows you to reuse code between different controllers.
+
+For more information on the components included in CakePHP, check out the chapter for each component:
+
+Many of the core components require configuration. One example would be the Form Protection Component. Configuration for these components, and for components in general, is usually done via loadComponent() in your Controller's initialize() method or via the $components array:
+
+You can configure components at runtime using the setConfig() method. Often, this is done in your controller's beforeFilter() method. The above could also be expressed as:
+
+Like helpers, components implement getConfig() and setConfig() methods to read and write configuration data:
+
+As with helpers, components will automatically merge their $_defaultConfig property with constructor configuration to create the $_config property which is accessible with getConfig() and setConfig().
+
+One common setting to use is the className option, which allows you to alias components. This feature is useful when you want to replace $this->Flash or another common Component reference with a custom implementation:
+
+The above would alias MyFlashComponent to $this->Flash in your controllers.
+
+NOTE
+
+Aliasing a component replaces that instance anywhere that component is used, including inside other Components.
+
+You might not need all of your components available on every controller action. In situations like this you can load a component at runtime using the loadComponent() method in your controller:
+
+NOTE
+
+Keep in mind that components loaded on the fly will not have missed callbacks called. If you rely on the beforeFilter or startup callbacks being called, you may need to call them manually depending on when you load your component.
+
+Once you've included some components in your controller, using them is pretty simple. Each component you use is exposed as a property on your controller. If you had loaded up the Cake\Controller\Component\FlashComponent in your controller, you could access it like so:
+
+NOTE
+
+Since both Models and Components are added to Controllers as properties they share the same 'namespace'. Be sure to not give a component and a model the same name.
+
+Changed in version 5.1.0
+
+Components are able to use Dependency Injection to receive services.
+
+Suppose our application needs to perform a complex mathematical operation in many different parts of the application. We could create a component to house this shared logic for use in many different controllers.
+
+The first step is to create a new component file and class. Create the file in src/Controller/Component/MathComponent.php. The basic structure for the component would look something like this:
+
+NOTE
+
+All components must extend Cake\Controller\Component. Failing to do this will trigger an exception.
+
+Components can use Dependency Injection to receive services as constructor parameters:
+
+Once our component is finished, we can use it in the application's controllers by loading it during the controller's initialize() method. Once loaded, the controller will be given a new attribute named after the component, through which we can access an instance of it:
+
+When including Components in a Controller you can also declare a set of parameters that will be passed on to the Component's constructor. These parameters can then be handled by the Component:
+
+The above would pass the array containing precision and randomGenerator to MathComponent::initialize() in the $config parameter.
+
+Sometimes one of your components may need to use another component. You can load other components by adding them to the $components property:
+
+NOTE
+
+In contrast to a component included in a controller no callbacks will be triggered on a component's component.
+
+From within a Component you can access the current controller through the registry:
+
+Components also offer a few request life-cycle callbacks that allow them to augment the request cycle.
+
+method Class::beforeFilter(EventInterface $event): void
+
+method Class::startup(EventInterface $event): void
+
+method Class::beforeRender(EventInterface $event): void
+
+method Class::afterFilter(EventInterface $event): void
+
+method Class::beforeRedirect(EventInterface $event, $url, Response $response): void
+
+To redirect from within a component callback method you can use the following:
+
+By setting a redirect as event result you let CakePHP know that you don't want any other component callbacks to run, and that the controller should not handle the action any further. As of 4.1.0 you can raise a RedirectException to signal a redirect:
+
+Raising an exception will halt all other event listeners and create a new response that doesn't retain or inherit any of the current response's headers. When raising a RedirectException you can include additional headers:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+loadComponent()
+----------------------------------------
+
+Code Block 2 ():
+initialize()
+----------------------------------------
+
+Code Block 3 ():
+$components
+----------------------------------------
+
+Code Block 4 (shiki):
+class PostsController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('FormProtection', [
+            'unlockedActions' => ['index'],
+        ]);
+        $this->loadComponent('Flash');
+    }
+}
+----------------------------------------
+
+Code Block 5 ():
+class PostsController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('FormProtection', [
+            'unlockedActions' => ['index'],
+        ]);
+        $this->loadComponent('Flash');
+    }
+}
+----------------------------------------
+
+Code Block 6 ():
+setConfig()
+----------------------------------------
+
+Code Block 7 ():
+beforeFilter()
+----------------------------------------
+
+Code Block 8 (shiki):
+public function beforeFilter(EventInterface $event): void
+{
+    $this->FormProtection->setConfig('unlockedActions', ['index']);
+}
+----------------------------------------
+
+Code Block 9 ():
+public function beforeFilter(EventInterface $event): void
+{
+    $this->FormProtection->setConfig('unlockedActions', ['index']);
+}
+----------------------------------------
+
+Code Block 10 ():
+getConfig()
+----------------------------------------
+
+Code Block 11 ():
+setConfig()
+----------------------------------------
+
+Code Block 12 (shiki):
+// Read config data.
+$this->FormProtection->getConfig('unlockedActions');
+
+// Set config
+$this->Flash->setConfig('key', 'myFlash');
+----------------------------------------
+
+Code Block 13 ():
+// Read config data.
+$this->FormProtection->getConfig('unlockedActions');
+
+// Set config
+$this->Flash->setConfig('key', 'myFlash');
+----------------------------------------
+
+Code Block 14 ():
+$_defaultConfig
+----------------------------------------
+
+Code Block 15 ():
+$_config
+----------------------------------------
+
+Code Block 16 ():
+getConfig()
+----------------------------------------
+
+Code Block 17 ():
+setConfig()
+----------------------------------------
+
+Code Block 18 ():
+className
+----------------------------------------
+
+Code Block 19 ():
+$this->Flash
+----------------------------------------
+
+Code Block 20 (shiki):
+// src/Controller/PostsController.php
+class PostsController extends AppController
+{
+    public function initialize(): void
+    {
+        $this->loadComponent('Flash', [
+            'className' => 'MyFlash',
+        ]);
+    }
+}
+
+// src/Controller/Component/MyFlashComponent.php
+use Cake\Controller\Component\FlashComponent;
+
+class MyFlashComponent extends FlashComponent
+{
+    // Add your code to override the core FlashComponent
+}
+----------------------------------------
+
+Code Block 21 ():
+// src/Controller/PostsController.php
+class PostsController extends AppController
+{
+    public function initialize(): void
+    {
+        $this->loadComponent('Flash', [
+            'className' => 'MyFlash',
+        ]);
+    }
+}
+
+// src/Controller/Component/MyFlashComponent.php
+use Cake\Controller\Component\FlashComponent;
+
+class MyFlashComponent extends FlashComponent
+{
+    // Add your code to override the core FlashComponent
+}
+----------------------------------------
+
+Code Block 22 ():
+MyFlashComponent
+----------------------------------------
+
+Code Block 23 ():
+$this->Flash
+----------------------------------------
+
+Code Block 24 ():
+loadComponent()
+----------------------------------------
+
+Code Block 25 (shiki):
+// In a controller action
+$this->loadComponent('OneTimer');
+$time = $this->OneTimer->getTime();
+----------------------------------------
+
+Code Block 26 ():
+// In a controller action
+$this->loadComponent('OneTimer');
+$time = $this->OneTimer->getTime();
+----------------------------------------
+
+Code Block 27 ():
+beforeFilter
+----------------------------------------
+
+Code Block 28 ():
+startup
+----------------------------------------
+
+Code Block 29 ():
+Cake\Controller\Component\FlashComponent
+----------------------------------------
+
+Code Block 30 (shiki):
+class PostsController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('Flash');
+    }
+
+    public function delete()
+    {
+        if ($this->Post->delete($this->request->getData('Post.id'))) {
+            $this->Flash->success('Post deleted.');
+
+            return $this->redirect(['action' => 'index']);
+        }
+    }
+----------------------------------------
+
+Code Block 31 ():
+class PostsController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('Flash');
+    }
+
+    public function delete()
+    {
+        if ($this->Post->delete($this->request->getData('Post.id'))) {
+            $this->Flash->success('Post deleted.');
+
+            return $this->redirect(['action' => 'index']);
+        }
+    }
+----------------------------------------
+
+Code Block 32 (shiki):
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+
+class MathComponent extends Component
+{
+    public function doComplexOperation($amount1, $amount2)
+    {
+        return $amount1 + $amount2;
+    }
+}
+----------------------------------------
+
+Code Block 33 ():
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+
+class MathComponent extends Component
+{
+    public function doComplexOperation($amount1, $amount2)
+    {
+        return $amount1 + $amount2;
+    }
+}
+----------------------------------------
+
+Code Block 34 ():
+Cake\Controller\Component
+----------------------------------------
+
+Code Block 35 (shiki):
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+use App\Service\UserService;
+
+class SsoComponent extends Component
+{
+    private Users $users;
+
+    public function __construct(
+        ComponentRegistry $registry,
+        array $config = [],
+        UserService $users,
+    ) {
+        parent::__construct($registry, $config);
+        $this->users = $users;
+    }
+}
+----------------------------------------
+
+Code Block 36 ():
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+use App\Service\UserService;
+
+class SsoComponent extends Component
+{
+    private Users $users;
+
+    public function __construct(
+        ComponentRegistry $registry,
+        array $config = [],
+        UserService $users,
+    ) {
+        parent::__construct($registry, $config);
+        $this->users = $users;
+    }
+}
+----------------------------------------
+
+Code Block 37 ():
+initialize()
+----------------------------------------
+
+Code Block 38 (shiki):
+// In a controller
+// Make the new component available at $this->Math,
+// as well as the standard $this->Flash
+public function initialize(): void
+{
+    parent::initialize();
+    $this->loadComponent('Math');
+    $this->loadComponent('Flash');
+}
+----------------------------------------
+
+Code Block 39 ():
+// In a controller
+// Make the new component available at $this->Math,
+// as well as the standard $this->Flash
+public function initialize(): void
+{
+    parent::initialize();
+    $this->loadComponent('Math');
+    $this->loadComponent('Flash');
+}
+----------------------------------------
+
+Code Block 40 (shiki):
+// In your controller.
+public function initialize(): void
+{
+    parent::initialize();
+    $this->loadComponent('Math', [
+        'precision' => 2,
+        'randomGenerator' => 'srand',
+    ]);
+    $this->loadComponent('Flash');
+}
+----------------------------------------
+
+Code Block 41 ():
+// In your controller.
+public function initialize(): void
+{
+    parent::initialize();
+    $this->loadComponent('Math', [
+        'precision' => 2,
+        'randomGenerator' => 'srand',
+    ]);
+    $this->loadComponent('Flash');
+}
+----------------------------------------
+
+Code Block 42 ():
+MathComponent::initialize()
+----------------------------------------
+
+Code Block 43 ():
+$config
+----------------------------------------
+
+Code Block 44 ():
+$components
+----------------------------------------
+
+Code Block 45 (shiki):
+// src/Controller/Component/CustomComponent.php
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+
+class CustomComponent extends Component
+{
+    // The other component your component uses
+    protected array $components = ['Existing'];
+
+    // Execute any other additional setup for your component.
+    public function initialize(array $config): void
+    {
+        $this->Existing->foo();
+    }
+
+    public function bar()
+    {
+        // ...
+    }
+}
+
+// src/Controller/Component/ExistingComponent.php
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+
+class ExistingComponent extends Component
+{
+    public function foo()
+    {
+        // ...
+    }
+}
+----------------------------------------
+
+Code Block 46 ():
+// src/Controller/Component/CustomComponent.php
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+
+class CustomComponent extends Component
+{
+    // The other component your component uses
+    protected array $components = ['Existing'];
+
+    // Execute any other additional setup for your component.
+    public function initialize(array $config): void
+    {
+        $this->Existing->foo();
+    }
+
+    public function bar()
+    {
+        // ...
+    }
+}
+
+// src/Controller/Component/ExistingComponent.php
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+
+class ExistingComponent extends Component
+{
+    public function foo()
+    {
+        // ...
+    }
+}
+----------------------------------------
+
+Code Block 47 (shiki):
+$controller = $this->getController();
+----------------------------------------
+
+Code Block 48 ():
+$controller = $this->getController();
+----------------------------------------
+
+Code Block 49 ():
+method
+----------------------------------------
+
+Code Block 50 ():
+method
+----------------------------------------
+
+Code Block 51 ():
+method
+----------------------------------------
+
+Code Block 52 ():
+method
+----------------------------------------
+
+Code Block 53 ():
+method
+----------------------------------------
+
+Code Block 54 (shiki):
+public function beforeFilter(EventInterface $event): void
+{
+    if (...) {
+        $event->setResult($this->getController()->redirect('/'));
+
+        return;
+    }
+
+    ...
+}
+----------------------------------------
+
+Code Block 55 ():
+public function beforeFilter(EventInterface $event): void
+{
+    if (...) {
+        $event->setResult($this->getController()->redirect('/'));
+
+        return;
+    }
+
+    ...
+}
+----------------------------------------
+
+Code Block 56 ():
+RedirectException
+----------------------------------------
+
+Code Block 57 (shiki):
+use Cake\Http\Exception\RedirectException;
+use Cake\Routing\Router;
+
+public function beforeFilter(EventInterface $event): void
+{
+    throw new RedirectException(Router::url('/'));
+}
+----------------------------------------
+
+Code Block 58 ():
+use Cake\Http\Exception\RedirectException;
+use Cake\Routing\Router;
+
+public function beforeFilter(EventInterface $event): void
+{
+    throw new RedirectException(Router::url('/'));
+}
+----------------------------------------
+
+Code Block 59 ():
+RedirectException
+----------------------------------------
+
+Code Block 60 (shiki):
+throw new RedirectException(Router::url('/'), 302, [
+    'Header-Key' => 'value',
+]);
+----------------------------------------
+
+Code Block 61 ():
+throw new RedirectException(Router::url('/'), 302, [
+    'Header-Key' => 'value',
+]);
+----------------------------------------
+

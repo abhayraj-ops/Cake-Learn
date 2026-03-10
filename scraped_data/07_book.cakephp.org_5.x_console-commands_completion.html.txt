@@ -1,0 +1,574 @@
+URL: https://book.cakephp.org/5.x/console-commands/completion.html
+Title: Completion Tool | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Completion Tool ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Sub Commands ​
+  - How to enable Bash autocompletion for the CakePHP Console ​
+  - Using autocompletion ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Commands ​
+  - subCommands ​
+  - options ​
+  - Bash Completion file content ​
+  - Commands ​
+  - Subcommands ​
+  - Options ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Working with the console gives the developer a lot of possibilities but having to completely know and write those commands can be tedious. Especially when developing new shells where the commands differ per minute iteration. The Completion Shells aids in this matter by providing an API to write completion scripts for shells like bash, zsh, fish etc.
+
+The Completion Shell consists of a number of sub commands to assist the developer creating its completion script. Each for a different step in the autocompletion process.
+
+For the first step commands outputs the available Shell Commands, including plugin name when applicable. (All returned possibilities, for this and the other sub commands, are separated by a space.) For example:
+
+Returns:
+
+Your completion script can select the relevant commands from that list to continue with. (For this and the following sub commands.)
+
+Once the preferred command has been chosen subCommands comes in as the second step and outputs the possible sub command for the given shell command. For example:
+
+Returns:
+
+As the third and final options outputs options for the given (sub) command as set in getOptionParser. (Including the default options inherited from Shell.) For example:
+
+Returns:
+
+You can also pass an additional argument being the shell sub-command : it will output the specific options of this sub-command.
+
+First, make sure the bash-completion library is installed. If not, you do it with the following command:
+
+Create a file named cake in /etc/bash_completion.d/ and put the Bash Completion File Content inside it.
+
+Save the file, then restart your console.
+
+NOTE
+
+If you are using MacOS X, you can install the bash-completion library using homebrew with the command brew install bash-completion. The target directory for the cake file will be /usr/local/etc/bash_completion.d/.
+
+This is the code you need to put inside the cake file in the correct location in order to get autocompletion when using the CakePHP console:
+
+Once enabled, the autocompletion can be used the same way as for other built-in commands, using the TAB key. Three type of autocompletion are provided. The following output are from a fresh CakePHP install.
+
+Sample output for commands autocompletion:
+
+Sample output for subcommands autocompletion:
+
+Sample output for subcommands options autocompletion:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+bin/cake Completion commands
+----------------------------------------
+
+Code Block 2 ():
+bin/cake Completion commands
+----------------------------------------
+
+Code Block 3 ():
+acl api bake command_list completion console i18n schema server test testsuite upgrade
+----------------------------------------
+
+Code Block 4 ():
+acl api bake command_list completion console i18n schema server test testsuite upgrade
+----------------------------------------
+
+Code Block 5 ():
+bin/cake Completion subcommands bake
+----------------------------------------
+
+Code Block 6 ():
+bin/cake Completion subcommands bake
+----------------------------------------
+
+Code Block 7 ():
+controller db_config fixture model plugin project test view
+----------------------------------------
+
+Code Block 8 ():
+controller db_config fixture model plugin project test view
+----------------------------------------
+
+Code Block 9 ():
+bin/cake Completion options bake
+----------------------------------------
+
+Code Block 10 ():
+bin/cake Completion options bake
+----------------------------------------
+
+Code Block 11 ():
+--help -h --verbose -v --quiet -q --everything --connection -c --force -f --plugin -p --prefix --theme -t
+----------------------------------------
+
+Code Block 12 ():
+--help -h --verbose -v --quiet -q --everything --connection -c --force -f --plugin -p --prefix --theme -t
+----------------------------------------
+
+Code Block 13 ():
+apt-get install bash-completion
+----------------------------------------
+
+Code Block 14 ():
+apt-get install bash-completion
+----------------------------------------
+
+Code Block 15 ():
+brew install bash-completion
+----------------------------------------
+
+Code Block 16 (shiki):
+#
+# Bash completion file for CakePHP console
+#
+
+_cake()
+{
+    local cur prev opts cake
+    COMPREPLY=()
+    cake="${COMP_WORDS[0]}"
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    if [[ "$cur" == -* ]] ; then
+        if [[ ${COMP_CWORD} = 1 ]] ; then
+            opts=$(${cake} Completion options)
+        elif [[ ${COMP_CWORD} = 2 ]] ; then
+            opts=$(${cake} Completion options "${COMP_WORDS[1]}")
+        else
+            opts=$(${cake} Completion options "${COMP_WORDS[1]}" "${COMP_WORDS[2]}")
+        fi
+
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    if [[ ${COMP_CWORD} = 1 ]] ; then
+        opts=$(${cake} Completion commands)
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    if [[ ${COMP_CWORD} = 2 ]] ; then
+        opts=$(${cake} Completion subcommands $prev)
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if [[ $COMPREPLY = "" ]] ; then
+            _filedir
+            return 0
+        fi
+        return 0
+    fi
+
+    opts=$(${cake} Completion fuzzy "${COMP_WORDS[@]:1}")
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    if [[ $COMPREPLY = "" ]] ; then
+        _filedir
+        return 0
+    fi
+    return 0;
+}
+
+complete -F _cake cake bin/cake
+----------------------------------------
+
+Code Block 17 ():
+#
+# Bash completion file for CakePHP console
+#
+
+_cake()
+{
+    local cur prev opts cake
+    COMPREPLY=()
+    cake="${COMP_WORDS[0]}"
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    if [[ "$cur" == -* ]] ; then
+        if [[ ${COMP_CWORD} = 1 ]] ; then
+            opts=$(${cake} Completion options)
+        elif [[ ${COMP_CWORD} = 2 ]] ; then
+            opts=$(${cake} Completion options "${COMP_WORDS[1]}")
+        else
+            opts=$(${cake} Completion options "${COMP_WORDS[1]}" "${COMP_WORDS[2]}")
+        fi
+
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    if [[ ${COMP_CWORD} = 1 ]] ; then
+        opts=$(${cake} Completion commands)
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    if [[ ${COMP_CWORD} = 2 ]] ; then
+        opts=$(${cake} Completion subcommands $prev)
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        if [[ $COMPREPLY = "" ]] ; then
+            _filedir
+            return 0
+        fi
+        return 0
+    fi
+
+    opts=$(${cake} Completion fuzzy "${COMP_WORDS[@]:1}")
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    if [[ $COMPREPLY = "" ]] ; then
+        _filedir
+        return 0
+    fi
+    return 0;
+}
+
+complete -F _cake cake bin/cake
+----------------------------------------
+
+Code Block 18 (shiki):
+$ bin/cake <tab>
+bake        i18n        schema_cache   routes
+console     migrations  plugin         server
+----------------------------------------
+
+Code Block 19 ():
+$ bin/cake <tab>
+bake        i18n        schema_cache   routes
+console     migrations  plugin         server
+----------------------------------------
+
+Code Block 20 (shiki):
+$ bin/cake bake <tab>
+behavior            helper              command
+cell                mailer              command_helper
+component           migration           template
+controller          migration_snapshot  test
+fixture             model
+form                plugin
+----------------------------------------
+
+Code Block 21 ():
+$ bin/cake bake <tab>
+behavior            helper              command
+cell                mailer              command_helper
+component           migration           template
+controller          migration_snapshot  test
+fixture             model
+form                plugin
+----------------------------------------
+
+Code Block 22 (shiki):
+$ bin/cake bake -<tab>
+-c            --everything  --force       --help        --plugin      -q            -t            -v
+--connection  -f            -h            -p            --prefix      --quiet       --theme       --verbose
+----------------------------------------
+
+Code Block 23 ():
+$ bin/cake bake -<tab>
+-c            --everything  --force       --help        --plugin      -q            -t            -v
+--connection  -f            -h            -p            --prefix      --quiet       --theme       --verbose
+----------------------------------------
+

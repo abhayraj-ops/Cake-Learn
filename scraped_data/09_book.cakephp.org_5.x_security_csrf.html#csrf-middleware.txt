@@ -1,0 +1,680 @@
+URL: https://book.cakephp.org/5.x/security/csrf.html#csrf-middleware
+Title: CSRF Protection | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - CSRF Protection ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Cross Site Request Forgery (CSRF) Middleware ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Cookie based CSRF middleware options ​
+  - Session based CSRF middleware options ​
+  - Skipping CSRF checks for specific actions ​
+  - Integration with FormHelper ​
+  - CSRF Protection and AJAX Requests ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Cross-Site Request Forgeries (CSRF) are a class of exploit where unauthorized commands are performed on behalf of an authenticated user without their knowledge or consent.
+
+CakePHP offers two forms of CSRF protection:
+
+NOTE
+
+You cannot use both of the following approaches together, you must choose only one. If you use both approaches together, a CSRF token mismatch error will occur on every PUT and POST request
+
+CSRF protection can be applied to your entire application, or to specific routing scopes. By applying a CSRF middleware to your Application middleware stack you protect all the actions in application:
+
+By applying CSRF protection to routing scopes, you can conditionally apply CSRF to specific groups of routes:
+
+The available configuration options are:
+
+The available configuration options are:
+
+When enabled, you can access the current CSRF token on the request object:
+
+Should you need to rotate or replace the session CSRF token you can do so with:
+
+Added in version 4.3.0
+
+The replaceToken method was added.
+
+Both CSRF middleware implementations allow you to the skip check callback feature for more fine grained control over URLs for which CSRF token check should be done:
+
+NOTE
+
+You should apply the CSRF protection middleware only for routes which handle stateful requests using cookies/sessions. For example, when developing an API, stateless requests that do not use cookies for authentication are not affected by CSRF so the middleware does not need to be applied for those routes.
+
+The CsrfProtectionMiddleware integrates seamlessly with FormHelper. Each time you create a form with FormHelper, it will insert a hidden field containing the CSRF token.
+
+NOTE
+
+When using CSRF protection you should always start your forms with the FormHelper. If you do not, you will need to manually create hidden inputs in each of your forms.
+
+In addition to request data parameters, CSRF tokens can be submitted through a special X-CSRF-Token header. Using a header often makes it easier to integrate a CSRF token with JavaScript heavy applications, or XML/JSON based API endpoints.
+
+The CSRF Token can be obtained in JavaScript via the Cookie csrfToken, or in PHP via the request object attribute named csrfToken. Using the cookie might be easier when your JavaScript code resides in files separate from the CakePHP view templates, and when you already have functionality for parsing cookies via JavaScript.
+
+If you have separate JavaScript files but don't want to deal with handling cookies, you could for example set the token in a global JavaScript variable in your layout, by defining a script block like this:
+
+You can then access the token as csrfToken or window.csrfToken in any script file that is loaded after this script block.
+
+Another alternative would be to put the token in a custom meta tag like this:
+
+which could then be accessed in your scripts by looking for the meta element with the name csrfToken, which could be as simple as this when using jQuery:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+SessionCsrfProtectionMiddleware
+----------------------------------------
+
+Code Block 2 ():
+CsrfProtectionMiddleware
+----------------------------------------
+
+Code Block 3 ():
+PUT
+----------------------------------------
+
+Code Block 4 ():
+POST
+----------------------------------------
+
+Code Block 5 (shiki):
+// in src/Application.php
+// For Cookie based CSRF tokens.
+use Cake\Http\Middleware\CsrfProtectionMiddleware;
+
+// For Session based CSRF tokens.
+use Cake\Http\Middleware\SessionCsrfProtectionMiddleware;
+
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $options = [
+        // ...
+    ];
+    $csrf = new CsrfProtectionMiddleware($options);
+    // or
+    $csrf = new SessionCsrfProtectionMiddleware($options);
+
+    $middlewareQueue->add($csrf);
+
+    return $middlewareQueue;
+}
+----------------------------------------
+
+Code Block 6 ():
+// in src/Application.php
+// For Cookie based CSRF tokens.
+use Cake\Http\Middleware\CsrfProtectionMiddleware;
+
+// For Session based CSRF tokens.
+use Cake\Http\Middleware\SessionCsrfProtectionMiddleware;
+
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $options = [
+        // ...
+    ];
+    $csrf = new CsrfProtectionMiddleware($options);
+    // or
+    $csrf = new SessionCsrfProtectionMiddleware($options);
+
+    $middlewareQueue->add($csrf);
+
+    return $middlewareQueue;
+}
+----------------------------------------
+
+Code Block 7 (shiki):
+// in src/Application.php
+use Cake\Http\Middleware\CsrfProtectionMiddleware;
+use Cake\Routing\RouteBuilder;
+
+public function routes(RouteBuilder $routes) : void
+{
+    $options = [
+        // ...
+    ];
+    $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware($options));
+    parent::routes($routes);
+}
+
+// in config/routes.php
+$routes->scope('/', function (RouteBuilder $routes) {
+    $routes->applyMiddleware('csrf');
+});
+----------------------------------------
+
+Code Block 8 ():
+// in src/Application.php
+use Cake\Http\Middleware\CsrfProtectionMiddleware;
+use Cake\Routing\RouteBuilder;
+
+public function routes(RouteBuilder $routes) : void
+{
+    $options = [
+        // ...
+    ];
+    $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware($options));
+    parent::routes($routes);
+}
+
+// in config/routes.php
+$routes->scope('/', function (RouteBuilder $routes) {
+    $routes->applyMiddleware('csrf');
+});
+----------------------------------------
+
+Code Block 9 ():
+cookieName
+----------------------------------------
+
+Code Block 10 ():
+csrfToken
+----------------------------------------
+
+Code Block 11 ():
+expiry
+----------------------------------------
+
+Code Block 12 ():
+secure
+----------------------------------------
+
+Code Block 13 ():
+false
+----------------------------------------
+
+Code Block 14 ():
+httponly
+----------------------------------------
+
+Code Block 15 ():
+false
+----------------------------------------
+
+Code Block 16 ():
+httpOnly
+----------------------------------------
+
+Code Block 17 ():
+samesite
+----------------------------------------
+
+Code Block 18 ():
+Lax
+----------------------------------------
+
+Code Block 19 ():
+Strict
+----------------------------------------
+
+Code Block 20 ():
+None
+----------------------------------------
+
+Code Block 21 ():
+null
+----------------------------------------
+
+Code Block 22 ():
+field
+----------------------------------------
+
+Code Block 23 ():
+_csrfToken
+----------------------------------------
+
+Code Block 24 ():
+key
+----------------------------------------
+
+Code Block 25 ():
+csrfToken
+----------------------------------------
+
+Code Block 26 ():
+field
+----------------------------------------
+
+Code Block 27 (shiki):
+$token = $this->request->getAttribute('csrfToken');
+----------------------------------------
+
+Code Block 28 ():
+$token = $this->request->getAttribute('csrfToken');
+----------------------------------------
+
+Code Block 29 (shiki):
+$this->request = SessionCsrfProtectionMiddleware::replaceToken($this->request);
+----------------------------------------
+
+Code Block 30 ():
+$this->request = SessionCsrfProtectionMiddleware::replaceToken($this->request);
+----------------------------------------
+
+Code Block 31 ():
+replaceToken
+----------------------------------------
+
+Code Block 32 (shiki):
+// in src/Application.php
+use Cake\Http\Middleware\CsrfProtectionMiddleware;
+
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $csrf = new CsrfProtectionMiddleware();
+
+    // Token check will be skipped when callback returns `true`.
+    $csrf->skipCheckCallback(function ($request) {
+        // Skip token check for API URLs.
+        if ($request->getParam('prefix') === 'Api') {
+            return true;
+        }
+    });
+
+    // Ensure routing middleware is added to the queue before CSRF protection middleware.
+    $middlewareQueue->add($csrf);
+
+    return $middlewareQueue;
+}
+----------------------------------------
+
+Code Block 33 ():
+// in src/Application.php
+use Cake\Http\Middleware\CsrfProtectionMiddleware;
+
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    $csrf = new CsrfProtectionMiddleware();
+
+    // Token check will be skipped when callback returns `true`.
+    $csrf->skipCheckCallback(function ($request) {
+        // Skip token check for API URLs.
+        if ($request->getParam('prefix') === 'Api') {
+            return true;
+        }
+    });
+
+    // Ensure routing middleware is added to the queue before CSRF protection middleware.
+    $middlewareQueue->add($csrf);
+
+    return $middlewareQueue;
+}
+----------------------------------------
+
+Code Block 34 ():
+CsrfProtectionMiddleware
+----------------------------------------
+
+Code Block 35 ():
+FormHelper
+----------------------------------------
+
+Code Block 36 ():
+FormHelper
+----------------------------------------
+
+Code Block 37 ():
+FormHelper
+----------------------------------------
+
+Code Block 38 ():
+X-CSRF-Token
+----------------------------------------
+
+Code Block 39 ():
+csrfToken
+----------------------------------------
+
+Code Block 40 ():
+csrfToken
+----------------------------------------
+
+Code Block 41 (shiki):
+echo $this->Html->scriptBlock(sprintf(
+    'var csrfToken = %s;',
+    json_encode($this->request->getAttribute('csrfToken')),
+));
+----------------------------------------
+
+Code Block 42 ():
+echo $this->Html->scriptBlock(sprintf(
+    'var csrfToken = %s;',
+    json_encode($this->request->getAttribute('csrfToken')),
+));
+----------------------------------------
+
+Code Block 43 ():
+csrfToken
+----------------------------------------
+
+Code Block 44 ():
+window.csrfToken
+----------------------------------------
+
+Code Block 45 (shiki):
+echo $this->Html->meta('csrfToken', $this->request->getAttribute('csrfToken'));
+----------------------------------------
+
+Code Block 46 ():
+echo $this->Html->meta('csrfToken', $this->request->getAttribute('csrfToken'));
+----------------------------------------
+
+Code Block 47 ():
+meta
+----------------------------------------
+
+Code Block 48 ():
+csrfToken
+----------------------------------------
+
+Code Block 49 (shiki):
+var csrfToken = $('meta[name="csrfToken"]').attr('content');
+----------------------------------------
+
+Code Block 50 ():
+var csrfToken = $('meta[name="csrfToken"]').attr('content');
+----------------------------------------
+

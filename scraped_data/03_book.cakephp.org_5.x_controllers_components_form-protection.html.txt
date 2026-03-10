@@ -1,0 +1,565 @@
+URL: https://book.cakephp.org/5.x/controllers/components/form-protection.html
+Title: Form Protection Component | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Form Protection Component ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Form tampering prevention ​
+  - Usage ​
+  - Disabling form tampering checks ​
+  - Disabling form tampering for specific actions ​
+  - Handling validation failure through callbacks ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - validate ​
+  - unlockedFields ​
+  - unlockedActions ​
+  - validationFailureCallback ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class FormProtection(ComponentCollection $collection, array $config = [])
+
+The FormProtection Component provides protection against form data tampering.
+
+Like all components it is configured through several configurable parameters. All of these properties can be set directly or through setter methods of the same name in your controller's initialize() or beforeFilter() methods.
+
+If you are using other components that process form data in their startup() callbacks, be sure to place FormProtection Component before those components in your initialize() method.
+
+NOTE
+
+When using the FormProtection Component you must use the FormHelper to create your forms. In addition, you must not override any of the fields' "name" attributes. The FormProtection Component looks for certain indicators that are created and managed by the FormHelper (especially those created in Cake\View\Helper\FormHelper::create() and Cake\View\Helper\FormHelper::end()). Dynamically altering the fields that are submitted in a POST request, such as disabling, deleting or creating new fields via JavaScript, is likely to cause the form token validation to fail.
+
+By default, the FormProtectionComponent prevents users from tampering with forms in specific ways. It will prevent the following things:
+
+Preventing these types of tampering is accomplished by working with the FormHelper and tracking which fields are in a form. The values for hidden fields are tracked as well. All of this data is combined and turned into a hash and hidden token fields are automatically be inserted into forms. When a form is submitted, the FormProtectionComponent will use the POST data to build the same structure and compare the hash.
+
+NOTE
+
+The FormProtectionComponent will not prevent select options from being added/changed. Nor will it prevent radio options from being added/changed.
+
+Configuring the form protection component is generally done in the controller's initialize() or beforeFilter() callbacks
+
+Available options are:
+
+Set to false to completely skip the validation of POST requests, essentially turning off form validation.
+
+Set to a list of form fields to exclude from POST validation. Fields can be unlocked either in the Component, or with FormHelper::unlockField(). Fields that have been unlocked are not required to be part of the POST and hidden unlocked fields do not have their values checked.
+
+Actions to exclude from POST validation checks.
+
+Callback to call in case of validation failure. Must be a valid Closure. Unset by default in which case exception is thrown on validation failure.
+
+The above example would disable form tampering prevention for admin prefixed routes.
+
+There may be cases where you want to disable form tampering prevention for an action (ex. AJAX requests). You may "unlock" these actions by listing them in $this->FormProtection->setConfig('unlockedActions', ['edit']); in your beforeFilter():
+
+This example would disable all security checks for the edit action.
+
+If form protection validation fails it will result in a 400 error by default. You can configure this behavior by setting the validationFailureCallback configuration option to a callback function in the controller.
+
+By configuring a callback method you can customize how the failure handling process works:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+initialize()
+----------------------------------------
+
+Code Block 3 ():
+beforeFilter()
+----------------------------------------
+
+Code Block 4 ():
+startup()
+----------------------------------------
+
+Code Block 5 ():
+initialize()
+----------------------------------------
+
+Code Block 6 ():
+Cake\View\Helper\FormHelper::create()
+----------------------------------------
+
+Code Block 7 ():
+Cake\View\Helper\FormHelper::end()
+----------------------------------------
+
+Code Block 8 ():
+FormProtectionComponent
+----------------------------------------
+
+Code Block 9 ():
+FormHelper
+----------------------------------------
+
+Code Block 10 ():
+FormProtectionComponent
+----------------------------------------
+
+Code Block 11 ():
+initialize()
+----------------------------------------
+
+Code Block 12 ():
+beforeFilter()
+----------------------------------------
+
+Code Block 13 ():
+false
+----------------------------------------
+
+Code Block 14 ():
+FormHelper::unlockField()
+----------------------------------------
+
+Code Block 15 (shiki):
+namespace App\Controller;
+
+use App\Controller\AppController;
+use Cake\Event\EventInterface;
+
+class WidgetsController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->loadComponent('FormProtection');
+    }
+
+    public function beforeFilter(EventInterface $event): void
+    {
+        parent::beforeFilter($event);
+
+        if ($this->request->getParam('prefix') === 'Admin') {
+            $this->FormProtection->setConfig('validate', false);
+        }
+    }
+}
+----------------------------------------
+
+Code Block 16 ():
+namespace App\Controller;
+
+use App\Controller\AppController;
+use Cake\Event\EventInterface;
+
+class WidgetsController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->loadComponent('FormProtection');
+    }
+
+    public function beforeFilter(EventInterface $event): void
+    {
+        parent::beforeFilter($event);
+
+        if ($this->request->getParam('prefix') === 'Admin') {
+            $this->FormProtection->setConfig('validate', false);
+        }
+    }
+}
+----------------------------------------
+
+Code Block 17 ():
+$this->FormProtection->setConfig('unlockedActions', ['edit']);
+----------------------------------------
+
+Code Block 18 ():
+beforeFilter()
+----------------------------------------
+
+Code Block 19 (shiki):
+namespace App\Controller;
+
+use App\Controller\AppController;
+use Cake\Event\EventInterface;
+
+class WidgetController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('FormProtection');
+    }
+
+    public function beforeFilter(EventInterface $event): void
+    {
+        parent::beforeFilter($event);
+
+        $this->FormProtection->setConfig('unlockedActions', ['edit']);
+    }
+}
+----------------------------------------
+
+Code Block 20 ():
+namespace App\Controller;
+
+use App\Controller\AppController;
+use Cake\Event\EventInterface;
+
+class WidgetController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->loadComponent('FormProtection');
+    }
+
+    public function beforeFilter(EventInterface $event): void
+    {
+        parent::beforeFilter($event);
+
+        $this->FormProtection->setConfig('unlockedActions', ['edit']);
+    }
+}
+----------------------------------------
+
+Code Block 21 ():
+validationFailureCallback
+----------------------------------------
+
+Code Block 22 (shiki):
+use Cake\Controller\Exception\FormProtectionException;
+
+public function beforeFilter(EventInterface $event): void
+{
+    parent::beforeFilter($event);
+
+    $this->FormProtection->setConfig(
+        'validationFailureCallback',
+        // Prior to 5.2 use Cake\Http\Exception\BadRequestException.
+        function (FormProtectionException $exception) {
+            // You can either return a response instance or throw the exception
+            // received as argument.
+        }
+    );
+}
+----------------------------------------
+
+Code Block 23 ():
+use Cake\Controller\Exception\FormProtectionException;
+
+public function beforeFilter(EventInterface $event): void
+{
+    parent::beforeFilter($event);
+
+    $this->FormProtection->setConfig(
+        'validationFailureCallback',
+        // Prior to 5.2 use Cake\Http\Exception\BadRequestException.
+        function (FormProtectionException $exception) {
+            // You can either return a response instance or throw the exception
+            // received as argument.
+        }
+    );
+}
+----------------------------------------
+

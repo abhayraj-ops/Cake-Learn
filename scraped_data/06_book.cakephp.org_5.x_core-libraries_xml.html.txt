@@ -1,0 +1,694 @@
+URL: https://book.cakephp.org/5.x/core-libraries/xml.html
+Title: Xml | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Xml ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Loading XML documents ​
+  - Loading HTML documents ​
+  - Transforming a XML String in Array ​
+  - Transforming an Array into a String of XML ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Xml::build() ​
+  - Xml::toArray() ​
+  - Using Namespaces ​
+  - Creating a Child ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Utility\Xml
+
+The Xml class allows you to transform arrays into SimpleXMLElement or DOMDocument objects, and back into arrays again.
+
+static Cake\Utility\Xml::build(object|array|string $input, array $options = []): SimpleXMLElement|DOMDocument
+
+You can load XML-ish data using Xml::build(). Depending on your $options parameter, this method will return a SimpleXMLElement (default) or DOMDocument object. You can use Xml::build() to build XML objects from a variety of sources. For example, you can load XML from strings:
+
+You can also build Xml objects from local files by overriding the default option:
+
+You can also build Xml objects using an array:
+
+If your input is invalid, the Xml class will throw an exception:
+
+NOTE
+
+DOMDocument and SimpleXML implement different APIs. Be sure to use the correct methods on the object you request from Xml.
+
+HTML documents can be parsed into SimpleXmlElement or DOMDocument objects with loadHtml():
+
+By default, entity loading and huge document parsing are disabled. These modes can be enabled with the loadEntities and parseHuge options respectively.
+
+static Cake\Utility\Xml::toArray(SimpleXMLElement|DOMNode $obj): array
+
+Converting XML strings into arrays is simple with the Xml class as well. By default you'll get a SimpleXml object back:
+
+If your XML is invalid a Cake\Utility\Exception\XmlException will be raised.
+
+Your array must have only one element in the "top level" and it can not be numeric. If the array is not in this format, Xml will throw an exception. Examples of invalid arrays:
+
+By default, array values will be output as XML tags. If you want to define attributes or text values you can prefix the keys that are supposed to be attributes with @. For value text, use @ as the key:
+
+The content of $xmlString will be:
+
+To use XML Namespaces, create a key in your array with the name xmlns: in a generic namespace or input the prefix xmlns: in a custom namespace. See the samples:
+
+The value of $xml1 and $xml2 will be, respectively:
+
+After you have created your XML document, you just use the native interfaces for your document type to add, remove, or manipulate child nodes:
+
+TIP
+
+After manipulating your XML using SimpleXMLElement or DomDocument you can use Xml::toArray() without a problem.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+static
+----------------------------------------
+
+Code Block 3 ():
+Xml::build()
+----------------------------------------
+
+Code Block 4 ():
+$options
+----------------------------------------
+
+Code Block 5 ():
+Xml::build()
+----------------------------------------
+
+Code Block 6 (shiki):
+$text = '<?xml version="1.0" encoding="utf-8"?>
+<post>
+    <id>1</id>
+    <title>Best post</title>
+    <body> ... </body>
+</post>';
+$xml = Xml::build($text);
+----------------------------------------
+
+Code Block 7 ():
+$text = '<?xml version="1.0" encoding="utf-8"?>
+<post>
+    <id>1</id>
+    <title>Best post</title>
+    <body> ... </body>
+</post>';
+$xml = Xml::build($text);
+----------------------------------------
+
+Code Block 8 (shiki):
+// Local file
+$xml = Xml::build('/home/awesome/unicorns.xml', ['readFile' => true]);
+----------------------------------------
+
+Code Block 9 ():
+// Local file
+$xml = Xml::build('/home/awesome/unicorns.xml', ['readFile' => true]);
+----------------------------------------
+
+Code Block 10 (shiki):
+$data = [
+    'post' => [
+        'id' => 1,
+        'title' => 'Best post',
+        'body' => ' ... ',
+    ]
+];
+$xml = Xml::build($data);
+----------------------------------------
+
+Code Block 11 ():
+$data = [
+    'post' => [
+        'id' => 1,
+        'title' => 'Best post',
+        'body' => ' ... ',
+    ]
+];
+$xml = Xml::build($data);
+----------------------------------------
+
+Code Block 12 (shiki):
+$xmlString = 'What is XML?';
+try {
+    $xmlObject = Xml::build($xmlString); // Here will throw an exception
+} catch (\Cake\Utility\Exception\XmlException $e) {
+    throw new InternalErrorException();
+}
+----------------------------------------
+
+Code Block 13 ():
+$xmlString = 'What is XML?';
+try {
+    $xmlObject = Xml::build($xmlString); // Here will throw an exception
+} catch (\Cake\Utility\Exception\XmlException $e) {
+    throw new InternalErrorException();
+}
+----------------------------------------
+
+Code Block 14 ():
+SimpleXmlElement
+----------------------------------------
+
+Code Block 15 ():
+DOMDocument
+----------------------------------------
+
+Code Block 16 ():
+loadHtml()
+----------------------------------------
+
+Code Block 17 (shiki):
+$html = Xml::loadHtml($htmlString, ['return' => 'domdocument']);
+----------------------------------------
+
+Code Block 18 ():
+$html = Xml::loadHtml($htmlString, ['return' => 'domdocument']);
+----------------------------------------
+
+Code Block 19 ():
+loadEntities
+----------------------------------------
+
+Code Block 20 ():
+parseHuge
+----------------------------------------
+
+Code Block 21 ():
+static
+----------------------------------------
+
+Code Block 22 (shiki):
+$xmlString = '<?xml version="1.0"?><root><child>value</child></root>';
+$xmlArray = Xml::toArray(Xml::build($xmlString));
+----------------------------------------
+
+Code Block 23 ():
+$xmlString = '<?xml version="1.0"?><root><child>value</child></root>';
+$xmlArray = Xml::toArray(Xml::build($xmlString));
+----------------------------------------
+
+Code Block 24 ():
+Cake\Utility\Exception\XmlException
+----------------------------------------
+
+Code Block 25 (shiki):
+$xmlArray = ['root' => ['child' => 'value']];
+// You can use Xml::build() too.
+$xmlObject = Xml::fromArray($xmlArray, ['format' => 'tags']);
+$xmlString = $xmlObject->asXML();
+----------------------------------------
+
+Code Block 26 ():
+$xmlArray = ['root' => ['child' => 'value']];
+// You can use Xml::build() too.
+$xmlObject = Xml::fromArray($xmlArray, ['format' => 'tags']);
+$xmlString = $xmlObject->asXML();
+----------------------------------------
+
+Code Block 27 (shiki):
+// Top level with numeric key
+[
+    ['key' => 'value'],
+];
+
+// Multiple keys in top level
+[
+    'key1' => 'first value',
+    'key2' => 'other value',
+];
+----------------------------------------
+
+Code Block 28 ():
+// Top level with numeric key
+[
+    ['key' => 'value'],
+];
+
+// Multiple keys in top level
+[
+    'key1' => 'first value',
+    'key2' => 'other value',
+];
+----------------------------------------
+
+Code Block 29 ():
+@
+----------------------------------------
+
+Code Block 30 ():
+@
+----------------------------------------
+
+Code Block 31 (shiki):
+$xmlArray = [
+    'project' => [
+        '@id' => 1,
+        'name' => 'Name of project, as tag',
+        '@' => 'Value of project',
+    ],
+];
+$xmlObject = Xml::fromArray($xmlArray);
+$xmlString = $xmlObject->asXML();
+----------------------------------------
+
+Code Block 32 ():
+$xmlArray = [
+    'project' => [
+        '@id' => 1,
+        'name' => 'Name of project, as tag',
+        '@' => 'Value of project',
+    ],
+];
+$xmlObject = Xml::fromArray($xmlArray);
+$xmlString = $xmlObject->asXML();
+----------------------------------------
+
+Code Block 33 ():
+$xmlString
+----------------------------------------
+
+Code Block 34 (shiki):
+<?xml version="1.0"?>
+<project id="1">Value of project<name>Name of project, as tag</name></project>
+----------------------------------------
+
+Code Block 35 ():
+<?xml version="1.0"?>
+<project id="1">Value of project<name>Name of project, as tag</name></project>
+----------------------------------------
+
+Code Block 36 ():
+xmlns:
+----------------------------------------
+
+Code Block 37 ():
+xmlns:
+----------------------------------------
+
+Code Block 38 (shiki):
+$xmlArray = [
+    'root' => [
+        'xmlns:' => 'https://cakephp.org',
+        'child' => 'value',
+    ]
+];
+$xml1 = Xml::fromArray($xmlArray);
+
+$xmlArray(
+    'root' => [
+        'tag' => [
+            'xmlns:pref' => 'https://cakephp.org',
+            'pref:item' => [
+                'item 1',
+                'item 2',
+            ]
+        ]
+    ]
+);
+$xml2 = Xml::fromArray($xmlArray);
+----------------------------------------
+
+Code Block 39 ():
+$xmlArray = [
+    'root' => [
+        'xmlns:' => 'https://cakephp.org',
+        'child' => 'value',
+    ]
+];
+$xml1 = Xml::fromArray($xmlArray);
+
+$xmlArray(
+    'root' => [
+        'tag' => [
+            'xmlns:pref' => 'https://cakephp.org',
+            'pref:item' => [
+                'item 1',
+                'item 2',
+            ]
+        ]
+    ]
+);
+$xml2 = Xml::fromArray($xmlArray);
+----------------------------------------
+
+Code Block 40 ():
+$xml1
+----------------------------------------
+
+Code Block 41 ():
+$xml2
+----------------------------------------
+
+Code Block 42 (shiki):
+<?xml version="1.0"?>
+<root xmlns="https://cakephp.org"><child>value</child>
+
+<?xml version="1.0"?>
+<root><tag xmlns:pref="https://cakephp.org"><pref:item>item 1</pref:item><pref:item>item 2</pref:item></tag></root>
+----------------------------------------
+
+Code Block 43 ():
+<?xml version="1.0"?>
+<root xmlns="https://cakephp.org"><child>value</child>
+
+<?xml version="1.0"?>
+<root><tag xmlns:pref="https://cakephp.org"><pref:item>item 1</pref:item><pref:item>item 2</pref:item></tag></root>
+----------------------------------------
+
+Code Block 44 (shiki):
+// Using SimpleXML
+$myXmlOriginal = '<?xml version="1.0"?><root><child>value</child></root>';
+$xml = Xml::build($myXmlOriginal);
+$xml->root->addChild('young', 'new value');
+
+// Using DOMDocument
+$myXmlOriginal = '<?xml version="1.0"?><root><child>value</child></root>';
+$xml = Xml::build($myXmlOriginal, ['return' => 'domdocument']);
+$child = $xml->createElement('young', 'new value');
+$xml->firstChild->appendChild($child);
+----------------------------------------
+
+Code Block 45 ():
+// Using SimpleXML
+$myXmlOriginal = '<?xml version="1.0"?><root><child>value</child></root>';
+$xml = Xml::build($myXmlOriginal);
+$xml->root->addChild('young', 'new value');
+
+// Using DOMDocument
+$myXmlOriginal = '<?xml version="1.0"?><root><child>value</child></root>';
+$xml = Xml::build($myXmlOriginal, ['return' => 'domdocument']);
+$child = $xml->createElement('young', 'new value');
+$xml->firstChild->appendChild($child);
+----------------------------------------
+
+Code Block 46 ():
+Xml::toArray()
+----------------------------------------
+

@@ -1,0 +1,2817 @@
+URL: https://book.cakephp.org/5.x/orm/saving-data.html
+Title: Saving Data | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Saving Data ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - A Glance Over Saving Data ​
+  - Converting Request Data into Entities ​
+  - Saving Entities ​
+  - Strict Saving ​
+  - Find or Create an Entity ​
+  - Creating with an existing primary key ​
+  - Saving Multiple Entities ​
+  - Bulk Updates ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Inserting Data ​
+  - Updating Data ​
+  - Saving With Associations ​
+  - Associate Many To Many Records ​
+  - Unlink Many To Many Records ​
+  - Converting BelongsToMany Data ​
+  - Converting HasMany Data ​
+  - Converting Multiple Records ​
+  - Changing Accessible Fields ​
+  - Merging Request Data Into Entities ​
+  - Modifying Request Data Before Building Entities ​
+  - Modifying Entities After Updating From Request Data ​
+  - Validating Data Before Building Entities ​
+  - Avoiding Property Mass Assignment Attacks ​
+  - Saving Associations ​
+  - Saving BelongsTo Associations ​
+  - Saving HasOne Associations ​
+  - Saving HasMany Associations ​
+  - Saving BelongsToMany Associations ​
+  - Saving Additional Data to the Join Table ​
+  - Saving Complex Types ​
+H4:
+  - CMS Tutorial
+  - Validation and patchEntity ​
+  - Patching HasMany and BelongsToMany ​
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\ORM\Table
+
+After you have loaded your data you will probably want to update and save the changes.
+
+Applications will usually have a couple of ways in which data is saved. The first one is obviously through web forms and the other is by directly generating or changing data in the code to be sent to the database.
+
+The easiest way to insert data in the database is by creating a new entity and passing it to the save() method in the Table class:
+
+Updating your data is achieved by using the save() method:
+
+CakePHP will know whether to perform an insert or an update based on the return value of the isNew() method. Entities that were retrieved with get() or find() will always return false when isNew() is called on them.
+
+By default, the save() method will also save one level of associations:
+
+The save() method is also able to create new records for associations:
+
+The previous example demonstrates how to associate a few tags to an article. Another way of accomplishing the same thing is by using the link() method in the association:
+
+Unlinking many to many records is done via the unlink() method:
+
+When modifying records by directly setting or changing the properties no validation happens, which is a problem when accepting form data. The following sections will demonstrate how to efficiently convert form data into entities so that they can be validated and saved.
+
+Before editing and saving data back to your database, you'll need to convert the request data from the array format held in the request, and the entities that the ORM uses. The Table class provides an efficient way to convert one or many entities from request data. You can convert a single entity using:
+
+NOTE
+
+If you are using newEntity() and the resulting entities are missing some or all the data they were passed, double check that the columns you want to set are listed in the $_accessible property of your entity. See Entities Mass Assignment.
+
+The request data should follow the structure of your entities. For example if you have an article, which belonged to a user, and had many comments, your request data should resemble:
+
+By default, the newEntity() method validates the data that gets passed to it, as explained in the Validating Request Data section. If you wish to bypass data validation pass the 'validate' => false option:
+
+When building forms that save nested associations, you need to define which associations should be marshalled:
+
+The above indicates that the 'Tags', 'Comments' and 'Users' for the Comments should be marshalled. Alternatively, you can use dot notation for brevity:
+
+You may also disable marshalling of possible nested associations like so:
+
+Associated data is also validated by default unless told otherwise. You may also change the validation set to be used per association:
+
+The Using Different Validators Per Association chapter has more information on how to use different validators for associated marshalling.
+
+The following diagram gives an overview of what happens inside the newEntity() or patchEntity() method:
+
+You can always count on getting an entity back from newEntity(). If validation fails your entity will contain errors, and any invalid fields will not be populated in the created entity.
+
+If you are saving belongsToMany associations you can either use a list of entity data or a list of ids. When using a list of entity data your request data should look like:
+
+The above will create 2 new tags. If you want to link an article with existing tags you can use a list of ids. Your request data should look like:
+
+If you need to link against some existing belongsToMany records, and create new ones at the same time you can use an expanded format:
+
+When the above data is converted into entities, you will have 4 tags. The first two will be new objects, and the second two will be references to existing records.
+
+When converting belongsToMany data, you can disable entity creation, by using the onlyIds option:
+
+When used, this option restricts belongsToMany association marshalling to only use the _ids data.
+
+If you want to update existing hasMany associations and update their properties, you should first ensure your entity is loaded with the hasMany association populated. You can then use request data similar to:
+
+If you are saving hasMany associations and want to link existing records to a new parent record you can use the _ids format:
+
+When converting hasMany data, you can disable the new entity creation, by using the onlyIds option. When enabled, this option restricts hasMany marshalling to only use the _ids key and ignore all other data.
+
+When creating forms that create/update multiple records at once you can use newEntities():
+
+In this situation, the request data for multiple articles should look like:
+
+Once you've converted request data into entities you can save:
+
+The above will run a separate transaction for each entity saved. If you'd like to process all the entities as a single transaction you can use saveMany() or saveManyOrFail():
+
+It's also possible to allow newEntity() to write into non accessible fields. For example, id is usually absent from the _accessible property. In such case, you can use the accessibleFields option. It could be useful to keep ids of associated entities:
+
+The above will keep the association unchanged between Comments and Users for the concerned entity.
+
+NOTE
+
+If you are using newEntity() and the resulting entities are missing some or all the data they were passed, double check that the columns you want to set are listed in the $_accessible property of your entity. See Entities Mass Assignment.
+
+In order to update entities you may choose to apply request data directly to an existing entity. This has the advantage that only the fields that actually changed will be saved, as opposed to sending all fields to the database to be persisted. You can merge an array of raw data into an existing entity using the patchEntity() method:
+
+Similar to newEntity(), the patchEntity method will validate the data before it is copied to the entity. The mechanism is explained in the Validating Request Data section. If you wish to disable validation while patching an entity, pass the validate option as follows:
+
+You may also change the validation set used for the entity or any of the associations:
+
+As explained in the previous section, the request data should follow the structure of your entity. The patchEntity() method is equally capable of merging associations, by default only the first level of associations are merged, but if you wish to control the list of associations to be merged or merge deeper to deeper levels, you can use the third parameter of the method:
+
+Associations are merged by matching the primary key field in the source entities to the corresponding fields in the data array. Associations will construct new entities if no previous entity is found for the association's target property.
+
+For example give some request data like the following:
+
+Trying to patch an entity without an entity in the user property will create a new user entity:
+
+The same can be said about hasMany and belongsToMany associations, with an important caveat:
+
+NOTE
+
+For belongsToMany associations, ensure the relevant entity has a property accessible for the associated entity.
+
+If a Product belongsToMany Tag:
+
+NOTE
+
+For hasMany and belongsToMany associations, if there were any entities that could not be matched by primary key to a record in the data array, then those records will be discarded from the resulting entity.
+
+Remember that using either patchEntity() or patchEntities() does not persist the data, it just edits (or creates) the given entities. In order to save the entity you will have to call the table's save() method.
+
+For example, consider the following case:
+
+At the end, if the entity is converted back to an array you will obtain the following result:
+
+As you can see, the comment with id 2 is no longer there, as it could not be matched to anything in the $newData array. This happens because CakePHP is reflecting the new state described in the request data.
+
+Some additional advantages of this approach is that it reduces the number of operations to be executed when persisting the entity again.
+
+Please note that this does not mean that the comment with id 2 was removed from the database, if you wish to remove the comments for that article that are not present in the entity, you can collect the primary keys and execute a batch delete for those not in the list:
+
+As you can see, this also helps creating solutions where an association needs to be implemented like a single set.
+
+You can also patch multiple entities at once. The consideration made for patching hasMany and belongsToMany associations apply for patching multiple entities: Matches are done by the primary key field value and missing matches in the original entities array will be removed and not present in the result:
+
+Similarly to using patchEntity(), you can use the third argument for controlling the associations that will be merged in each of the entities in the array:
+
+If you need to modify request data before it is converted into entities, you can use the Model.beforeMarshal event. This event lets you manipulate the request data just before entities are created:
+
+The $data parameter is an ArrayObject instance, so you don't have to return it to change the data used to create entities.
+
+The main purpose of beforeMarshal is to assist the users to pass the validation process when simple mistakes can be automatically resolved, or when data needs to be restructured so it can be put into the right fields.
+
+The Model.beforeMarshal event is triggered just at the start of the validation process, one of the reasons is that beforeMarshal is allowed to change the validation rules and the saving options, such as the field list. Validation is triggered just after this event is finished. A common example of changing the data before it is validated is trimming all fields before saving:
+
+Because of how the marshalling process works, if a field does not pass validation it will automatically be removed from the data array and not be copied into the entity. This is to prevent inconsistent data from entering the entity object.
+
+Moreover, the data in beforeMarshal is a copy of the passed data. This is because it is important to preserve the original user input, as it may be used elsewhere.
+
+The Model.afterMarshal event allows you to modify entities after they have been created or updated from request data. It can be useful to apply additional validation logic that you cannot easily express through Validator methods:
+
+The Validating Data chapter has more information on how to use the validation features of CakePHP to ensure your data stays correct and consistent.
+
+When creating or merging entities from request data you need to be careful of what you allow your users to change or add in the entities. For example, by sending an array in the request containing the user_id an attacker could change the owner of an article, causing undesirable effects:
+
+There are two ways of protecting you against this problem. The first one is by setting the default columns that can be safely set from a request using the Entities Mass Assignment feature in the entities.
+
+The second way is by using the fields option when creating or merging data into an entity:
+
+You can also control which properties can be assigned for associations:
+
+Using this feature is handy when you have many different functions your users can access and you want to let your users edit different data based on their privileges.
+
+When using the fields option, validation will be applied to all fields in the request data. You can limit validation to only the allowed fields by passing strictFields to the patchEntity() or newEntity() call:
+
+Added in version 5.3.0
+
+The strictFields option was added in 5.3.0.
+
+method Cake\ORM\Table::save(EntityInterface $entity, array $options = []): EntityInterface|false
+
+When saving request data to your database you need to first hydrate a new entity using newEntity() for passing into save(). For example:
+
+The ORM uses the isNew() method on an entity to determine whether or not an insert or update should be performed. If the isNew() method returns true and the entity has a primary key value, an 'exists' query will be issued. The 'exists' query can be suppressed by passing 'checkExisting' => false in the $options argument:
+
+Once you've loaded some entities you'll probably want to modify them and update your database. This is a pretty simple exercise in CakePHP:
+
+When saving, CakePHP will apply your rules, and wrap the save operation in a database transaction. It will also only update properties that have changed. The above save() call would generate SQL like:
+
+If you had a new entity, the following SQL would be generated:
+
+When an entity is saved a few things happen:
+
+The following diagram illustrates the above process:
+
+See the Application Rules section for more information on creating and using rules.
+
+WARNING
+
+If no changes are made to the entity when it is saved, the callbacks will not fire because no save is performed.
+
+The save() method will return the modified entity on success, and false on failure. You can disable rules and/or transactions using the $options argument for save:
+
+When you are saving an entity, you can also choose to save some or all the associated entities. By default, all first level entities will be saved. For example saving an Article, will also automatically update any dirty entities that are directly related to articles table.
+
+You can fine tune which associations are saved by using the associated option:
+
+You can define save distant or deeply nested associations by using dot notation:
+
+Moreover, you can combine the dot notation for associations with the options array:
+
+Your entities should be structured in the same way as they are when loaded from the database. See the form helper documentation for how to build inputs for associations.
+
+If you are building or modifying association data after building your entities you will have to mark the association property as modified with setDirty():
+
+When saving belongsTo associations, the ORM expects a single nested entity named with the singular, underscored version of the association name. For example:
+
+When saving hasOne associations, the ORM expects a single nested entity named with the singular, underscored version of the association name. For example:
+
+When saving hasMany associations, the ORM expects an array of entities named with the plural, underscored version of the association name. For example:
+
+When saving hasMany associations, associated records will either be updated, or inserted. For the case that the record already has associated records in the database, you have the choice between two saving strategies:
+
+append : Associated records are updated in the database or, if not matching any existing record, inserted.
+
+replace : Any existing records that do not match the records provided will be deleted from the database. Only provided records will remain (or be inserted).
+
+By default, the append saving strategy is used. See Has Many Associations for details on defining the saveStrategy.
+
+Whenever you add new records to an existing association you should always mark the association property as 'dirty'. This lets the ORM know that the association property has to be persisted:
+
+Without the call to setDirty() the updated comments will not be saved.
+
+If you are creating a new entity, and want to add existing records to a has many/belongs to many association you need to initialize the association property first:
+
+Without initialization calling $article->comments[] = $comment; will have no effect.
+
+When saving belongsToMany associations, the ORM expects an array of entities named with the plural, underscored version of the association name. For example:
+
+When converting request data into entities, the newEntity() and newEntities() methods will handle both arrays of properties, as well as a list of ids at the _ids key. Using the _ids key makes it possible to building a select box or checkbox based form controls for belongs to many associations. See the Converting Request Data section for more information.
+
+When saving belongsToMany associations, you have the choice between two saving strategies:
+
+append : Only new links will be created between each side of this association. This strategy will not destroy existing links even though they may not be present in the array of entities to be saved.
+
+replace : When saving, existing links will be removed and new links will be created in the junction table. If there are existing link in the database to some of the entities intended to be saved, those links will be updated, not deleted and then re-saved.
+
+See Belongs To Many Associations for details on defining the saveStrategy.
+
+By default, the replace strategy is used. Whenever you add new records into an existing association you should always mark the association property as 'dirty'. This lets the ORM know that the association property has to be persisted:
+
+Without the call to setDirty() the updated tags will not be saved.
+
+Often you'll find yourself wanting to make an association between two existing entities, e.g. a user coauthoring an article. This is done by using the method link(), like this:
+
+When saving belongsToMany Associations, it can be relevant to save some additional data to the junction Table. In the previous example of tags, it could be the vote_type of person who voted on that article. The vote_type can be either upvote or downvote and is represented by a string. The relation is between Users and Articles.
+
+Saving that association, and the vote_type is done by first adding some data to _joinData and then saving the association with link(), example:
+
+In some situations the table joining your BelongsToMany association, will have additional columns on it. CakePHP makes it simple to save properties into these columns. Each entity in a belongsToMany association has a _joinData property that contains the additional columns on the junction table. This data can be either an array or an Entity instance. For example if Students BelongsToMany Courses, we could have a junction table that looks like:
+
+When saving data you can populate the additional columns on the junction table by setting data to the _joinData property:
+
+The example above will only work if the property _joinData is already a reference to a Join Table Entity. If you don't already have a _joinData entity, you can create one using newEntity():
+
+The _joinData property can be either an entity, or an array of data if you are saving entities built from request data. When saving junction table data from request data your POST data should look like:
+
+See the Associated Form Inputs documentation for how to build inputs with FormHelper correctly. As of 5.2.0, the _joinData property can be renamed with setJunctionProperty():
+
+When a junction property is set, the new junction property name must be used to manipulate entities, marshall request data, and create form fields.
+
+Added in version 5.2.0
+
+Custom junction property names were added.
+
+Tables are capable of storing data represented in basic types, like strings, integers, floats, booleans, etc. But It can also be extended to accept more complex types such as arrays or objects and serialize this data into simpler types that can be saved in the database.
+
+This functionality is achieved by using the custom types system. See the Adding Custom Database Types section to find out how to build custom column Types:
+
+The code above maps the preferences column to the json custom type. This means that when retrieving data for that column, it will be unserialized from a JSON string in the database and put into an entity as an array.
+
+Likewise, when saved, the array will be transformed back into its JSON representation:
+
+When using complex types it is important to validate that the data you are receiving from the end user is the correct type. Failing to correctly handle complex data could result in malicious users being able to store data they would not normally be able to.
+
+method Cake\ORM\Table::saveOrFail(EntityInterface $entity, array $options = []): EntityInterface
+
+Using this method will throw an Cake\ORM\Exception\PersistenceFailedException if:
+
+Using this can be helpful when you performing complex database operations without human monitoring, for example, inside a Shell task.
+
+NOTE
+
+If you use this method in a controller, be sure to catch the PersistenceFailedException that could be raised.
+
+If you want to track down the entity that failed to save, you can use the Cake\ORM\Exception\PersistenceFailedException::getEntity() method:
+
+As this internally performs a Cake\ORM\Table::save() call, all corresponding save events will be triggered.
+
+method Cake\ORM\Table::findOrCreate(SelectQuery|callable|array $search, callable|array|null $callback = null, array $options = []): EntityInterface
+
+Find an existing record based on $search or create a new record using the properties in $search and calling the optional $callback. This method is ideal in scenarios where you need to reduce the chance of duplicate records:
+
+As of 5.2.0, you can provide an array of data to set into the entity when it is created:
+
+If your find conditions require custom order, associations or conditions, then the $search parameter can be a callable or SelectQuery object. If you use a callable, it should take a SelectQuery as its argument.
+
+The returned entity will have been saved if it was a new record. The supported options for this method are:
+
+Added in version 5.2.0
+
+Support for $callback as an array of data was added.
+
+When handling UUID primary keys you often want to provide an externally generated value, and not have an identifier generated for you.
+
+In this case make sure you are not passing the primary key as part of the marshalled data. Instead, assign the primary key and then patch in the remaining entity data:
+
+method Cake\ORM\Table::saveMany(iterable $entities, array $options = []): iterable|false
+
+Using this method you can save multiple entities atomically. $entities can be an array of entities created using newEntities() / patchEntities(). $options can have the same options as accepted by save():
+
+The result will be updated entities on success or false on failure.
+
+method Cake\ORM\Table::updateAll(QueryExpression|Closure|array|string $fields, QueryExpression|Closure|array|string|null $conditions): int
+
+There may be times when updating rows individually is not efficient or necessary. In these cases it is more efficient to use a bulk-update to modify many rows at once, by assigning the new field values, and conditions for the update:
+
+If you need to do bulk updates and use SQL expressions, you will need to use an expression object as updateAll() uses prepared statements under the hood:
+
+A bulk-update will be considered successful if 1 or more rows are updated.
+
+WARNING
+
+updateAll will not trigger beforeSave/afterSave events. If you need those first load a collection of records and update them.
+
+updateAll() is for convenience only. You can use this more flexible interface as well:
+
+Also see: Query Builder Updating Data.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+save()
+----------------------------------------
+
+Code Block 3 ():
+Table
+----------------------------------------
+
+Code Block 4 (shiki):
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$articlesTable = $this->fetchTable('Articles');
+$article = $articlesTable->newEmptyEntity();
+
+$article->title = 'A New Article';
+$article->body = 'This is the body of the article';
+
+if ($articlesTable->save($article)) {
+    // The $article entity contains the id now
+    $id = $article->id;
+}
+----------------------------------------
+
+Code Block 5 ():
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$articlesTable = $this->fetchTable('Articles');
+$article = $articlesTable->newEmptyEntity();
+
+$article->title = 'A New Article';
+$article->body = 'This is the body of the article';
+
+if ($articlesTable->save($article)) {
+    // The $article entity contains the id now
+    $id = $article->id;
+}
+----------------------------------------
+
+Code Block 6 ():
+save()
+----------------------------------------
+
+Code Block 7 (shiki):
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$articlesTable = $this->fetchTable('Articles');
+$article = $articlesTable->get(12); // Return article with id 12
+
+$article->title = 'CakePHP is THE best PHP framework!';
+$articlesTable->save($article);
+----------------------------------------
+
+Code Block 8 ():
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$articlesTable = $this->fetchTable('Articles');
+$article = $articlesTable->get(12); // Return article with id 12
+
+$article->title = 'CakePHP is THE best PHP framework!';
+$articlesTable->save($article);
+----------------------------------------
+
+Code Block 9 ():
+isNew()
+----------------------------------------
+
+Code Block 10 ():
+get()
+----------------------------------------
+
+Code Block 11 ():
+find()
+----------------------------------------
+
+Code Block 12 ():
+false
+----------------------------------------
+
+Code Block 13 ():
+isNew()
+----------------------------------------
+
+Code Block 14 ():
+save()
+----------------------------------------
+
+Code Block 15 (shiki):
+$articlesTable = $this->fetchTable('Articles');
+$author = $articlesTable->Authors->findByUserName('mark')->first();
+
+$article = $articlesTable->newEmptyEntity();
+$article->title = 'An article by mark';
+$article->author = $author;
+
+if ($articlesTable->save($article)) {
+    // The foreign key value was set automatically.
+    echo $article->author_id;
+}
+----------------------------------------
+
+Code Block 16 ():
+$articlesTable = $this->fetchTable('Articles');
+$author = $articlesTable->Authors->findByUserName('mark')->first();
+
+$article = $articlesTable->newEmptyEntity();
+$article->title = 'An article by mark';
+$article->author = $author;
+
+if ($articlesTable->save($article)) {
+    // The foreign key value was set automatically.
+    echo $article->author_id;
+}
+----------------------------------------
+
+Code Block 17 ():
+save()
+----------------------------------------
+
+Code Block 18 (shiki):
+$firstComment = $articlesTable->Comments->newEmptyEntity();
+$firstComment->body = 'The CakePHP features are outstanding';
+
+$secondComment = $articlesTable->Comments->newEmptyEntity();
+$secondComment->body = 'CakePHP performance is terrific!';
+
+$tag1 = $articlesTable->Tags->findByName('cakephp')->first();
+$tag2 = $articlesTable->Tags->newEmptyEntity();
+$tag2->name = 'awesome';
+
+$article = $articlesTable->get(12);
+$article->comments = [$firstComment, $secondComment];
+$article->tags = [$tag1, $tag2];
+
+$articlesTable->save($article);
+----------------------------------------
+
+Code Block 19 ():
+$firstComment = $articlesTable->Comments->newEmptyEntity();
+$firstComment->body = 'The CakePHP features are outstanding';
+
+$secondComment = $articlesTable->Comments->newEmptyEntity();
+$secondComment->body = 'CakePHP performance is terrific!';
+
+$tag1 = $articlesTable->Tags->findByName('cakephp')->first();
+$tag2 = $articlesTable->Tags->newEmptyEntity();
+$tag2->name = 'awesome';
+
+$article = $articlesTable->get(12);
+$article->comments = [$firstComment, $secondComment];
+$article->tags = [$tag1, $tag2];
+
+$articlesTable->save($article);
+----------------------------------------
+
+Code Block 20 ():
+link()
+----------------------------------------
+
+Code Block 21 (shiki):
+$tag1 = $articlesTable->Tags->findByName('cakephp')->first();
+$tag2 = $articlesTable->Tags->newEmptyEntity();
+$tag2->name = 'awesome';
+
+$articlesTable->Tags->link($article, [$tag1, $tag2]);
+----------------------------------------
+
+Code Block 22 ():
+$tag1 = $articlesTable->Tags->findByName('cakephp')->first();
+$tag2 = $articlesTable->Tags->newEmptyEntity();
+$tag2->name = 'awesome';
+
+$articlesTable->Tags->link($article, [$tag1, $tag2]);
+----------------------------------------
+
+Code Block 23 ():
+unlink()
+----------------------------------------
+
+Code Block 24 (shiki):
+$tags = $articlesTable
+    ->Tags
+    ->find()
+    ->where(['name IN' => ['cakephp', 'awesome']])
+    ->toList();
+
+$articlesTable->Tags->unlink($article, $tags);
+----------------------------------------
+
+Code Block 25 ():
+$tags = $articlesTable
+    ->Tags
+    ->find()
+    ->where(['name IN' => ['cakephp', 'awesome']])
+    ->toList();
+
+$articlesTable->Tags->unlink($article, $tags);
+----------------------------------------
+
+Code Block 26 (shiki):
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+
+// Validate and convert to an Entity object
+$entity = $articles->newEntity($this->request->getData());
+----------------------------------------
+
+Code Block 27 ():
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+
+// Validate and convert to an Entity object
+$entity = $articles->newEntity($this->request->getData());
+----------------------------------------
+
+Code Block 28 ():
+$_accessible
+----------------------------------------
+
+Code Block 29 (shiki):
+$data = [
+    'title' => 'CakePHP For the Win',
+    'body' => 'Baking with CakePHP makes web development fun!',
+    'user_id' => 1,
+    'user' => [
+        'username' => 'mark',
+    ],
+    'comments' => [
+        ['body' => 'The CakePHP features are outstanding'],
+        ['body' => 'CakePHP performance is terrific!'],
+    ]
+];
+----------------------------------------
+
+Code Block 30 ():
+$data = [
+    'title' => 'CakePHP For the Win',
+    'body' => 'Baking with CakePHP makes web development fun!',
+    'user_id' => 1,
+    'user' => [
+        'username' => 'mark',
+    ],
+    'comments' => [
+        ['body' => 'The CakePHP features are outstanding'],
+        ['body' => 'CakePHP performance is terrific!'],
+    ]
+];
+----------------------------------------
+
+Code Block 31 ():
+newEntity()
+----------------------------------------
+
+Code Block 32 ():
+'validate' => false
+----------------------------------------
+
+Code Block 33 (shiki):
+$entity = $articles->newEntity($data, ['validate' => false]);
+----------------------------------------
+
+Code Block 34 ():
+$entity = $articles->newEntity($data, ['validate' => false]);
+----------------------------------------
+
+Code Block 35 (shiki):
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+
+// New entity with nested associations
+$entity = $articles->newEntity($this->request->getData(), [
+    'associated' => [
+        'Tags', 'Comments' => ['associated' => ['Users']],
+    ]
+]);
+----------------------------------------
+
+Code Block 36 ():
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+
+// New entity with nested associations
+$entity = $articles->newEntity($this->request->getData(), [
+    'associated' => [
+        'Tags', 'Comments' => ['associated' => ['Users']],
+    ]
+]);
+----------------------------------------
+
+Code Block 37 (shiki):
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+
+// New entity with nested associations using dot notation
+$entity = $articles->newEntity($this->request->getData(), [
+    'associated' => ['Tags', 'Comments.Users'],
+]);
+----------------------------------------
+
+Code Block 38 ():
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+
+// New entity with nested associations using dot notation
+$entity = $articles->newEntity($this->request->getData(), [
+    'associated' => ['Tags', 'Comments.Users'],
+]);
+----------------------------------------
+
+Code Block 39 (shiki):
+$entity = $articles->newEntity($data, ['associated' => []]);
+// or...
+$entity = $articles->patchEntity($entity, $data, ['associated' => []]);
+----------------------------------------
+
+Code Block 40 ():
+$entity = $articles->newEntity($data, ['associated' => []]);
+// or...
+$entity = $articles->patchEntity($entity, $data, ['associated' => []]);
+----------------------------------------
+
+Code Block 41 (shiki):
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+
+// Bypass validation on Tags association and
+// Designate 'signup' validation set for Comments.Users
+$entity = $articles->newEntity($this->request->getData(), [
+    'associated' => [
+        'Tags' => ['validate' => false],
+        'Comments.Users' => ['validate' => 'signup'],
+    ],
+]);
+----------------------------------------
+
+Code Block 42 ():
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+
+// Bypass validation on Tags association and
+// Designate 'signup' validation set for Comments.Users
+$entity = $articles->newEntity($this->request->getData(), [
+    'associated' => [
+        'Tags' => ['validate' => false],
+        'Comments.Users' => ['validate' => 'signup'],
+    ],
+]);
+----------------------------------------
+
+Code Block 43 ():
+newEntity()
+----------------------------------------
+
+Code Block 44 ():
+patchEntity()
+----------------------------------------
+
+Code Block 45 ():
+newEntity()
+----------------------------------------
+
+Code Block 46 (shiki):
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'user_id' => 1,
+    'tags' => [
+        ['name' => 'CakePHP'],
+        ['name' => 'Internet'],
+    ],
+];
+----------------------------------------
+
+Code Block 47 ():
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'user_id' => 1,
+    'tags' => [
+        ['name' => 'CakePHP'],
+        ['name' => 'Internet'],
+    ],
+];
+----------------------------------------
+
+Code Block 48 (shiki):
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'user_id' => 1,
+    'tags' => [
+        '_ids' => [1, 2, 3, 4],
+    ],
+];
+----------------------------------------
+
+Code Block 49 ():
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'user_id' => 1,
+    'tags' => [
+        '_ids' => [1, 2, 3, 4],
+    ],
+];
+----------------------------------------
+
+Code Block 50 (shiki):
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'user_id' => 1,
+    'tags' => [
+        ['name' => 'A new tag'],
+        ['name' => 'Another new tag'],
+        ['id' => 5],
+        ['id' => 21],
+    ],
+];
+----------------------------------------
+
+Code Block 51 ():
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'user_id' => 1,
+    'tags' => [
+        ['name' => 'A new tag'],
+        ['name' => 'Another new tag'],
+        ['id' => 5],
+        ['id' => 21],
+    ],
+];
+----------------------------------------
+
+Code Block 52 ():
+onlyIds
+----------------------------------------
+
+Code Block 53 (shiki):
+$result = $articles->patchEntity($entity, $data, [
+    'associated' => ['Tags' => ['onlyIds' => true]],
+]);
+----------------------------------------
+
+Code Block 54 ():
+$result = $articles->patchEntity($entity, $data, [
+    'associated' => ['Tags' => ['onlyIds' => true]],
+]);
+----------------------------------------
+
+Code Block 55 ():
+_ids
+----------------------------------------
+
+Code Block 56 (shiki):
+$data = [
+    'title' => 'My Title',
+    'body' => 'The text',
+    'comments' => [
+        ['id' => 1, 'comment' => 'Update the first comment'],
+        ['id' => 2, 'comment' => 'Update the second comment'],
+        ['comment' => 'Create a new comment'],
+    ],
+];
+----------------------------------------
+
+Code Block 57 ():
+$data = [
+    'title' => 'My Title',
+    'body' => 'The text',
+    'comments' => [
+        ['id' => 1, 'comment' => 'Update the first comment'],
+        ['id' => 2, 'comment' => 'Update the second comment'],
+        ['comment' => 'Create a new comment'],
+    ],
+];
+----------------------------------------
+
+Code Block 58 ():
+_ids
+----------------------------------------
+
+Code Block 59 (shiki):
+$data = [
+    'title' => 'My new article',
+    'body' => 'The text',
+    'user_id' => 1,
+    'comments' => [
+        '_ids' => [1, 2, 3, 4],
+    ],
+];
+----------------------------------------
+
+Code Block 60 ():
+$data = [
+    'title' => 'My new article',
+    'body' => 'The text',
+    'user_id' => 1,
+    'comments' => [
+        '_ids' => [1, 2, 3, 4],
+    ],
+];
+----------------------------------------
+
+Code Block 61 ():
+onlyIds
+----------------------------------------
+
+Code Block 62 ():
+_ids
+----------------------------------------
+
+Code Block 63 ():
+newEntities()
+----------------------------------------
+
+Code Block 64 (shiki):
+// In a controller.
+
+$articles = $this->fetchTable('Articles');
+$entities = $articles->newEntities($this->request->getData());
+----------------------------------------
+
+Code Block 65 ():
+// In a controller.
+
+$articles = $this->fetchTable('Articles');
+$entities = $articles->newEntities($this->request->getData());
+----------------------------------------
+
+Code Block 66 (shiki):
+$data = [
+    [
+        'title' => 'First post',
+        'published' => 1,
+    ],
+    [
+        'title' => 'Second post',
+        'published' => 1,
+    ],
+];
+----------------------------------------
+
+Code Block 67 ():
+$data = [
+    [
+        'title' => 'First post',
+        'published' => 1,
+    ],
+    [
+        'title' => 'Second post',
+        'published' => 1,
+    ],
+];
+----------------------------------------
+
+Code Block 68 (shiki):
+// In a controller.
+foreach ($entities as $entity) {
+    // Save entity
+    $articles->save($entity);
+}
+----------------------------------------
+
+Code Block 69 ():
+// In a controller.
+foreach ($entities as $entity) {
+    // Save entity
+    $articles->save($entity);
+}
+----------------------------------------
+
+Code Block 70 ():
+saveMany()
+----------------------------------------
+
+Code Block 71 ():
+saveManyOrFail()
+----------------------------------------
+
+Code Block 72 (shiki):
+// Get a boolean indicating success
+$articles->saveMany($entities);
+
+// Get a PersistenceFailedException if any records fail to save.
+$articles->saveManyOrFail($entities);
+----------------------------------------
+
+Code Block 73 ():
+// Get a boolean indicating success
+$articles->saveMany($entities);
+
+// Get a PersistenceFailedException if any records fail to save.
+$articles->saveManyOrFail($entities);
+----------------------------------------
+
+Code Block 74 ():
+newEntity()
+----------------------------------------
+
+Code Block 75 ():
+id
+----------------------------------------
+
+Code Block 76 ():
+_accessible
+----------------------------------------
+
+Code Block 77 ():
+accessibleFields
+----------------------------------------
+
+Code Block 78 (shiki):
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+$entity = $articles->newEntity($this->request->getData(), [
+    'associated' => [
+        'Tags', 'Comments' => [
+            'associated' => [
+                'Users' => [
+                    'accessibleFields' => ['id' => true],
+                ],
+            ],
+        ],
+    ],
+]);
+----------------------------------------
+
+Code Block 79 ():
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+$entity = $articles->newEntity($this->request->getData(), [
+    'associated' => [
+        'Tags', 'Comments' => [
+            'associated' => [
+                'Users' => [
+                    'accessibleFields' => ['id' => true],
+                ],
+            ],
+        ],
+    ],
+]);
+----------------------------------------
+
+Code Block 80 ():
+$_accessible
+----------------------------------------
+
+Code Block 81 ():
+patchEntity()
+----------------------------------------
+
+Code Block 82 (shiki):
+// In a controller.
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->get(1);
+$articles->patchEntity($article, $this->request->getData());
+$articles->save($article);
+----------------------------------------
+
+Code Block 83 ():
+// In a controller.
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->get(1);
+$articles->patchEntity($article, $this->request->getData());
+$articles->save($article);
+----------------------------------------
+
+Code Block 84 ():
+newEntity()
+----------------------------------------
+
+Code Block 85 ():
+patchEntity
+----------------------------------------
+
+Code Block 86 ():
+validate
+----------------------------------------
+
+Code Block 87 (shiki):
+// In a controller.
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->get(1);
+$articles->patchEntity($article, $data, ['validate' => false]);
+----------------------------------------
+
+Code Block 88 ():
+// In a controller.
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->get(1);
+$articles->patchEntity($article, $data, ['validate' => false]);
+----------------------------------------
+
+Code Block 89 (shiki):
+$articles->patchEntity($article, $this->request->getData(), [
+    'validate' => 'custom',
+    'associated' => ['Tags', 'Comments.Users' => ['validate' => 'signup']],
+]);
+----------------------------------------
+
+Code Block 90 ():
+$articles->patchEntity($article, $this->request->getData(), [
+    'validate' => 'custom',
+    'associated' => ['Tags', 'Comments.Users' => ['validate' => 'signup']],
+]);
+----------------------------------------
+
+Code Block 91 ():
+patchEntity()
+----------------------------------------
+
+Code Block 92 (shiki):
+// In a controller.
+$associated = ['Tags', 'Comments.Users'];
+// or using nested arrays
+$associated = ['Tags', 'Comments' => ['associated' => ['Users']]];
+$article = $articles->get(1, ['contain' => $associated]);
+$articles->patchEntity($article, $this->request->getData(), [
+    'associated' => $associated,
+]);
+$articles->save($article);
+----------------------------------------
+
+Code Block 93 ():
+// In a controller.
+$associated = ['Tags', 'Comments.Users'];
+// or using nested arrays
+$associated = ['Tags', 'Comments' => ['associated' => ['Users']]];
+$article = $articles->get(1, ['contain' => $associated]);
+$articles->patchEntity($article, $this->request->getData(), [
+    'associated' => $associated,
+]);
+$articles->save($article);
+----------------------------------------
+
+Code Block 94 (shiki):
+$data = [
+    'title' => 'My title',
+    'user' => [
+        'username' => 'mark',
+    ],
+];
+----------------------------------------
+
+Code Block 95 ():
+$data = [
+    'title' => 'My title',
+    'user' => [
+        'username' => 'mark',
+    ],
+];
+----------------------------------------
+
+Code Block 96 (shiki):
+// In a controller.
+$entity = $articles->patchEntity(new Article, $data);
+echo $entity->user->username; // Echoes 'mark'
+----------------------------------------
+
+Code Block 97 ():
+// In a controller.
+$entity = $articles->patchEntity(new Article, $data);
+echo $entity->user->username; // Echoes 'mark'
+----------------------------------------
+
+Code Block 98 (shiki):
+// in the Product Entity
+protected array $_accessible = [
+    // .. other properties
+    'tags' => true,
+];
+----------------------------------------
+
+Code Block 99 ():
+// in the Product Entity
+protected array $_accessible = [
+    // .. other properties
+    'tags' => true,
+];
+----------------------------------------
+
+Code Block 100 ():
+patchEntity()
+----------------------------------------
+
+Code Block 101 ():
+patchEntities()
+----------------------------------------
+
+Code Block 102 ():
+save()
+----------------------------------------
+
+Code Block 103 (shiki):
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'comments' => [
+        ['body' => 'First comment', 'id' => 1],
+        ['body' => 'Second comment', 'id' => 2],
+    ],
+];
+$entity = $articles->newEntity($data);
+$articles->save($entity);
+
+$newData = [
+    'comments' => [
+        ['body' => 'Changed comment', 'id' => 1],
+        ['body' => 'A new comment'],
+    ],
+];
+$articles->patchEntity($entity, $newData);
+$articles->save($entity);
+----------------------------------------
+
+Code Block 104 ():
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'comments' => [
+        ['body' => 'First comment', 'id' => 1],
+        ['body' => 'Second comment', 'id' => 2],
+    ],
+];
+$entity = $articles->newEntity($data);
+$articles->save($entity);
+
+$newData = [
+    'comments' => [
+        ['body' => 'Changed comment', 'id' => 1],
+        ['body' => 'A new comment'],
+    ],
+];
+$articles->patchEntity($entity, $newData);
+$articles->save($entity);
+----------------------------------------
+
+Code Block 105 (shiki):
+[
+    'title' => 'My title',
+    'body' => 'The text',
+    'comments' => [
+        ['body' => 'Changed comment', 'id' => 1],
+        ['body' => 'A new comment'],
+    ],
+];
+----------------------------------------
+
+Code Block 106 ():
+[
+    'title' => 'My title',
+    'body' => 'The text',
+    'comments' => [
+        ['body' => 'Changed comment', 'id' => 1],
+        ['body' => 'A new comment'],
+    ],
+];
+----------------------------------------
+
+Code Block 107 ():
+$newData
+----------------------------------------
+
+Code Block 108 (shiki):
+// In a controller.
+use Cake\Collection\Collection;
+
+$comments = $this->fetchTable('Comments');
+$present = (new Collection($entity->comments))->extract('id')->filter()->toList();
+$comments->deleteAll([
+    'article_id' => $article->id,
+    'id NOT IN' => $present,
+]);
+----------------------------------------
+
+Code Block 109 ():
+// In a controller.
+use Cake\Collection\Collection;
+
+$comments = $this->fetchTable('Comments');
+$present = (new Collection($entity->comments))->extract('id')->filter()->toList();
+$comments->deleteAll([
+    'article_id' => $article->id,
+    'id NOT IN' => $present,
+]);
+----------------------------------------
+
+Code Block 110 (shiki):
+// In a controller.
+
+$articles = $this->fetchTable('Articles');
+$list = $articles->find('popular')->toList();
+$patched = $articles->patchEntities($list, $this->request->getData());
+foreach ($patched as $entity) {
+    $articles->save($entity);
+}
+----------------------------------------
+
+Code Block 111 ():
+// In a controller.
+
+$articles = $this->fetchTable('Articles');
+$list = $articles->find('popular')->toList();
+$patched = $articles->patchEntities($list, $this->request->getData());
+foreach ($patched as $entity) {
+    $articles->save($entity);
+}
+----------------------------------------
+
+Code Block 112 ():
+patchEntity()
+----------------------------------------
+
+Code Block 113 (shiki):
+// In a controller.
+$patched = $articles->patchEntities(
+    $list,
+    $this->request->getData(),
+    ['associated' => ['Tags', 'Comments.Users']],
+);
+----------------------------------------
+
+Code Block 114 ():
+// In a controller.
+$patched = $articles->patchEntities(
+    $list,
+    $this->request->getData(),
+    ['associated' => ['Tags', 'Comments.Users']],
+);
+----------------------------------------
+
+Code Block 115 ():
+Model.beforeMarshal
+----------------------------------------
+
+Code Block 116 (shiki):
+// Include use statements at the top of your file.
+use Cake\Event\EventInterface;
+use ArrayObject;
+
+// In a table or behavior class
+public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
+{
+    if (isset($data['username'])) {
+        $data['username'] = mb_strtolower($data['username']);
+    }
+}
+----------------------------------------
+
+Code Block 117 ():
+// Include use statements at the top of your file.
+use Cake\Event\EventInterface;
+use ArrayObject;
+
+// In a table or behavior class
+public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
+{
+    if (isset($data['username'])) {
+        $data['username'] = mb_strtolower($data['username']);
+    }
+}
+----------------------------------------
+
+Code Block 118 ():
+$data
+----------------------------------------
+
+Code Block 119 ():
+ArrayObject
+----------------------------------------
+
+Code Block 120 ():
+beforeMarshal
+----------------------------------------
+
+Code Block 121 ():
+Model.beforeMarshal
+----------------------------------------
+
+Code Block 122 ():
+beforeMarshal
+----------------------------------------
+
+Code Block 123 (shiki):
+// Include use statements at the top of your file.
+use Cake\Event\EventInterface;
+use ArrayObject;
+
+// In a table or behavior class
+public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
+{
+    foreach ($data as $key => $value) {
+        if (is_string($value)) {
+            $data[$key] = trim($value);
+        }
+    }
+}
+----------------------------------------
+
+Code Block 124 ():
+// Include use statements at the top of your file.
+use Cake\Event\EventInterface;
+use ArrayObject;
+
+// In a table or behavior class
+public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
+{
+    foreach ($data as $key => $value) {
+        if (is_string($value)) {
+            $data[$key] = trim($value);
+        }
+    }
+}
+----------------------------------------
+
+Code Block 125 ():
+beforeMarshal
+----------------------------------------
+
+Code Block 126 ():
+Model.afterMarshal
+----------------------------------------
+
+Code Block 127 (shiki):
+// Include use statements at the top of your file.
+use Cake\Event\EventInterface;
+use Cake\ORM\EntityInterface;
+use ArrayObject;
+
+// In a table or behavior class
+public function afterMarshal(
+    EventInterface $event,
+    EntityInterface $entity,
+    ArrayObject $data,
+    ArrayObject $options,
+): void {
+    // Don't accept people who have a name starting with J on the 20th
+    // of each month.
+    if (mb_substr($entity->name, 1) === 'J' && (int)date('d') === 20) {
+        $entity->setError('name', 'No J people today sorry.');
+    }
+}
+----------------------------------------
+
+Code Block 128 ():
+// Include use statements at the top of your file.
+use Cake\Event\EventInterface;
+use Cake\ORM\EntityInterface;
+use ArrayObject;
+
+// In a table or behavior class
+public function afterMarshal(
+    EventInterface $event,
+    EntityInterface $entity,
+    ArrayObject $data,
+    ArrayObject $options,
+): void {
+    // Don't accept people who have a name starting with J on the 20th
+    // of each month.
+    if (mb_substr($entity->name, 1) === 'J' && (int)date('d') === 20) {
+        $entity->setError('name', 'No J people today sorry.');
+    }
+}
+----------------------------------------
+
+Code Block 129 ():
+user_id
+----------------------------------------
+
+Code Block 130 (shiki):
+// Contains ['user_id' => 100, 'title' => 'Hacked!'];
+$data = $this->request->getData();
+$entity = $this->patchEntity($entity, $data);
+$this->save($entity);
+----------------------------------------
+
+Code Block 131 ():
+// Contains ['user_id' => 100, 'title' => 'Hacked!'];
+$data = $this->request->getData();
+$entity = $this->patchEntity($entity, $data);
+$this->save($entity);
+----------------------------------------
+
+Code Block 132 ():
+fields
+----------------------------------------
+
+Code Block 133 (shiki):
+// Contains ['user_id' => 100, 'title' => 'Hacked!'];
+$data = $this->request->getData();
+
+// Only allow title to be changed
+$entity = $this->patchEntity($entity, $data, [
+    'fields' => ['title'],
+]);
+$this->save($entity);
+----------------------------------------
+
+Code Block 134 ():
+// Contains ['user_id' => 100, 'title' => 'Hacked!'];
+$data = $this->request->getData();
+
+// Only allow title to be changed
+$entity = $this->patchEntity($entity, $data, [
+    'fields' => ['title'],
+]);
+$this->save($entity);
+----------------------------------------
+
+Code Block 135 (shiki):
+// Only allow changing the title and tags
+// and the tag name is the only column that can be set
+$entity = $this->patchEntity($entity, $data, [
+    'fields' => ['title', 'tags'],
+    'associated' => ['Tags' => ['fields' => ['name']]],
+]);
+$this->save($entity);
+----------------------------------------
+
+Code Block 136 ():
+// Only allow changing the title and tags
+// and the tag name is the only column that can be set
+$entity = $this->patchEntity($entity, $data, [
+    'fields' => ['title', 'tags'],
+    'associated' => ['Tags' => ['fields' => ['name']]],
+]);
+$this->save($entity);
+----------------------------------------
+
+Code Block 137 ():
+fields
+----------------------------------------
+
+Code Block 138 ():
+strictFields
+----------------------------------------
+
+Code Block 139 ():
+patchEntity()
+----------------------------------------
+
+Code Block 140 ():
+newEntity()
+----------------------------------------
+
+Code Block 141 (shiki):
+// Contains ['user_id' => 100, 'title' => 'Hacked!'];
+$data = $this->request->getData();
+
+// Only title will be validated and updated.
+$entity = $this->patchEntity($entity, $data, [
+    'fields' => ['title'],
+    'strictFields' => true,
+]);
+$this->save($entity);
+----------------------------------------
+
+Code Block 142 ():
+// Contains ['user_id' => 100, 'title' => 'Hacked!'];
+$data = $this->request->getData();
+
+// Only title will be validated and updated.
+$entity = $this->patchEntity($entity, $data, [
+    'fields' => ['title'],
+    'strictFields' => true,
+]);
+$this->save($entity);
+----------------------------------------
+
+Code Block 143 ():
+strictFields
+----------------------------------------
+
+Code Block 144 ():
+method
+----------------------------------------
+
+Code Block 145 ():
+newEntity()
+----------------------------------------
+
+Code Block 146 ():
+save()
+----------------------------------------
+
+Code Block 147 (shiki):
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->newEntity($this->request->getData());
+if ($articles->save($article)) {
+    // ...
+}
+----------------------------------------
+
+Code Block 148 ():
+// In a controller
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->newEntity($this->request->getData());
+if ($articles->save($article)) {
+    // ...
+}
+----------------------------------------
+
+Code Block 149 ():
+isNew()
+----------------------------------------
+
+Code Block 150 ():
+isNew()
+----------------------------------------
+
+Code Block 151 ():
+true
+----------------------------------------
+
+Code Block 152 ():
+'checkExisting' => false
+----------------------------------------
+
+Code Block 153 ():
+$options
+----------------------------------------
+
+Code Block 154 (shiki):
+$articles->save($article, ['checkExisting' => false]);
+----------------------------------------
+
+Code Block 155 ():
+$articles->save($article, ['checkExisting' => false]);
+----------------------------------------
+
+Code Block 156 (shiki):
+$articles = $this->fetchTable('Articles');
+$article = $articles->find('all')->where(['id' => 2])->first();
+
+$article->title = 'My new title';
+$articles->save($article);
+----------------------------------------
+
+Code Block 157 ():
+$articles = $this->fetchTable('Articles');
+$article = $articles->find('all')->where(['id' => 2])->first();
+
+$article->title = 'My new title';
+$articles->save($article);
+----------------------------------------
+
+Code Block 158 ():
+save()
+----------------------------------------
+
+Code Block 159 (shiki):
+UPDATE articles SET title = 'My new title' WHERE id = 2;
+----------------------------------------
+
+Code Block 160 ():
+UPDATE articles SET title = 'My new title' WHERE id = 2;
+----------------------------------------
+
+Code Block 161 (shiki):
+INSERT INTO articles (title) VALUES ('My new title');
+----------------------------------------
+
+Code Block 162 ():
+INSERT INTO articles (title) VALUES ('My new title');
+----------------------------------------
+
+Code Block 163 ():
+Model.beforeRules
+----------------------------------------
+
+Code Block 164 ():
+false
+----------------------------------------
+
+Code Block 165 ():
+create
+----------------------------------------
+
+Code Block 166 ():
+update
+----------------------------------------
+
+Code Block 167 ():
+Model.afterRules
+----------------------------------------
+
+Code Block 168 ():
+Model.beforeSave
+----------------------------------------
+
+Code Block 169 ():
+false
+----------------------------------------
+
+Code Block 170 ():
+Model.afterSave
+----------------------------------------
+
+Code Block 171 ():
+Model.afterSaveCommit
+----------------------------------------
+
+Code Block 172 ():
+save()
+----------------------------------------
+
+Code Block 173 ():
+false
+----------------------------------------
+
+Code Block 174 ():
+$options
+----------------------------------------
+
+Code Block 175 (shiki):
+// In a controller or table method.
+$articles->save($article, ['checkRules' => false, 'atomic' => false]);
+----------------------------------------
+
+Code Block 176 ():
+// In a controller or table method.
+$articles->save($article, ['checkRules' => false, 'atomic' => false]);
+----------------------------------------
+
+Code Block 177 ():
+associated
+----------------------------------------
+
+Code Block 178 (shiki):
+// In a controller.
+
+// Only save the comments association
+$articles->save($entity, ['associated' => ['Comments']]);
+----------------------------------------
+
+Code Block 179 ():
+// In a controller.
+
+// Only save the comments association
+$articles->save($entity, ['associated' => ['Comments']]);
+----------------------------------------
+
+Code Block 180 (shiki):
+// Save the company, the employees and related addresses for each of them.
+$companies->save($entity, ['associated' => ['Employees.Addresses']]);
+----------------------------------------
+
+Code Block 181 ():
+// Save the company, the employees and related addresses for each of them.
+$companies->save($entity, ['associated' => ['Employees.Addresses']]);
+----------------------------------------
+
+Code Block 182 (shiki):
+$companies->save($entity, [
+    'associated' => [
+    'Employees',
+    'Employees.Addresses',
+    ]
+]);
+----------------------------------------
+
+Code Block 183 ():
+$companies->save($entity, [
+    'associated' => [
+    'Employees',
+    'Employees.Addresses',
+    ]
+]);
+----------------------------------------
+
+Code Block 184 ():
+setDirty()
+----------------------------------------
+
+Code Block 185 (shiki):
+$company->author->name = 'Master Chef';
+$company->setDirty('author', true);
+----------------------------------------
+
+Code Block 186 ():
+$company->author->name = 'Master Chef';
+$company->setDirty('author', true);
+----------------------------------------
+
+Code Block 187 (shiki):
+// In a controller.
+$data = [
+    'title' => 'First Post',
+    'user' => [
+        'id' => 1,
+        'username' => 'mark',
+    ],
+];
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->newEntity($data, [
+    'associated' => ['Users'],
+]);
+
+$articles->save($article);
+----------------------------------------
+
+Code Block 188 ():
+// In a controller.
+$data = [
+    'title' => 'First Post',
+    'user' => [
+        'id' => 1,
+        'username' => 'mark',
+    ],
+];
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->newEntity($data, [
+    'associated' => ['Users'],
+]);
+
+$articles->save($article);
+----------------------------------------
+
+Code Block 189 (shiki):
+// In a controller.
+$data = [
+    'id' => 1,
+    'username' => 'cakephp',
+    'profile' => [
+        'twitter' => '@cakephp',
+    ],
+];
+
+$users = $this->fetchTable('Users');
+$user = $users->newEntity($data, [
+    'associated' => ['Profiles'],
+]);
+$users->save($user);
+----------------------------------------
+
+Code Block 190 ():
+// In a controller.
+$data = [
+    'id' => 1,
+    'username' => 'cakephp',
+    'profile' => [
+        'twitter' => '@cakephp',
+    ],
+];
+
+$users = $this->fetchTable('Users');
+$user = $users->newEntity($data, [
+    'associated' => ['Profiles'],
+]);
+$users->save($user);
+----------------------------------------
+
+Code Block 191 (shiki):
+// In a controller.
+$data = [
+    'title' => 'First Post',
+    'comments' => [
+        ['body' => 'Best post ever'],
+        ['body' => 'I really like this.'],
+    ]
+];
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->newEntity($data, [
+    'associated' => ['Comments'],
+]);
+$articles->save($article);
+----------------------------------------
+
+Code Block 192 ():
+// In a controller.
+$data = [
+    'title' => 'First Post',
+    'comments' => [
+        ['body' => 'Best post ever'],
+        ['body' => 'I really like this.'],
+    ]
+];
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->newEntity($data, [
+    'associated' => ['Comments'],
+]);
+$articles->save($article);
+----------------------------------------
+
+Code Block 193 ():
+append
+----------------------------------------
+
+Code Block 194 ():
+saveStrategy
+----------------------------------------
+
+Code Block 195 (shiki):
+$article->comments[] = $comment;
+$article->setDirty('comments', true);
+----------------------------------------
+
+Code Block 196 ():
+$article->comments[] = $comment;
+$article->setDirty('comments', true);
+----------------------------------------
+
+Code Block 197 ():
+setDirty()
+----------------------------------------
+
+Code Block 198 (shiki):
+$article->comments = [];
+----------------------------------------
+
+Code Block 199 ():
+$article->comments = [];
+----------------------------------------
+
+Code Block 200 ():
+$article->comments[] = $comment;
+----------------------------------------
+
+Code Block 201 (shiki):
+// In a controller.
+$data = [
+    'title' => 'First Post',
+    'tags' => [
+        ['tag' => 'CakePHP'],
+        ['tag' => 'Framework'],
+    ]
+];
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->newEntity($data, [
+    'associated' => ['Tags'],
+]);
+$articles->save($article);
+----------------------------------------
+
+Code Block 202 ():
+// In a controller.
+$data = [
+    'title' => 'First Post',
+    'tags' => [
+        ['tag' => 'CakePHP'],
+        ['tag' => 'Framework'],
+    ]
+];
+
+$articles = $this->fetchTable('Articles');
+$article = $articles->newEntity($data, [
+    'associated' => ['Tags'],
+]);
+$articles->save($article);
+----------------------------------------
+
+Code Block 203 ():
+newEntity()
+----------------------------------------
+
+Code Block 204 ():
+newEntities()
+----------------------------------------
+
+Code Block 205 ():
+_ids
+----------------------------------------
+
+Code Block 206 ():
+_ids
+----------------------------------------
+
+Code Block 207 ():
+saveStrategy
+----------------------------------------
+
+Code Block 208 ():
+replace
+----------------------------------------
+
+Code Block 209 (shiki):
+$article->tags[] = $tag;
+$article->setDirty('tags', true);
+----------------------------------------
+
+Code Block 210 ():
+$article->tags[] = $tag;
+$article->setDirty('tags', true);
+----------------------------------------
+
+Code Block 211 ():
+setDirty()
+----------------------------------------
+
+Code Block 212 ():
+link()
+----------------------------------------
+
+Code Block 213 (shiki):
+$article = $this->Articles->get($articleId);
+$user = $this->Users->get($userId);
+
+$this->Articles->Users->link($article, [$user]);
+----------------------------------------
+
+Code Block 214 ():
+$article = $this->Articles->get($articleId);
+$user = $this->Users->get($userId);
+
+$this->Articles->Users->link($article, [$user]);
+----------------------------------------
+
+Code Block 215 ():
+vote_type
+----------------------------------------
+
+Code Block 216 ():
+vote_type
+----------------------------------------
+
+Code Block 217 ():
+upvote
+----------------------------------------
+
+Code Block 218 ():
+downvote
+----------------------------------------
+
+Code Block 219 ():
+vote_type
+----------------------------------------
+
+Code Block 220 ():
+_joinData
+----------------------------------------
+
+Code Block 221 ():
+link()
+----------------------------------------
+
+Code Block 222 (shiki):
+$article = $this->Articles->get($articleId);
+$user = $this->Users->get($userId);
+
+$user->_joinData = new Entity(['vote_type' => $voteType], ['markNew' => true]);
+$this->Articles->Users->link($article, [$user]);
+----------------------------------------
+
+Code Block 223 ():
+$article = $this->Articles->get($articleId);
+$user = $this->Users->get($userId);
+
+$user->_joinData = new Entity(['vote_type' => $voteType], ['markNew' => true]);
+$this->Articles->Users->link($article, [$user]);
+----------------------------------------
+
+Code Block 224 ():
+_joinData
+----------------------------------------
+
+Code Block 225 ():
+id | student_id | course_id | days_attended | grade
+----------------------------------------
+
+Code Block 226 ():
+id | student_id | course_id | days_attended | grade
+----------------------------------------
+
+Code Block 227 ():
+_joinData
+----------------------------------------
+
+Code Block 228 (shiki):
+$student->courses[0]->_joinData->grade = 80.12;
+$student->courses[0]->_joinData->days_attended = 30;
+
+$studentsTable->save($student);
+----------------------------------------
+
+Code Block 229 ():
+$student->courses[0]->_joinData->grade = 80.12;
+$student->courses[0]->_joinData->days_attended = 30;
+
+$studentsTable->save($student);
+----------------------------------------
+
+Code Block 230 ():
+_joinData
+----------------------------------------
+
+Code Block 231 ():
+_joinData
+----------------------------------------
+
+Code Block 232 ():
+newEntity()
+----------------------------------------
+
+Code Block 233 (shiki):
+$coursesMembershipsTable = $this->fetchTable('CoursesMemberships');
+$student->courses[0]->_joinData = $coursesMembershipsTable->newEntity([
+    'grade' => 80.12,
+    'days_attended' => 30,
+]);
+
+$studentsTable->save($student);
+----------------------------------------
+
+Code Block 234 ():
+$coursesMembershipsTable = $this->fetchTable('CoursesMemberships');
+$student->courses[0]->_joinData = $coursesMembershipsTable->newEntity([
+    'grade' => 80.12,
+    'days_attended' => 30,
+]);
+
+$studentsTable->save($student);
+----------------------------------------
+
+Code Block 235 ():
+_joinData
+----------------------------------------
+
+Code Block 236 (shiki):
+$data = [
+    'first_name' => 'Sally',
+    'last_name' => 'Parker',
+    'courses' => [
+        [
+            'id' => 10,
+            '_joinData' => [
+                'grade' => 80.12,
+                'days_attended' => 30,
+            ]
+        ],
+        // Other courses.
+    ]
+];
+$student = $this->Students->newEntity($data, [
+    'associated' => ['Courses._joinData'],
+]);
+----------------------------------------
+
+Code Block 237 ():
+$data = [
+    'first_name' => 'Sally',
+    'last_name' => 'Parker',
+    'courses' => [
+        [
+            'id' => 10,
+            '_joinData' => [
+                'grade' => 80.12,
+                'days_attended' => 30,
+            ]
+        ],
+        // Other courses.
+    ]
+];
+$student = $this->Students->newEntity($data, [
+    'associated' => ['Courses._joinData'],
+]);
+----------------------------------------
+
+Code Block 238 ():
+FormHelper
+----------------------------------------
+
+Code Block 239 ():
+_joinData
+----------------------------------------
+
+Code Block 240 ():
+setJunctionProperty()
+----------------------------------------
+
+Code Block 241 (shiki):
+// in StudentsTable::initialize()
+$this->belongsToMany('Courses')
+    ->setJunctionProperty('course_mark');
+----------------------------------------
+
+Code Block 242 ():
+// in StudentsTable::initialize()
+$this->belongsToMany('Courses')
+    ->setJunctionProperty('course_mark');
+----------------------------------------
+
+Code Block 243 (shiki):
+use Cake\Database\TypeFactory;
+
+TypeFactory::map('json', 'Cake\Database\Type\JsonType');
+
+// In src/Model/Table/UsersTable.php
+
+class UsersTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        parent::initialize($config);
+
+        $this->getSchema()->setColumnType('preferences', 'json');
+    }
+}
+----------------------------------------
+
+Code Block 244 ():
+use Cake\Database\TypeFactory;
+
+TypeFactory::map('json', 'Cake\Database\Type\JsonType');
+
+// In src/Model/Table/UsersTable.php
+
+class UsersTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        parent::initialize($config);
+
+        $this->getSchema()->setColumnType('preferences', 'json');
+    }
+}
+----------------------------------------
+
+Code Block 245 ():
+preferences
+----------------------------------------
+
+Code Block 246 ():
+json
+----------------------------------------
+
+Code Block 247 (shiki):
+$user = new User([
+    'preferences' => [
+        'sports' => ['football', 'baseball'],
+        'books' => ['Mastering PHP', 'Hamlet'],
+    ]
+]);
+$usersTable->save($user);
+----------------------------------------
+
+Code Block 248 ():
+$user = new User([
+    'preferences' => [
+        'sports' => ['football', 'baseball'],
+        'books' => ['Mastering PHP', 'Hamlet'],
+    ]
+]);
+$usersTable->save($user);
+----------------------------------------
+
+Code Block 249 ():
+method
+----------------------------------------
+
+Code Block 250 ():
+Cake\ORM\Exception\PersistenceFailedException
+----------------------------------------
+
+Code Block 251 ():
+PersistenceFailedException
+----------------------------------------
+
+Code Block 252 ():
+Cake\ORM\Exception\PersistenceFailedException::getEntity()
+----------------------------------------
+
+Code Block 253 (shiki):
+try {
+    $table->saveOrFail($entity);
+} catch (\Cake\ORM\Exception\PersistenceFailedException $e) {
+    echo $e->getEntity();
+}
+----------------------------------------
+
+Code Block 254 ():
+try {
+    $table->saveOrFail($entity);
+} catch (\Cake\ORM\Exception\PersistenceFailedException $e) {
+    echo $e->getEntity();
+}
+----------------------------------------
+
+Code Block 255 ():
+Cake\ORM\Table::save()
+----------------------------------------
+
+Code Block 256 ():
+method
+----------------------------------------
+
+Code Block 257 ():
+$search
+----------------------------------------
+
+Code Block 258 ():
+$search
+----------------------------------------
+
+Code Block 259 ():
+$callback
+----------------------------------------
+
+Code Block 260 (shiki):
+$record = $table->findOrCreate(
+    ['email' => '[email protected]'],
+    function ($entity) use ($otherData) {
+        // Only called when a new record is created.
+        $entity->name = $otherData['name'];
+    }
+);
+----------------------------------------
+
+Code Block 261 ():
+$record = $table->findOrCreate(
+    ['email' => '[email protected]'],
+    function ($entity) use ($otherData) {
+        // Only called when a new record is created.
+        $entity->name = $otherData['name'];
+    }
+);
+----------------------------------------
+
+Code Block 262 (shiki):
+$otherData = ['name' => 'bobbi'];
+$record = $table->findOrCreate(
+    ['email' => '[email protected]'],
+    $otherData,
+);
+----------------------------------------
+
+Code Block 263 ():
+$otherData = ['name' => 'bobbi'];
+$record = $table->findOrCreate(
+    ['email' => '[email protected]'],
+    $otherData,
+);
+----------------------------------------
+
+Code Block 264 ():
+$search
+----------------------------------------
+
+Code Block 265 ():
+SelectQuery
+----------------------------------------
+
+Code Block 266 ():
+SelectQuery
+----------------------------------------
+
+Code Block 267 ():
+atomic
+----------------------------------------
+
+Code Block 268 ():
+defaults
+----------------------------------------
+
+Code Block 269 ():
+false
+----------------------------------------
+
+Code Block 270 ():
+$search
+----------------------------------------
+
+Code Block 271 ():
+$callback
+----------------------------------------
+
+Code Block 272 (shiki):
+$record = $table->newEmptyEntity();
+$record->id = $existingUuid;
+$record = $table->patchEntity($record, $existingData);
+$table->saveOrFail($record);
+----------------------------------------
+
+Code Block 273 ():
+$record = $table->newEmptyEntity();
+$record->id = $existingUuid;
+$record = $table->patchEntity($record, $existingData);
+$table->saveOrFail($record);
+----------------------------------------
+
+Code Block 274 ():
+method
+----------------------------------------
+
+Code Block 275 ():
+$entities
+----------------------------------------
+
+Code Block 276 ():
+newEntities()
+----------------------------------------
+
+Code Block 277 ():
+patchEntities()
+----------------------------------------
+
+Code Block 278 ():
+$options
+----------------------------------------
+
+Code Block 279 ():
+save()
+----------------------------------------
+
+Code Block 280 (shiki):
+$data = [
+    [
+        'title' => 'First post',
+        'published' => 1,
+    ],
+    [
+        'title' => 'Second post',
+        'published' => 1,
+    ],
+];
+
+$articles = $this->fetchTable('Articles');
+$entities = $articles->newEntities($data);
+$result = $articles->saveMany($entities);
+----------------------------------------
+
+Code Block 281 ():
+$data = [
+    [
+        'title' => 'First post',
+        'published' => 1,
+    ],
+    [
+        'title' => 'Second post',
+        'published' => 1,
+    ],
+];
+
+$articles = $this->fetchTable('Articles');
+$entities = $articles->newEntities($data);
+$result = $articles->saveMany($entities);
+----------------------------------------
+
+Code Block 282 ():
+false
+----------------------------------------
+
+Code Block 283 ():
+method
+----------------------------------------
+
+Code Block 284 (shiki):
+// Publish all the unpublished articles.
+function publishAllUnpublished()
+{
+    $this->updateAll(
+        [  // fields
+            'published' => true,
+            'publish_date' => DateTime::now(),
+        ],
+        [  // conditions
+            'published' => false,
+        ]
+    );
+}
+----------------------------------------
+
+Code Block 285 ():
+// Publish all the unpublished articles.
+function publishAllUnpublished()
+{
+    $this->updateAll(
+        [  // fields
+            'published' => true,
+            'publish_date' => DateTime::now(),
+        ],
+        [  // conditions
+            'published' => false,
+        ]
+    );
+}
+----------------------------------------
+
+Code Block 286 ():
+updateAll()
+----------------------------------------
+
+Code Block 287 (shiki):
+use Cake\Database\Expression\QueryExpression;
+
+...
+
+function incrementCounters()
+{
+    $expression = new QueryExpression('view_count = view_count + 1');
+    $this->updateAll([$expression], ['published' => true]);
+}
+----------------------------------------
+
+Code Block 288 ():
+use Cake\Database\Expression\QueryExpression;
+
+...
+
+function incrementCounters()
+{
+    $expression = new QueryExpression('view_count = view_count + 1');
+    $this->updateAll([$expression], ['published' => true]);
+}
+----------------------------------------
+
+Code Block 289 ():
+updateAll()
+----------------------------------------
+
+Code Block 290 (shiki):
+// Publish all the unpublished articles.
+function publishAllUnpublished()
+{
+    $this->updateQuery()
+        ->set(['published' => true])
+        ->where(['published' => false])
+        ->execute();
+}
+----------------------------------------
+
+Code Block 291 ():
+// Publish all the unpublished articles.
+function publishAllUnpublished()
+{
+    $this->updateQuery()
+        ->set(['published' => true])
+        ->where(['published' => false])
+        ->execute();
+}
+----------------------------------------
+

@@ -1,0 +1,5715 @@
+URL: https://book.cakephp.org/5.x/orm/query-builder.html
+Title: Query Builder | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Query Builder ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - The SelectQuery Object ​
+  - Selecting Data ​
+  - Advanced Conditions ​
+  - Getting Results ​
+  - Loading Associations ​
+  - Filtering by Associated Data Via Matching And Joins ​
+  - Changing Fetching Strategies ​
+  - Inserting Data ​
+  - Updating Data ​
+  - Deleting Data ​
+  - SQL Injection Prevention ​
+  - More Complex Queries ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Selecting Rows From A Table ​
+  - Selecting A Single Row From A Table ​
+  - Getting A List Of Values From A Column ​
+  - ResultSet Is A Collection Object ​
+  - Queries Are Lazily Evaluated ​
+  - Selecting Specific Fields ​
+  - Using SQL Functions ​
+  - Ordering Results ​
+  - Limiting Results ​
+  - Aggregates - Group and Having ​
+  - Case Statements ​
+  - Fetching Arrays Instead of Entities ​
+  - Projecting Results Into DTOs ​
+  - Adding Calculated Fields ​
+  - Using Identifiers in Expressions ​
+  - Collation ​
+  - Automatically Creating IN Clauses ​
+  - Automatic IS NULL Creation ​
+  - Automatic IS NOT NULL Creation ​
+  - Raw Expressions ​
+  - Using Connection Roles ​
+  - Expression Conjuction ​
+  - Tuple Comparison ​
+  - Optimizer Hints ​
+  - Getting the Driver ​
+  - Returning the Total Count of Records ​
+  - Caching Loaded Results ​
+  - Passing Conditions to Contain ​
+  - Sorting Contained Associations ​
+  - Filtering by Associated Data ​
+  - Using innerJoinWith ​
+  - Using notMatching ​
+  - Using leftJoinWith ​
+  - Adding Joins ​
+  - Binding values ​
+  - Unions ​
+  - Intersections ​
+  - Subqueries ​
+  - Adding Locking Statements ​
+  - Window Functions ​
+  - Common Table Expressions ​
+  - Executing Complex Queries ​
+H4:
+  - CMS Tutorial
+  - Window-Only Functions ​
+  - Custom Functions ​
+  - DTO Creation Methods ​
+  - Nested Association DTOs ​
+  - Using DTOs for API Responses ​
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\ORM\Query\SelectQuery\SelectQuery
+
+The ORM's query builder provides a simple to use fluent interface for creating and running queries. By composing queries together, you can create advanced queries using unions and subqueries with ease.
+
+Underneath the covers, the query builder uses PDO prepared statements which protect against SQL injection attacks.
+
+The easiest way to create a SelectQuery object is to use find() from a Table object. This method will return an incomplete query ready to be modified. You can also use a table's connection object to access the lower level query builder that does not include ORM features, if necessary. See the Database Queries section for more information:
+
+When inside a controller, you can use the automatic table variable that is created using the conventions system:
+
+For the remaining examples, assume that $articles is a Cake\ORM\Table. When inside controllers, you can use $this->Articles instead of $articles.
+
+Almost every method in a SelectQuery object will return the same query, this means that SelectQuery objects are lazy, and will not be executed unless you tell them to:
+
+You can of course chain the methods you call on SelectQuery objects:
+
+If you try to call debug() on a SelectQuery object, you will see its internal state and the SQL that will be executed in the database:
+
+You can execute a query directly without having to use foreach on it. The easiest way is to either call the all() or toList() methods:
+
+In the above example, $resultsIteratorObject will be an instance of Cake\ORM\ResultSet, an object you can iterate and apply several extracting and traversing methods on.
+
+Often, there is no need to call all(), you can simply iterate the SelectQuery object to get its results. Query objects can also be used directly as the result object; trying to iterate the query, calling toList() or toArray(), will result in the query being executed and results returned to you.
+
+You can use the first() method to get the first result in the query:
+
+You can also get a key-value list out of a query result:
+
+For more information on how to customize the fields used for populating the list refer to Table Find List section.
+
+Once you get familiar with the Query object methods, it is strongly encouraged that you visit the Collection section to improve your skills in efficiently traversing the results. The ResultSet (returned by calling the SelectQuery's all() method) implements the collection interface:
+
+Query objects are lazily evaluated. This means a query is not executed until one of the following things occur:
+
+Until one of these conditions are met, the query can be modified without additional SQL being sent to the database. It also means that if a Query hasn't been evaluated, no SQL is ever sent to the database. Once executed, modifying and re-evaluating a query will result in additional SQL being run. Calling the same query without modification multiple times will return same reference.
+
+If you want to take a look at what SQL CakePHP is generating, you can turn database query logging on.
+
+CakePHP makes building SELECT queries simple. To limit the fields fetched, you can use the select() method:
+
+You can set aliases for fields by providing fields as an associative array:
+
+To select distinct fields, you can use the distinct() method:
+
+To set some basic conditions you can use the where() method:
+
+You can also pass an anonymous function to the where() method. The passed anonymous function will receive an instance of \Cake\Database\Expression\QueryExpression as its first argument, and \Cake\ORM\Query\SelectQuery as its second:
+
+See the Advanced Query Conditions section to find out how to construct more complex WHERE conditions.
+
+By default, a query will select all fields from a table, the exception is when you call the select() function yourself and pass certain fields:
+
+If you wish to still select all fields from a table after having called select($fields), you can pass the table instance to select() for this purpose:
+
+You can use selectAlso() to select all fields on a table and also select some additional fields:
+
+If you want to select all but a few fields on a table, you can use selectAllExcept():
+
+You can also pass an Association object when working with contained associations.
+
+CakePHP's ORM offers abstraction for some commonly used SQL functions. Using the abstraction allows the ORM to select the platform specific implementation of the function you want. For example, concat is implemented differently in MySQL, PostgreSQL and SQL Server. Using the abstraction allows your code to be portable:
+
+Note that most of the functions accept an additional argument to specify the types to bind to the arguments and/or the return type, for example:
+
+For details, see the documentation for Cake\Database\FunctionsBuilder.
+
+You can access existing wrappers for several SQL functions through SelectQuery::func():
+
+rand() Generate a random value between 0 and 1 via SQL.
+
+sum() Calculate a sum. Assumes arguments are literal values.
+
+avg() Calculate an average. Assumes arguments are literal values.
+
+min() Calculate the min of a column. Assumes arguments are literal values.
+
+max() Calculate the max of a column. Assumes arguments are literal values.
+
+count() Calculate the count. Assumes arguments are literal values.
+
+cast() Convert a field or expression from one data type to another.
+
+concat() Concatenate two values together. Assumes arguments are bound parameters.
+
+coalesce() Coalesce values. Assumes arguments are bound parameters.
+
+dateDiff() Get the difference between two dates/times. Assumes arguments are bound parameters.
+
+now() Defaults to returning date and time, but accepts 'time' or 'date' to return only those values.
+
+extract() Returns the specified data part from the SQL expression.
+
+dateAdd() Add the time unit to the date expression.
+
+dayOfWeek() Returns a FunctionExpression representing a call to SQL WEEKDAY function.
+
+These window-only functions contain a window expression by default:
+
+rowNumber() Returns an Aggregate expression for the ROW_NUMBER() SQL function.
+
+lag() Returns an Aggregate expression for the LAG() SQL function.
+
+lead() Returns an Aggregate expression for the LEAD() SQL function.
+
+When providing arguments for SQL functions, there are two kinds of parameters you can use, literal arguments and bound parameters. Identifier/Literal parameters allow you to reference columns or other SQL literals. Bound parameters can be used to safely add user data to SQL functions. For example:
+
+Both literal and identifier arguments allow you to reference other columns and SQL literals while identifier will be appropriately quoted if auto-quoting is enabled. If not marked as literal or identifier, arguments will be bound parameters allowing you to safely pass user data to the function.
+
+The above example generates something like this in MYSQL.
+
+The :c0 argument will have ' - CAT:' text bound when the query is executed. The dateDiff expression was translated to the appropriate SQL.
+
+If func() does not already wrap the SQL function you need, you can call it directly through func() and still safely pass arguments and user data as described. Make sure you pass the appropriate argument type for custom functions or they will be treated as bound parameters:
+
+These custom function would generate something like this in MYSQL:
+
+NOTE
+
+Use func() to pass untrusted user data to any SQL function.
+
+To apply ordering, you can use the orderBy() method:
+
+When calling orderBy() multiple times on a query, multiple clauses will be appended. However, when using finders you may sometimes need to overwrite the ORDER BY. Set the second parameter of orderBy() (as well as orderByAsc() or orderByDesc()) to SelectQuery::OVERWRITE or to true:
+
+The orderByAsc and orderByDesc methods can be used when you need to sort on complex expressions:
+
+To build complex order clauses, use a Closure to build order expressions:
+
+To limit the number of rows or set the row offset you can use the limit() and page() methods:
+
+As you can see from the examples above, all the methods that modify the query provide a fluent interface, allowing you to build a query through chained method calls.
+
+When using aggregate functions like count and sum you may want to use group by and having clauses:
+
+The ORM also offers the SQL case expression. The case expression allows for implementing if ... then ... else logic inside your SQL. This can be useful for reporting on data where you need to conditionally sum or count data, or where you need to specific data based on a condition.
+
+If we wished to know how many published articles are in our database, we could use the following SQL:
+
+To do this with the query builder, we'd use the following code:
+
+The when() method accepts SQL snippets, array conditions, and Closure for when you need additional logic to build the cases. If we wanted to classify cities into SMALL, MEDIUM, or LARGE based on population size, we could do the following:
+
+You need to be careful when including user provided data into case expressions as it can create SQL injection vulnerabilities:
+
+For more complex scenarios you can use QueryExpression objects and bound values:
+
+By using bindings you can safely embed user data into complex raw SQL snippets.
+
+then(), when() and else() will try to infer the value type based on the parameter type. If you need to bind a value as a different type you can declare the desired type:
+
+You can create if ... then ... else conditions by using else():
+
+Also, it's possible to create the simple variant by passing a value to case():
+
+The addCase function can also chain together multiple statements to create if .. then .. [elseif .. then .. ] [ .. else ] logic inside your SQL.
+
+If we wanted to classify cities into SMALL, MEDIUM, or LARGE based on population size, we could do the following:
+
+Any time there are fewer case conditions than values, addCase will automatically produce an if .. then .. else statement:
+
+While ORMs and object result sets are powerful, creating entities is sometimes unnecessary. For example, when accessing aggregated data, building an Entity may not make sense. The process of converting the database results to entities is called hydration. If you wish to disable this process you can do this:
+
+After executing those lines, your result should look similar to this:
+
+In addition to fetching results as Entity objects or arrays, you can project query results directly into Data Transfer Objects (DTOs). DTOs offer several advantages:
+
+The projectAs() method allows you to specify a DTO class that results will be hydrated into:
+
+CakePHP supports two approaches for creating DTOs:
+
+Reflection-based constructor mapping - CakePHP will use reflection to map database columns to constructor parameters:
+
+Factory method pattern - If your DTO class has a createFromArray() static method, CakePHP will use that instead:
+
+The factory method approach is approximately 2.5x faster than reflection-based hydration.
+
+You can project associated data into nested DTOs. Use the #[CollectionOf] attribute to specify the type of elements in array properties:
+
+DTOs are particularly useful for building API responses where you want to control the output structure independently from your database schema. You can define a DTO that represents your API contract and include custom serialization logic:
+
+This approach keeps your API response format decoupled from your database schema, making it easier to evolve your API without changing your data model.
+
+NOTE
+
+DTO projection is applied as the final formatting step, after all other formatters and behaviors have processed the results. This ensures compatibility with existing behavior formatters while still providing the benefits of DTOs.
+
+Added in version 5.3.0
+
+The projectAs() method and #[CollectionOf] attribute were added.
+
+After your queries, you may need to do some post-processing. If you need to add a few calculated fields or derived data, you can use the formatResults() method. This is a lightweight way to map over the result sets. If you need more control over the process, or want to reduce results you should use the Map/Reduce feature instead. If you were querying a list of people, you could calculate their age with a result formatter:
+
+As you can see in the example above, formatting callbacks will get a ResultSetDecorator as their first argument. The second argument will be the Query instance the formatter was attached to. The $results argument can be traversed and modified as necessary.
+
+Result formatters are required to return an iterator object, which will be used as the return value for the query. Formatter functions are applied after all the Map/Reduce routines have been executed. Result formatters can be applied from within contained associations as well. CakePHP will ensure that your formatters are properly scoped. For example, doing the following would work as you may expect:
+
+As seen above, the formatters attached to associated query builders are scoped to operate only on the data in the association. CakePHP will ensure that computed values are inserted into the correct entity.
+
+If you want to replace the results of an association finder with formatResults and your replacement data is an associative array, use preserveKeys to retain keys when results are mapped to the parent query. For example:
+
+The preserveKeys option can be set as a contain option as well.
+
+Added in version 5.1.0
+
+The preserveKeys option was added.
+
+The query builder makes it simple to build complex where clauses. Grouped conditions can be expressed by providing combining where() and expression objects. For simple queries, you can build conditions using an array of conditions:
+
+The above would generate SQL like
+
+If you'd prefer to avoid deeply nested arrays, you can use the callback form of where() to build your queries. The callback accepts a QueryExpression which allows you to use the expression builder interface to build more complex conditions without arrays. For example:
+
+The above generates SQL similar to:
+
+The QueryExpression passed to the callback allows you to use both combinators and conditions to build the full expression.
+
+Combinators These create new QueryExpression objects and set how the conditions added to that expression are joined together.
+
+Conditions These are added to the expression and automatically joined together depending on which combinator was used.
+
+The QueryExpression passed to the callback function defaults to and():
+
+Since we started off using where(), we don't need to call and(), as that happens implicitly. The above shows a few new condition methods being combined with AND. The resulting SQL would look like:
+
+However, if we wanted to use both AND & OR conditions we could do the following:
+
+Which would generate the SQL similar to:
+
+The combinators also allow you pass in a callback which takes the new expression object as a parameter if you want to separate the method chaining:
+
+You can negate sub-expressions using not():
+
+Which will generate the following SQL looking like:
+
+It is also possible to build expressions using SQL functions:
+
+Which will generate the following SQL looking like:
+
+When using the expression objects you can use the following methods to create conditions:
+
+eq() Creates an equality condition:
+
+notEq() Creates an inequality condition:
+
+like() Creates a condition using the LIKE operator:
+
+notLike() Creates a negated LIKE condition:
+
+in() Create a condition using IN:
+
+notIn() Create a negated condition using IN:
+
+gt() Create a > condition:
+
+gte() Create a >= condition:
+
+lt() Create a < condition:
+
+lte() Create a <= condition:
+
+isNull() Create an IS NULL condition:
+
+isNotNull() Create a negated IS NULL condition:
+
+between() Create a BETWEEN condition:
+
+exists() Create a condition using EXISTS:
+
+notExists() Create a negated condition using EXISTS:
+
+Expression objects should cover many commonly used functions and expressions. If you find yourself unable to create the required conditions with expressions you can may be able to use bind() to manually bind parameters into conditions:
+
+In situations when you can't get, or don't want to use the builder methods to create the conditions you want you can also use snippets of SQL in where clauses:
+
+WARNING
+
+The field names used in expressions, and SQL snippets should never contain untrusted content as you will create SQL Injection vectors. See the Using Sql Functions section for how to safely include unsafe data into function calls.
+
+When you need to reference a column or SQL identifier in your queries you can use the identifier() method:
+
+You can use identifier() in comparisons to aggregations too:
+
+WARNING
+
+To prevent SQL injections, Identifier expressions should never have untrusted data passed into them.
+
+In situations that you need to deal with accented characters, multilingual data or case-sensitive comparisons, you can use the $collation parameter of IdentifierExpression or StringExpression to apply a character expression to a certain collation:
+
+When building queries using the ORM, you will generally not have to indicate the data types of the columns you are interacting with, as CakePHP can infer the types based on the schema data. If in your queries you'd like CakePHP to automatically convert equality to IN comparisons, you'll need to indicate the column data type:
+
+The above will automatically create id IN (...) instead of id = ?. This can be useful when you do not know whether you will get a scalar or array of parameters. The [] suffix on any data type name indicates to the query builder that you want the data handled as an array. If the data is not an array, it will first be cast to an array. After that, each value in the array will be cast using the type system. This works with complex types as well. For example, you could take a list of DateTime objects using:
+
+When a condition value is expected to be null or any other value, you can use the IS operator to automatically create the correct expression:
+
+The above will generateparent_id = :c1 or parent_id IS NULL depending on the type of $parentId
+
+When a condition value is expected not to be null or any other value, you can use the IS NOT operator to automatically create the correct expression:
+
+The above will generateparent_id != :c1 or parent_id IS NOT NULL depending on the type of $parentId
+
+When you cannot construct the SQL you need using the query builder, you can use expression objects to add snippets of SQL to your queries:
+
+Expression objects can be used with any query builder methods like where(), limit(), groupBy(), select() and many other methods.
+
+WARNING
+
+Using expression objects leaves you vulnerable to SQL injection. You should never use untrusted data into expressions.
+
+If you have configured Read And Write Connections in your application, you can have a query run on the read connection using one of the role methods:
+
+Added in version 4.5.0
+
+Query role methods were added in 4.5.0
+
+It is possible to change the conjunction used to join conditions in a query expression using the method setConjunction:
+
+And can be used combined with aggregations too:
+
+Tuple comparison involves comparing two rows of data (tuples) element by element, typically using comparison operators like <, >, =:
+
+The same result can be achieved using TupleComparison:
+
+Tuple Comparison can also be used with IN and the result can be transformed even on DBMS that does not natively support it:
+
+NOTE
+
+Tuple comparison transform only supports the IN and = operators
+
+Optimizer hints allow you to control execution plans at the individual query level:
+
+Optimizer hints are currently only supported by MySQL and Postgres (via an extension).
+
+Added in version 5.3.0
+
+Query::optimizerHint() was added.
+
+method Cake\Database\Query::getDriver(): Driver
+
+You can get the Driver instance for the current connection role from a query:
+
+Added in version 5.3.0
+
+Query::getDriver() was added.
+
+Once you've made your query, you'll want to retrieve rows from it. There are a few ways of doing this:
+
+You can use any of the collection methods on your query objects to pre-process or transform the results:
+
+You can use first or firstOrFail to retrieve a single record. These methods will alter the query adding a LIMIT 1 clause:
+
+Using a single query object, it is possible to obtain the total number of rows found for a set of conditions:
+
+The count() method will ignore the limit, offset and page clauses, thus the following will return the same result:
+
+This is useful when you need to know the total result set size in advance, without having to construct another SelectQuery object. Likewise, all result formatting and map-reduce routines are ignored when using the count() method.
+
+Moreover, it is possible to return the total count for a query containing group by clauses without having to rewrite the query in any way. For example, consider this query for retrieving article ids and their comments count:
+
+After counting, the query can still be used for fetching the associated records:
+
+Sometimes, you may want to provide an alternate method for counting the total records of a query. One common use case for this is providing a cached value or an estimate of the total rows, or to alter the query to remove expensive unneeded parts such as left joins. This becomes particularly handy when using the CakePHP built-in pagination system which calls the count() method:
+
+In the example above, when the pagination component calls the count method, it will receive the estimated hard-coded number of rows.
+
+When fetching entities that don't change often you may want to cache the results. The SelectQuery class makes this simple:
+
+Will enable caching on the query's result set. If only one argument is provided to cache() then the 'default' cache configuration will be used. You can control which caching configuration is used with the second parameter:
+
+In addition to supporting static keys, the cache() method accepts a function to generate the key. The function you give it will receive the query as an argument. You can then read aspects of the query to dynamically generate the cache key:
+
+The cache method makes it simple to add cached results to your custom finders or through event listeners.
+
+When the results for a cached query are fetched the following happens:
+
+NOTE
+
+You cannot cache a streaming query result.
+
+The builder can help you retrieve data from multiple tables at the same time with the minimum amount of queries possible. To be able to fetch associated data, you first need to setup associations between the tables as described in the Associations - Linking Tables Together section. This technique of combining queries to fetch associated data from other tables is called eager loading.
+
+// As an option to find() $query = $articles->find('all', contain: ['Authors', 'Comments']);
+
+// As a method on the query object $query = $articles->find('all'); $query->contain(['Authors', 'Comments']);
+
+Alternatively, you can express nested associations using the dot notation:
+
+You can eager load associations as deep as you like:
+
+Which is equivalent to calling:
+
+You can select fields from all associations with multiple contain() statements:
+
+If you need to reset the containments on a query you can set the second argument to true:
+
+NOTE
+
+Association names in contain() calls should use the same association casing as in your association definitions, not the property name used to hold the association record(s). For example, if you have declared an association as belongsTo('Users') then you must use contain('Users') and not contain('users') or contain('user').
+
+When using contain() you are able to restrict the data returned by the associations and filter them by conditions. To specify conditions, pass an anonymous function that receives as the first argument a query object, \Cake\ORM\Query\SelectQuery:
+
+This also works for pagination at the Controller level:
+
+WARNING
+
+If the results are missing association entities, make sure the foreign key columns are selected in the query. Without the foreign keys, the ORM cannot find matching rows.
+
+It is also possible to restrict deeply-nested associations using the dot notation:
+
+In the above example, you'll still get authors even if they don't have a published profile. To only get authors with a published profile use matching(). If you have defined custom finders in your associations, you can use them inside contain():
+
+NOTE
+
+With BelongsTo and HasOne associations only select and where clauses are valid in the contain() query. With HasMany and BelongsToMany all clauses such as order() are valid.
+
+You can control more than just the query clauses used by contain(). If you pass an array with the association, you can override the foreignKey, joinType and strategy. See Associations - Linking Tables Together for details on the default value and options for each association type.
+
+You can pass false as the new foreignKey to disable foreign key constraints entirely. Use the queryBuilder option to customize the query when using an array:
+
+If you have limited the fields you are loading with select() but also want to load fields off of contained associations, you can pass the association object to select():
+
+Alternatively, you can use enableAutoFields() in an anonymous function:
+
+When loading HasMany and BelongsToMany associations, you can use the sort option to sort the data in those associations:
+
+$query = $articles->find(); $query->matching('Tags', function ($q) { return $q->where(['Tags.name' => 'CakePHP']); });
+
+Filtering by deep associations uses the same predictable syntax from contain():
+
+NOTE
+
+As this function will create an INNER JOIN, you might want to consider calling distinct on the find query as you might get duplicate rows if your conditions don't exclude them already. This might be the case, for example, when the same users comments more than once on a single article.
+
+The data from the association that is 'matched' will be available on the _matchingData property of entities. If both match and contain the same association, you can expect to get both the _matchingData and standard association properties in your results.
+
+Sometimes you need to match specific associated data but without actually loading the matching records like matching(). You can create just the INNER JOIN that matching() uses with innerJoinWith():
+
+innerJoinWith() allows you to the same parameters and dot notation:
+
+You can combine innerJoinWith() and contain() with the same association when you want to match specific records and load the associated data together. The example below matches Articles that have specific Tags and loads the same Tags:
+
+NOTE
+
+If you use innerJoinWith() and want to select() fields from that association, you need to use an alias for the field:
+
+If you don't use an alias, you will see the data in _matchingData as described by matching() above. This is an edge case from matching() not knowing you manually selected the field.
+
+WARNING
+
+You should not combine innerJoinWith() and matching() with the same association. This will produce multiple INNER JOIN statements and might not create the query you expected.
+
+The opposite of matching() is notMatching(). This function will change the query so that it filters results that have no relation to the specified association:
+
+The above example will find all articles that were not tagged with the word boring. You can apply this method to HasMany associations as well. You could, for example, find all the authors with no published articles in the last 10 days:
+
+It is also possible to use this method for filtering out records not matching deep associations. For example, you could find articles that have not been commented on by a certain user:
+
+Since articles with no comments at all also satisfy the condition above, you may want to combine matching() and notMatching() in the same query. The following example will find articles having at least one comment, but not commented by a certain user:
+
+NOTE
+
+As notMatching() will create a LEFT JOIN, you might want to consider calling distinct on the find query as you can get duplicate rows otherwise.
+
+Keep in mind that contrary to the matching() function, notMatching() will not add any data to the _matchingData property in the results.
+
+On certain occasions you may want to calculate a result based on an association, without having to load all the records for it. For example, if you wanted to load the total number of comments an article has along with all the article data, you can use the leftJoinWith() function:
+
+The results for the above query will contain the article data and the total_comments property for each of them.
+
+leftJoinWith() can also be used with deeply nested associations. This is useful, for example, for bringing the count of articles tagged with a certain word, per author:
+
+This function will not load any columns from the specified associations into the result set.
+
+As mentioned in earlier, you can customize the strategy used by an association in a contain().
+
+If you look at BelongsTo and HasOne association
+
+In addition to loading related data with contain(), you can also add additional joins with the query builder:
+
+You can append multiple joins at the same time by passing an associative array with multiple joins:
+
+As seen above, when adding joins the alias can be the outer array key. Join conditions can also be expressed as an array of conditions:
+
+When creating joins by hand and using array based conditions, you need to provide the datatypes for each column in the join conditions. By providing datatypes for the join conditions, the ORM can correctly convert data types into SQL. In addition to join() you can use rightJoin(), leftJoin() and innerJoin() to create joins:
+
+It should be noted that if you set the quoteIdentifiers option to true when defining your Connection, join conditions between table fields should be set as follow:
+
+This ensures that all of your identifiers will be quoted across the Query, avoiding errors with some database Drivers (PostgreSQL notably)
+
+Unlike earlier examples, you should can't use find() to create insert queries. Instead, create a new InsertQuery object using insertQuery():
+
+To insert multiple rows with only one query, you can chain the values() method as many times as you need:
+
+Generally, it is easier to insert data using entities and Cake\ORM\Table::save(). By composing a SELECT and INSERT query together, you can create INSERT INTO ... SELECT style queries:
+
+NOTE
+
+Inserting records with the query builder will not trigger events such as Model.afterSave. Instead you should use the ORM to save data.
+
+As with insert queries, you should not use find() to create update queries. Instead, create new a Query object using updateQuery():
+
+Generally, it is easier to update data using entities and Cake\ORM\Table::patchEntity().
+
+NOTE
+
+Updating records with the query builder will not trigger events such as Model.afterSave. Instead you should use the ORM to save data.
+
+As with insert queries, you can't use find() to create delete queries. Instead, create new a query object using deleteQuery():
+
+Generally, it is easier to delete data using entities and Cake\ORM\Table::delete().
+
+While the ORM and database abstraction layers prevent most SQL injections issues, it is still possible to leave yourself vulnerable through improper use.
+
+When using condition arrays, the key/left-hand side as well as single value entries must not contain user data:
+
+When using the expression builder, column names must not contain user data:
+
+When building function expressions, function names should never contain user data:
+
+Raw expressions are never safe:
+
+It is possible to protect against many unsafe situations by using bindings. Values can be bound to queries using the Cake\Database\Query::bind() method.
+
+The following example would be a safe variant of the unsafe, SQL injection prone example given above:
+
+NOTE
+
+Unlike Cake\Database\StatementInterface::bindValue(), Query::bind() requires to pass the named placeholders including the colon!
+
+If your application requires using more complex queries, you can express many complex queries using the ORM query builder.
+
+Unions are created by composing one or more select queries together:
+
+You can create UNION ALL queries using the unionAll() method:
+
+Intersections allow you to combine the result sets of two queries together and finding results with overlapping results. Intersections are created by composing one or more select queries together:
+
+You can create INTERSECT ALL queries using the intersectAll() method:
+
+Added in version 5.1.0
+
+intersect() and intersectAll() were added.
+
+Subqueries enable you to compose queries together and build conditions and results based on the results of other queries:
+
+Subqueries are accepted anywhere a query expression can be used. For example, in the select(), from() and join() methods. The above example uses a standard ORM\Query\SelectQuery object that will generate aliases, these aliases can make referencing results in the outer query more complex. As of 4.2.0 you can use Table::subquery() to create a specialized query instance that will not generate aliases:
+
+Most relational database vendors support taking out locks when doing select operations. You can use the epilog() method for this:
+
+The epilog() method allows you to append raw SQL to the end of queries. You should never put raw user data into epilog().
+
+Window functions allow you to perform calculations using rows related to the current row. They are commonly used to calculate totals or offsets on partial sets of rows in the query. For example if we wanted to find the date of the earliest and latest comment on each article we could use window functions:
+
+The above would generate SQL similar to:
+
+Window expressions can be applied to most aggregate functions. Any aggregate function that cake abstracts with a wrapper in FunctionsBuilder will return an AggregateExpression which lets you attach window expressions. You can create custom aggregate functions through FunctionsBuilder::aggregate().
+
+These are the most commonly supported window features. Most features are provided by AggregateExpresion, but make sure you follow your database documentation on use and restrictions.
+
+If you need to re-use the same window expression multiple times you can create named windows using the window() method:
+
+Common Table Expressions or CTE are useful when building reporting queries where you need to compose the results of several smaller query results together. They can serve a similar purpose to database views or subquery results. Common Table Expressions differ from derived tables and views in a couple ways:
+
+As an example lets fetch a list of customers and the number of orders each of them has made. In SQL we would use:
+
+To build that query with the ORM query builder we would use:
+
+If you need to build a recursive query (WITH RECURSIVE …), chain ->recursive() onto return $cte.
+
+While the query builder makes most queries possible through builder methods, very complex queries can be tedious and complicated to build. You may want to execute the desired SQL directly.
+
+Executing SQL directly allows you to fine tune the query that will be run. However, doing so doesn't let you use contain or other higher level ORM features.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+SelectQuery
+----------------------------------------
+
+Code Block 3 ():
+find()
+----------------------------------------
+
+Code Block 4 ():
+Table
+----------------------------------------
+
+Code Block 5 (shiki):
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$articles = $this->fetchTable('Articles');
+
+// Start a new query.
+$query = $articles->find();
+----------------------------------------
+
+Code Block 6 ():
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$articles = $this->fetchTable('Articles');
+
+// Start a new query.
+$query = $articles->find();
+----------------------------------------
+
+Code Block 7 (shiki):
+// Inside ArticlesController.php
+
+$query = $this->Articles->find();
+----------------------------------------
+
+Code Block 8 ():
+// Inside ArticlesController.php
+
+$query = $this->Articles->find();
+----------------------------------------
+
+Code Block 9 (shiki):
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$query = $this->fetchTable('Articles')->find();
+
+foreach ($query->all() as $article) {
+    debug($article->title);
+}
+----------------------------------------
+
+Code Block 10 ():
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$query = $this->fetchTable('Articles')->find();
+
+foreach ($query->all() as $article) {
+    debug($article->title);
+}
+----------------------------------------
+
+Code Block 11 ():
+$articles
+----------------------------------------
+
+Code Block 12 ():
+Cake\ORM\Table
+----------------------------------------
+
+Code Block 13 ():
+$this->Articles
+----------------------------------------
+
+Code Block 14 ():
+$articles
+----------------------------------------
+
+Code Block 15 ():
+SelectQuery
+----------------------------------------
+
+Code Block 16 ():
+SelectQuery
+----------------------------------------
+
+Code Block 17 (shiki):
+$query->where(['id' => 1]); // Return the same query object
+$query->orderBy(['title' => 'DESC']); // Still same object, no SQL executed
+----------------------------------------
+
+Code Block 18 ():
+$query->where(['id' => 1]); // Return the same query object
+$query->orderBy(['title' => 'DESC']); // Still same object, no SQL executed
+----------------------------------------
+
+Code Block 19 (shiki):
+$query = $articles
+    ->find()
+    ->select(['id', 'name'])
+    ->where(['id !=' => 1])
+    ->orderBy(['created' => 'DESC']);
+
+foreach ($query->all() as $article) {
+    debug($article->created);
+}
+----------------------------------------
+
+Code Block 20 ():
+$query = $articles
+    ->find()
+    ->select(['id', 'name'])
+    ->where(['id !=' => 1])
+    ->orderBy(['created' => 'DESC']);
+
+foreach ($query->all() as $article) {
+    debug($article->created);
+}
+----------------------------------------
+
+Code Block 21 ():
+debug()
+----------------------------------------
+
+Code Block 22 (shiki):
+debug($articles->find()->where(['id' => 1]));
+
+// Outputs
+// ...
+// 'sql' => 'SELECT * FROM articles where id = ?'
+// ...
+----------------------------------------
+
+Code Block 23 ():
+debug($articles->find()->where(['id' => 1]));
+
+// Outputs
+// ...
+// 'sql' => 'SELECT * FROM articles where id = ?'
+// ...
+----------------------------------------
+
+Code Block 24 ():
+foreach
+----------------------------------------
+
+Code Block 25 ():
+all()
+----------------------------------------
+
+Code Block 26 ():
+toList()
+----------------------------------------
+
+Code Block 27 (shiki):
+$resultsIteratorObject = $articles
+    ->find()
+    ->where(['id >' => 1])
+    ->all();
+
+foreach ($resultsIteratorObject as $article) {
+    debug($article->id);
+}
+
+$resultsArray = $articles
+    ->find()
+    ->where(['id >' => 1])
+    ->all()
+    ->toList();
+
+foreach ($resultsArray as $article) {
+    debug($article->id);
+}
+
+debug($resultsArray[0]->title);
+----------------------------------------
+
+Code Block 28 ():
+$resultsIteratorObject = $articles
+    ->find()
+    ->where(['id >' => 1])
+    ->all();
+
+foreach ($resultsIteratorObject as $article) {
+    debug($article->id);
+}
+
+$resultsArray = $articles
+    ->find()
+    ->where(['id >' => 1])
+    ->all()
+    ->toList();
+
+foreach ($resultsArray as $article) {
+    debug($article->id);
+}
+
+debug($resultsArray[0]->title);
+----------------------------------------
+
+Code Block 29 ():
+$resultsIteratorObject
+----------------------------------------
+
+Code Block 30 ():
+Cake\ORM\ResultSet
+----------------------------------------
+
+Code Block 31 ():
+all()
+----------------------------------------
+
+Code Block 32 ():
+toList()
+----------------------------------------
+
+Code Block 33 ():
+toArray()
+----------------------------------------
+
+Code Block 34 ():
+first()
+----------------------------------------
+
+Code Block 35 (shiki):
+$article = $articles
+    ->find()
+    ->where(['id' => 1])
+    ->first();
+
+debug($article->title);
+----------------------------------------
+
+Code Block 36 ():
+$article = $articles
+    ->find()
+    ->where(['id' => 1])
+    ->first();
+
+debug($article->title);
+----------------------------------------
+
+Code Block 37 (shiki):
+// Use the extract() method from the collections library
+// This executes the query as well
+$allTitles = $articles->find()->all()->extract('title');
+
+foreach ($allTitles as $title) {
+    echo $title;
+}
+----------------------------------------
+
+Code Block 38 ():
+// Use the extract() method from the collections library
+// This executes the query as well
+$allTitles = $articles->find()->all()->extract('title');
+
+foreach ($allTitles as $title) {
+    echo $title;
+}
+----------------------------------------
+
+Code Block 39 (shiki):
+$list = $articles->find('list')->all();
+foreach ($list as $id => $title) {
+    echo "$id : $title"
+}
+----------------------------------------
+
+Code Block 40 ():
+$list = $articles->find('list')->all();
+foreach ($list as $id => $title) {
+    echo "$id : $title"
+}
+----------------------------------------
+
+Code Block 41 ():
+SelectQuery
+----------------------------------------
+
+Code Block 42 ():
+all()
+----------------------------------------
+
+Code Block 43 (shiki):
+// Use the combine() method from the collections library
+// This is equivalent to find('list')
+$keyValueList = $articles->find()->all()->combine('id', 'title');
+
+// An advanced example
+$results = $articles->find()
+    ->where(['id >' => 1])
+    ->orderBy(['title' => 'DESC'])
+    ->all()
+    ->map(function ($row) {
+        $row->trimmedTitle = trim($row->title);
+
+        return $row;
+    })
+    ->combine('id', 'trimmedTitle') // combine() is another collection method
+    ->toArray(); // Also a collections library method
+
+foreach ($results as $id => $trimmedTitle) {
+    echo "$id : $trimmedTitle";
+}
+----------------------------------------
+
+Code Block 44 ():
+// Use the combine() method from the collections library
+// This is equivalent to find('list')
+$keyValueList = $articles->find()->all()->combine('id', 'title');
+
+// An advanced example
+$results = $articles->find()
+    ->where(['id >' => 1])
+    ->orderBy(['title' => 'DESC'])
+    ->all()
+    ->map(function ($row) {
+        $row->trimmedTitle = trim($row->title);
+
+        return $row;
+    })
+    ->combine('id', 'trimmedTitle') // combine() is another collection method
+    ->toArray(); // Also a collections library method
+
+foreach ($results as $id => $trimmedTitle) {
+    echo "$id : $trimmedTitle";
+}
+----------------------------------------
+
+Code Block 45 ():
+foreach
+----------------------------------------
+
+Code Block 46 ():
+execute()
+----------------------------------------
+
+Code Block 47 ():
+first()
+----------------------------------------
+
+Code Block 48 ():
+SELECT
+----------------------------------------
+
+Code Block 49 ():
+LIMIT 1
+----------------------------------------
+
+Code Block 50 ():
+all()
+----------------------------------------
+
+Code Block 51 ():
+SELECT
+----------------------------------------
+
+Code Block 52 ():
+toList()
+----------------------------------------
+
+Code Block 53 ():
+toArray()
+----------------------------------------
+
+Code Block 54 ():
+SELECT
+----------------------------------------
+
+Code Block 55 ():
+select()
+----------------------------------------
+
+Code Block 56 (shiki):
+$query = $articles->find();
+$query->select(['id', 'title', 'body']);
+foreach ($query->all() as $row) {
+    debug($row->title);
+}
+----------------------------------------
+
+Code Block 57 ():
+$query = $articles->find();
+$query->select(['id', 'title', 'body']);
+foreach ($query->all() as $row) {
+    debug($row->title);
+}
+----------------------------------------
+
+Code Block 58 (shiki):
+// Results in SELECT id AS pk, title AS aliased_title, body ...
+$query = $articles->find();
+$query->select(['pk' => 'id', 'aliased_title' => 'title', 'body']);
+----------------------------------------
+
+Code Block 59 ():
+// Results in SELECT id AS pk, title AS aliased_title, body ...
+$query = $articles->find();
+$query->select(['pk' => 'id', 'aliased_title' => 'title', 'body']);
+----------------------------------------
+
+Code Block 60 ():
+distinct()
+----------------------------------------
+
+Code Block 61 (shiki):
+// Results in SELECT DISTINCT country FROM ...
+$query = $articles->find();
+$query->select(['country'])
+    ->distinct(['country']);
+----------------------------------------
+
+Code Block 62 ():
+// Results in SELECT DISTINCT country FROM ...
+$query = $articles->find();
+$query->select(['country'])
+    ->distinct(['country']);
+----------------------------------------
+
+Code Block 63 ():
+where()
+----------------------------------------
+
+Code Block 64 (shiki):
+// Conditions are combined with AND
+$query = $articles->find();
+$query->where(['title' => 'First Post', 'published' => true]);
+
+// You can call where() multiple times
+$query = $articles->find();
+$query->where(['title' => 'First Post'])
+    ->where(['published' => true]);
+----------------------------------------
+
+Code Block 65 ():
+// Conditions are combined with AND
+$query = $articles->find();
+$query->where(['title' => 'First Post', 'published' => true]);
+
+// You can call where() multiple times
+$query = $articles->find();
+$query->where(['title' => 'First Post'])
+    ->where(['published' => true]);
+----------------------------------------
+
+Code Block 66 ():
+where()
+----------------------------------------
+
+Code Block 67 ():
+\Cake\Database\Expression\QueryExpression
+----------------------------------------
+
+Code Block 68 ():
+\Cake\ORM\Query\SelectQuery
+----------------------------------------
+
+Code Block 69 (shiki):
+$query = $articles->find();
+$query->where(function (QueryExpression $exp, SelectQuery $q) {
+    return $exp->eq('published', true);
+});
+----------------------------------------
+
+Code Block 70 ():
+$query = $articles->find();
+$query->where(function (QueryExpression $exp, SelectQuery $q) {
+    return $exp->eq('published', true);
+});
+----------------------------------------
+
+Code Block 71 ():
+WHERE
+----------------------------------------
+
+Code Block 72 ():
+select()
+----------------------------------------
+
+Code Block 73 (shiki):
+// Only select id and title from the articles table
+$articles->find()->select(['id', 'title']);
+----------------------------------------
+
+Code Block 74 ():
+// Only select id and title from the articles table
+$articles->find()->select(['id', 'title']);
+----------------------------------------
+
+Code Block 75 ():
+select($fields)
+----------------------------------------
+
+Code Block 76 ():
+select()
+----------------------------------------
+
+Code Block 77 (shiki):
+// Only all fields from the articles table including
+// a calculated slug field.
+$query = $articlesTable->find();
+$query
+    ->select(['slug' => $query->func()->concat(['title' => 'identifier', '-', 'id' => 'identifier'])])
+    ->select($articlesTable); // Select all fields from articles
+----------------------------------------
+
+Code Block 78 ():
+// Only all fields from the articles table including
+// a calculated slug field.
+$query = $articlesTable->find();
+$query
+    ->select(['slug' => $query->func()->concat(['title' => 'identifier', '-', 'id' => 'identifier'])])
+    ->select($articlesTable); // Select all fields from articles
+----------------------------------------
+
+Code Block 79 ():
+selectAlso()
+----------------------------------------
+
+Code Block 80 (shiki):
+$query = $articlesTable->find();
+$query->selectAlso(['count' => $query->func()->count('*')]);
+----------------------------------------
+
+Code Block 81 ():
+$query = $articlesTable->find();
+$query->selectAlso(['count' => $query->func()->count('*')]);
+----------------------------------------
+
+Code Block 82 ():
+selectAllExcept()
+----------------------------------------
+
+Code Block 83 (shiki):
+$query = $articlesTable->find();
+
+// Get all fields except the published field.
+$query->selectAllExcept($articlesTable, ['published']);
+----------------------------------------
+
+Code Block 84 ():
+$query = $articlesTable->find();
+
+// Get all fields except the published field.
+$query->selectAllExcept($articlesTable, ['published']);
+----------------------------------------
+
+Code Block 85 ():
+Association
+----------------------------------------
+
+Code Block 86 ():
+concat
+----------------------------------------
+
+Code Block 87 (shiki):
+// Results in SELECT COUNT(*) count FROM ...
+$query = $articles->find();
+$query->select(['count' => $query->func()->count('*')]);
+----------------------------------------
+
+Code Block 88 ():
+// Results in SELECT COUNT(*) count FROM ...
+$query = $articles->find();
+$query->select(['count' => $query->func()->count('*')]);
+----------------------------------------
+
+Code Block 89 (shiki):
+$query->select(['minDate' => $query->func()->min('date', ['date']);
+----------------------------------------
+
+Code Block 90 ():
+$query->select(['minDate' => $query->func()->min('date', ['date']);
+----------------------------------------
+
+Code Block 91 ():
+Cake\Database\FunctionsBuilder
+----------------------------------------
+
+Code Block 92 ():
+SelectQuery::func()
+----------------------------------------
+
+Code Block 93 ():
+rand()
+----------------------------------------
+
+Code Block 94 ():
+sum()
+----------------------------------------
+
+Code Block 95 ():
+Assumes arguments are literal values.
+----------------------------------------
+
+Code Block 96 ():
+avg()
+----------------------------------------
+
+Code Block 97 ():
+Assumes arguments are literal values.
+----------------------------------------
+
+Code Block 98 ():
+min()
+----------------------------------------
+
+Code Block 99 ():
+Assumes arguments are literal values.
+----------------------------------------
+
+Code Block 100 ():
+max()
+----------------------------------------
+
+Code Block 101 ():
+Assumes arguments are literal values.
+----------------------------------------
+
+Code Block 102 ():
+count()
+----------------------------------------
+
+Code Block 103 ():
+Assumes arguments are literal values.
+----------------------------------------
+
+Code Block 104 ():
+cast()
+----------------------------------------
+
+Code Block 105 ():
+concat()
+----------------------------------------
+
+Code Block 106 ():
+Assumes arguments are bound parameters.
+----------------------------------------
+
+Code Block 107 ():
+coalesce()
+----------------------------------------
+
+Code Block 108 ():
+Assumes arguments are bound parameters.
+----------------------------------------
+
+Code Block 109 ():
+dateDiff()
+----------------------------------------
+
+Code Block 110 ():
+Assumes arguments are bound parameters.
+----------------------------------------
+
+Code Block 111 ():
+now()
+----------------------------------------
+
+Code Block 112 ():
+extract()
+----------------------------------------
+
+Code Block 113 ():
+dateAdd()
+----------------------------------------
+
+Code Block 114 ():
+dayOfWeek()
+----------------------------------------
+
+Code Block 115 ():
+rowNumber()
+----------------------------------------
+
+Code Block 116 ():
+ROW_NUMBER()
+----------------------------------------
+
+Code Block 117 ():
+lag()
+----------------------------------------
+
+Code Block 118 ():
+LAG()
+----------------------------------------
+
+Code Block 119 ():
+lead()
+----------------------------------------
+
+Code Block 120 ():
+LEAD()
+----------------------------------------
+
+Code Block 121 (shiki):
+$query = $articles->find()->innerJoinWith('Categories');
+$concat = $query->func()->concat([
+    'Articles.title' => 'identifier',
+    ' - CAT: ',
+    'Categories.name' => 'identifier',
+    ' - Age: ',
+    $query->func()->dateDiff([
+        'NOW()' => 'literal',
+        'Articles.created' => 'identifier',
+    ]),
+]);
+$query->select(['link_title' => $concat]);
+----------------------------------------
+
+Code Block 122 ():
+$query = $articles->find()->innerJoinWith('Categories');
+$concat = $query->func()->concat([
+    'Articles.title' => 'identifier',
+    ' - CAT: ',
+    'Categories.name' => 'identifier',
+    ' - Age: ',
+    $query->func()->dateDiff([
+        'NOW()' => 'literal',
+        'Articles.created' => 'identifier',
+    ]),
+]);
+$query->select(['link_title' => $concat]);
+----------------------------------------
+
+Code Block 123 ():
+literal
+----------------------------------------
+
+Code Block 124 ():
+identifier
+----------------------------------------
+
+Code Block 125 ():
+identifier
+----------------------------------------
+
+Code Block 126 (shiki):
+SELECT CONCAT(
+    Articles.title,
+    :c0,
+    Categories.name,
+    :c1,
+    (DATEDIFF(NOW(), Articles.created))
+) FROM articles;
+----------------------------------------
+
+Code Block 127 ():
+SELECT CONCAT(
+    Articles.title,
+    :c0,
+    Categories.name,
+    :c1,
+    (DATEDIFF(NOW(), Articles.created))
+) FROM articles;
+----------------------------------------
+
+Code Block 128 ():
+:c0
+----------------------------------------
+
+Code Block 129 ():
+' - CAT:'
+----------------------------------------
+
+Code Block 130 ():
+dateDiff
+----------------------------------------
+
+Code Block 131 ():
+func()
+----------------------------------------
+
+Code Block 132 ():
+func()
+----------------------------------------
+
+Code Block 133 (shiki):
+$query = $articles->find();
+$year = $query->func()->year([
+    'created' => 'identifier',
+]);
+$time = $query->func()->date_format([
+    'created' => 'identifier',
+    "'%H:%i'" => 'literal',
+]);
+$query->select([
+    'yearCreated' => $year,
+    'timeCreated' => $time,
+]);
+----------------------------------------
+
+Code Block 134 ():
+$query = $articles->find();
+$year = $query->func()->year([
+    'created' => 'identifier',
+]);
+$time = $query->func()->date_format([
+    'created' => 'identifier',
+    "'%H:%i'" => 'literal',
+]);
+$query->select([
+    'yearCreated' => $year,
+    'timeCreated' => $time,
+]);
+----------------------------------------
+
+Code Block 135 (shiki):
+SELECT YEAR(created) as yearCreated,
+       DATE_FORMAT(created, '%H:%i') as timeCreated
+FROM articles;
+----------------------------------------
+
+Code Block 136 ():
+SELECT YEAR(created) as yearCreated,
+       DATE_FORMAT(created, '%H:%i') as timeCreated
+FROM articles;
+----------------------------------------
+
+Code Block 137 ():
+func()
+----------------------------------------
+
+Code Block 138 ():
+orderBy()
+----------------------------------------
+
+Code Block 139 (shiki):
+$query = $articles->find()
+    ->orderBy(['title' => 'ASC', 'id' => 'ASC']);
+----------------------------------------
+
+Code Block 140 ():
+$query = $articles->find()
+    ->orderBy(['title' => 'ASC', 'id' => 'ASC']);
+----------------------------------------
+
+Code Block 141 ():
+orderBy()
+----------------------------------------
+
+Code Block 142 ():
+ORDER BY
+----------------------------------------
+
+Code Block 143 ():
+orderBy()
+----------------------------------------
+
+Code Block 144 ():
+orderByAsc()
+----------------------------------------
+
+Code Block 145 ():
+orderByDesc()
+----------------------------------------
+
+Code Block 146 ():
+SelectQuery::OVERWRITE
+----------------------------------------
+
+Code Block 147 ():
+true
+----------------------------------------
+
+Code Block 148 (shiki):
+$query = $articles->find()
+    ->orderBy(['title' => 'ASC']);
+// Later, overwrite the ORDER BY clause instead of appending to it.
+$query = $articles->find()
+    ->orderBy(['created' => 'DESC'], SelectQuery::OVERWRITE);
+----------------------------------------
+
+Code Block 149 ():
+$query = $articles->find()
+    ->orderBy(['title' => 'ASC']);
+// Later, overwrite the ORDER BY clause instead of appending to it.
+$query = $articles->find()
+    ->orderBy(['created' => 'DESC'], SelectQuery::OVERWRITE);
+----------------------------------------
+
+Code Block 150 ():
+orderByAsc
+----------------------------------------
+
+Code Block 151 ():
+orderByDesc
+----------------------------------------
+
+Code Block 152 (shiki):
+$query = $articles->find();
+$concat = $query->func()->concat([
+    'title' => 'identifier',
+    'synopsis' => 'identifier',
+]);
+$query->orderByAsc($concat);
+----------------------------------------
+
+Code Block 153 ():
+$query = $articles->find();
+$concat = $query->func()->concat([
+    'title' => 'identifier',
+    'synopsis' => 'identifier',
+]);
+$query->orderByAsc($concat);
+----------------------------------------
+
+Code Block 154 (shiki):
+$query->orderByAsc(function (QueryExpression $exp, SelectQuery $query) {
+    return $exp->addCase(/* ... */);
+});
+----------------------------------------
+
+Code Block 155 ():
+$query->orderByAsc(function (QueryExpression $exp, SelectQuery $query) {
+    return $exp->addCase(/* ... */);
+});
+----------------------------------------
+
+Code Block 156 ():
+limit()
+----------------------------------------
+
+Code Block 157 ():
+page()
+----------------------------------------
+
+Code Block 158 (shiki):
+// Fetch rows 50 to 100
+$query = $articles->find()
+    ->limit(50)
+    ->page(2);
+----------------------------------------
+
+Code Block 159 ():
+// Fetch rows 50 to 100
+$query = $articles->find()
+    ->limit(50)
+    ->page(2);
+----------------------------------------
+
+Code Block 160 ():
+count
+----------------------------------------
+
+Code Block 161 ():
+sum
+----------------------------------------
+
+Code Block 162 ():
+group by
+----------------------------------------
+
+Code Block 163 ():
+having
+----------------------------------------
+
+Code Block 164 (shiki):
+$query = $articles->find();
+$query->select([
+    'count' => $query->func()->count('view_count'),
+    'published_date' => 'DATE(created)',
+])
+->groupBy('published_date')
+->having(['count >' => 3]);
+----------------------------------------
+
+Code Block 165 ():
+$query = $articles->find();
+$query->select([
+    'count' => $query->func()->count('view_count'),
+    'published_date' => 'DATE(created)',
+])
+->groupBy('published_date')
+->having(['count >' => 3]);
+----------------------------------------
+
+Code Block 166 ():
+case
+----------------------------------------
+
+Code Block 167 ():
+case
+----------------------------------------
+
+Code Block 168 ():
+if ... then ... else
+----------------------------------------
+
+Code Block 169 (shiki):
+SELECT
+COUNT(CASE WHEN published = 'Y' THEN 1 END) AS number_published,
+COUNT(CASE WHEN published = 'N' THEN 1 END) AS number_unpublished
+FROM articles
+----------------------------------------
+
+Code Block 170 ():
+SELECT
+COUNT(CASE WHEN published = 'Y' THEN 1 END) AS number_published,
+COUNT(CASE WHEN published = 'N' THEN 1 END) AS number_unpublished
+FROM articles
+----------------------------------------
+
+Code Block 171 (shiki):
+$query = $articles->find();
+$publishedCase = $query->expr()
+    ->case()
+    ->when(['published' => 'Y'])
+    ->then(1);
+$unpublishedCase = $query->expr()
+    ->case()
+    ->when(['published' => 'N'])
+    ->then(1);
+
+$query->select([
+    'number_published' => $query->func()->count($publishedCase),
+    'number_unpublished' => $query->func()->count($unpublishedCase),
+]);
+----------------------------------------
+
+Code Block 172 ():
+$query = $articles->find();
+$publishedCase = $query->expr()
+    ->case()
+    ->when(['published' => 'Y'])
+    ->then(1);
+$unpublishedCase = $query->expr()
+    ->case()
+    ->when(['published' => 'N'])
+    ->then(1);
+
+$query->select([
+    'number_published' => $query->func()->count($publishedCase),
+    'number_unpublished' => $query->func()->count($unpublishedCase),
+]);
+----------------------------------------
+
+Code Block 173 ():
+when()
+----------------------------------------
+
+Code Block 174 ():
+Closure
+----------------------------------------
+
+Code Block 175 (shiki):
+$query = $cities->find();
+$sizing = $query->expr()->case()
+    ->when(['population <' => 100000])
+    ->then('SMALL')
+    ->when($query->expr()->between('population', 100000, 999000))
+    ->then('MEDIUM')
+    ->when(['population >=' => 999001])
+    ->then('LARGE');
+$query = $query->select(['size' => $sizing]);
+# SELECT CASE
+#   WHEN population < 100000 THEN 'SMALL'
+#   WHEN population BETWEEN 100000 AND 999000 THEN 'MEDIUM'
+#   WHEN population >= 999001 THEN 'LARGE'
+#   END AS size
+----------------------------------------
+
+Code Block 176 ():
+$query = $cities->find();
+$sizing = $query->expr()->case()
+    ->when(['population <' => 100000])
+    ->then('SMALL')
+    ->when($query->expr()->between('population', 100000, 999000))
+    ->then('MEDIUM')
+    ->when(['population >=' => 999001])
+    ->then('LARGE');
+$query = $query->select(['size' => $sizing]);
+# SELECT CASE
+#   WHEN population < 100000 THEN 'SMALL'
+#   WHEN population BETWEEN 100000 AND 999000 THEN 'MEDIUM'
+#   WHEN population >= 999001 THEN 'LARGE'
+#   END AS size
+----------------------------------------
+
+Code Block 177 (shiki):
+// Unsafe do *not* use
+$case->when($requestData['published']);
+
+// Instead pass user data as values to array conditions
+$case->when(['published' => $requestData['published']]);
+----------------------------------------
+
+Code Block 178 ():
+// Unsafe do *not* use
+$case->when($requestData['published']);
+
+// Instead pass user data as values to array conditions
+$case->when(['published' => $requestData['published']]);
+----------------------------------------
+
+Code Block 179 ():
+QueryExpression
+----------------------------------------
+
+Code Block 180 (shiki):
+$userValue = $query->expr()
+    ->case()
+    ->when($query->expr('population >= :userData'))
+    ->then(123, 'integer');
+
+$query->select(['val' => $userValue])
+    ->bind(':userData', $requestData['value'], 'integer');
+----------------------------------------
+
+Code Block 181 ():
+$userValue = $query->expr()
+    ->case()
+    ->when($query->expr('population >= :userData'))
+    ->then(123, 'integer');
+
+$query->select(['val' => $userValue])
+    ->bind(':userData', $requestData['value'], 'integer');
+----------------------------------------
+
+Code Block 182 ():
+then()
+----------------------------------------
+
+Code Block 183 ():
+when()
+----------------------------------------
+
+Code Block 184 ():
+else()
+----------------------------------------
+
+Code Block 185 (shiki):
+$case->when(['published' => true])->then('1', 'integer');
+----------------------------------------
+
+Code Block 186 ():
+$case->when(['published' => true])->then('1', 'integer');
+----------------------------------------
+
+Code Block 187 ():
+if ... then ... else
+----------------------------------------
+
+Code Block 188 ():
+else()
+----------------------------------------
+
+Code Block 189 (shiki):
+$published = $query->expr()
+    ->case()
+    ->when(['published' => true])
+    ->then('Y')
+    ->else('N');
+
+# CASE WHEN published = true THEN 'Y' ELSE 'N' END;
+----------------------------------------
+
+Code Block 190 ():
+$published = $query->expr()
+    ->case()
+    ->when(['published' => true])
+    ->then('Y')
+    ->else('N');
+
+# CASE WHEN published = true THEN 'Y' ELSE 'N' END;
+----------------------------------------
+
+Code Block 191 ():
+case()
+----------------------------------------
+
+Code Block 192 (shiki):
+$published = $query->expr()
+    ->case($query->identifier('published'))
+    ->when(true)
+    ->then('Y')
+    ->else('N');
+
+# CASE published WHEN true THEN 'Y' ELSE 'N' END;
+----------------------------------------
+
+Code Block 193 ():
+$published = $query->expr()
+    ->case($query->identifier('published'))
+    ->when(true)
+    ->then('Y')
+    ->else('N');
+
+# CASE published WHEN true THEN 'Y' ELSE 'N' END;
+----------------------------------------
+
+Code Block 194 ():
+addCase
+----------------------------------------
+
+Code Block 195 ():
+if .. then .. [elseif .. then .. ] [ .. else ]
+----------------------------------------
+
+Code Block 196 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->addCase(
+            [
+                $q->expr()->lt('population', 100000),
+                $q->expr()->between('population', 100000, 999000),
+                $q->expr()->gte('population', 999001),
+            ],
+            ['SMALL',  'MEDIUM', 'LARGE'], # values matching conditions
+            ['string', 'string', 'string'], # type of each value
+        );
+    });
+# WHERE CASE
+#   WHEN population < 100000 THEN 'SMALL'
+#   WHEN population BETWEEN 100000 AND 999000 THEN 'MEDIUM'
+#   WHEN population >= 999001 THEN 'LARGE'
+#   END
+----------------------------------------
+
+Code Block 197 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->addCase(
+            [
+                $q->expr()->lt('population', 100000),
+                $q->expr()->between('population', 100000, 999000),
+                $q->expr()->gte('population', 999001),
+            ],
+            ['SMALL',  'MEDIUM', 'LARGE'], # values matching conditions
+            ['string', 'string', 'string'], # type of each value
+        );
+    });
+# WHERE CASE
+#   WHEN population < 100000 THEN 'SMALL'
+#   WHEN population BETWEEN 100000 AND 999000 THEN 'MEDIUM'
+#   WHEN population >= 999001 THEN 'LARGE'
+#   END
+----------------------------------------
+
+Code Block 198 ():
+addCase
+----------------------------------------
+
+Code Block 199 ():
+if .. then .. else
+----------------------------------------
+
+Code Block 200 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->addCase(
+            [
+                $q->expr()->eq('population', 0),
+            ],
+            ['DESERTED', 'INHABITED'], # values matching conditions
+            ['string', 'string'], # type of each value
+        );
+    });
+# WHERE CASE
+#   WHEN population = 0 THEN 'DESERTED' ELSE 'INHABITED' END
+----------------------------------------
+
+Code Block 201 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->addCase(
+            [
+                $q->expr()->eq('population', 0),
+            ],
+            ['DESERTED', 'INHABITED'], # values matching conditions
+            ['string', 'string'], # type of each value
+        );
+    });
+# WHERE CASE
+#   WHEN population = 0 THEN 'DESERTED' ELSE 'INHABITED' END
+----------------------------------------
+
+Code Block 202 (shiki):
+$query = $articles->find();
+$query->enableHydration(false); // Results as arrays instead of entities
+$result = $query->toList(); // Execute the query and return the array
+----------------------------------------
+
+Code Block 203 ():
+$query = $articles->find();
+$query->enableHydration(false); // Results as arrays instead of entities
+$result = $query->toList(); // Execute the query and return the array
+----------------------------------------
+
+Code Block 204 (shiki):
+[
+    ['id' => 1, 'title' => 'First Article', 'body' => 'Article 1 body' ...],
+    ['id' => 2, 'title' => 'Second Article', 'body' => 'Article 2 body' ...],
+    ...
+]
+----------------------------------------
+
+Code Block 205 ():
+[
+    ['id' => 1, 'title' => 'First Article', 'body' => 'Article 1 body' ...],
+    ['id' => 2, 'title' => 'Second Article', 'body' => 'Article 2 body' ...],
+    ...
+]
+----------------------------------------
+
+Code Block 206 ():
+readonly
+----------------------------------------
+
+Code Block 207 ():
+projectAs()
+----------------------------------------
+
+Code Block 208 (shiki):
+// Define a DTO class
+readonly class ArticleDto
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public ?string $body = null,
+    ) {
+    }
+}
+
+// Use projectAs() to hydrate results into DTOs
+$articles = $articlesTable->find()
+    ->select(['id', 'title', 'body'])
+    ->projectAs(ArticleDto::class)
+    ->toArray();
+----------------------------------------
+
+Code Block 209 ():
+// Define a DTO class
+readonly class ArticleDto
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public ?string $body = null,
+    ) {
+    }
+}
+
+// Use projectAs() to hydrate results into DTOs
+$articles = $articlesTable->find()
+    ->select(['id', 'title', 'body'])
+    ->projectAs(ArticleDto::class)
+    ->toArray();
+----------------------------------------
+
+Code Block 210 (shiki):
+readonly class ArticleDto
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public ?AuthorDto $author = null,
+    ) {
+    }
+}
+----------------------------------------
+
+Code Block 211 ():
+readonly class ArticleDto
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public ?AuthorDto $author = null,
+    ) {
+    }
+}
+----------------------------------------
+
+Code Block 212 ():
+createFromArray()
+----------------------------------------
+
+Code Block 213 (shiki):
+class ArticleDto
+{
+    public int $id;
+    public string $title;
+
+    public static function createFromArray(
+        array $data,
+        bool $ignoreMissing = false,
+    ): self {
+        $dto = new self();
+        $dto->id = $data['id'];
+        $dto->title = $data['title'];
+
+        return $dto;
+    }
+}
+----------------------------------------
+
+Code Block 214 ():
+class ArticleDto
+{
+    public int $id;
+    public string $title;
+
+    public static function createFromArray(
+        array $data,
+        bool $ignoreMissing = false,
+    ): self {
+        $dto = new self();
+        $dto->id = $data['id'];
+        $dto->title = $data['title'];
+
+        return $dto;
+    }
+}
+----------------------------------------
+
+Code Block 215 ():
+#[CollectionOf]
+----------------------------------------
+
+Code Block 216 (shiki):
+use Cake\ORM\Attribute\CollectionOf;
+
+readonly class ArticleDto
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public ?AuthorDto $author = null,
+        #[CollectionOf(CommentDto::class)]
+        public array $comments = [],
+    ) {
+    }
+}
+
+readonly class AuthorDto
+{
+    public function __construct(
+        public int $id,
+        public string $name,
+    ) {
+    }
+}
+
+readonly class CommentDto
+{
+    public function __construct(
+        public int $id,
+        public string $body,
+    ) {
+    }
+}
+
+// Fetch articles with associations projected into DTOs
+$articles = $articlesTable->find()
+    ->contain(['Authors', 'Comments'])
+    ->projectAs(ArticleDto::class)
+    ->toArray();
+----------------------------------------
+
+Code Block 217 ():
+use Cake\ORM\Attribute\CollectionOf;
+
+readonly class ArticleDto
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public ?AuthorDto $author = null,
+        #[CollectionOf(CommentDto::class)]
+        public array $comments = [],
+    ) {
+    }
+}
+
+readonly class AuthorDto
+{
+    public function __construct(
+        public int $id,
+        public string $name,
+    ) {
+    }
+}
+
+readonly class CommentDto
+{
+    public function __construct(
+        public int $id,
+        public string $body,
+    ) {
+    }
+}
+
+// Fetch articles with associations projected into DTOs
+$articles = $articlesTable->find()
+    ->contain(['Authors', 'Comments'])
+    ->projectAs(ArticleDto::class)
+    ->toArray();
+----------------------------------------
+
+Code Block 218 (shiki):
+readonly class ArticleApiResponse
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public string $slug,
+        public string $authorName,
+        public string $publishedAt,
+    ) {
+    }
+
+    public static function createFromArray(
+        array $data,
+        bool $ignoreMissing = false,
+    ): self {
+        return new self(
+            id: $data['id'],
+            title: $data['title'],
+            slug: Inflector::slug($data['title']),
+            authorName: $data['author']['name'] ?? 'Unknown',
+            publishedAt: $data['created']->format('c'),
+        );
+    }
+}
+
+// In your controller
+$articles = $this->Articles->find()
+    ->contain(['Authors'])
+    ->projectAs(ArticleApiResponse::class)
+    ->toArray();
+
+return $this->response->withType('application/json')
+    ->withStringBody(json_encode(['articles' => $articles]));
+----------------------------------------
+
+Code Block 219 ():
+readonly class ArticleApiResponse
+{
+    public function __construct(
+        public int $id,
+        public string $title,
+        public string $slug,
+        public string $authorName,
+        public string $publishedAt,
+    ) {
+    }
+
+    public static function createFromArray(
+        array $data,
+        bool $ignoreMissing = false,
+    ): self {
+        return new self(
+            id: $data['id'],
+            title: $data['title'],
+            slug: Inflector::slug($data['title']),
+            authorName: $data['author']['name'] ?? 'Unknown',
+            publishedAt: $data['created']->format('c'),
+        );
+    }
+}
+
+// In your controller
+$articles = $this->Articles->find()
+    ->contain(['Authors'])
+    ->projectAs(ArticleApiResponse::class)
+    ->toArray();
+
+return $this->response->withType('application/json')
+    ->withStringBody(json_encode(['articles' => $articles]));
+----------------------------------------
+
+Code Block 220 ():
+projectAs()
+----------------------------------------
+
+Code Block 221 ():
+#[CollectionOf]
+----------------------------------------
+
+Code Block 222 ():
+formatResults()
+----------------------------------------
+
+Code Block 223 (shiki):
+// Assuming we have built the fields, conditions and containments.
+$query->formatResults(function (\Cake\Collection\CollectionInterface $results) {
+    return $results->map(function ($row) {
+        $row['age'] = $row['birth_date']->diff(new \DateTime)->y;
+
+        return $row;
+    });
+});
+----------------------------------------
+
+Code Block 224 ():
+// Assuming we have built the fields, conditions and containments.
+$query->formatResults(function (\Cake\Collection\CollectionInterface $results) {
+    return $results->map(function ($row) {
+        $row['age'] = $row['birth_date']->diff(new \DateTime)->y;
+
+        return $row;
+    });
+});
+----------------------------------------
+
+Code Block 225 ():
+ResultSetDecorator
+----------------------------------------
+
+Code Block 226 ():
+$results
+----------------------------------------
+
+Code Block 227 (shiki):
+// In a method in the Articles table
+$query->contain(['Authors' => function ($q) {
+    return $q->formatResults(function (\Cake\Collection\CollectionInterface $authors) {
+        return $authors->map(function ($author) {
+            $author['age'] = $author['birth_date']->diff(new \DateTime)->y;
+
+            return $author;
+        });
+    });
+}]);
+
+// Get results
+$results = $query->all();
+
+// Outputs 29
+echo $results->first()->author->age;
+----------------------------------------
+
+Code Block 228 ():
+// In a method in the Articles table
+$query->contain(['Authors' => function ($q) {
+    return $q->formatResults(function (\Cake\Collection\CollectionInterface $authors) {
+        return $authors->map(function ($author) {
+            $author['age'] = $author['birth_date']->diff(new \DateTime)->y;
+
+            return $author;
+        });
+    });
+}]);
+
+// Get results
+$results = $query->all();
+
+// Outputs 29
+echo $results->first()->author->age;
+----------------------------------------
+
+Code Block 229 ():
+formatResults
+----------------------------------------
+
+Code Block 230 ():
+preserveKeys
+----------------------------------------
+
+Code Block 231 (shiki):
+public function findSlugged(SelectQuery $query): SelectQuery
+{
+    return $query->applyOptions(['preserveKeys' => true])
+        ->formatResults(function ($results) {
+            return $results->indexBy(function ($record) {
+                return Text::slug($record->name);
+            });
+        });
+}
+----------------------------------------
+
+Code Block 232 ():
+public function findSlugged(SelectQuery $query): SelectQuery
+{
+    return $query->applyOptions(['preserveKeys' => true])
+        ->formatResults(function ($results) {
+            return $results->indexBy(function ($record) {
+                return Text::slug($record->name);
+            });
+        });
+}
+----------------------------------------
+
+Code Block 233 ():
+preserveKeys
+----------------------------------------
+
+Code Block 234 ():
+preserveKeys
+----------------------------------------
+
+Code Block 235 ():
+where
+----------------------------------------
+
+Code Block 236 ():
+where()
+----------------------------------------
+
+Code Block 237 (shiki):
+$query = $articles->find()
+    ->where([
+        'author_id' => 3,
+        'OR' => [['view_count' => 2], ['view_count' => 3]],
+    ]);
+----------------------------------------
+
+Code Block 238 ():
+$query = $articles->find()
+    ->where([
+        'author_id' => 3,
+        'OR' => [['view_count' => 2], ['view_count' => 3]],
+    ]);
+----------------------------------------
+
+Code Block 239 (shiki):
+SELECT * FROM articles WHERE author_id = 3 AND (view_count = 2 OR view_count = 3)
+----------------------------------------
+
+Code Block 240 ():
+SELECT * FROM articles WHERE author_id = 3 AND (view_count = 2 OR view_count = 3)
+----------------------------------------
+
+Code Block 241 ():
+where()
+----------------------------------------
+
+Code Block 242 (shiki):
+$query = $articles->find()->where(function (QueryExpression $exp, SelectQuery $query) {
+    // Use add() to add multiple conditions for the same field.
+    $author = $query->expr()->or(['author_id' => 3])->add(['author_id' => 2]);
+    $published = $query->expr()->and(['published' => true, 'view_count' => 10]);
+
+    return $exp->or([
+        'promoted' => true,
+        $query->expr()->and([$author, $published]),
+    ]);
+});
+----------------------------------------
+
+Code Block 243 ():
+$query = $articles->find()->where(function (QueryExpression $exp, SelectQuery $query) {
+    // Use add() to add multiple conditions for the same field.
+    $author = $query->expr()->or(['author_id' => 3])->add(['author_id' => 2]);
+    $published = $query->expr()->and(['published' => true, 'view_count' => 10]);
+
+    return $exp->or([
+        'promoted' => true,
+        $query->expr()->and([$author, $published]),
+    ]);
+});
+----------------------------------------
+
+Code Block 244 (shiki):
+SELECT *
+FROM articles
+WHERE (
+    (
+        (author_id = 2 OR author_id = 3)
+        AND
+        (published = 1 AND view_count = 10)
+    )
+    OR promoted = 1
+)
+----------------------------------------
+
+Code Block 245 ():
+SELECT *
+FROM articles
+WHERE (
+    (
+        (author_id = 2 OR author_id = 3)
+        AND
+        (published = 1 AND view_count = 10)
+    )
+    OR promoted = 1
+)
+----------------------------------------
+
+Code Block 246 ():
+QueryExpression
+----------------------------------------
+
+Code Block 247 ():
+QueryExpression
+----------------------------------------
+
+Code Block 248 ():
+and()
+----------------------------------------
+
+Code Block 249 ():
+AND
+----------------------------------------
+
+Code Block 250 ():
+or()
+----------------------------------------
+
+Code Block 251 ():
+OR
+----------------------------------------
+
+Code Block 252 ():
+QueryExpression
+----------------------------------------
+
+Code Block 253 ():
+and()
+----------------------------------------
+
+Code Block 254 (shiki):
+$query = $articles->find()
+    ->where(function (QueryExpression $exp) {
+        return $exp
+            ->eq('author_id', 2)
+            ->eq('published', true)
+            ->notEq('spam', true)
+            ->gt('view_count', 10);
+    });
+----------------------------------------
+
+Code Block 255 ():
+$query = $articles->find()
+    ->where(function (QueryExpression $exp) {
+        return $exp
+            ->eq('author_id', 2)
+            ->eq('published', true)
+            ->notEq('spam', true)
+            ->gt('view_count', 10);
+    });
+----------------------------------------
+
+Code Block 256 ():
+where()
+----------------------------------------
+
+Code Block 257 ():
+and()
+----------------------------------------
+
+Code Block 258 ():
+AND
+----------------------------------------
+
+Code Block 259 (shiki):
+SELECT *
+FROM articles
+WHERE (
+author_id = 2
+AND published = 1
+AND spam != 1
+AND view_count > 10)
+----------------------------------------
+
+Code Block 260 ():
+SELECT *
+FROM articles
+WHERE (
+author_id = 2
+AND published = 1
+AND spam != 1
+AND view_count > 10)
+----------------------------------------
+
+Code Block 261 ():
+AND
+----------------------------------------
+
+Code Block 262 ():
+OR
+----------------------------------------
+
+Code Block 263 (shiki):
+$query = $articles->find()
+    ->where(function (QueryExpression $exp) {
+        $orConditions = $exp->or(['author_id' => 2])
+            ->eq('author_id', 5);
+
+        return $exp
+            ->add($orConditions)
+            ->eq('published', true)
+            ->gte('view_count', 10);
+    });
+----------------------------------------
+
+Code Block 264 ():
+$query = $articles->find()
+    ->where(function (QueryExpression $exp) {
+        $orConditions = $exp->or(['author_id' => 2])
+            ->eq('author_id', 5);
+
+        return $exp
+            ->add($orConditions)
+            ->eq('published', true)
+            ->gte('view_count', 10);
+    });
+----------------------------------------
+
+Code Block 265 (shiki):
+SELECT *
+FROM articles
+WHERE (
+    (author_id = 2 OR author_id = 5)
+    AND published = 1
+    AND view_count >= 10
+)
+----------------------------------------
+
+Code Block 266 ():
+SELECT *
+FROM articles
+WHERE (
+    (author_id = 2 OR author_id = 5)
+    AND published = 1
+    AND view_count >= 10
+)
+----------------------------------------
+
+Code Block 267 (shiki):
+$query = $articles->find()
+    ->where(function (QueryExpression $exp) {
+        $orConditions = $exp->or(function (QueryExpression $or) {
+            return $or->eq('author_id', 2)
+                ->eq('author_id', 5);
+        });
+
+        return $exp
+            ->not($orConditions)
+            ->lte('view_count', 10);
+    });
+----------------------------------------
+
+Code Block 268 ():
+$query = $articles->find()
+    ->where(function (QueryExpression $exp) {
+        $orConditions = $exp->or(function (QueryExpression $or) {
+            return $or->eq('author_id', 2)
+                ->eq('author_id', 5);
+        });
+
+        return $exp
+            ->not($orConditions)
+            ->lte('view_count', 10);
+    });
+----------------------------------------
+
+Code Block 269 ():
+not()
+----------------------------------------
+
+Code Block 270 (shiki):
+$query = $articles->find()
+    ->where(function (QueryExpression $exp) {
+        $orConditions = $exp->or(['author_id' => 2])
+            ->eq('author_id', 5);
+
+        return $exp
+            ->not($orConditions)
+            ->lte('view_count', 10);
+    });
+----------------------------------------
+
+Code Block 271 ():
+$query = $articles->find()
+    ->where(function (QueryExpression $exp) {
+        $orConditions = $exp->or(['author_id' => 2])
+            ->eq('author_id', 5);
+
+        return $exp
+            ->not($orConditions)
+            ->lte('view_count', 10);
+    });
+----------------------------------------
+
+Code Block 272 (shiki):
+SELECT *
+FROM articles
+WHERE (
+    NOT (author_id = 2 OR author_id = 5)
+    AND view_count <= 10
+)
+----------------------------------------
+
+Code Block 273 ():
+SELECT *
+FROM articles
+WHERE (
+    NOT (author_id = 2 OR author_id = 5)
+    AND view_count <= 10
+)
+----------------------------------------
+
+Code Block 274 (shiki):
+$query = $articles->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        $year = $q->func()->year([
+            'created' => 'identifier',
+        ]);
+
+        return $exp
+            ->gte($year, 2014)
+            ->eq('published', true);
+    });
+----------------------------------------
+
+Code Block 275 ():
+$query = $articles->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        $year = $q->func()->year([
+            'created' => 'identifier',
+        ]);
+
+        return $exp
+            ->gte($year, 2014)
+            ->eq('published', true);
+    });
+----------------------------------------
+
+Code Block 276 (shiki):
+SELECT *
+FROM articles
+WHERE (
+    YEAR(created) >= 2014
+    AND published = 1
+)
+----------------------------------------
+
+Code Block 277 ():
+SELECT *
+FROM articles
+WHERE (
+    YEAR(created) >= 2014
+    AND published = 1
+)
+----------------------------------------
+
+Code Block 278 ():
+eq()
+----------------------------------------
+
+Code Block 279 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->eq('population', '10000');
+    });
+# WHERE population = 10000
+----------------------------------------
+
+Code Block 280 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->eq('population', '10000');
+    });
+# WHERE population = 10000
+----------------------------------------
+
+Code Block 281 ():
+notEq()
+----------------------------------------
+
+Code Block 282 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->notEq('population', '10000');
+    });
+# WHERE population != 10000
+----------------------------------------
+
+Code Block 283 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->notEq('population', '10000');
+    });
+# WHERE population != 10000
+----------------------------------------
+
+Code Block 284 ():
+like()
+----------------------------------------
+
+Code Block 285 ():
+LIKE
+----------------------------------------
+
+Code Block 286 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->like('name', '%A%');
+    });
+# WHERE name LIKE "%A%"
+----------------------------------------
+
+Code Block 287 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->like('name', '%A%');
+    });
+# WHERE name LIKE "%A%"
+----------------------------------------
+
+Code Block 288 ():
+notLike()
+----------------------------------------
+
+Code Block 289 ():
+LIKE
+----------------------------------------
+
+Code Block 290 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->notLike('name', '%A%');
+    });
+# WHERE name NOT LIKE "%A%"
+----------------------------------------
+
+Code Block 291 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->notLike('name', '%A%');
+    });
+# WHERE name NOT LIKE "%A%"
+----------------------------------------
+
+Code Block 292 ():
+in()
+----------------------------------------
+
+Code Block 293 ():
+IN
+----------------------------------------
+
+Code Block 294 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->in('country_id', ['AFG', 'USA', 'EST']);
+    });
+# WHERE country_id IN ('AFG', 'USA', 'EST')
+----------------------------------------
+
+Code Block 295 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->in('country_id', ['AFG', 'USA', 'EST']);
+    });
+# WHERE country_id IN ('AFG', 'USA', 'EST')
+----------------------------------------
+
+Code Block 296 ():
+notIn()
+----------------------------------------
+
+Code Block 297 ():
+IN
+----------------------------------------
+
+Code Block 298 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->notIn('country_id', ['AFG', 'USA', 'EST']);
+    });
+# WHERE country_id NOT IN ('AFG', 'USA', 'EST')
+----------------------------------------
+
+Code Block 299 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->notIn('country_id', ['AFG', 'USA', 'EST']);
+    });
+# WHERE country_id NOT IN ('AFG', 'USA', 'EST')
+----------------------------------------
+
+Code Block 300 ():
+gt()
+----------------------------------------
+
+Code Block 301 ():
+>
+----------------------------------------
+
+Code Block 302 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->gt('population', '10000');
+    });
+# WHERE population > 10000
+----------------------------------------
+
+Code Block 303 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->gt('population', '10000');
+    });
+# WHERE population > 10000
+----------------------------------------
+
+Code Block 304 ():
+gte()
+----------------------------------------
+
+Code Block 305 ():
+>=
+----------------------------------------
+
+Code Block 306 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->gte('population', '10000');
+    });
+# WHERE population >= 10000
+----------------------------------------
+
+Code Block 307 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->gte('population', '10000');
+    });
+# WHERE population >= 10000
+----------------------------------------
+
+Code Block 308 ():
+lt()
+----------------------------------------
+
+Code Block 309 ():
+<
+----------------------------------------
+
+Code Block 310 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->lt('population', '10000');
+    });
+# WHERE population < 10000
+----------------------------------------
+
+Code Block 311 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->lt('population', '10000');
+    });
+# WHERE population < 10000
+----------------------------------------
+
+Code Block 312 ():
+lte()
+----------------------------------------
+
+Code Block 313 ():
+<=
+----------------------------------------
+
+Code Block 314 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->lte('population', '10000');
+    });
+# WHERE population <= 10000
+----------------------------------------
+
+Code Block 315 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->lte('population', '10000');
+    });
+# WHERE population <= 10000
+----------------------------------------
+
+Code Block 316 ():
+isNull()
+----------------------------------------
+
+Code Block 317 ():
+IS NULL
+----------------------------------------
+
+Code Block 318 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->isNull('population');
+    });
+# WHERE (population) IS NULL
+----------------------------------------
+
+Code Block 319 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->isNull('population');
+    });
+# WHERE (population) IS NULL
+----------------------------------------
+
+Code Block 320 ():
+isNotNull()
+----------------------------------------
+
+Code Block 321 ():
+IS NULL
+----------------------------------------
+
+Code Block 322 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->isNotNull('population');
+    });
+# WHERE (population) IS NOT NULL
+----------------------------------------
+
+Code Block 323 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->isNotNull('population');
+    });
+# WHERE (population) IS NOT NULL
+----------------------------------------
+
+Code Block 324 ():
+between()
+----------------------------------------
+
+Code Block 325 ():
+BETWEEN
+----------------------------------------
+
+Code Block 326 (shiki):
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->between('population', 999, 5000000);
+    });
+# WHERE population BETWEEN 999 AND 5000000,
+----------------------------------------
+
+Code Block 327 ():
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->between('population', 999, 5000000);
+    });
+# WHERE population BETWEEN 999 AND 5000000,
+----------------------------------------
+
+Code Block 328 ():
+exists()
+----------------------------------------
+
+Code Block 329 ():
+EXISTS
+----------------------------------------
+
+Code Block 330 (shiki):
+$subquery = $cities->find()
+    ->select(['id'])
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->equalFields('countries.id', 'cities.country_id');
+    })
+    ->andWhere(['population >' => 5000000]);
+
+$query = $countries->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) use ($subquery) {
+        return $exp->exists($subquery);
+    });
+# WHERE EXISTS (SELECT id FROM cities WHERE countries.id = cities.country_id AND population > 5000000)
+----------------------------------------
+
+Code Block 331 ():
+$subquery = $cities->find()
+    ->select(['id'])
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->equalFields('countries.id', 'cities.country_id');
+    })
+    ->andWhere(['population >' => 5000000]);
+
+$query = $countries->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) use ($subquery) {
+        return $exp->exists($subquery);
+    });
+# WHERE EXISTS (SELECT id FROM cities WHERE countries.id = cities.country_id AND population > 5000000)
+----------------------------------------
+
+Code Block 332 ():
+notExists()
+----------------------------------------
+
+Code Block 333 ():
+EXISTS
+----------------------------------------
+
+Code Block 334 (shiki):
+$subquery = $cities->find()
+    ->select(['id'])
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->equalFields('countries.id', 'cities.country_id');
+    })
+    ->andWhere(['population >' => 5000000]);
+
+$query = $countries->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) use ($subquery) {
+        return $exp->notExists($subquery);
+    });
+# WHERE NOT EXISTS (SELECT id FROM cities WHERE countries.id = cities.country_id AND population > 5000000)
+----------------------------------------
+
+Code Block 335 ():
+$subquery = $cities->find()
+    ->select(['id'])
+    ->where(function (QueryExpression $exp, SelectQuery $q) {
+        return $exp->equalFields('countries.id', 'cities.country_id');
+    })
+    ->andWhere(['population >' => 5000000]);
+
+$query = $countries->find()
+    ->where(function (QueryExpression $exp, SelectQuery $q) use ($subquery) {
+        return $exp->notExists($subquery);
+    });
+# WHERE NOT EXISTS (SELECT id FROM cities WHERE countries.id = cities.country_id AND population > 5000000)
+----------------------------------------
+
+Code Block 336 ():
+bind()
+----------------------------------------
+
+Code Block 337 (shiki):
+$query = $cities->find()
+    ->where([
+        'start_date BETWEEN :start AND :end',
+    ])
+    ->bind(':start', '2014-01-01', 'date')
+    ->bind(':end',   '2014-12-31', 'date');
+----------------------------------------
+
+Code Block 338 ():
+$query = $cities->find()
+    ->where([
+        'start_date BETWEEN :start AND :end',
+    ])
+    ->bind(':start', '2014-01-01', 'date')
+    ->bind(':end',   '2014-12-31', 'date');
+----------------------------------------
+
+Code Block 339 (shiki):
+// Compare two fields to each other
+$query->where(['Categories.parent_id != Parents.id']);
+----------------------------------------
+
+Code Block 340 ():
+// Compare two fields to each other
+$query->where(['Categories.parent_id != Parents.id']);
+----------------------------------------
+
+Code Block 341 ():
+identifier()
+----------------------------------------
+
+Code Block 342 (shiki):
+$query = $countries->find();
+$query->select([
+        'year' => $query->func()->year([$query->identifier('created')]),
+    ])
+    ->where(function ($exp, $query) {
+        return $exp->gt('population', 100000);
+    });
+----------------------------------------
+
+Code Block 343 ():
+$query = $countries->find();
+$query->select([
+        'year' => $query->func()->year([$query->identifier('created')]),
+    ])
+    ->where(function ($exp, $query) {
+        return $exp->gt('population', 100000);
+    });
+----------------------------------------
+
+Code Block 344 ():
+identifier()
+----------------------------------------
+
+Code Block 345 (shiki):
+$query = $this->Orders->find();
+$query->select(['Customers.customer_name', 'total_orders' => $query->func()->count('Orders.order_id')])
+    ->contain('Customers')
+    ->groupBy(['Customers.customer_name'])
+    ->having(['total_orders >=' => $query->identifier('Customers.minimum_order_count')]);
+----------------------------------------
+
+Code Block 346 ():
+$query = $this->Orders->find();
+$query->select(['Customers.customer_name', 'total_orders' => $query->func()->count('Orders.order_id')])
+    ->contain('Customers')
+    ->groupBy(['Customers.customer_name'])
+    ->having(['total_orders >=' => $query->identifier('Customers.minimum_order_count')]);
+----------------------------------------
+
+Code Block 347 ():
+$collation
+----------------------------------------
+
+Code Block 348 ():
+IdentifierExpression
+----------------------------------------
+
+Code Block 349 ():
+StringExpression
+----------------------------------------
+
+Code Block 350 (shiki):
+use Cake\Database\Expression\IdentifierExpression;
+
+$collation = 'Latin1_general_CI_AI'; //sql server example
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, Query $q) use ($collation) {
+        return $exp->like(new IdentifierExpression('name', $collation), '%São José%');
+    });
+# WHERE name COLLATE LIKE Latin1_general_CI_AI "%São José%"
+----------------------------------------
+
+Code Block 351 ():
+use Cake\Database\Expression\IdentifierExpression;
+
+$collation = 'Latin1_general_CI_AI'; //sql server example
+$query = $cities->find()
+    ->where(function (QueryExpression $exp, Query $q) use ($collation) {
+        return $exp->like(new IdentifierExpression('name', $collation), '%São José%');
+    });
+# WHERE name COLLATE LIKE Latin1_general_CI_AI "%São José%"
+----------------------------------------
+
+Code Block 352 ():
+IN
+----------------------------------------
+
+Code Block 353 (shiki):
+$query = $articles->find()
+    ->where(['id' => $ids], ['id' => 'integer[]']);
+
+// Or include IN to automatically cast to an array.
+$query = $articles->find()
+    ->where(['id IN' => $ids]);
+----------------------------------------
+
+Code Block 354 ():
+$query = $articles->find()
+    ->where(['id' => $ids], ['id' => 'integer[]']);
+
+// Or include IN to automatically cast to an array.
+$query = $articles->find()
+    ->where(['id IN' => $ids]);
+----------------------------------------
+
+Code Block 355 ():
+id IN (...)
+----------------------------------------
+
+Code Block 356 ():
+id = ?
+----------------------------------------
+
+Code Block 357 ():
+[]
+----------------------------------------
+
+Code Block 358 (shiki):
+$query = $articles->find()
+    ->where(['post_date' => $dates], ['post_date' => 'date[]']);
+----------------------------------------
+
+Code Block 359 ():
+$query = $articles->find()
+    ->where(['post_date' => $dates], ['post_date' => 'date[]']);
+----------------------------------------
+
+Code Block 360 ():
+null
+----------------------------------------
+
+Code Block 361 ():
+IS
+----------------------------------------
+
+Code Block 362 (shiki):
+$query = $categories->find()
+    ->where(['parent_id IS' => $parentId]);
+----------------------------------------
+
+Code Block 363 ():
+$query = $categories->find()
+    ->where(['parent_id IS' => $parentId]);
+----------------------------------------
+
+Code Block 364 ():
+parent_id = :c1
+----------------------------------------
+
+Code Block 365 ():
+parent_id IS NULL
+----------------------------------------
+
+Code Block 366 ():
+$parentId
+----------------------------------------
+
+Code Block 367 ():
+null
+----------------------------------------
+
+Code Block 368 ():
+IS NOT
+----------------------------------------
+
+Code Block 369 (shiki):
+$query = $categories->find()
+    ->where(['parent_id IS NOT' => $parentId]);
+----------------------------------------
+
+Code Block 370 ():
+$query = $categories->find()
+    ->where(['parent_id IS NOT' => $parentId]);
+----------------------------------------
+
+Code Block 371 ():
+parent_id != :c1
+----------------------------------------
+
+Code Block 372 ():
+parent_id IS NOT NULL
+----------------------------------------
+
+Code Block 373 ():
+$parentId
+----------------------------------------
+
+Code Block 374 (shiki):
+$query = $articles->find();
+$expr = $query->expr()->add('1 + 1');
+$query->select(['two' => $expr]);
+----------------------------------------
+
+Code Block 375 ():
+$query = $articles->find();
+$expr = $query->expr()->add('1 + 1');
+$query->select(['two' => $expr]);
+----------------------------------------
+
+Code Block 376 ():
+Expression
+----------------------------------------
+
+Code Block 377 ():
+where()
+----------------------------------------
+
+Code Block 378 ():
+limit()
+----------------------------------------
+
+Code Block 379 ():
+groupBy()
+----------------------------------------
+
+Code Block 380 ():
+select()
+----------------------------------------
+
+Code Block 381 ():
+read
+----------------------------------------
+
+Code Block 382 (shiki):
+// Run a query on the read connection
+$query->useReadRole();
+
+// Run a query on the write connection (default)
+$query->useWriteRole();
+----------------------------------------
+
+Code Block 383 ():
+// Run a query on the read connection
+$query->useReadRole();
+
+// Run a query on the write connection (default)
+$query->useWriteRole();
+----------------------------------------
+
+Code Block 384 ():
+setConjunction
+----------------------------------------
+
+Code Block 385 (shiki):
+$query = $articles->find();
+$expr = $query->expr(['1','1'])->setConjunction('+');
+$query->select(['two' => $expr]);
+----------------------------------------
+
+Code Block 386 ():
+$query = $articles->find();
+$expr = $query->expr(['1','1'])->setConjunction('+');
+$query->select(['two' => $expr]);
+----------------------------------------
+
+Code Block 387 (shiki):
+$query = $products->find();
+$query->select(function ($query) {
+        $stockQuantity = $query->func()->sum('Stocks.quantity');
+        $totalStockValue = $query->func()->sum(
+                $query->expr(['Stocks.quantity', 'Products.unit_price'])
+                    ->setConjunction('*'),
+        );
+
+        return [
+            'Products.name',
+            'stock_quantity' => $stockQuantity,
+            'Products.unit_price',
+            'total_stock_value' => $totalStockValue,
+        ];
+    })
+    ->innerJoinWith('Stocks')
+    ->groupBy(['Products.id', 'Products.name', 'Products.unit_price']);
+----------------------------------------
+
+Code Block 388 ():
+$query = $products->find();
+$query->select(function ($query) {
+        $stockQuantity = $query->func()->sum('Stocks.quantity');
+        $totalStockValue = $query->func()->sum(
+                $query->expr(['Stocks.quantity', 'Products.unit_price'])
+                    ->setConjunction('*'),
+        );
+
+        return [
+            'Products.name',
+            'stock_quantity' => $stockQuantity,
+            'Products.unit_price',
+            'total_stock_value' => $totalStockValue,
+        ];
+    })
+    ->innerJoinWith('Stocks')
+    ->groupBy(['Products.id', 'Products.name', 'Products.unit_price']);
+----------------------------------------
+
+Code Block 389 ():
+<, >, =
+----------------------------------------
+
+Code Block 390 (shiki):
+$products->find()
+    ->where([
+        'OR' => [
+            ['unit_price <' => 20],
+            ['unit_price' => 20, 'tax_percentage <=' => 5],
+        ]
+    ]);
+
+# WHERE (unit_price < 20 OR (unit_price = 20 AND tax_percentage <= 5))
+----------------------------------------
+
+Code Block 391 ():
+$products->find()
+    ->where([
+        'OR' => [
+            ['unit_price <' => 20],
+            ['unit_price' => 20, 'tax_percentage <=' => 5],
+        ]
+    ]);
+
+# WHERE (unit_price < 20 OR (unit_price = 20 AND tax_percentage <= 5))
+----------------------------------------
+
+Code Block 392 ():
+TupleComparison
+----------------------------------------
+
+Code Block 393 (shiki):
+use Cake\Database\Expression\TupleComparison;
+
+$products->find()
+    ->where(
+        new TupleComparison(
+            ['unit_price', 'tax_percentage'],
+            [20, 5],
+            ['integer', 'integer'], # type of each value
+            '<=',
+        )
+    );
+
+# WHERE (unit_price, tax_percentage) <= (20, 5))
+----------------------------------------
+
+Code Block 394 ():
+use Cake\Database\Expression\TupleComparison;
+
+$products->find()
+    ->where(
+        new TupleComparison(
+            ['unit_price', 'tax_percentage'],
+            [20, 5],
+            ['integer', 'integer'], # type of each value
+            '<=',
+        )
+    );
+
+# WHERE (unit_price, tax_percentage) <= (20, 5))
+----------------------------------------
+
+Code Block 395 ():
+IN
+----------------------------------------
+
+Code Block 396 (shiki):
+$articles->find()
+        ->where(
+            new TupleComparison(
+                ['articles.id', 'articles.author_id'],
+                [[10, 10], [30, 10]],
+                ['integer', 'integer'],
+                'IN',
+            ),
+        );
+
+# WHERE (1) = ( SELECT (1) WHERE ( ( articles.id = : 10 AND articles.author_id = : 10 ) OR ( articles.id = : 30 AND articles.author_id = : 30 ) ) )
+----------------------------------------
+
+Code Block 397 ():
+$articles->find()
+        ->where(
+            new TupleComparison(
+                ['articles.id', 'articles.author_id'],
+                [[10, 10], [30, 10]],
+                ['integer', 'integer'],
+                'IN',
+            ),
+        );
+
+# WHERE (1) = ( SELECT (1) WHERE ( ( articles.id = : 10 AND articles.author_id = : 10 ) OR ( articles.id = : 30 AND articles.author_id = : 30 ) ) )
+----------------------------------------
+
+Code Block 398 ():
+IN
+----------------------------------------
+
+Code Block 399 ():
+=
+----------------------------------------
+
+Code Block 400 (shiki):
+$query->optimizerHint(['NO_BKA(articles)']);
+----------------------------------------
+
+Code Block 401 ():
+$query->optimizerHint(['NO_BKA(articles)']);
+----------------------------------------
+
+Code Block 402 ():
+Query::optimizerHint()
+----------------------------------------
+
+Code Block 403 ():
+method
+----------------------------------------
+
+Code Block 404 ():
+Driver
+----------------------------------------
+
+Code Block 405 (shiki):
+$driver = $query->getDriver();
+----------------------------------------
+
+Code Block 406 ():
+$driver = $query->getDriver();
+----------------------------------------
+
+Code Block 407 ():
+Query::getDriver()
+----------------------------------------
+
+Code Block 408 (shiki):
+// Iterate the query
+foreach ($query as $row) {
+    // Do stuff.
+}
+
+// Get the results
+$results = $query->all();
+----------------------------------------
+
+Code Block 409 ():
+// Iterate the query
+foreach ($query as $row) {
+    // Do stuff.
+}
+
+// Get the results
+$results = $query->all();
+----------------------------------------
+
+Code Block 410 (shiki):
+// Use one of the collection methods.
+$ids = $query->map(function ($row) {
+    return $row->id;
+});
+
+$maxAge = $query->max(function ($max) {
+    return $max->age;
+});
+----------------------------------------
+
+Code Block 411 ():
+// Use one of the collection methods.
+$ids = $query->map(function ($row) {
+    return $row->id;
+});
+
+$maxAge = $query->max(function ($max) {
+    return $max->age;
+});
+----------------------------------------
+
+Code Block 412 ():
+first
+----------------------------------------
+
+Code Block 413 ():
+firstOrFail
+----------------------------------------
+
+Code Block 414 ():
+LIMIT 1
+----------------------------------------
+
+Code Block 415 (shiki):
+// Get just the first row
+$row = $query->first();
+
+// Get the first row or an exception.
+$row = $query->firstOrFail();
+----------------------------------------
+
+Code Block 416 ():
+// Get just the first row
+$row = $query->first();
+
+// Get the first row or an exception.
+$row = $query->firstOrFail();
+----------------------------------------
+
+Code Block 417 (shiki):
+$total = $articles->find()->where(['is_active' => true])->count();
+----------------------------------------
+
+Code Block 418 ():
+$total = $articles->find()->where(['is_active' => true])->count();
+----------------------------------------
+
+Code Block 419 ():
+count()
+----------------------------------------
+
+Code Block 420 ():
+limit
+----------------------------------------
+
+Code Block 421 ():
+offset
+----------------------------------------
+
+Code Block 422 ():
+page
+----------------------------------------
+
+Code Block 423 (shiki):
+$total = $articles->find()->where(['is_active' => true])->limit(10)->count();
+----------------------------------------
+
+Code Block 424 ():
+$total = $articles->find()->where(['is_active' => true])->limit(10)->count();
+----------------------------------------
+
+Code Block 425 ():
+SelectQuery
+----------------------------------------
+
+Code Block 426 ():
+count()
+----------------------------------------
+
+Code Block 427 (shiki):
+$query = $articles->find();
+$query->select(['Articles.id', $query->func()->count('Comments.id')])
+    ->matching('Comments')
+    ->groupBy(['Articles.id']);
+$total = $query->count();
+----------------------------------------
+
+Code Block 428 ():
+$query = $articles->find();
+$query->select(['Articles.id', $query->func()->count('Comments.id')])
+    ->matching('Comments')
+    ->groupBy(['Articles.id']);
+$total = $query->count();
+----------------------------------------
+
+Code Block 429 (shiki):
+$list = $query->all();
+----------------------------------------
+
+Code Block 430 ():
+$list = $query->all();
+----------------------------------------
+
+Code Block 431 ():
+count()
+----------------------------------------
+
+Code Block 432 (shiki):
+$query = $query->where(['is_active' => true])->counter(function ($query) {
+    return 100000;
+});
+$query->count(); // Returns 100000
+----------------------------------------
+
+Code Block 433 ():
+$query = $query->where(['is_active' => true])->counter(function ($query) {
+    return 100000;
+});
+$query->count(); // Returns 100000
+----------------------------------------
+
+Code Block 434 ():
+SelectQuery
+----------------------------------------
+
+Code Block 435 (shiki):
+$query->cache('recent_articles');
+----------------------------------------
+
+Code Block 436 ():
+$query->cache('recent_articles');
+----------------------------------------
+
+Code Block 437 ():
+cache()
+----------------------------------------
+
+Code Block 438 (shiki):
+// String config name.
+$query->cache('recent_articles', 'dbResults');
+
+// Instance of CacheEngine
+$query->cache('recent_articles', $memcache);
+----------------------------------------
+
+Code Block 439 ():
+// String config name.
+$query->cache('recent_articles', 'dbResults');
+
+// Instance of CacheEngine
+$query->cache('recent_articles', $memcache);
+----------------------------------------
+
+Code Block 440 ():
+cache()
+----------------------------------------
+
+Code Block 441 (shiki):
+// Generate a key based on a simple checksum
+// of the query's where clause
+$query->cache(function ($q) {
+    return 'articles-' . md5(serialize($q->clause('where')));
+});
+----------------------------------------
+
+Code Block 442 ():
+// Generate a key based on a simple checksum
+// of the query's where clause
+$query->cache(function ($q) {
+    return 'articles-' . md5(serialize($q->clause('where')));
+});
+----------------------------------------
+
+Code Block 443 ():
+Model.beforeFind
+----------------------------------------
+
+Code Block 444 ():
+ResultSet
+----------------------------------------
+
+Code Block 445 ():
+ResultSet
+----------------------------------------
+
+Code Block 446 (shiki):
+The above will load the related author and comments for each article in the
+result set. You can load nested associations using nested arrays to define the
+associations to be loaded:
+
+```php
+$query = $articles->find()->contain([
+    'Authors' => ['Addresses'], 'Comments' => ['Authors'],
+]);
+----------------------------------------
+
+Code Block 447 ():
+The above will load the related author and comments for each article in the
+result set. You can load nested associations using nested arrays to define the
+associations to be loaded:
+
+```php
+$query = $articles->find()->contain([
+    'Authors' => ['Addresses'], 'Comments' => ['Authors'],
+]);
+----------------------------------------
+
+Code Block 448 (shiki):
+$query = $articles->find()->contain([
+    'Authors.Addresses',
+    'Comments.Authors',
+]);
+----------------------------------------
+
+Code Block 449 ():
+$query = $articles->find()->contain([
+    'Authors.Addresses',
+    'Comments.Authors',
+]);
+----------------------------------------
+
+Code Block 450 (shiki):
+$query = $products->find()->contain([
+    'Shops.Cities.Countries',
+    'Shops.Managers',
+]);
+----------------------------------------
+
+Code Block 451 ():
+$query = $products->find()->contain([
+    'Shops.Cities.Countries',
+    'Shops.Managers',
+]);
+----------------------------------------
+
+Code Block 452 (shiki):
+$query = $products->find()->contain([
+    'Shops' => ['Cities.Countries', 'Managers'],
+]);
+----------------------------------------
+
+Code Block 453 ():
+$query = $products->find()->contain([
+    'Shops' => ['Cities.Countries', 'Managers'],
+]);
+----------------------------------------
+
+Code Block 454 ():
+contain()
+----------------------------------------
+
+Code Block 455 (shiki):
+$query = $products->find()->select([
+    'Realestates.id',
+    'Realestates.title',
+    'Realestates.description',
+])
+->contain([
+    'RealestateAttributes' => [
+        'Attributes' => [
+            'fields' => [
+                // Aliased fields in contain() must include
+                // the model prefix to be mapped correctly.
+                'Attributes__name' => 'attr_name',
+            ],
+        ],
+    ],
+])
+->contain([
+    'RealestateAttributes' => [
+        'fields' => [
+            'RealestateAttributes.realestate_id',
+            'RealestateAttributes.value',
+        ],
+    ],
+])
+->where($condition);
+----------------------------------------
+
+Code Block 456 ():
+$query = $products->find()->select([
+    'Realestates.id',
+    'Realestates.title',
+    'Realestates.description',
+])
+->contain([
+    'RealestateAttributes' => [
+        'Attributes' => [
+            'fields' => [
+                // Aliased fields in contain() must include
+                // the model prefix to be mapped correctly.
+                'Attributes__name' => 'attr_name',
+            ],
+        ],
+    ],
+])
+->contain([
+    'RealestateAttributes' => [
+        'fields' => [
+            'RealestateAttributes.realestate_id',
+            'RealestateAttributes.value',
+        ],
+    ],
+])
+->where($condition);
+----------------------------------------
+
+Code Block 457 ():
+true
+----------------------------------------
+
+Code Block 458 (shiki):
+$query = $articles->find();
+$query->contain(['Authors', 'Comments'], true);
+----------------------------------------
+
+Code Block 459 ():
+$query = $articles->find();
+$query->contain(['Authors', 'Comments'], true);
+----------------------------------------
+
+Code Block 460 ():
+contain()
+----------------------------------------
+
+Code Block 461 ():
+belongsTo('Users')
+----------------------------------------
+
+Code Block 462 ():
+contain('Users')
+----------------------------------------
+
+Code Block 463 ():
+contain('users')
+----------------------------------------
+
+Code Block 464 ():
+contain('user')
+----------------------------------------
+
+Code Block 465 ():
+contain()
+----------------------------------------
+
+Code Block 466 ():
+\Cake\ORM\Query\SelectQuery
+----------------------------------------
+
+Code Block 467 (shiki):
+// In a controller or table method.
+$query = $articles->find()->contain('Comments', function (SelectQuery $q) {
+    return $q
+        ->select(['body', 'author_id'])
+        ->where(['Comments.approved' => true]);
+});
+----------------------------------------
+
+Code Block 468 ():
+// In a controller or table method.
+$query = $articles->find()->contain('Comments', function (SelectQuery $q) {
+    return $q
+        ->select(['body', 'author_id'])
+        ->where(['Comments.approved' => true]);
+});
+----------------------------------------
+
+Code Block 469 (shiki):
+$this->paginate['contain'] = [
+    'Comments' => function (SelectQuery $query) {
+        return $query->select(['body', 'author_id'])
+        ->where(['Comments.approved' => true]);
+    }
+];
+----------------------------------------
+
+Code Block 470 ():
+$this->paginate['contain'] = [
+    'Comments' => function (SelectQuery $query) {
+        return $query->select(['body', 'author_id'])
+        ->where(['Comments.approved' => true]);
+    }
+];
+----------------------------------------
+
+Code Block 471 (shiki):
+$query = $articles->find()->contain([
+    'Comments',
+    'Authors.Profiles' => function (SelectQuery $q) {
+        return $q->where(['Profiles.is_published' => true]);
+    }
+]);
+----------------------------------------
+
+Code Block 472 ():
+$query = $articles->find()->contain([
+    'Comments',
+    'Authors.Profiles' => function (SelectQuery $q) {
+        return $q->where(['Profiles.is_published' => true]);
+    }
+]);
+----------------------------------------
+
+Code Block 473 ():
+contain()
+----------------------------------------
+
+Code Block 474 (shiki):
+// Bring all articles, but only bring the comments that are approved and
+// popular.
+$query = $articles->find()->contain('Comments', function (SelectQuery $q) {
+    return $q->find('approved')->find('popular');
+});
+----------------------------------------
+
+Code Block 475 ():
+// Bring all articles, but only bring the comments that are approved and
+// popular.
+$query = $articles->find()->contain('Comments', function (SelectQuery $q) {
+    return $q->find('approved')->find('popular');
+});
+----------------------------------------
+
+Code Block 476 ():
+BelongsTo
+----------------------------------------
+
+Code Block 477 ():
+HasOne
+----------------------------------------
+
+Code Block 478 ():
+select
+----------------------------------------
+
+Code Block 479 ():
+where
+----------------------------------------
+
+Code Block 480 ():
+contain()
+----------------------------------------
+
+Code Block 481 ():
+HasMany
+----------------------------------------
+
+Code Block 482 ():
+BelongsToMany
+----------------------------------------
+
+Code Block 483 ():
+order()
+----------------------------------------
+
+Code Block 484 ():
+contain()
+----------------------------------------
+
+Code Block 485 ():
+foreignKey
+----------------------------------------
+
+Code Block 486 ():
+joinType
+----------------------------------------
+
+Code Block 487 ():
+strategy
+----------------------------------------
+
+Code Block 488 ():
+false
+----------------------------------------
+
+Code Block 489 ():
+foreignKey
+----------------------------------------
+
+Code Block 490 ():
+queryBuilder
+----------------------------------------
+
+Code Block 491 (shiki):
+$query = $articles->find()->contain([
+    'Authors' => [
+        'foreignKey' => false,
+        'queryBuilder' => function (SelectQuery $q) {
+            return $q->where(/* ... */); // Full conditions for filtering
+        }
+    ]
+]);
+----------------------------------------
+
+Code Block 492 ():
+$query = $articles->find()->contain([
+    'Authors' => [
+        'foreignKey' => false,
+        'queryBuilder' => function (SelectQuery $q) {
+            return $q->where(/* ... */); // Full conditions for filtering
+        }
+    ]
+]);
+----------------------------------------
+
+Code Block 493 ():
+select()
+----------------------------------------
+
+Code Block 494 ():
+select()
+----------------------------------------
+
+Code Block 495 (shiki):
+// Select id & title from articles, but all fields off of Users.
+$query = $articles->find()
+    ->select(['id', 'title'])
+    ->select($articles->Users)
+    ->contain(['Users']);
+----------------------------------------
+
+Code Block 496 ():
+// Select id & title from articles, but all fields off of Users.
+$query = $articles->find()
+    ->select(['id', 'title'])
+    ->select($articles->Users)
+    ->contain(['Users']);
+----------------------------------------
+
+Code Block 497 ():
+enableAutoFields()
+----------------------------------------
+
+Code Block 498 (shiki):
+// Select id & title from articles, but all fields off of Users.
+$query = $articles->find()
+    ->select(['id', 'title'])
+    ->contain(['Users' => function(SelectQuery $q) {
+        return $q->enableAutoFields();
+    }]);
+----------------------------------------
+
+Code Block 499 ():
+// Select id & title from articles, but all fields off of Users.
+$query = $articles->find()
+    ->select(['id', 'title'])
+    ->contain(['Users' => function(SelectQuery $q) {
+        return $q->enableAutoFields();
+    }]);
+----------------------------------------
+
+Code Block 500 ():
+sort
+----------------------------------------
+
+Code Block 501 (shiki):
+$query->contain([
+    'Comments' => [
+        'sort' => ['Comments.created' => 'DESC'],
+    ]
+]);
+----------------------------------------
+
+Code Block 502 ():
+$query->contain([
+    'Comments' => [
+        'sort' => ['Comments.created' => 'DESC'],
+    ]
+]);
+----------------------------------------
+
+Code Block 503 (shiki):
+You can apply this strategy to HasMany associations as well. For example if
+'Authors HasMany Articles', you could find all the authors with recently
+published articles using the following:
+
+```php
+$query = $authors->find();
+$query->matching('Articles', function ($q) {
+    return $q->where(['Articles.created >=' => new DateTime('-10 days')]);
+});
+----------------------------------------
+
+Code Block 504 ():
+You can apply this strategy to HasMany associations as well. For example if
+'Authors HasMany Articles', you could find all the authors with recently
+published articles using the following:
+
+```php
+$query = $authors->find();
+$query->matching('Articles', function ($q) {
+    return $q->where(['Articles.created >=' => new DateTime('-10 days')]);
+});
+----------------------------------------
+
+Code Block 505 ():
+contain()
+----------------------------------------
+
+Code Block 506 (shiki):
+// In a controller or table method.
+$query = $products->find()->matching(
+    'Shops.Cities.Countries', function ($q) {
+        return $q->where(['Countries.name' => 'Japan']);
+    }
+);
+
+// Bring unique articles that were commented by `markstory` using passed variable
+// Dotted matching paths should be used over nested matching() calls
+$username = 'markstory';
+$query = $articles->find()->matching('Comments.Users', function ($q) use ($username) {
+    return $q->where(['username' => $username]);
+});
+----------------------------------------
+
+Code Block 507 ():
+// In a controller or table method.
+$query = $products->find()->matching(
+    'Shops.Cities.Countries', function ($q) {
+        return $q->where(['Countries.name' => 'Japan']);
+    }
+);
+
+// Bring unique articles that were commented by `markstory` using passed variable
+// Dotted matching paths should be used over nested matching() calls
+$username = 'markstory';
+$query = $articles->find()->matching('Comments.Users', function ($q) use ($username) {
+    return $q->where(['username' => $username]);
+});
+----------------------------------------
+
+Code Block 508 ():
+INNER JOIN
+----------------------------------------
+
+Code Block 509 ():
+distinct
+----------------------------------------
+
+Code Block 510 ():
+_matchingData
+----------------------------------------
+
+Code Block 511 ():
+_matchingData
+----------------------------------------
+
+Code Block 512 ():
+matching()
+----------------------------------------
+
+Code Block 513 ():
+INNER JOIN
+----------------------------------------
+
+Code Block 514 ():
+matching()
+----------------------------------------
+
+Code Block 515 ():
+innerJoinWith()
+----------------------------------------
+
+Code Block 516 (shiki):
+$query = $articles->find();
+$query->innerJoinWith('Tags', function ($q) {
+    return $q->where(['Tags.name' => 'CakePHP']);
+});
+----------------------------------------
+
+Code Block 517 ():
+$query = $articles->find();
+$query->innerJoinWith('Tags', function ($q) {
+    return $q->where(['Tags.name' => 'CakePHP']);
+});
+----------------------------------------
+
+Code Block 518 ():
+innerJoinWith()
+----------------------------------------
+
+Code Block 519 (shiki):
+$query = $products->find()->innerJoinWith(
+    'Shops.Cities.Countries', function ($q) {
+        return $q->where(['Countries.name' => 'Japan']);
+    }
+);
+----------------------------------------
+
+Code Block 520 ():
+$query = $products->find()->innerJoinWith(
+    'Shops.Cities.Countries', function ($q) {
+        return $q->where(['Countries.name' => 'Japan']);
+    }
+);
+----------------------------------------
+
+Code Block 521 ():
+innerJoinWith()
+----------------------------------------
+
+Code Block 522 ():
+contain()
+----------------------------------------
+
+Code Block 523 (shiki):
+$filter = ['Tags.name' => 'CakePHP'];
+$query = $articles->find()
+    ->distinct($articles->getPrimaryKey())
+    ->contain('Tags', function (SelectQuery $q) use ($filter) {
+        return $q->where($filter);
+    })
+    ->innerJoinWith('Tags', function (SelectQuery $q) use ($filter) {
+        return $q->where($filter);
+    });
+----------------------------------------
+
+Code Block 524 ():
+$filter = ['Tags.name' => 'CakePHP'];
+$query = $articles->find()
+    ->distinct($articles->getPrimaryKey())
+    ->contain('Tags', function (SelectQuery $q) use ($filter) {
+        return $q->where($filter);
+    })
+    ->innerJoinWith('Tags', function (SelectQuery $q) use ($filter) {
+        return $q->where($filter);
+    });
+----------------------------------------
+
+Code Block 525 ():
+innerJoinWith()
+----------------------------------------
+
+Code Block 526 ():
+select()
+----------------------------------------
+
+Code Block 527 (shiki):
+$query
+    ->select(['country_name' => 'Countries.name'])
+    ->innerJoinWith('Countries');
+----------------------------------------
+
+Code Block 528 ():
+$query
+    ->select(['country_name' => 'Countries.name'])
+    ->innerJoinWith('Countries');
+----------------------------------------
+
+Code Block 529 ():
+_matchingData
+----------------------------------------
+
+Code Block 530 ():
+matching()
+----------------------------------------
+
+Code Block 531 ():
+matching()
+----------------------------------------
+
+Code Block 532 ():
+innerJoinWith()
+----------------------------------------
+
+Code Block 533 ():
+matching()
+----------------------------------------
+
+Code Block 534 ():
+INNER JOIN
+----------------------------------------
+
+Code Block 535 ():
+matching()
+----------------------------------------
+
+Code Block 536 ():
+notMatching()
+----------------------------------------
+
+Code Block 537 (shiki):
+// In a controller or table method.
+
+$query = $articlesTable
+    ->find()
+    ->notMatching('Tags', function ($q) {
+        return $q->where(['Tags.name' => 'boring']);
+    });
+----------------------------------------
+
+Code Block 538 ():
+// In a controller or table method.
+
+$query = $articlesTable
+    ->find()
+    ->notMatching('Tags', function ($q) {
+        return $q->where(['Tags.name' => 'boring']);
+    });
+----------------------------------------
+
+Code Block 539 ():
+boring
+----------------------------------------
+
+Code Block 540 (shiki):
+$query = $authorsTable
+    ->find()
+    ->notMatching('Articles', function ($q) {
+        return $q->where(['Articles.created >=' => new \DateTime('-10 days')]);
+    });
+----------------------------------------
+
+Code Block 541 ():
+$query = $authorsTable
+    ->find()
+    ->notMatching('Articles', function ($q) {
+        return $q->where(['Articles.created >=' => new \DateTime('-10 days')]);
+    });
+----------------------------------------
+
+Code Block 542 (shiki):
+$query = $articlesTable
+    ->find()
+    ->notMatching('Comments.Users', function ($q) {
+        return $q->where(['username' => 'jose']);
+    });
+----------------------------------------
+
+Code Block 543 ():
+$query = $articlesTable
+    ->find()
+    ->notMatching('Comments.Users', function ($q) {
+        return $q->where(['username' => 'jose']);
+    });
+----------------------------------------
+
+Code Block 544 ():
+matching()
+----------------------------------------
+
+Code Block 545 ():
+notMatching()
+----------------------------------------
+
+Code Block 546 (shiki):
+$query = $articlesTable
+    ->find()
+    ->notMatching('Comments.Users', function ($q) {
+        return $q->where(['username' => 'jose']);
+    })
+    ->matching('Comments');
+----------------------------------------
+
+Code Block 547 ():
+$query = $articlesTable
+    ->find()
+    ->notMatching('Comments.Users', function ($q) {
+        return $q->where(['username' => 'jose']);
+    })
+    ->matching('Comments');
+----------------------------------------
+
+Code Block 548 ():
+notMatching()
+----------------------------------------
+
+Code Block 549 ():
+LEFT JOIN
+----------------------------------------
+
+Code Block 550 ():
+distinct
+----------------------------------------
+
+Code Block 551 ():
+matching()
+----------------------------------------
+
+Code Block 552 ():
+notMatching()
+----------------------------------------
+
+Code Block 553 ():
+_matchingData
+----------------------------------------
+
+Code Block 554 ():
+leftJoinWith()
+----------------------------------------
+
+Code Block 555 (shiki):
+$query = $articlesTable->find();
+$query->select(['total_comments' => $query->func()->count('Comments.id')])
+    ->leftJoinWith('Comments')
+    ->groupBy(['Articles.id'])
+    ->enableAutoFields(true);
+----------------------------------------
+
+Code Block 556 ():
+$query = $articlesTable->find();
+$query->select(['total_comments' => $query->func()->count('Comments.id')])
+    ->leftJoinWith('Comments')
+    ->groupBy(['Articles.id'])
+    ->enableAutoFields(true);
+----------------------------------------
+
+Code Block 557 ():
+total_comments
+----------------------------------------
+
+Code Block 558 ():
+leftJoinWith()
+----------------------------------------
+
+Code Block 559 (shiki):
+$query = $authorsTable
+    ->find()
+    ->select(['total_articles' => $query->func()->count('Articles.id')])
+    ->leftJoinWith('Articles.Tags', function ($q) {
+        return $q->where(['Tags.name' => 'awesome']);
+    })
+    ->groupBy(['Authors.id'])
+    ->enableAutoFields(true);
+----------------------------------------
+
+Code Block 560 ():
+$query = $authorsTable
+    ->find()
+    ->select(['total_articles' => $query->func()->count('Articles.id')])
+    ->leftJoinWith('Articles.Tags', function ($q) {
+        return $q->where(['Tags.name' => 'awesome']);
+    })
+    ->groupBy(['Authors.id'])
+    ->enableAutoFields(true);
+----------------------------------------
+
+Code Block 561 ():
+strategy
+----------------------------------------
+
+Code Block 562 ():
+contain()
+----------------------------------------
+
+Code Block 563 ():
+BelongsTo
+----------------------------------------
+
+Code Block 564 ():
+HasOne
+----------------------------------------
+
+Code Block 565 ():
+contain()
+----------------------------------------
+
+Code Block 566 (shiki):
+$query = $articles->find()
+    ->join([
+        'table' => 'comments',
+        'alias' => 'c',
+        'type' => 'LEFT',
+        'conditions' => 'c.article_id = articles.id',
+    ]);
+----------------------------------------
+
+Code Block 567 ():
+$query = $articles->find()
+    ->join([
+        'table' => 'comments',
+        'alias' => 'c',
+        'type' => 'LEFT',
+        'conditions' => 'c.article_id = articles.id',
+    ]);
+----------------------------------------
+
+Code Block 568 (shiki):
+$query = $articles->find()
+    ->join([
+        'c' => [
+            'table' => 'comments',
+            'type' => 'LEFT',
+            'conditions' => 'c.article_id = articles.id',
+        ],
+        'u' => [
+            'table' => 'users',
+            'type' => 'INNER',
+            'conditions' => 'u.id = articles.user_id',
+        ]
+    ]);
+----------------------------------------
+
+Code Block 569 ():
+$query = $articles->find()
+    ->join([
+        'c' => [
+            'table' => 'comments',
+            'type' => 'LEFT',
+            'conditions' => 'c.article_id = articles.id',
+        ],
+        'u' => [
+            'table' => 'users',
+            'type' => 'INNER',
+            'conditions' => 'u.id = articles.user_id',
+        ]
+    ]);
+----------------------------------------
+
+Code Block 570 (shiki):
+$query = $articles->find()
+    ->join([
+        'c' => [
+            'table' => 'comments',
+            'type' => 'LEFT',
+            'conditions' => [
+                'c.created >' => new DateTime('-5 days'),
+                'c.moderated' => true,
+                'c.article_id = articles.id',
+            ]
+        ],
+    ], ['c.created' => 'datetime', 'c.moderated' => 'boolean']);
+----------------------------------------
+
+Code Block 571 ():
+$query = $articles->find()
+    ->join([
+        'c' => [
+            'table' => 'comments',
+            'type' => 'LEFT',
+            'conditions' => [
+                'c.created >' => new DateTime('-5 days'),
+                'c.moderated' => true,
+                'c.article_id = articles.id',
+            ]
+        ],
+    ], ['c.created' => 'datetime', 'c.moderated' => 'boolean']);
+----------------------------------------
+
+Code Block 572 ():
+join()
+----------------------------------------
+
+Code Block 573 ():
+rightJoin()
+----------------------------------------
+
+Code Block 574 ():
+leftJoin()
+----------------------------------------
+
+Code Block 575 ():
+innerJoin()
+----------------------------------------
+
+Code Block 576 (shiki):
+// Join with an alias and string conditions
+$query = $articles->find();
+$query->leftJoin(
+    ['Authors' => 'authors'],
+    ['Authors.id = Articles.author_id']);
+
+// Join with an alias, array conditions, and types
+$query = $articles->find();
+$query->innerJoin(
+    ['Authors' => 'authors'],
+    [
+        'Authors.promoted' => true,
+        'Authors.created' => new DateTime('-5 days'),
+        'Authors.id = Articles.author_id',
+    ],
+    [
+        'Authors.promoted' => 'boolean',
+        'Authors.created' => 'datetime',
+    ]
+);
+----------------------------------------
+
+Code Block 577 ():
+// Join with an alias and string conditions
+$query = $articles->find();
+$query->leftJoin(
+    ['Authors' => 'authors'],
+    ['Authors.id = Articles.author_id']);
+
+// Join with an alias, array conditions, and types
+$query = $articles->find();
+$query->innerJoin(
+    ['Authors' => 'authors'],
+    [
+        'Authors.promoted' => true,
+        'Authors.created' => new DateTime('-5 days'),
+        'Authors.id = Articles.author_id',
+    ],
+    [
+        'Authors.promoted' => 'boolean',
+        'Authors.created' => 'datetime',
+    ]
+);
+----------------------------------------
+
+Code Block 578 ():
+quoteIdentifiers
+----------------------------------------
+
+Code Block 579 ():
+true
+----------------------------------------
+
+Code Block 580 ():
+Connection
+----------------------------------------
+
+Code Block 581 (shiki):
+$query = $articles->find()
+    ->join([
+        'c' => [
+            'table' => 'comments',
+            'type' => 'LEFT',
+            'conditions' => [
+                'c.article_id' => new \Cake\Database\Expression\IdentifierExpression('articles.id'),
+            ],
+        ],
+    ]);
+----------------------------------------
+
+Code Block 582 ():
+$query = $articles->find()
+    ->join([
+        'c' => [
+            'table' => 'comments',
+            'type' => 'LEFT',
+            'conditions' => [
+                'c.article_id' => new \Cake\Database\Expression\IdentifierExpression('articles.id'),
+            ],
+        ],
+    ]);
+----------------------------------------
+
+Code Block 583 ():
+find()
+----------------------------------------
+
+Code Block 584 ():
+InsertQuery
+----------------------------------------
+
+Code Block 585 ():
+insertQuery()
+----------------------------------------
+
+Code Block 586 (shiki):
+$query = $articles->insertQuery();
+$query->insert(['title', 'body'])
+    ->values([
+        'title' => 'First post',
+        'body' => 'Some body text',
+    ])
+    ->execute();
+----------------------------------------
+
+Code Block 587 ():
+$query = $articles->insertQuery();
+$query->insert(['title', 'body'])
+    ->values([
+        'title' => 'First post',
+        'body' => 'Some body text',
+    ])
+    ->execute();
+----------------------------------------
+
+Code Block 588 ():
+values()
+----------------------------------------
+
+Code Block 589 (shiki):
+$query = $articles->insertQuery();
+$query->insert(['title', 'body'])
+    ->values([
+        'title' => 'First post',
+        'body' => 'Some body text',
+    ])
+    ->values([
+        'title' => 'Second post',
+        'body' => 'Another body text',
+    ])
+    ->execute();
+----------------------------------------
+
+Code Block 590 ():
+$query = $articles->insertQuery();
+$query->insert(['title', 'body'])
+    ->values([
+        'title' => 'First post',
+        'body' => 'Some body text',
+    ])
+    ->values([
+        'title' => 'Second post',
+        'body' => 'Another body text',
+    ])
+    ->execute();
+----------------------------------------
+
+Code Block 591 ():
+Cake\ORM\Table::save()
+----------------------------------------
+
+Code Block 592 ():
+SELECT
+----------------------------------------
+
+Code Block 593 ():
+INSERT
+----------------------------------------
+
+Code Block 594 ():
+INSERT INTO ... SELECT
+----------------------------------------
+
+Code Block 595 (shiki):
+$select = $articles->find()
+    ->select(['title', 'body', 'published'])
+    ->where(['id' => 3]);
+
+$query = $articles->insertQuery()
+    ->insert(['title', 'body', 'published'])
+    ->values($select)
+    ->execute();
+----------------------------------------
+
+Code Block 596 ():
+$select = $articles->find()
+    ->select(['title', 'body', 'published'])
+    ->where(['id' => 3]);
+
+$query = $articles->insertQuery()
+    ->insert(['title', 'body', 'published'])
+    ->values($select)
+    ->execute();
+----------------------------------------
+
+Code Block 597 ():
+Model.afterSave
+----------------------------------------
+
+Code Block 598 ():
+find()
+----------------------------------------
+
+Code Block 599 ():
+Query
+----------------------------------------
+
+Code Block 600 ():
+updateQuery()
+----------------------------------------
+
+Code Block 601 (shiki):
+$query = $articles->updateQuery();
+$query->set(['published' => true])
+    ->where(['id' => $id])
+    ->execute();
+----------------------------------------
+
+Code Block 602 ():
+$query = $articles->updateQuery();
+$query->set(['published' => true])
+    ->where(['id' => $id])
+    ->execute();
+----------------------------------------
+
+Code Block 603 ():
+Cake\ORM\Table::patchEntity()
+----------------------------------------
+
+Code Block 604 ():
+Model.afterSave
+----------------------------------------
+
+Code Block 605 ():
+find()
+----------------------------------------
+
+Code Block 606 ():
+deleteQuery()
+----------------------------------------
+
+Code Block 607 (shiki):
+$query = $articles->deleteQuery();
+$query->where(['id' => $id])
+    ->execute();
+----------------------------------------
+
+Code Block 608 ():
+$query = $articles->deleteQuery();
+$query->where(['id' => $id])
+    ->execute();
+----------------------------------------
+
+Code Block 609 ():
+Cake\ORM\Table::delete()
+----------------------------------------
+
+Code Block 610 (shiki):
+$query->where([
+    // Data on the key/left-hand side is unsafe, as it will be
+    // inserted into the generated query as-is
+    $userData => $value,
+
+    // The same applies to single value entries, they are not
+    // safe to use with user data in any form
+    $userData,
+    "MATCH (comment) AGAINST ($userData)",
+    'created < NOW() - ' . $userData,
+]);
+----------------------------------------
+
+Code Block 611 ():
+$query->where([
+    // Data on the key/left-hand side is unsafe, as it will be
+    // inserted into the generated query as-is
+    $userData => $value,
+
+    // The same applies to single value entries, they are not
+    // safe to use with user data in any form
+    $userData,
+    "MATCH (comment) AGAINST ($userData)",
+    'created < NOW() - ' . $userData,
+]);
+----------------------------------------
+
+Code Block 612 (shiki):
+$query->where(function (QueryExpression $exp) use ($userData, $values) {
+    // Column names in all expressions are not safe.
+    return $exp->in($userData, $values);
+});
+----------------------------------------
+
+Code Block 613 ():
+$query->where(function (QueryExpression $exp) use ($userData, $values) {
+    // Column names in all expressions are not safe.
+    return $exp->in($userData, $values);
+});
+----------------------------------------
+
+Code Block 614 (shiki):
+// Not safe.
+$query->func()->{$userData}($arg1);
+
+// Also not safe to use an array of
+// user data in a function expression
+$query->func()->coalesce($userData);
+----------------------------------------
+
+Code Block 615 ():
+// Not safe.
+$query->func()->{$userData}($arg1);
+
+// Also not safe to use an array of
+// user data in a function expression
+$query->func()->coalesce($userData);
+----------------------------------------
+
+Code Block 616 (shiki):
+$expr = $query->expr()->add($userData);
+$query->select(['two' => $expr]);
+----------------------------------------
+
+Code Block 617 ():
+$expr = $query->expr()->add($userData);
+$query->select(['two' => $expr]);
+----------------------------------------
+
+Code Block 618 ():
+Cake\Database\Query::bind()
+----------------------------------------
+
+Code Block 619 (shiki):
+$query
+    ->where([
+        'MATCH (comment) AGAINST (:userData)',
+        'created < NOW() - :moreUserData',
+    ])
+    ->bind(':userData', $userData, 'string')
+    ->bind(':moreUserData', $moreUserData, 'datetime');
+----------------------------------------
+
+Code Block 620 ():
+$query
+    ->where([
+        'MATCH (comment) AGAINST (:userData)',
+        'created < NOW() - :moreUserData',
+    ])
+    ->bind(':userData', $userData, 'string')
+    ->bind(':moreUserData', $moreUserData, 'datetime');
+----------------------------------------
+
+Code Block 621 ():
+Cake\Database\StatementInterface::bindValue()
+----------------------------------------
+
+Code Block 622 ():
+Query::bind()
+----------------------------------------
+
+Code Block 623 (shiki):
+$inReview = $articles->find()
+    ->where(['need_review' => true]);
+
+$unpublished = $articles->find()
+    ->where(['published' => false]);
+
+$unpublished->union($inReview);
+----------------------------------------
+
+Code Block 624 ():
+$inReview = $articles->find()
+    ->where(['need_review' => true]);
+
+$unpublished = $articles->find()
+    ->where(['published' => false]);
+
+$unpublished->union($inReview);
+----------------------------------------
+
+Code Block 625 ():
+UNION ALL
+----------------------------------------
+
+Code Block 626 ():
+unionAll()
+----------------------------------------
+
+Code Block 627 (shiki):
+$inReview = $articles->find()
+    ->where(['need_review' => true]);
+
+$unpublished = $articles->find()
+    ->where(['published' => false]);
+
+$unpublished->unionAll($inReview);
+----------------------------------------
+
+Code Block 628 ():
+$inReview = $articles->find()
+    ->where(['need_review' => true]);
+
+$unpublished = $articles->find()
+    ->where(['published' => false]);
+
+$unpublished->unionAll($inReview);
+----------------------------------------
+
+Code Block 629 (shiki):
+$inReview = $articles->find()
+    ->where(['need_review' => true]);
+
+$unpublished = $articles->find()
+    ->where(['published' => false]);
+
+$unpublished->intersect($inReview);
+----------------------------------------
+
+Code Block 630 ():
+$inReview = $articles->find()
+    ->where(['need_review' => true]);
+
+$unpublished = $articles->find()
+    ->where(['published' => false]);
+
+$unpublished->intersect($inReview);
+----------------------------------------
+
+Code Block 631 ():
+INTERSECT ALL
+----------------------------------------
+
+Code Block 632 ():
+intersectAll()
+----------------------------------------
+
+Code Block 633 (shiki):
+$inReview = $articles->find()
+    ->where(['need_review' => true]);
+
+$unpublished = $articles->find()
+    ->where(['published' => false]);
+
+$unpublished->intersectAll($inReview);
+----------------------------------------
+
+Code Block 634 ():
+$inReview = $articles->find()
+    ->where(['need_review' => true]);
+
+$unpublished = $articles->find()
+    ->where(['published' => false]);
+
+$unpublished->intersectAll($inReview);
+----------------------------------------
+
+Code Block 635 ():
+intersect()
+----------------------------------------
+
+Code Block 636 ():
+intersectAll()
+----------------------------------------
+
+Code Block 637 (shiki):
+$matchingComment = $articles->getAssociation('Comments')->find()
+    ->select(['article_id'])
+    ->distinct()
+    ->where(['comment LIKE' => '%CakePHP%']);
+
+// Use a subquery to create conditions
+$query = $articles->find()
+    ->where(['id IN' => $matchingComment]);
+
+// Join the results of a subquery into another query.
+// Giving the subquery an alias provides a way to reference
+// results in subquery.
+$query = $articles->find();
+$query->from(['matches' => $matchingComment])
+    ->innerJoin(
+        ['Articles' =>  'articles'],
+        ['Articles.id' => $query->identifier('matches.id') ],
+    );
+----------------------------------------
+
+Code Block 638 ():
+$matchingComment = $articles->getAssociation('Comments')->find()
+    ->select(['article_id'])
+    ->distinct()
+    ->where(['comment LIKE' => '%CakePHP%']);
+
+// Use a subquery to create conditions
+$query = $articles->find()
+    ->where(['id IN' => $matchingComment]);
+
+// Join the results of a subquery into another query.
+// Giving the subquery an alias provides a way to reference
+// results in subquery.
+$query = $articles->find();
+$query->from(['matches' => $matchingComment])
+    ->innerJoin(
+        ['Articles' =>  'articles'],
+        ['Articles.id' => $query->identifier('matches.id') ],
+    );
+----------------------------------------
+
+Code Block 639 ():
+select()
+----------------------------------------
+
+Code Block 640 ():
+from()
+----------------------------------------
+
+Code Block 641 ():
+join()
+----------------------------------------
+
+Code Block 642 ():
+ORM\Query\SelectQuery
+----------------------------------------
+
+Code Block 643 ():
+Table::subquery()
+----------------------------------------
+
+Code Block 644 (shiki):
+$comments = $articles->getAssociation('Comments')->getTarget();
+
+$matchingComment = $comments->subquery()
+    ->select(['article_id'])
+    ->distinct()
+    ->where(['comment LIKE' => '%CakePHP%']);
+
+$query = $articles->find()
+    ->where(['id IN' => $matchingComment]);
+----------------------------------------
+
+Code Block 645 ():
+$comments = $articles->getAssociation('Comments')->getTarget();
+
+$matchingComment = $comments->subquery()
+    ->select(['article_id'])
+    ->distinct()
+    ->where(['comment LIKE' => '%CakePHP%']);
+
+$query = $articles->find()
+    ->where(['id IN' => $matchingComment]);
+----------------------------------------
+
+Code Block 646 ():
+epilog()
+----------------------------------------
+
+Code Block 647 (shiki):
+// In MySQL
+$query->epilog('FOR UPDATE');
+----------------------------------------
+
+Code Block 648 ():
+// In MySQL
+$query->epilog('FOR UPDATE');
+----------------------------------------
+
+Code Block 649 ():
+epilog()
+----------------------------------------
+
+Code Block 650 ():
+epilog()
+----------------------------------------
+
+Code Block 651 (shiki):
+$query = $articles->find();
+$query->select([
+    'Articles.id',
+    'Articles.title',
+    'Articles.user_id'
+    'oldest_comment' => $query->func()
+        ->min('Comments.created')
+        ->partition('Comments.article_id'),
+    'latest_comment' => $query->func()
+        ->max('Comments.created')
+        ->partition('Comments.article_id'),
+])
+->innerJoinWith('Comments');
+----------------------------------------
+
+Code Block 652 ():
+$query = $articles->find();
+$query->select([
+    'Articles.id',
+    'Articles.title',
+    'Articles.user_id'
+    'oldest_comment' => $query->func()
+        ->min('Comments.created')
+        ->partition('Comments.article_id'),
+    'latest_comment' => $query->func()
+        ->max('Comments.created')
+        ->partition('Comments.article_id'),
+])
+->innerJoinWith('Comments');
+----------------------------------------
+
+Code Block 653 (shiki):
+SELECT
+    Articles.id,
+    Articles.title,
+    Articles.user_id
+    MIN(Comments.created) OVER (PARTITION BY Comments.article_id) AS oldest_comment,
+    MAX(Comments.created) OVER (PARTITION BY Comments.article_id) AS latest_comment,
+FROM articles AS Articles
+INNER JOIN comments AS Comments
+----------------------------------------
+
+Code Block 654 ():
+SELECT
+    Articles.id,
+    Articles.title,
+    Articles.user_id
+    MIN(Comments.created) OVER (PARTITION BY Comments.article_id) AS oldest_comment,
+    MAX(Comments.created) OVER (PARTITION BY Comments.article_id) AS latest_comment,
+FROM articles AS Articles
+INNER JOIN comments AS Comments
+----------------------------------------
+
+Code Block 655 ():
+FunctionsBuilder
+----------------------------------------
+
+Code Block 656 ():
+AggregateExpression
+----------------------------------------
+
+Code Block 657 ():
+FunctionsBuilder::aggregate()
+----------------------------------------
+
+Code Block 658 ():
+AggregateExpresion
+----------------------------------------
+
+Code Block 659 ():
+orderBy($fields)
+----------------------------------------
+
+Code Block 660 ():
+partition($expressions)
+----------------------------------------
+
+Code Block 661 ():
+rows($start, $end)
+----------------------------------------
+
+Code Block 662 ():
+range($start, $end)
+----------------------------------------
+
+Code Block 663 ():
+orderBy()
+----------------------------------------
+
+Code Block 664 ():
+window()
+----------------------------------------
+
+Code Block 665 (shiki):
+$query = $articles->find();
+
+// Define a named window
+$query->window('related_article', function ($window, $query) {
+    $window->partition('Comments.article_id');
+
+    return $window;
+});
+
+$query->select([
+    'Articles.id',
+    'Articles.title',
+    'Articles.user_id'
+    'oldest_comment' => $query->func()
+        ->min('Comments.created')
+        ->over('related_article'),
+    'latest_comment' => $query->func()
+        ->max('Comments.created')
+        ->over('related_article'),
+]);
+----------------------------------------
+
+Code Block 666 ():
+$query = $articles->find();
+
+// Define a named window
+$query->window('related_article', function ($window, $query) {
+    $window->partition('Comments.article_id');
+
+    return $window;
+});
+
+$query->select([
+    'Articles.id',
+    'Articles.title',
+    'Articles.user_id'
+    'oldest_comment' => $query->func()
+        ->min('Comments.created')
+        ->over('related_article'),
+    'latest_comment' => $query->func()
+        ->max('Comments.created')
+        ->over('related_article'),
+]);
+----------------------------------------
+
+Code Block 667 (shiki):
+WITH orders_per_customer AS (
+    SELECT COUNT(*) AS order_count, customer_id FROM orders GROUP BY customer_id
+)
+SELECT name, orders_per_customer.order_count
+FROM customers
+INNER JOIN orders_per_customer ON orders_per_customer.customer_id = customers.id
+----------------------------------------
+
+Code Block 668 ():
+WITH orders_per_customer AS (
+    SELECT COUNT(*) AS order_count, customer_id FROM orders GROUP BY customer_id
+)
+SELECT name, orders_per_customer.order_count
+FROM customers
+INNER JOIN orders_per_customer ON orders_per_customer.customer_id = customers.id
+----------------------------------------
+
+Code Block 669 (shiki):
+// Start the final query
+$query = $this->Customers->find();
+
+// Attach a common table expression
+$query->with(function ($cte) {
+    // Create a subquery to use in our table expression
+    $q = $this->Orders->subquery();
+    $q->select([
+        'order_count' => $q->func()->count('*'),
+        'customer_id',
+    ])
+    ->groupBy('customer_id');
+
+    // Attach the new query to the table expression
+    return $cte
+        ->name('orders_per_customer')
+        ->query($q);
+});
+
+// Finish building the final query
+$query->select([
+    'name',
+    'order_count' => 'orders_per_customer.order_count',
+])
+->join([
+    // Define the join with our table expression
+    'orders_per_customer' => [
+        'table' => 'orders_per_customer',
+        'conditions' => 'orders_per_customer.customer_id = Customers.id',
+    ],
+]);
+----------------------------------------
+
+Code Block 670 ():
+// Start the final query
+$query = $this->Customers->find();
+
+// Attach a common table expression
+$query->with(function ($cte) {
+    // Create a subquery to use in our table expression
+    $q = $this->Orders->subquery();
+    $q->select([
+        'order_count' => $q->func()->count('*'),
+        'customer_id',
+    ])
+    ->groupBy('customer_id');
+
+    // Attach the new query to the table expression
+    return $cte
+        ->name('orders_per_customer')
+        ->query($q);
+});
+
+// Finish building the final query
+$query->select([
+    'name',
+    'order_count' => 'orders_per_customer.order_count',
+])
+->join([
+    // Define the join with our table expression
+    'orders_per_customer' => [
+        'table' => 'orders_per_customer',
+        'conditions' => 'orders_per_customer.customer_id = Customers.id',
+    ],
+]);
+----------------------------------------
+
+Code Block 671 ():
+WITH RECURSIVE …
+----------------------------------------
+
+Code Block 672 ():
+->recursive()
+----------------------------------------
+
+Code Block 673 ():
+return $cte
+----------------------------------------
+
+Code Block 674 ():
+contain
+----------------------------------------
+

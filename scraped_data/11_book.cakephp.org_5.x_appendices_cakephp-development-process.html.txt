@@ -1,0 +1,375 @@
+URL: https://book.cakephp.org/5.x/appendices/cakephp-development-process.html
+Title: CakePHP Development Process | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - CakePHP Development Process ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Major Releases ​
+  - Feature Releases ​
+  - Patch Releases ​
+  - Release Cadence ​
+  - Deprecation Policy ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+CakePHP projects broadly follow semver. This means that:
+
+See the Backwards Compatibility Guide for what we consider to be backwards compatible and a breaking changes.
+
+Major releases introduce new features and can remove functionality deprecated in an earlier release. These releases live in next branches that match their version number such as 5.next. Once released they are promoted into master and then 5.next branch is used for future feature releases.
+
+Feature releases are where new features or extensions to existing features are shipped. Each release series receiving updates will have a next branch. For example 4.next. If you would like to contribute a new feature please target these branches.
+
+Patch releases fix bugs in existing code/documentation and should always be compatible with earlier patch releases from the same feature release. These releases are created from the stable branches. Stable branches are often named after the release series such as 3.x.
+
+Before a feature can be removed in a major release it needs to be deprecated. When a behavior is deprecated in release A.x it will continue to work for remainder of all A.x releases. Deprecations are generally indicated via PHP warnings. You can enable deprecation warnings by adding E_USER_DEPRECATED to your application's Error.level value.
+
+Once deprecated behavior is not removed until the next major release. For example behavior deprecated in 4.1 will be removed in 5.0.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+next
+----------------------------------------
+
+Code Block 2 ():
+5.next
+----------------------------------------
+
+Code Block 3 ():
+master
+----------------------------------------
+
+Code Block 4 ():
+5.next
+----------------------------------------
+
+Code Block 5 ():
+next
+----------------------------------------
+
+Code Block 6 ():
+4.next
+----------------------------------------
+
+Code Block 7 ():
+3.x
+----------------------------------------
+
+Code Block 8 ():
+E_USER_DEPRECATED
+----------------------------------------
+
+Code Block 9 ():
+Error.level
+----------------------------------------
+
+Code Block 10 ():
+4.1
+----------------------------------------
+
+Code Block 11 ():
+5.0
+----------------------------------------
+

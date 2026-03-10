@@ -1,0 +1,985 @@
+URL: https://book.cakephp.org/5.x/orm/behaviors.html
+Title: Behaviors | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Behaviors ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Using Behaviors ​
+  - Behaviors ​
+  - Transforming Request Data into Entity Properties ​
+  - Removing Loaded Behaviors ​
+  - Accessing Loaded Behaviors ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Calling behavior methods ​
+  - Defining Event Listeners ​
+  - Defining Finders ​
+  - Re-configuring Loaded Behaviors ​
+H4:
+  - CMS Tutorial
+  - Limiting or Renaming Exposed Mixin Methods ​
+  - Limiting or Renaming Exposed Finder Methods ​
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Behaviors are a way to organize and enable horizontal re-use of Model layer logic. Conceptually they are similar to traits. However, behaviors are implemented as separate classes. This allows them to hook into the life-cycle callbacks that models emit, while providing trait-like features.
+
+Behaviors provide a convenient way to package up behavior that is common across many models. For example, CakePHP includes a TimestampBehavior. Many models will want timestamp fields, and the logic to manage these fields is not specific to any one model. It is these kinds of scenarios that behaviors are a perfect fit for.
+
+method Cake\ORM\Table::addBehavior(string $name, array $options = []): static
+
+Behaviors provide a way to create horizontally re-usable pieces of logic related to table classes. You may be wondering why behaviors are regular classes and not traits. The primary reason for this is event listeners. While traits would allow for re-usable pieces of logic, they would complicate binding events.
+
+To add a behavior to your table you can call the addBehavior() method. Generally the best place to do this is in the initialize() method:
+
+As with associations, you can use plugin syntax and provide additional configuration options:
+
+Similar to tables, behaviors also have an initialize() hook where you can put your behavior's initialization code, if required:
+
+We can now add this behavior to one of our table classes. In this example we'll use an ArticlesTable, as articles often have slug properties for creating friendly URLs:
+
+Our new behavior doesn't do much of anything right now. Next, we'll add a mixin method and an event listener so that when we save entities we can automatically slug a field.
+
+Public methods on behaviors can be called as normal methods:
+
+Public methods defined on behaviors are also added as 'mixin' methods on the table object they are attached to. If you attach two behaviors that provide the same methods an exception will be raised. If a behavior provides the same method as a table class, the behavior method will not be callable from the table. Behavior mixin methods will receive the exact same arguments that are provided to the table. For example, if our SluggableBehavior defined the following method:
+
+It could be invoked using:
+
+Deprecated in version 5.3.0
+
+Calling behavior methods as mixin methods is deprecated
+
+When creating behaviors, there may be situations where you don't want to expose public methods as mixin methods. In these cases you can use the implementedMethods configuration key to rename or exclude mixin methods. For example if we wanted to prefix our slug() method we could do the following:
+
+Applying this configuration will make slug() not callable, however it will add a superSlug() mixin method to the table. Notably if our behavior implemented other public methods they would not be available as mixin methods with the above configuration.
+
+Since the exposed methods are decided by configuration you can also rename/remove mixin methods when adding a behavior to a table. For example:
+
+Now that our behavior has a mixin method to slug fields, we can implement a callback listener to automatically slug a field when entities are saved. We'll also modify our slug method to accept an entity instead of just a plain value. Our behavior should now look like:
+
+The above code shows a few interesting features of behaviors:
+
+To prevent the save from continuing, simply stop event propagation in your callback:
+
+Alternatively, you can return false from the callback. This has the same effect as stopping event propagation.
+
+Now that we are able to save articles with slug values, we should implement a finder method so we can fetch articles by their slug. Behavior finder methods, use the same conventions as Custom Find Methods do. Our find('slug') method would look like:
+
+Once our behavior has the above method we can call it:
+
+When creating behaviors, there may be situations where you don't want to expose finder methods, or you need to rename finders to avoid duplicated methods. In these cases you can use the implementedFinders configuration key to rename or exclude finder methods. For example if we wanted to rename our find(slug) method we could do the following:
+
+Applying this configuration will make find('slug') trigger an error. However it will make find('slugged') available. Notably if our behavior implemented other finder methods they would not be available, as they are not included in the configuration.
+
+Since the exposed methods are decided by configuration you can also rename/remove finder methods when adding a behavior to a table. For example:
+
+Behaviors can define logic for how the custom fields they provide are marshalled by implementing the Cake\ORM\PropertyMarshalInterface. This interface requires a single method to be implemented:
+
+The TranslateBehavior has a non-trivial implementation of this interface that you might want to refer to.
+
+To remove a behavior from your table you can call the removeBehavior() method:
+
+Once you've attached behaviors to your Table instance you can introspect the loaded behaviors, or access specific behaviors using the BehaviorRegistry:
+
+To modify the configuration of an already loaded behavior you can combine the BehaviorRegistry::get command with config command provided by the InstanceConfigTrait trait.
+
+For example, if a parent class, such as AppTable, loaded the Timestamp behavior you could do the following to add, modify or remove the configurations for the behavior. In this case, we will add an event we want Timestamp to respond to:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+TimestampBehavior
+----------------------------------------
+
+Code Block 2 ():
+method
+----------------------------------------
+
+Code Block 3 ():
+addBehavior()
+----------------------------------------
+
+Code Block 4 ():
+initialize()
+----------------------------------------
+
+Code Block 5 (shiki):
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Timestamp');
+    }
+}
+----------------------------------------
+
+Code Block 6 ():
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Timestamp');
+    }
+}
+----------------------------------------
+
+Code Block 7 ():
+plugin syntax
+----------------------------------------
+
+Code Block 8 (shiki):
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Timestamp', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'created_at' => 'new',
+                    'modified_at' => 'always',
+                ]
+            ]
+
+## Core Behaviors
+
+- [CounterCache](../orm/behaviors/counter-cache)
+- [Timestamp](../orm/behaviors/timestamp)
+- [Translate](../orm/behaviors/translate)
+- [Tree](../orm/behaviors/tree)
+
+## Creating a Behavior
+
+In the following examples we will create a very simple `SluggableBehavior`.
+This behavior will allow us to populate a slug field with the results of
+`Text::slug()` based on another field.
+
+Before we create our behavior we should understand the conventions for
+behaviors:
+
+- Behavior files are located in **src/Model/Behavior**, or
+  `MyPlugin\Model\Behavior`.
+- Behavior classes should be in the `App\Model\Behavior` namespace, or
+  `MyPlugin\Model\Behavior` namespace.
+- Behavior class names end in `Behavior`.
+- Behaviors extend `Cake\ORM\Behavior`.
+
+To create our sluggable behavior. Put the following into
+**src/Model/Behavior/SluggableBehavior.php**:
+
+```php
+namespace App\Model\Behavior;
+
+use Cake\ORM\Behavior;
+
+class SluggableBehavior extends Behavior
+{
+}
+----------------------------------------
+
+Code Block 9 ():
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Timestamp', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'created_at' => 'new',
+                    'modified_at' => 'always',
+                ]
+            ]
+
+## Core Behaviors
+
+- [CounterCache](../orm/behaviors/counter-cache)
+- [Timestamp](../orm/behaviors/timestamp)
+- [Translate](../orm/behaviors/translate)
+- [Tree](../orm/behaviors/tree)
+
+## Creating a Behavior
+
+In the following examples we will create a very simple `SluggableBehavior`.
+This behavior will allow us to populate a slug field with the results of
+`Text::slug()` based on another field.
+
+Before we create our behavior we should understand the conventions for
+behaviors:
+
+- Behavior files are located in **src/Model/Behavior**, or
+  `MyPlugin\Model\Behavior`.
+- Behavior classes should be in the `App\Model\Behavior` namespace, or
+  `MyPlugin\Model\Behavior` namespace.
+- Behavior class names end in `Behavior`.
+- Behaviors extend `Cake\ORM\Behavior`.
+
+To create our sluggable behavior. Put the following into
+**src/Model/Behavior/SluggableBehavior.php**:
+
+```php
+namespace App\Model\Behavior;
+
+use Cake\ORM\Behavior;
+
+class SluggableBehavior extends Behavior
+{
+}
+----------------------------------------
+
+Code Block 10 ():
+initialize()
+----------------------------------------
+
+Code Block 11 (shiki):
+public function initialize(array $config): void
+{
+    // Some initialization code here
+}
+----------------------------------------
+
+Code Block 12 ():
+public function initialize(array $config): void
+{
+    // Some initialization code here
+}
+----------------------------------------
+
+Code Block 13 ():
+ArticlesTable
+----------------------------------------
+
+Code Block 14 (shiki):
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Sluggable');
+    }
+}
+----------------------------------------
+
+Code Block 15 ():
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Sluggable');
+    }
+}
+----------------------------------------
+
+Code Block 16 (shiki):
+$articles->getBehavior('Sluggable')->slug($value);
+----------------------------------------
+
+Code Block 17 ():
+$articles->getBehavior('Sluggable')->slug($value);
+----------------------------------------
+
+Code Block 18 (shiki):
+public function slug(string $value): string
+{
+    return Text::slug($value, $this->_config['replacement']);
+}
+----------------------------------------
+
+Code Block 19 ():
+public function slug(string $value): string
+{
+    return Text::slug($value, $this->_config['replacement']);
+}
+----------------------------------------
+
+Code Block 20 (shiki):
+$slug = $articles->slug('My article');
+----------------------------------------
+
+Code Block 21 ():
+$slug = $articles->slug('My article');
+----------------------------------------
+
+Code Block 22 ():
+implementedMethods
+----------------------------------------
+
+Code Block 23 (shiki):
+protected array $_defaultConfig = [
+    'implementedMethods' => [
+        'superSlug' => 'slug',
+    ]
+];
+----------------------------------------
+
+Code Block 24 ():
+protected array $_defaultConfig = [
+    'implementedMethods' => [
+        'superSlug' => 'slug',
+    ]
+];
+----------------------------------------
+
+Code Block 25 ():
+slug()
+----------------------------------------
+
+Code Block 26 ():
+superSlug()
+----------------------------------------
+
+Code Block 27 (shiki):
+// In a table's initialize() method.
+$this->addBehavior('Sluggable', [
+    'implementedMethods' => [
+        'superSlug' => 'slug',
+    ]
+]);
+----------------------------------------
+
+Code Block 28 ():
+// In a table's initialize() method.
+$this->addBehavior('Sluggable', [
+    'implementedMethods' => [
+        'superSlug' => 'slug',
+    ]
+]);
+----------------------------------------
+
+Code Block 29 (shiki):
+namespace App\Model\Behavior;
+
+use ArrayObject;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
+use Cake\ORM\Behavior;
+use Cake\ORM\Entity;
+use Cake\ORM\Query\SelectQuery;
+use Cake\Utility\Text;
+
+class SluggableBehavior extends Behavior
+{
+    protected array $_defaultConfig = [
+        'field' => 'title',
+        'slug' => 'slug',
+        'replacement' => '-',
+    ];
+
+    public function slug(EntityInterface $entity): void
+    {
+        $config = $this->getConfig();
+        $value = $entity->get($config['field']);
+        $entity->set($config['slug'], Text::slug($value, $config['replacement']));
+    }
+
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+    {
+        $this->slug($entity);
+    }
+
+}
+----------------------------------------
+
+Code Block 30 ():
+namespace App\Model\Behavior;
+
+use ArrayObject;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
+use Cake\ORM\Behavior;
+use Cake\ORM\Entity;
+use Cake\ORM\Query\SelectQuery;
+use Cake\Utility\Text;
+
+class SluggableBehavior extends Behavior
+{
+    protected array $_defaultConfig = [
+        'field' => 'title',
+        'slug' => 'slug',
+        'replacement' => '-',
+    ];
+
+    public function slug(EntityInterface $entity): void
+    {
+        $config = $this->getConfig();
+        $value = $entity->get($config['field']);
+        $entity->set($config['slug'], Text::slug($value, $config['replacement']));
+    }
+
+    public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+    {
+        $this->slug($entity);
+    }
+
+}
+----------------------------------------
+
+Code Block 31 (shiki):
+public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+{
+    if (...) {
+        $event->stopPropagation();
+        $event->setResult(false);
+
+        return;
+    }
+    $this->slug($entity);
+}
+----------------------------------------
+
+Code Block 32 ():
+public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+{
+    if (...) {
+        $event->stopPropagation();
+        $event->setResult(false);
+
+        return;
+    }
+    $this->slug($entity);
+}
+----------------------------------------
+
+Code Block 33 ():
+find('slug')
+----------------------------------------
+
+Code Block 34 (shiki):
+public function findSlug(SelectQuery $query, string $slug): SelectQuery
+{
+    return $query->where(['slug' => $slug]);
+}
+----------------------------------------
+
+Code Block 35 ():
+public function findSlug(SelectQuery $query, string $slug): SelectQuery
+{
+    return $query->where(['slug' => $slug]);
+}
+----------------------------------------
+
+Code Block 36 (shiki):
+$article = $articles->find('slug', slug: $value)->first();
+----------------------------------------
+
+Code Block 37 ():
+$article = $articles->find('slug', slug: $value)->first();
+----------------------------------------
+
+Code Block 38 ():
+implementedFinders
+----------------------------------------
+
+Code Block 39 ():
+find(slug)
+----------------------------------------
+
+Code Block 40 (shiki):
+protected array $_defaultConfig = [
+    'implementedFinders' => [
+        'slugged' => 'findSlug',
+    ]
+];
+----------------------------------------
+
+Code Block 41 ():
+protected array $_defaultConfig = [
+    'implementedFinders' => [
+        'slugged' => 'findSlug',
+    ]
+];
+----------------------------------------
+
+Code Block 42 ():
+find('slug')
+----------------------------------------
+
+Code Block 43 ():
+find('slugged')
+----------------------------------------
+
+Code Block 44 (shiki):
+// In a table's initialize() method.
+$this->addBehavior('Sluggable', [
+    'implementedFinders' => [
+        'slugged' => 'findSlug',
+    ]
+]);
+----------------------------------------
+
+Code Block 45 ():
+// In a table's initialize() method.
+$this->addBehavior('Sluggable', [
+    'implementedFinders' => [
+        'slugged' => 'findSlug',
+    ]
+]);
+----------------------------------------
+
+Code Block 46 ():
+Cake\ORM\PropertyMarshalInterface
+----------------------------------------
+
+Code Block 47 (shiki):
+public function buildMarshalMap(Marshaller $marshaller, array $map, array $options): array
+{
+    return [
+        'custom_behavior_field' => function ($value, $entity) {
+            // Transform the value as necessary
+            return $value . '123';
+        }
+    ];
+}
+----------------------------------------
+
+Code Block 48 ():
+public function buildMarshalMap(Marshaller $marshaller, array $map, array $options): array
+{
+    return [
+        'custom_behavior_field' => function ($value, $entity) {
+            // Transform the value as necessary
+            return $value . '123';
+        }
+    ];
+}
+----------------------------------------
+
+Code Block 49 ():
+TranslateBehavior
+----------------------------------------
+
+Code Block 50 ():
+removeBehavior()
+----------------------------------------
+
+Code Block 51 (shiki):
+// Remove the loaded behavior
+$this->removeBehavior('Sluggable');
+----------------------------------------
+
+Code Block 52 ():
+// Remove the loaded behavior
+$this->removeBehavior('Sluggable');
+----------------------------------------
+
+Code Block 53 ():
+BehaviorRegistry
+----------------------------------------
+
+Code Block 54 (shiki):
+// See which behaviors are loaded
+$table->behaviors()->loaded();
+
+// Check if a specific behavior is loaded.
+// Remember to omit plugin prefixes.
+$table->behaviors()->has('CounterCache');
+
+// Get a loaded behavior
+// Remember to omit plugin prefixes
+$table->behaviors()->get('CounterCache');
+----------------------------------------
+
+Code Block 55 ():
+// See which behaviors are loaded
+$table->behaviors()->loaded();
+
+// Check if a specific behavior is loaded.
+// Remember to omit plugin prefixes.
+$table->behaviors()->has('CounterCache');
+
+// Get a loaded behavior
+// Remember to omit plugin prefixes
+$table->behaviors()->get('CounterCache');
+----------------------------------------
+
+Code Block 56 ():
+BehaviorRegistry::get
+----------------------------------------
+
+Code Block 57 ():
+config
+----------------------------------------
+
+Code Block 58 ():
+InstanceConfigTrait
+----------------------------------------
+
+Code Block 59 ():
+AppTable
+----------------------------------------
+
+Code Block 60 ():
+Timestamp
+----------------------------------------
+
+Code Block 61 (shiki):
+namespace App\Model\Table;
+
+use App\Model\Table\AppTable; // similar to AppController
+
+class UsersTable extends AppTable
+{
+    public function initialize(array $options): void
+    {
+        parent::initialize($options);
+
+        // For example, if our parent calls $this->addBehavior('Timestamp')
+        // and we want to add an additional event
+        if ($this->behaviors()->has('Timestamp')) {
+            $this->behaviors()->get('Timestamp')->setConfig([
+                'events' => [
+                    'Users.login' => [
+                        'last_login' => 'always',
+                    ],
+                ],
+            ]);
+        }
+    }
+}
+----------------------------------------
+
+Code Block 62 ():
+namespace App\Model\Table;
+
+use App\Model\Table\AppTable; // similar to AppController
+
+class UsersTable extends AppTable
+{
+    public function initialize(array $options): void
+    {
+        parent::initialize($options);
+
+        // For example, if our parent calls $this->addBehavior('Timestamp')
+        // and we want to add an additional event
+        if ($this->behaviors()->has('Timestamp')) {
+            $this->behaviors()->get('Timestamp')->setConfig([
+                'events' => [
+                    'Users.login' => [
+                        'last_login' => 'always',
+                    ],
+                ],
+            ]);
+        }
+    }
+}
+----------------------------------------
+

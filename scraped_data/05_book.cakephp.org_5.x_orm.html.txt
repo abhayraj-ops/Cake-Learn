@@ -1,0 +1,480 @@
+URL: https://book.cakephp.org/5.x/orm.html
+Title: Database Access & ORM | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Database Access & ORM ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Quick Example ​
+  - More Information ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+In CakePHP, working with data through the database is done with two primary object types:
+
+These two classes are usually responsible for managing almost everything that happens regarding your data, its validity, interactions and evolution of the information workflow in your domain of work.
+
+CakePHP's built-in ORM specializes in relational databases, but can be extended to support alternative datasources.
+
+The CakePHP ORM borrows ideas and concepts from both ActiveRecord and Datamapper patterns. It aims to create a hybrid implementation that combines aspects of both patterns to create a fast, simple to use ORM.
+
+Before we get started exploring the ORM, make sure you configure your database connections.
+
+To get started you don't have to write any code. If you've followed the CakePHP conventions for your database tables you can just start using the ORM. For example if we wanted to load some data from our articles table we would start off creating our Articles table class. Create src/Model/Table/ArticlesTable.php with the following code:
+
+Then in a controller or command we can have CakePHP create an instance for us:
+
+In other contexts, you can use the LocatorAwareTrait which add accessor methods for ORM tables:
+
+Within a static method you can use the Cake\Datasource\FactoryLocator to get the table locator:
+
+Table classes represent collections of entities. Next, lets create an entity class for our Articles. Entity classes let you define accessor and mutator methods, define custom logic for individual records and much more. We'll start off by adding the following to src/Model/Entity/Article.php after the <?php opening tag:
+
+Entities use the singular CamelCase version of the table name as their class name by default. Now that we have created our entity class, when we load entities from the database we'll get instances of our new Article class:
+
+CakePHP uses naming conventions to link the Table and Entity class together. If you need to customize which entity a table uses you can use the entityClass() method to set a specific classname.
+
+See the chapters on Table Objects and Entities for more information on how to use table objects and entities in your application.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+articles
+----------------------------------------
+
+Code Block 2 ():
+Articles
+----------------------------------------
+
+Code Block 3 (shiki):
+<?php
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+}
+----------------------------------------
+
+Code Block 4 ():
+<?php
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+}
+----------------------------------------
+
+Code Block 5 (shiki):
+public function someMethod()
+{
+    $resultset = $this->fetchTable('Articles')->find()->all();
+
+    foreach ($resultset as $row) {
+        echo $row->title;
+    }
+}
+----------------------------------------
+
+Code Block 6 ():
+public function someMethod()
+{
+    $resultset = $this->fetchTable('Articles')->find()->all();
+
+    foreach ($resultset as $row) {
+        echo $row->title;
+    }
+}
+----------------------------------------
+
+Code Block 7 ():
+LocatorAwareTrait
+----------------------------------------
+
+Code Block 8 (shiki):
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+public function someMethod()
+{
+    $articles = $this->fetchTable('Articles');
+    // more code.
+}
+----------------------------------------
+
+Code Block 9 ():
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+public function someMethod()
+{
+    $articles = $this->fetchTable('Articles');
+    // more code.
+}
+----------------------------------------
+
+Code Block 10 ():
+Cake\Datasource\FactoryLocator
+----------------------------------------
+
+Code Block 11 (shiki):
+$articles = TableRegistry::getTableLocator()->get('Articles');
+----------------------------------------
+
+Code Block 12 ():
+$articles = TableRegistry::getTableLocator()->get('Articles');
+----------------------------------------
+
+Code Block 13 ():
+<?php
+----------------------------------------
+
+Code Block 14 (shiki):
+namespace App\Model\Entity;
+
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+}
+----------------------------------------
+
+Code Block 15 ():
+namespace App\Model\Entity;
+
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+}
+----------------------------------------
+
+Code Block 16 (shiki):
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$articles = $this->fetchTable('Articles');
+$resultset = $articles->find()->all();
+
+foreach ($resultset as $row) {
+    // Each row is now an instance of our Article class.
+    echo $row->title;
+}
+----------------------------------------
+
+Code Block 17 ():
+use Cake\ORM\Locator\LocatorAwareTrait;
+
+$articles = $this->fetchTable('Articles');
+$resultset = $articles->find()->all();
+
+foreach ($resultset as $row) {
+    // Each row is now an instance of our Article class.
+    echo $row->title;
+}
+----------------------------------------
+
+Code Block 18 ():
+entityClass()
+----------------------------------------
+

@@ -1,0 +1,423 @@
+URL: https://book.cakephp.org/5.x/appendices/5-0-upgrade-guide.html
+Title: 5.0 Upgrade Guide | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - 5.0 Upgrade Guide ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Fix Deprecation Warnings ​
+  - Upgrade to PHP 8.1 ​
+  - Use the Upgrade Tool ​
+  - Update CakePHP Dependency ​
+  - Update app files based upon latest app template ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+First, check that your application is running on latest CakePHP 4.x version.
+
+Once your application is running on latest CakePHP 4.x, enable deprecation warnings in config/app.php:
+
+Now that you can see all the warnings, make sure these are fixed before proceeding with the upgrade.
+
+Some potentially impactful deprecations you should make sure you have addressed are:
+
+If you are not running on PHP 8.1 or higher, you will need to upgrade PHP before updating CakePHP.
+
+NOTE
+
+CakePHP 5.0 requires a minimum of PHP 8.1.
+
+NOTE
+
+The upgrade tool only works on applications running on latest CakePHP 4.x. You cannot run the upgrade tool after updating to CakePHP 5.0.
+
+Because CakePHP 5 leverages union types and mixed, there are many backwards incompatible changes concerning method signatures and file renames. To help expedite fixing these tedious changes there is an upgrade CLI tool:
+
+With the upgrade tool installed you can now run it on your application or plugin:
+
+After applying rector refactorings you need to upgrade CakePHP, its plugins, PHPUnit and maybe other dependencies in your composer.json. This process heavily depends on your application so we recommend you compare your composer.json with what is present in cakephp/app.
+
+After the version strings are adjusted in your composer.json execute composer update -W and check its output.
+
+Next, ensure the rest of your application has been updated to be based upon the latest version of cakephp/app.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+'Error' => [
+    'errorLevel' => E_ALL,
+],
+----------------------------------------
+
+Code Block 2 ():
+'Error' => [
+    'errorLevel' => E_ALL,
+],
+----------------------------------------
+
+Code Block 3 ():
+Table::query()
+----------------------------------------
+
+Code Block 4 ():
+selectQuery()
+----------------------------------------
+
+Code Block 5 ():
+updateQuery()
+----------------------------------------
+
+Code Block 6 ():
+insertQuery()
+----------------------------------------
+
+Code Block 7 ():
+deleteQuery()
+----------------------------------------
+
+Code Block 8 ():
+mixed
+----------------------------------------
+
+Code Block 9 (shiki):
+# Install the upgrade tool
+git clone https://github.com/cakephp/upgrade
+cd upgrade
+git checkout 5.x
+composer install --no-dev
+----------------------------------------
+
+Code Block 10 ():
+# Install the upgrade tool
+git clone https://github.com/cakephp/upgrade
+cd upgrade
+git checkout 5.x
+composer install --no-dev
+----------------------------------------
+
+Code Block 11 (shiki):
+bin/cake upgrade rector --rules cakephp50 <path/to/app/src>
+bin/cake upgrade rector --rules chronos3 <path/to/app/src>
+----------------------------------------
+
+Code Block 12 ():
+bin/cake upgrade rector --rules cakephp50 <path/to/app/src>
+bin/cake upgrade rector --rules chronos3 <path/to/app/src>
+----------------------------------------
+
+Code Block 13 ():
+composer.json
+----------------------------------------
+
+Code Block 14 ():
+composer.json
+----------------------------------------
+
+Code Block 15 ():
+composer.json
+----------------------------------------
+
+Code Block 16 ():
+composer update -W
+----------------------------------------
+

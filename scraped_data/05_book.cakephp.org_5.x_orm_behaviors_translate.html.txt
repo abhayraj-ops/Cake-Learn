@@ -1,0 +1,1340 @@
+URL: https://book.cakephp.org/5.x/orm/behaviors/translate.html
+Title: Translate | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Translate ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Translation Strategies ​
+  - Shadow Table Strategy ​
+  - Eav Strategy ​
+  - Attaching the Translate Behavior to Your Tables ​
+  - Quick tour ​
+  - Reading Translated Content ​
+  - Saving in Another Language ​
+  - Saving Multiple Translations ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Using a Separate Translations Table for Eav strategy ​
+  - Retrieve All Translations For An Entity ​
+  - Limiting the Translations to be Retrieved ​
+  - Preventing Retrieval of Empty Translations ​
+  - Retrieving All Translations For Associations ​
+  - Retrieving one language without using I18n::setLocale ​
+  - Querying Translated Fields ​
+  - Validating Translated Entities ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\ORM\Behavior\TranslateBehavior
+
+The Translate behavior allows you to create and retrieve translated copies of your entities in multiple languages.
+
+WARNING
+
+The TranslateBehavior does not support composite primary keys at this point in time.
+
+The behavior offers two strategies for how the translations are stored.
+
+Let's assume we have an articles table and we want it's title and body fields to be translated. For that we create a shadow table articles_translations:
+
+The shadow table needs id and locale columns which together form the primary key and other columns with same name as primary table which need to be translated.
+
+A note on language abbreviations: The Translate Behavior doesn't impose any restrictions on the language identifier, the possible values are only restricted by the locale column type/size. locale is defined as varchar(6) in case you want to use abbreviations like es-419 (Spanish for Latin America, language abbreviation with area code UN M.49).
+
+TIP
+
+It's wise to use the same language abbreviations as required for Internationalization and Localization. Thus you are consistent and switching the language works identical for both, the Translate behavior and Internationalization and Localization.
+
+So it's recommended to use either the two letter ISO code of the language like en, fr, de or the full locale name such as fr_FR, es_AR, da_DK which contains both the language and the country where it is spoken.
+
+In order to use the Eav strategy, you need to create a i18n table with the correct schema. Currently the only way of loading the i18n table is by manually running the following SQL script in your database:
+
+The schema is also available as sql file in /config/schema/i18n.sql.
+
+Attaching the behavior can be done in the initialize() method in your Table class:
+
+For shadow table strategy specifying the fields key is optional as the behavior can infer the fields from the shadow table columns.
+
+If you want to use the EavStrategy then you can configure the behavior as:
+
+For EavStrategy you are required to pass the fields key in the configuration array. This list of fields is needed to tell the behavior what columns will be able to store translations.
+
+By default, the locale specified in App.defaultLocale config is used as default locale for the TranslateBehavior. You can override that by setting defaultLocale config of the behavior:
+
+Regardless of the datastructure strategy you choose the behavior provides the same API to manage translations.
+
+Now, select a language to be used for retrieving entities by changing the application language, which will affect all translations:
+
+Then, get an existing entity:
+
+Next, translate your entity:
+
+You can try now getting your entity again:
+
+Working with multiple translations can be done by using a special trait in your Entity class:
+
+Now you can find all translations for a single entity:
+
+And save multiple translations at once:
+
+If you want to go deeper on how it works or how to tune the behavior for your needs, keep on reading the rest of this chapter.
+
+If you wish to use a table other than i18n for translating a particular repository, you can specify the name of the table class name for your custom table in the behavior's configuration. This is common when you have multiple tables to translate and you want a cleaner separation of the data that is stored for each different table:
+
+You need to make sure that any custom table you use has the columns field, foreign_key, locale and model.
+
+As shown above you can use the setLocale() method to choose the active translation for entities that are loaded:
+
+This method works with any finder in your tables. For example, you can use TranslateBehavior with find('list'):
+
+When building interfaces for updating translated content, it is often helpful to show one or more translation(s) at the same time. You can use the translations finder for this:
+
+In the example above you will get a list of entities back that have a _translations property set. This property will contain a list of translation data entities. For example the following properties would be accessible:
+
+A more elegant way for dealing with this data is by adding a trait to the entity class that is used for your table:
+
+This trait contains a single method called translation, which lets you access or create new translation entities on the fly:
+
+You can limit the languages that are fetched from the database for a particular set of records:
+
+Translation records can contain any string, if a record has been translated and stored as an empty string ('') the translate behavior will take and use this to overwrite the original field value.
+
+If this is undesired, you can ignore translations which are empty using the allowEmptyTranslations config key:
+
+The above would only load translated data that had content.
+
+It is also possible to find translations for any association in a single find operation:
+
+This assumes that Categories has the TranslateBehavior attached to it. It simply uses the query builder function for the contain clause to use the translations custom finder in the association.
+
+calling I18n::setLocale('es'); changes the default locale for all translated finds, there may be times you wish to retrieve translated content without modifying the application's state. For these scenarios use the behavior's setLocale() method:
+
+Note that this only changes the locale of the Articles table, it would not affect the language of associated data. To affect associated data it's necessary to call the method on each table, for example:
+
+This example also assumes that Categories has the TranslateBehavior attached to it.
+
+TranslateBehavior does not substitute find conditions by default. You need to use translationField() method to compose find conditions on translated fields:
+
+The philosophy behind the TranslateBehavior is that you have an entity representing the default language, and multiple translations that can override certain fields in such entity. Keeping this in mind, you can intuitively save translations for any given entity. For example, given the following setup:
+
+So, after you save your first article, you can now save a translation for it, there are a couple ways to do it. The first one is setting the language directly into the entity:
+
+After the entity has been saved, the translated field will be persisted as well, one thing to note is that values from the default language that were not overridden will be preserved:
+
+Once you override the value, the translation for that field will be saved and can be retrieved as usual:
+
+The second way to use for saving entities in another language is to set the default language directly to the table:
+
+Setting the language directly in the table is useful when you need to both retrieve and save entities for the same language or when you need to save multiple entities at once.
+
+It is a common requirement to be able to add or edit multiple translations to any database record at the same time. This can be done using the TranslateTrait:
+
+Now, You can populate translations before saving them:
+
+And create form controls for your translated fields:
+
+In your controller, you can marshal the data as normal:
+
+This will result in your article, the french and spanish translations all being persisted. You'll need to remember to add _translations into the $_accessible fields of your entity as well.
+
+When attaching TranslateBehavior to a model, you can define the validator that should be used when translation records are created/modified by the behavior during newEntity() or patchEntity():
+
+The above will use the validator created by validationTranslated to validated translated entities.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+i18n
+----------------------------------------
+
+Code Block 3 ():
+articles
+----------------------------------------
+
+Code Block 4 ():
+title
+----------------------------------------
+
+Code Block 5 ():
+body
+----------------------------------------
+
+Code Block 6 ():
+articles_translations
+----------------------------------------
+
+Code Block 7 (shiki):
+CREATE TABLE `articles_translations` (
+    `id` int(11) NOT NULL,
+    `locale` varchar(5) NOT NULL,
+    `title` varchar(255),
+    `body` text,
+    PRIMARY KEY (`id`,`locale`)
+);
+----------------------------------------
+
+Code Block 8 ():
+CREATE TABLE `articles_translations` (
+    `id` int(11) NOT NULL,
+    `locale` varchar(5) NOT NULL,
+    `title` varchar(255),
+    `body` text,
+    PRIMARY KEY (`id`,`locale`)
+);
+----------------------------------------
+
+Code Block 9 ():
+id
+----------------------------------------
+
+Code Block 10 ():
+locale
+----------------------------------------
+
+Code Block 11 ():
+locale
+----------------------------------------
+
+Code Block 12 ():
+locale
+----------------------------------------
+
+Code Block 13 ():
+varchar(6)
+----------------------------------------
+
+Code Block 14 ():
+es-419
+----------------------------------------
+
+Code Block 15 ():
+Translate
+----------------------------------------
+
+Code Block 16 ():
+Internationalization and Localization
+----------------------------------------
+
+Code Block 17 ():
+en
+----------------------------------------
+
+Code Block 18 ():
+fr
+----------------------------------------
+
+Code Block 19 ():
+de
+----------------------------------------
+
+Code Block 20 ():
+fr_FR
+----------------------------------------
+
+Code Block 21 ():
+es_AR
+----------------------------------------
+
+Code Block 22 ():
+da_DK
+----------------------------------------
+
+Code Block 23 ():
+i18n
+----------------------------------------
+
+Code Block 24 ():
+i18n
+----------------------------------------
+
+Code Block 25 (shiki):
+CREATE TABLE i18n (
+    id int NOT NULL auto_increment,
+    locale varchar(6) NOT NULL,
+    model varchar(255) NOT NULL,
+    foreign_key int(10) NOT NULL,
+    field varchar(255) NOT NULL,
+    content text,
+    PRIMARY KEY (id),
+    UNIQUE INDEX I18N_LOCALE_FIELD(locale, model, foreign_key, field),
+    INDEX I18N_FIELD(model, foreign_key, field)
+);
+----------------------------------------
+
+Code Block 26 ():
+CREATE TABLE i18n (
+    id int NOT NULL auto_increment,
+    locale varchar(6) NOT NULL,
+    model varchar(255) NOT NULL,
+    foreign_key int(10) NOT NULL,
+    field varchar(255) NOT NULL,
+    content text,
+    PRIMARY KEY (id),
+    UNIQUE INDEX I18N_LOCALE_FIELD(locale, model, foreign_key, field),
+    INDEX I18N_FIELD(model, foreign_key, field)
+);
+----------------------------------------
+
+Code Block 27 ():
+initialize()
+----------------------------------------
+
+Code Block 28 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        // By default, ShadowTable will be used.
+        $this->addBehavior('Translate', ['fields' => ['title', 'body']]);
+    }
+}
+----------------------------------------
+
+Code Block 29 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        // By default, ShadowTable will be used.
+        $this->addBehavior('Translate', ['fields' => ['title', 'body']]);
+    }
+}
+----------------------------------------
+
+Code Block 30 ():
+fields
+----------------------------------------
+
+Code Block 31 ():
+EavStrategy
+----------------------------------------
+
+Code Block 32 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'strategyClass' => \Cake\ORM\Behavior\Translate\EavStrategy::class,
+            'fields' => ['title', 'body'],
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 33 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'strategyClass' => \Cake\ORM\Behavior\Translate\EavStrategy::class,
+            'fields' => ['title', 'body'],
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 34 ():
+EavStrategy
+----------------------------------------
+
+Code Block 35 ():
+fields
+----------------------------------------
+
+Code Block 36 ():
+App.defaultLocale
+----------------------------------------
+
+Code Block 37 ():
+TranslateBehavior
+----------------------------------------
+
+Code Block 38 ():
+defaultLocale
+----------------------------------------
+
+Code Block 39 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'defaultLocale' => 'en_GB',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 40 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'defaultLocale' => 'en_GB',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 41 (shiki):
+// In the Articles controller. Change the locale to Spanish, for example
+I18n::setLocale('es');
+----------------------------------------
+
+Code Block 42 ():
+// In the Articles controller. Change the locale to Spanish, for example
+I18n::setLocale('es');
+----------------------------------------
+
+Code Block 43 (shiki):
+$article = $this->Articles->get(12);
+echo $article->title; // Echoes 'A title', not translated yet
+----------------------------------------
+
+Code Block 44 ():
+$article = $this->Articles->get(12);
+echo $article->title; // Echoes 'A title', not translated yet
+----------------------------------------
+
+Code Block 45 (shiki):
+$article->title = 'Un Artículo';
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 46 ():
+$article->title = 'Un Artículo';
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 47 (shiki):
+$article = $this->Articles->get(12);
+echo $article->title; // Echoes 'Un Artículo', yay piece of cake!
+----------------------------------------
+
+Code Block 48 ():
+$article = $this->Articles->get(12);
+echo $article->title; // Echoes 'Un Artículo', yay piece of cake!
+----------------------------------------
+
+Code Block 49 (shiki):
+use Cake\ORM\Behavior\Translate\TranslateTrait;
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+    use TranslateTrait;
+}
+----------------------------------------
+
+Code Block 50 ():
+use Cake\ORM\Behavior\Translate\TranslateTrait;
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+    use TranslateTrait;
+}
+----------------------------------------
+
+Code Block 51 (shiki):
+$article = $this->Articles->find('translations')->first();
+echo $article->translation('es')->title; // 'Un Artículo'
+
+echo $article->translation('en')->title; // 'An Article';
+----------------------------------------
+
+Code Block 52 ():
+$article = $this->Articles->find('translations')->first();
+echo $article->translation('es')->title; // 'Un Artículo'
+
+echo $article->translation('en')->title; // 'An Article';
+----------------------------------------
+
+Code Block 53 (shiki):
+$article->translation('es')->title = 'Otro Título';
+$article->translation('fr')->title = 'Un autre Titre';
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 54 ():
+$article->translation('es')->title = 'Otro Título';
+$article->translation('fr')->title = 'Un autre Titre';
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 55 ():
+i18n
+----------------------------------------
+
+Code Block 56 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'fields' => ['title', 'body'],
+            'translationTable' => 'ArticlesI18n',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 57 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'fields' => ['title', 'body'],
+            'translationTable' => 'ArticlesI18n',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 58 ():
+field
+----------------------------------------
+
+Code Block 59 ():
+foreign_key
+----------------------------------------
+
+Code Block 60 ():
+locale
+----------------------------------------
+
+Code Block 61 ():
+model
+----------------------------------------
+
+Code Block 62 ():
+setLocale()
+----------------------------------------
+
+Code Block 63 (shiki):
+// Load I18n core functions at the beginning of your Articles Controller:
+use Cake\I18n\I18n;
+
+// Then you can change the language in your action:
+I18n::setLocale('es');
+
+// All entities in results will contain spanish translation
+$results = $this->Articles->find()->all();
+----------------------------------------
+
+Code Block 64 ():
+// Load I18n core functions at the beginning of your Articles Controller:
+use Cake\I18n\I18n;
+
+// Then you can change the language in your action:
+I18n::setLocale('es');
+
+// All entities in results will contain spanish translation
+$results = $this->Articles->find()->all();
+----------------------------------------
+
+Code Block 65 ():
+find('list')
+----------------------------------------
+
+Code Block 66 (shiki):
+I18n::setLocale('es');
+$data = $this->Articles->find('list')->toArray();
+
+// Data will contain
+[1 => 'Mi primer artículo', 2 => 'El segundo artículo', 15 => 'Otro articulo' ...]
+
+// Change the locale to french for a single find call
+$data = $this->Articles->find('list', locale: 'fr')->toArray();
+----------------------------------------
+
+Code Block 67 ():
+I18n::setLocale('es');
+$data = $this->Articles->find('list')->toArray();
+
+// Data will contain
+[1 => 'Mi primer artículo', 2 => 'El segundo artículo', 15 => 'Otro articulo' ...]
+
+// Change the locale to french for a single find call
+$data = $this->Articles->find('list', locale: 'fr')->toArray();
+----------------------------------------
+
+Code Block 68 ():
+translations
+----------------------------------------
+
+Code Block 69 (shiki):
+// Find the first article with all corresponding translations
+$article = $this->Articles->find('translations')->first();
+----------------------------------------
+
+Code Block 70 ():
+// Find the first article with all corresponding translations
+$article = $this->Articles->find('translations')->first();
+----------------------------------------
+
+Code Block 71 ():
+_translations
+----------------------------------------
+
+Code Block 72 (shiki):
+// Outputs 'en'
+echo $article->_translations['en']->locale;
+
+// Outputs 'title'
+echo $article->_translations['en']->field;
+
+// Outputs 'My awesome post!'
+echo $article->_translations['en']->body;
+----------------------------------------
+
+Code Block 73 ():
+// Outputs 'en'
+echo $article->_translations['en']->locale;
+
+// Outputs 'title'
+echo $article->_translations['en']->field;
+
+// Outputs 'My awesome post!'
+echo $article->_translations['en']->body;
+----------------------------------------
+
+Code Block 74 (shiki):
+use Cake\ORM\Behavior\Translate\TranslateTrait;
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+    use TranslateTrait;
+}
+----------------------------------------
+
+Code Block 75 ():
+use Cake\ORM\Behavior\Translate\TranslateTrait;
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+    use TranslateTrait;
+}
+----------------------------------------
+
+Code Block 76 ():
+translation
+----------------------------------------
+
+Code Block 77 (shiki):
+// Outputs 'title'
+echo $article->translation('en')->title;
+
+// Adds a new translation data entity to the article
+$article->translation('de')->title = 'Wunderbar';
+----------------------------------------
+
+Code Block 78 ():
+// Outputs 'title'
+echo $article->translation('en')->title;
+
+// Adds a new translation data entity to the article
+$article->translation('de')->title = 'Wunderbar';
+----------------------------------------
+
+Code Block 79 (shiki):
+$results = $this->Articles->find('translations', locales: ['en', 'es']);
+$article = $results->first();
+$spanishTranslation = $article->translation('es');
+$englishTranslation = $article->translation('en');
+----------------------------------------
+
+Code Block 80 ():
+$results = $this->Articles->find('translations', locales: ['en', 'es']);
+$article = $results->first();
+$spanishTranslation = $article->translation('es');
+$englishTranslation = $article->translation('en');
+----------------------------------------
+
+Code Block 81 ():
+allowEmptyTranslations
+----------------------------------------
+
+Code Block 82 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'fields' => ['title', 'body'],
+            'allowEmptyTranslations' => false,
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 83 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'fields' => ['title', 'body'],
+            'allowEmptyTranslations' => false,
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 84 (shiki):
+$article = $this->Articles->find('translations')->contain([
+    'Categories' => function ($query) {
+        return $query->find('translations');
+    }
+])->first();
+
+// Outputs 'Programación'
+echo $article->categories[0]->translation('es')->name;
+----------------------------------------
+
+Code Block 85 ():
+$article = $this->Articles->find('translations')->contain([
+    'Categories' => function ($query) {
+        return $query->find('translations');
+    }
+])->first();
+
+// Outputs 'Programación'
+echo $article->categories[0]->translation('es')->name;
+----------------------------------------
+
+Code Block 86 ():
+Categories
+----------------------------------------
+
+Code Block 87 ():
+contain
+----------------------------------------
+
+Code Block 88 ():
+translations
+----------------------------------------
+
+Code Block 89 ():
+I18n::setLocale('es');
+----------------------------------------
+
+Code Block 90 ():
+setLocale()
+----------------------------------------
+
+Code Block 91 (shiki):
+I18n::setLocale('en'); // reset for illustration
+
+// specific locale.
+$this->Articles->getBehavior('Translate')->setLocale('es');
+
+$article = $this->Articles->get(12);
+echo $article->title; // Echo 'Un Artículo', yay piece of cake!
+----------------------------------------
+
+Code Block 92 ():
+I18n::setLocale('en'); // reset for illustration
+
+// specific locale.
+$this->Articles->getBehavior('Translate')->setLocale('es');
+
+$article = $this->Articles->get(12);
+echo $article->title; // Echo 'Un Artículo', yay piece of cake!
+----------------------------------------
+
+Code Block 93 (shiki):
+I18n::setLocale('en'); // reset for illustration
+
+$this->Articles->getBehavior('Translate')->setLocale('es');
+$this->Articles->Categories->getBehavior('Translate')->setLocale('es');
+
+$data = $this->Articles->find('all', contain: ['Categories']);
+----------------------------------------
+
+Code Block 94 ():
+I18n::setLocale('en'); // reset for illustration
+
+$this->Articles->getBehavior('Translate')->setLocale('es');
+$this->Articles->Categories->getBehavior('Translate')->setLocale('es');
+
+$data = $this->Articles->find('all', contain: ['Categories']);
+----------------------------------------
+
+Code Block 95 ():
+Categories
+----------------------------------------
+
+Code Block 96 ():
+translationField()
+----------------------------------------
+
+Code Block 97 (shiki):
+$this->Articles->getBehavior('Translate')->setLocale('es');
+$query = $this->Articles->find()->where([
+    $this->Articles->getBehavior('Translate')->translationField('title') => 'Otro Título',
+]);
+----------------------------------------
+
+Code Block 98 ():
+$this->Articles->getBehavior('Translate')->setLocale('es');
+$query = $this->Articles->find()->where([
+    $this->Articles->getBehavior('Translate')->translationField('title') => 'Otro Título',
+]);
+----------------------------------------
+
+Code Block 99 (shiki):
+// in src/Model/Table/ArticlesTable.php
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', ['fields' => ['title', 'body']]);
+    }
+}
+
+// in src/Model/Entity/Article.php
+class Article extends Entity
+{
+    use TranslateTrait;
+}
+
+// In the Articles Controller
+$article = new Article([
+    'title' => 'My First Article',
+    'body' => 'This is the content',
+    'footnote' => 'Some afterwords',
+]);
+
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 100 ():
+// in src/Model/Table/ArticlesTable.php
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', ['fields' => ['title', 'body']]);
+    }
+}
+
+// in src/Model/Entity/Article.php
+class Article extends Entity
+{
+    use TranslateTrait;
+}
+
+// In the Articles Controller
+$article = new Article([
+    'title' => 'My First Article',
+    'body' => 'This is the content',
+    'footnote' => 'Some afterwords',
+]);
+
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 101 (shiki):
+$article->_locale = 'es';
+$article->title = 'Mi primer Artículo';
+
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 102 ():
+$article->_locale = 'es';
+$article->title = 'Mi primer Artículo';
+
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 103 (shiki):
+// Outputs 'This is the content'
+echo $article->body;
+
+// Outputs 'Mi primer Artículo'
+echo $article->title;
+----------------------------------------
+
+Code Block 104 ():
+// Outputs 'This is the content'
+echo $article->body;
+
+// Outputs 'Mi primer Artículo'
+echo $article->title;
+----------------------------------------
+
+Code Block 105 (shiki):
+$article->body = 'El contendio';
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 106 ():
+$article->body = 'El contendio';
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 107 (shiki):
+$article->title = 'Mi Primer Artículo';
+
+$this->Articles->getBehavior('Translate')->setLocale('es');
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 108 ():
+$article->title = 'Mi Primer Artículo';
+
+$this->Articles->getBehavior('Translate')->setLocale('es');
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 109 ():
+TranslateTrait
+----------------------------------------
+
+Code Block 110 (shiki):
+use Cake\ORM\Behavior\Translate\TranslateTrait;
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+    use TranslateTrait;
+}
+----------------------------------------
+
+Code Block 111 ():
+use Cake\ORM\Behavior\Translate\TranslateTrait;
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+    use TranslateTrait;
+}
+----------------------------------------
+
+Code Block 112 (shiki):
+$translations = [
+    'fr' => ['title' => "Un article"],
+    'es' => ['title' => 'Un artículo'],
+];
+
+foreach ($translations as $lang => $data) {
+    $article->translation($lang)->set($data, ['guard' => false]);
+}
+
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 113 ():
+$translations = [
+    'fr' => ['title' => "Un article"],
+    'es' => ['title' => 'Un artículo'],
+];
+
+foreach ($translations as $lang => $data) {
+    $article->translation($lang)->set($data, ['guard' => false]);
+}
+
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 114 (shiki):
+// In a view template.
+<?= $this->Form->create($article); ?>
+<fieldset>
+    <legend>French</legend>
+    <?= $this->Form->control('_translations.fr.title'); ?>
+    <?= $this->Form->control('_translations.fr.body'); ?>
+</fieldset>
+<fieldset>
+    <legend>Spanish</legend>
+    <?= $this->Form->control('_translations.es.title'); ?>
+    <?= $this->Form->control('_translations.es.body'); ?>
+</fieldset>
+----------------------------------------
+
+Code Block 115 ():
+// In a view template.
+<?= $this->Form->create($article); ?>
+<fieldset>
+    <legend>French</legend>
+    <?= $this->Form->control('_translations.fr.title'); ?>
+    <?= $this->Form->control('_translations.fr.body'); ?>
+</fieldset>
+<fieldset>
+    <legend>Spanish</legend>
+    <?= $this->Form->control('_translations.es.title'); ?>
+    <?= $this->Form->control('_translations.es.body'); ?>
+</fieldset>
+----------------------------------------
+
+Code Block 116 (shiki):
+$article = $this->Articles->newEntity($this->request->getData());
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 117 ():
+$article = $this->Articles->newEntity($this->request->getData());
+$this->Articles->save($article);
+----------------------------------------
+
+Code Block 118 ():
+_translations
+----------------------------------------
+
+Code Block 119 ():
+$_accessible
+----------------------------------------
+
+Code Block 120 ():
+TranslateBehavior
+----------------------------------------
+
+Code Block 121 ():
+newEntity()
+----------------------------------------
+
+Code Block 122 ():
+patchEntity()
+----------------------------------------
+
+Code Block 123 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'fields' => ['title'],
+            'validator' => 'translated',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 124 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Translate', [
+            'fields' => ['title'],
+            'validator' => 'translated',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 125 ():
+validationTranslated
+----------------------------------------
+

@@ -1,0 +1,2488 @@
+URL: https://book.cakephp.org/5.x/development/dependency-injection.html
+Title: Dependency Injection | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Dependency Injection ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Why Use Dependency Injection? ​
+  - Where CakePHP Uses DI ​
+  - Real-World Examples ​
+  - Controller Example ​
+  - Command Example ​
+  - Component Example ​
+  - Adding Services ​
+  - Service Providers ​
+  - Mocking Services in Tests ​
+  - Common Patterns and Best Practices ​
+  - Auto Wiring ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Testability ​
+  - Flexibility ​
+  - Separation of Concerns ​
+  - When NOT to Use DI ​
+  - Email Service Example ​
+  - Payment Processing Service ​
+  - File Storage Service ​
+  - Adding Shared Services ​
+  - Using ORM Tables as Services ​
+  - Extending Definitions ​
+  - Tagging Services ​
+  - Using Configuration Data ​
+  - Creating Service Providers ​
+  - Using Service Providers ​
+  - Bootable ServiceProviders ​
+  - Testing Services with Mocks ​
+  - Repository Pattern ​
+  - Service Composition ​
+  - Service with Configuration ​
+  - Factory Pattern ​
+  - Migrating from Traditional Code ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The CakePHP service container enables you to manage class dependencies for your application services through dependency injection. Dependency injection automatically "injects" an object's dependencies via the constructor without having to manually instantiate them.
+
+You can use the service container to define 'application services'. These classes can use models and interact with other objects like loggers and mailers to build re-usable workflows and business logic for your application.
+
+Dependency injection helps you build more maintainable, testable, and flexible applications:
+
+TIP
+
+Services help you organize complex business logic outside controllers:
+
+WARNING
+
+Dependency injection is powerful but not always necessary:
+
+TIP
+
+Use services when you have:
+
+CakePHP will use the DI container in the following situations:
+
+Instead of directly using Mailer in controllers, create a service to handle all email operations:
+
+Encapsulate payment gateway logic for easy testing and swapping:
+
+Abstract file storage to easily switch between local, S3, or other providers:
+
+In this example, the UsersController::ssoCallback() action needs to fetch a user from a Single-Sign-On provider and ensure it exists in the local database. Because this service is injected into our controller, we can easily swap the implementation out with a mock object or a dummy sub-class when testing.
+
+The injection process is a bit different here. Instead of adding the UsersService to the container we first have to add the Command as a whole to the Container and add the UsersService as an argument. With that you can then access that service inside the constructor of the command.
+
+NOTE
+
+CakePHP's dependency injection container uses PSR-11 for compatibility with other frameworks and libraries.
+
+In order to have services created by the container, you need to tell it which classes it can create and how to build those classes. The simplest definition is via a class name:
+
+Your application and plugins define the services they have in the services() hook method:
+
+You can define implementations for interfaces that your application uses:
+
+The container can leverage factory functions to create objects if necessary:
+
+Factory functions will receive all the resolved dependencies for the class as arguments.
+
+Once you've defined a class, you also need to define the dependencies it requires. Those dependencies can be either objects or primitive values:
+
+Your services can depend on ServerRequest in controller actions as it will be added automatically.
+
+IMPORTANT
+
+Services are not shared by default - each request creates a new instance. Use addShared() to create singleton services that persist across requests.
+
+By default, services are not shared. Every object (and dependencies) is created each time it is fetched from the container. If you want to re-use a single instance, often referred to as a singleton, you can mark a service as 'shared':
+
+If you want to have ORM Tables injected as a dependency to a service, you can add TableContainer to your application's service container:
+
+Added in version 5.3.0
+
+TableContainer was added.
+
+Once a service is defined you can modify or update the service definition by extending them. This allows you to add additional arguments to services defined elsewhere:
+
+By tagging services you can get all of those services resolved at the same time. This can be used to build services that combine collections of other services like in a reporting system:
+
+Often you'll need configuration data in your services. If you need a specific value, you can inject it as a constructor argument using the Cake\Core\Attribute\Configure attribute:
+
+Added in version 5.3.0
+
+If you want to inject a copy of all configuration data, CakePHP includes an injectable configuration reader:
+
+The ServiceConfig class provides a read-only view of all the data available in Configure so you don't have to worry about accidentally changing configuration.
+
+Service providers allow you to group related services together helping you organize your services. Service providers can help increase your application's performance as defined services are lazily registered after their first use.
+
+An example ServiceProvider would look like:
+
+Service providers use their services() method to define all the services they will provide. Additionally, those services must be defined in the $provides property. Failing to include a service in the $provides property will result in it not be loadable from the container.
+
+To load a service provider add it into the container using the addServiceProvider() method:
+
+If your service provider needs to run logic when it is added to the container, you can implement the bootstrap() method. This situation can come up when your service provider needs to load additional configuration files, load additional service providers or modify a service defined elsewhere in your application. An example of a bootable service would be:
+
+In tests that use ConsoleIntegrationTestTrait or IntegrationTestTrait you can replace services that are injected via the container with mocks or stubs:
+
+Any defined mocks will be replaced in your application's container during testing, and automatically injected into your controllers and commands. Mocks are cleaned up at the end of each test.
+
+Here's how to test the EmailService and PaymentService examples from earlier:
+
+Repositories provide a clean abstraction for data access, separating query logic from business logic:
+
+Break complex services into smaller, focused services that work together:
+
+Inject configuration values using the Configure attribute:
+
+Use factories when object creation is complex or requires conditional logic:
+
+Here's how to refactor controller-heavy code to use services:
+
+Benefits of Service-Based Architecture
+
+WARNING
+
+Auto-wiring is convenient but can impact performance. Enable caching in production environments.
+
+Auto Wiring is turned off by default. To enable it:
+
+While your dependencies will now be resolved automatically, this approach will not cache resolutions which can be detrimental to performance. To enable caching:
+
+Read more about auto wiring in the PHP League Container documentation.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+// Hard to test - always sends real emails
+public function register()
+{
+    $mailer = new Mailer('default');
+    $mailer->setTo($user->email)
+        ->setSubject('Welcome!')
+        ->send();
+}
+----------------------------------------
+
+Code Block 2 ():
+// Hard to test - always sends real emails
+public function register()
+{
+    $mailer = new Mailer('default');
+    $mailer->setTo($user->email)
+        ->setSubject('Welcome!')
+        ->send();
+}
+----------------------------------------
+
+Code Block 3 (shiki):
+// Easy to test - inject a mock email service
+public function register(EmailService $emails)
+{
+    $emails->sendWelcome($user);
+}
+----------------------------------------
+
+Code Block 4 ():
+// Easy to test - inject a mock email service
+public function register(EmailService $emails)
+{
+    $emails->sendWelcome($user);
+}
+----------------------------------------
+
+Code Block 5 (shiki):
+// Tightly coupled to local storage
+public function upload()
+{
+    $path = WWW_ROOT . 'files/' . $filename;
+    move_uploaded_file($tmpFile, $path);
+}
+----------------------------------------
+
+Code Block 6 ():
+// Tightly coupled to local storage
+public function upload()
+{
+    $path = WWW_ROOT . 'files/' . $filename;
+    move_uploaded_file($tmpFile, $path);
+}
+----------------------------------------
+
+Code Block 7 (shiki):
+// Works with local, S3, or any storage - just change the service definition
+public function upload(StorageService $storage)
+{
+    $storage->put($filename, $tmpFile);
+}
+----------------------------------------
+
+Code Block 8 ():
+// Works with local, S3, or any storage - just change the service definition
+public function upload(StorageService $storage)
+{
+    $storage->put($filename, $tmpFile);
+}
+----------------------------------------
+
+Code Block 9 ():
+DI container
+----------------------------------------
+
+Code Block 10 ():
+Mailer
+----------------------------------------
+
+Code Block 11 (shiki):
+// In src/Service/EmailService.php
+namespace App\Service;
+
+use Cake\Mailer\Mailer;
+
+class EmailService
+{
+    public function __construct(private Mailer $mailer)
+    {
+    }
+
+    public function sendWelcome(User $user): void
+    {
+        $this->mailer
+            ->setTo($user->email)
+            ->setSubject('Welcome to our platform!')
+            ->setViewVars(['name' => $user->name])
+            ->viewBuilder()
+                ->setTemplate('welcome');
+
+        $this->mailer->deliver();
+    }
+
+    public function sendPasswordReset(User $user, string $token): void
+    {
+        $resetUrl = Router::url(['controller' => 'Users', 'action' => 'reset', $token], true);
+
+        $this->mailer
+            ->setTo($user->email)
+            ->setSubject('Password Reset Request')
+            ->setViewVars(['resetUrl' => $resetUrl, 'name' => $user->name])
+            ->viewBuilder()
+                ->setTemplate('password_reset');
+
+        $this->mailer->deliver();
+    }
+}
+
+// In src/Controller/UsersController.php
+class UsersController extends AppController
+{
+    public function register(EmailService $emails)
+    {
+        $user = $this->Users->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                // Service handles all email complexity
+                $emails->sendWelcome($user);
+                $this->Flash->success('Registration successful!');
+
+                return $this->redirect(['action' => 'login']);
+            }
+        }
+        $this->set(compact('user'));
+    }
+
+    public function forgotPassword(EmailService $emails)
+    {
+        if ($this->request->is('post')) {
+            $email = $this->request->getData('email');
+            $user = $this->Users->findByEmail($email)->first();
+
+            if ($user) {
+                $token = $this->Users->generateResetToken($user);
+                $emails->sendPasswordReset($user, $token);
+            } else {
+                // Generate dummy token to prevent timing attacks
+                hash('sha256', $email . Security::randomBytes(32));
+            }
+
+            // Always show success to prevent email enumeration
+            $this->Flash->success('If that email exists, a reset link has been sent.');
+
+            return $this->redirect(['action' => 'login']);
+        }
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(EmailService::class)
+        ->addArgument(Mailer::class);
+}
+----------------------------------------
+
+Code Block 12 ():
+// In src/Service/EmailService.php
+namespace App\Service;
+
+use Cake\Mailer\Mailer;
+
+class EmailService
+{
+    public function __construct(private Mailer $mailer)
+    {
+    }
+
+    public function sendWelcome(User $user): void
+    {
+        $this->mailer
+            ->setTo($user->email)
+            ->setSubject('Welcome to our platform!')
+            ->setViewVars(['name' => $user->name])
+            ->viewBuilder()
+                ->setTemplate('welcome');
+
+        $this->mailer->deliver();
+    }
+
+    public function sendPasswordReset(User $user, string $token): void
+    {
+        $resetUrl = Router::url(['controller' => 'Users', 'action' => 'reset', $token], true);
+
+        $this->mailer
+            ->setTo($user->email)
+            ->setSubject('Password Reset Request')
+            ->setViewVars(['resetUrl' => $resetUrl, 'name' => $user->name])
+            ->viewBuilder()
+                ->setTemplate('password_reset');
+
+        $this->mailer->deliver();
+    }
+}
+
+// In src/Controller/UsersController.php
+class UsersController extends AppController
+{
+    public function register(EmailService $emails)
+    {
+        $user = $this->Users->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                // Service handles all email complexity
+                $emails->sendWelcome($user);
+                $this->Flash->success('Registration successful!');
+
+                return $this->redirect(['action' => 'login']);
+            }
+        }
+        $this->set(compact('user'));
+    }
+
+    public function forgotPassword(EmailService $emails)
+    {
+        if ($this->request->is('post')) {
+            $email = $this->request->getData('email');
+            $user = $this->Users->findByEmail($email)->first();
+
+            if ($user) {
+                $token = $this->Users->generateResetToken($user);
+                $emails->sendPasswordReset($user, $token);
+            } else {
+                // Generate dummy token to prevent timing attacks
+                hash('sha256', $email . Security::randomBytes(32));
+            }
+
+            // Always show success to prevent email enumeration
+            $this->Flash->success('If that email exists, a reset link has been sent.');
+
+            return $this->redirect(['action' => 'login']);
+        }
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(EmailService::class)
+        ->addArgument(Mailer::class);
+}
+----------------------------------------
+
+Code Block 13 (shiki):
+// In src/Service/PaymentService.php
+namespace App\Service;
+
+use Stripe\StripeClient;
+use App\Model\Entity\Order;
+
+class PaymentService
+{
+    public function __construct(
+        private StripeClient $stripe,
+        private LoggerInterface $logger
+    ) {
+    }
+
+    public function processOrder(Order $order): array
+    {
+        try {
+            $intent = $this->stripe->paymentIntents->create([
+                'amount' => $order->total_cents,
+                'currency' => 'usd',
+                'metadata' => ['order_id' => $order->id],
+            ]);
+
+            $this->logger->info('Payment intent created', [
+                'order_id' => $order->id,
+                'intent_id' => $intent->id,
+            ]);
+
+            return [
+                'success' => true,
+                'client_secret' => $intent->client_secret,
+                'intent_id' => $intent->id,
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Payment failed', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'error' => 'Payment processing failed',
+            ];
+        }
+    }
+
+    public function refund(Order $order): bool
+    {
+        // Refund logic here
+        return true;
+    }
+}
+
+// In src/Controller/OrdersController.php
+class OrdersController extends AppController
+{
+    public function checkout(PaymentService $payments): void
+    {
+        $order = $this->Orders->get($this->request->getQuery('order_id'));
+
+        $result = $payments->processOrder($order);
+
+        if ($result['success']) {
+            $this->set('clientSecret', $result['client_secret']);
+        } else {
+            $this->Flash->error($result['error']);
+        }
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(PaymentService::class)
+        ->addArgument(StripeClient::class)
+        ->addArgument(LoggerInterface::class);
+
+    // Configure Stripe with API key from config
+    $container->add(StripeClient::class, function () {
+        return new StripeClient(Configure::readOrFail('Stripe.secretKey'));
+    });
+}
+----------------------------------------
+
+Code Block 14 ():
+// In src/Service/PaymentService.php
+namespace App\Service;
+
+use Stripe\StripeClient;
+use App\Model\Entity\Order;
+
+class PaymentService
+{
+    public function __construct(
+        private StripeClient $stripe,
+        private LoggerInterface $logger
+    ) {
+    }
+
+    public function processOrder(Order $order): array
+    {
+        try {
+            $intent = $this->stripe->paymentIntents->create([
+                'amount' => $order->total_cents,
+                'currency' => 'usd',
+                'metadata' => ['order_id' => $order->id],
+            ]);
+
+            $this->logger->info('Payment intent created', [
+                'order_id' => $order->id,
+                'intent_id' => $intent->id,
+            ]);
+
+            return [
+                'success' => true,
+                'client_secret' => $intent->client_secret,
+                'intent_id' => $intent->id,
+            ];
+        } catch (\Exception $e) {
+            $this->logger->error('Payment failed', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'error' => 'Payment processing failed',
+            ];
+        }
+    }
+
+    public function refund(Order $order): bool
+    {
+        // Refund logic here
+        return true;
+    }
+}
+
+// In src/Controller/OrdersController.php
+class OrdersController extends AppController
+{
+    public function checkout(PaymentService $payments): void
+    {
+        $order = $this->Orders->get($this->request->getQuery('order_id'));
+
+        $result = $payments->processOrder($order);
+
+        if ($result['success']) {
+            $this->set('clientSecret', $result['client_secret']);
+        } else {
+            $this->Flash->error($result['error']);
+        }
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(PaymentService::class)
+        ->addArgument(StripeClient::class)
+        ->addArgument(LoggerInterface::class);
+
+    // Configure Stripe with API key from config
+    $container->add(StripeClient::class, function () {
+        return new StripeClient(Configure::readOrFail('Stripe.secretKey'));
+    });
+}
+----------------------------------------
+
+Code Block 15 (shiki):
+// In src/Service/StorageService.php
+namespace App\Service;
+
+interface StorageServiceInterface
+{
+    public function put(string $path, mixed $contents): bool;
+    public function get(string $path): ?string;
+    public function delete(string $path): bool;
+    public function url(string $path): string;
+}
+
+class LocalStorageService implements StorageServiceInterface
+{
+    public function __construct(private string $basePath)
+    {
+    }
+
+    public function put(string $path, mixed $contents): bool
+    {
+        // Normalize path to prevent directory traversal
+        $path = str_replace(['..', '\\'], ['', '/'], $path);
+        $fullPath = $this->basePath . DS . $path;
+        $dir = dirname($fullPath);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        return file_put_contents($fullPath, $contents) !== false;
+    }
+
+    public function get(string $path): ?string
+    {
+        $fullPath = $this->basePath . DS . $path;
+        return is_file($fullPath) ? file_get_contents($fullPath) : null;
+    }
+
+    public function delete(string $path): bool
+    {
+        $fullPath = $this->basePath . DS . $path;
+        return is_file($fullPath) ? unlink($fullPath) : false;
+    }
+
+    public function url(string $path): string
+    {
+        return Router::url('/files/' . $path, true);
+    }
+}
+
+// In src/Controller/DocumentsController.php
+class DocumentsController extends AppController
+{
+    public function upload(StorageServiceInterface $storage)
+    {
+        if ($this->request->is('post')) {
+            $file = $this->request->getData('document');
+
+            $filename = uniqid() . '_' . $file->getClientFilename();
+            $path = 'documents/' . $filename;
+
+            if ($storage->put($path, $file->getStream()->getContents())) {
+                $document = $this->Documents->newEntity([
+                    'filename' => $filename,
+                    'path' => $path,
+                    'url' => $storage->url($path),
+                ]);
+
+                $this->Documents->saveOrFail($document);
+                $this->Flash->success('Document uploaded successfully');
+
+                return $this->redirect(['action' => 'index']);
+            }
+        }
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    // Use local storage in development
+    if (Configure::read('debug')) {
+        $container->add(StorageServiceInterface::class, function () {
+            return new LocalStorageService(WWW_ROOT . 'files');
+        });
+    } else {
+        // Use S3 in production (S3StorageService not shown)
+        $container->add(StorageServiceInterface::class, S3StorageService::class);
+    }
+}
+----------------------------------------
+
+Code Block 16 ():
+// In src/Service/StorageService.php
+namespace App\Service;
+
+interface StorageServiceInterface
+{
+    public function put(string $path, mixed $contents): bool;
+    public function get(string $path): ?string;
+    public function delete(string $path): bool;
+    public function url(string $path): string;
+}
+
+class LocalStorageService implements StorageServiceInterface
+{
+    public function __construct(private string $basePath)
+    {
+    }
+
+    public function put(string $path, mixed $contents): bool
+    {
+        // Normalize path to prevent directory traversal
+        $path = str_replace(['..', '\\'], ['', '/'], $path);
+        $fullPath = $this->basePath . DS . $path;
+        $dir = dirname($fullPath);
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        return file_put_contents($fullPath, $contents) !== false;
+    }
+
+    public function get(string $path): ?string
+    {
+        $fullPath = $this->basePath . DS . $path;
+        return is_file($fullPath) ? file_get_contents($fullPath) : null;
+    }
+
+    public function delete(string $path): bool
+    {
+        $fullPath = $this->basePath . DS . $path;
+        return is_file($fullPath) ? unlink($fullPath) : false;
+    }
+
+    public function url(string $path): string
+    {
+        return Router::url('/files/' . $path, true);
+    }
+}
+
+// In src/Controller/DocumentsController.php
+class DocumentsController extends AppController
+{
+    public function upload(StorageServiceInterface $storage)
+    {
+        if ($this->request->is('post')) {
+            $file = $this->request->getData('document');
+
+            $filename = uniqid() . '_' . $file->getClientFilename();
+            $path = 'documents/' . $filename;
+
+            if ($storage->put($path, $file->getStream()->getContents())) {
+                $document = $this->Documents->newEntity([
+                    'filename' => $filename,
+                    'path' => $path,
+                    'url' => $storage->url($path),
+                ]);
+
+                $this->Documents->saveOrFail($document);
+                $this->Flash->success('Document uploaded successfully');
+
+                return $this->redirect(['action' => 'index']);
+            }
+        }
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    // Use local storage in development
+    if (Configure::read('debug')) {
+        $container->add(StorageServiceInterface::class, function () {
+            return new LocalStorageService(WWW_ROOT . 'files');
+        });
+    } else {
+        // Use S3 in production (S3StorageService not shown)
+        $container->add(StorageServiceInterface::class, S3StorageService::class);
+    }
+}
+----------------------------------------
+
+Code Block 17 (shiki):
+// In src/Controller/UsersController.php
+class UsersController extends AppController
+{
+    // The $users service will be created via the service container.
+    public function ssoCallback(UsersService $users): void
+    {
+        if ($this->request->is('post')) {
+            // Use the UsersService to create/get the user from a
+            // Single Signon Provider.
+            $user = $users->ensureExists($this->request->getData());
+        }
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(UsersService::class);
+}
+----------------------------------------
+
+Code Block 18 ():
+// In src/Controller/UsersController.php
+class UsersController extends AppController
+{
+    // The $users service will be created via the service container.
+    public function ssoCallback(UsersService $users): void
+    {
+        if ($this->request->is('post')) {
+            // Use the UsersService to create/get the user from a
+            // Single Signon Provider.
+            $user = $users->ensureExists($this->request->getData());
+        }
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(UsersService::class);
+}
+----------------------------------------
+
+Code Block 19 ():
+UsersController::ssoCallback()
+----------------------------------------
+
+Code Block 20 (shiki):
+// In src/Command/CheckUsersCommand.php
+use Cake\Console\CommandFactoryInterface;
+
+class CheckUsersCommand extends Command
+{
+    public function __construct(protected UsersService $users, ?CommandFactoryInterface $factory = null)
+    {
+        parent::__construct($factory);
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io)
+    {
+        $valid = $this->users->check('all');
+    }
+
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container
+        ->add(CheckUsersCommand::class)
+        ->addArgument(UsersService::class)
+        ->addArgument(CommandFactoryInterface::class);
+    $container->add(UsersService::class);
+}
+----------------------------------------
+
+Code Block 21 ():
+// In src/Command/CheckUsersCommand.php
+use Cake\Console\CommandFactoryInterface;
+
+class CheckUsersCommand extends Command
+{
+    public function __construct(protected UsersService $users, ?CommandFactoryInterface $factory = null)
+    {
+        parent::__construct($factory);
+    }
+
+    public function execute(Arguments $args, ConsoleIo $io)
+    {
+        $valid = $this->users->check('all');
+    }
+
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container
+        ->add(CheckUsersCommand::class)
+        ->addArgument(UsersService::class)
+        ->addArgument(CommandFactoryInterface::class);
+    $container->add(UsersService::class);
+}
+----------------------------------------
+
+Code Block 22 ():
+UsersService
+----------------------------------------
+
+Code Block 23 ():
+UsersService
+----------------------------------------
+
+Code Block 24 (shiki):
+// In src/Controller/Component/SearchComponent.php
+class SearchComponent extends Component
+{
+    public function __construct(
+        ComponentRegistry $registry,
+        private UserService $users,
+        array $config = [],
+    ) {
+        parent::__construct($registry, $config);
+    }
+
+    public function something(): void
+    {
+        $valid = $this->users->check('all');
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(SearchComponent::class)
+        ->addArgument(ComponentRegistry::class)
+        ->addArgument(UsersService::class);
+    $container->add(UsersService::class);
+}
+----------------------------------------
+
+Code Block 25 ():
+// In src/Controller/Component/SearchComponent.php
+class SearchComponent extends Component
+{
+    public function __construct(
+        ComponentRegistry $registry,
+        private UserService $users,
+        array $config = [],
+    ) {
+        parent::__construct($registry, $config);
+    }
+
+    public function something(): void
+    {
+        $valid = $this->users->check('all');
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(SearchComponent::class)
+        ->addArgument(ComponentRegistry::class)
+        ->addArgument(UsersService::class);
+    $container->add(UsersService::class);
+}
+----------------------------------------
+
+Code Block 26 (shiki):
+// Add a class by its name.
+$container->add(BillingService::class);
+----------------------------------------
+
+Code Block 27 ():
+// Add a class by its name.
+$container->add(BillingService::class);
+----------------------------------------
+
+Code Block 28 ():
+services()
+----------------------------------------
+
+Code Block 29 (shiki):
+// in src/Application.php
+namespace App;
+
+use App\Service\BillingService;
+use Cake\Core\ContainerInterface;
+use Cake\Http\BaseApplication;
+
+class Application extends BaseApplication
+{
+    public function services(ContainerInterface $container): void
+    {
+        $container->add(BillingService::class);
+    }
+}
+----------------------------------------
+
+Code Block 30 ():
+// in src/Application.php
+namespace App;
+
+use App\Service\BillingService;
+use Cake\Core\ContainerInterface;
+use Cake\Http\BaseApplication;
+
+class Application extends BaseApplication
+{
+    public function services(ContainerInterface $container): void
+    {
+        $container->add(BillingService::class);
+    }
+}
+----------------------------------------
+
+Code Block 31 (shiki):
+use App\Service\AuditLogServiceInterface;
+use App\Service\AuditLogService;
+
+// in your Application::services() method.
+
+// Add an implementation for an interface.
+$container->add(AuditLogServiceInterface::class, AuditLogService::class);
+----------------------------------------
+
+Code Block 32 ():
+use App\Service\AuditLogServiceInterface;
+use App\Service\AuditLogService;
+
+// in your Application::services() method.
+
+// Add an implementation for an interface.
+$container->add(AuditLogServiceInterface::class, AuditLogService::class);
+----------------------------------------
+
+Code Block 33 (shiki):
+$container->add(AuditLogServiceInterface::class, function (...$args) {
+    return new AuditLogService(...$args);
+});
+----------------------------------------
+
+Code Block 34 ():
+$container->add(AuditLogServiceInterface::class, function (...$args) {
+    return new AuditLogService(...$args);
+});
+----------------------------------------
+
+Code Block 35 (shiki):
+// Add a primitive value like a string, array or number.
+$container->add('apiKey', 'abc123');
+
+$container->add(BillingService::class)
+    ->addArgument('apiKey');
+----------------------------------------
+
+Code Block 36 ():
+// Add a primitive value like a string, array or number.
+$container->add('apiKey', 'abc123');
+
+$container->add(BillingService::class)
+    ->addArgument('apiKey');
+----------------------------------------
+
+Code Block 37 ():
+ServerRequest
+----------------------------------------
+
+Code Block 38 ():
+addShared()
+----------------------------------------
+
+Code Block 39 (shiki):
+// in your Application::services() method.
+
+$container->addShared(BillingService::class);
+----------------------------------------
+
+Code Block 40 ():
+// in your Application::services() method.
+
+$container->addShared(BillingService::class);
+----------------------------------------
+
+Code Block 41 ():
+TableContainer
+----------------------------------------
+
+Code Block 42 (shiki):
+use Cake\ORM\Locator\TableContainer;
+
+// In your Application::services() method.
+// Allow your Tables to be dependency injected.
+$container->delegate(new TableContainer());
+----------------------------------------
+
+Code Block 43 ():
+use Cake\ORM\Locator\TableContainer;
+
+// In your Application::services() method.
+// Allow your Tables to be dependency injected.
+$container->delegate(new TableContainer());
+----------------------------------------
+
+Code Block 44 ():
+TableContainer
+----------------------------------------
+
+Code Block 45 (shiki):
+// Add an argument to a partially defined service elsewhere.
+$container->extend(BillingService::class)
+    ->addArgument('logLevel');
+----------------------------------------
+
+Code Block 46 ():
+// Add an argument to a partially defined service elsewhere.
+$container->extend(BillingService::class)
+    ->addArgument('logLevel');
+----------------------------------------
+
+Code Block 47 (shiki):
+$container->add(BillingReport::class)->addTag('reports');
+$container->add(UsageReport::class)->addTag('reports');
+
+$container->add(ReportAggregate::class, function () use ($container) {
+    return new ReportAggregate($container->get('reports'));
+});
+----------------------------------------
+
+Code Block 48 ():
+$container->add(BillingReport::class)->addTag('reports');
+$container->add(UsageReport::class)->addTag('reports');
+
+$container->add(ReportAggregate::class, function () use ($container) {
+    return new ReportAggregate($container->get('reports'));
+});
+----------------------------------------
+
+Code Block 49 ():
+Cake\Core\Attribute\Configure
+----------------------------------------
+
+Code Block 50 (shiki):
+use Cake\Core\Attribute\Configure;
+
+class InjectedService
+{
+    public function __construct(
+        #[Configure('MyService.apiKey')] protected string $apiKey,
+    ) { }
+}
+----------------------------------------
+
+Code Block 51 ():
+use Cake\Core\Attribute\Configure;
+
+class InjectedService
+{
+    public function __construct(
+        #[Configure('MyService.apiKey')] protected string $apiKey,
+    ) { }
+}
+----------------------------------------
+
+Code Block 52 (shiki):
+use Cake\Core\ServiceConfig;
+
+// Use a shared instance
+$container->addShared(ServiceConfig::class);
+----------------------------------------
+
+Code Block 53 ():
+use Cake\Core\ServiceConfig;
+
+// Use a shared instance
+$container->addShared(ServiceConfig::class);
+----------------------------------------
+
+Code Block 54 ():
+ServiceConfig
+----------------------------------------
+
+Code Block 55 ():
+Configure
+----------------------------------------
+
+Code Block 56 (shiki):
+namespace App\ServiceProvider;
+
+use Cake\Core\ContainerInterface;
+use Cake\Core\ServiceProvider;
+// Other imports here.
+
+class BillingServiceProvider extends ServiceProvider
+{
+    protected array $provides = [
+        StripeService::class,
+        'configKey',
+    ];
+
+    public function services(ContainerInterface $container): void
+    {
+        $container->add(StripeService::class);
+        $container->add('configKey', 'some value');
+    }
+}
+----------------------------------------
+
+Code Block 57 ():
+namespace App\ServiceProvider;
+
+use Cake\Core\ContainerInterface;
+use Cake\Core\ServiceProvider;
+// Other imports here.
+
+class BillingServiceProvider extends ServiceProvider
+{
+    protected array $provides = [
+        StripeService::class,
+        'configKey',
+    ];
+
+    public function services(ContainerInterface $container): void
+    {
+        $container->add(StripeService::class);
+        $container->add('configKey', 'some value');
+    }
+}
+----------------------------------------
+
+Code Block 58 ():
+services()
+----------------------------------------
+
+Code Block 59 ():
+$provides
+----------------------------------------
+
+Code Block 60 ():
+$provides
+----------------------------------------
+
+Code Block 61 ():
+addServiceProvider()
+----------------------------------------
+
+Code Block 62 (shiki):
+// in your Application::services() method.
+$container->addServiceProvider(new BillingServiceProvider());
+----------------------------------------
+
+Code Block 63 ():
+// in your Application::services() method.
+$container->addServiceProvider(new BillingServiceProvider());
+----------------------------------------
+
+Code Block 64 ():
+bootstrap()
+----------------------------------------
+
+Code Block 65 (shiki):
+namespace App\ServiceProvider;
+
+use Cake\Core\ServiceProvider;
+// Other imports here.
+
+class BillingServiceProvider extends ServiceProvider
+{
+    protected array $provides = [
+        StripeService::class,
+        'configKey',
+    ];
+
+    public function bootstrap(ContainerInterface $container): void
+    {
+        $container->addServiceProvider(new InvoicingServiceProvider());
+    }
+}
+----------------------------------------
+
+Code Block 66 ():
+namespace App\ServiceProvider;
+
+use Cake\Core\ServiceProvider;
+// Other imports here.
+
+class BillingServiceProvider extends ServiceProvider
+{
+    protected array $provides = [
+        StripeService::class,
+        'configKey',
+    ];
+
+    public function bootstrap(ContainerInterface $container): void
+    {
+        $container->addServiceProvider(new InvoicingServiceProvider());
+    }
+}
+----------------------------------------
+
+Code Block 67 ():
+ConsoleIntegrationTestTrait
+----------------------------------------
+
+Code Block 68 ():
+IntegrationTestTrait
+----------------------------------------
+
+Code Block 69 (shiki):
+// In a test method or setup().
+$this->mockService(StripeService::class, function () {
+    return new FakeStripe();
+});
+
+// If you need to remove a mock
+$this->removeMockService(StripeService::class);
+----------------------------------------
+
+Code Block 70 ():
+// In a test method or setup().
+$this->mockService(StripeService::class, function () {
+    return new FakeStripe();
+});
+
+// If you need to remove a mock
+$this->removeMockService(StripeService::class);
+----------------------------------------
+
+Code Block 71 ():
+EmailService
+----------------------------------------
+
+Code Block 72 ():
+PaymentService
+----------------------------------------
+
+Code Block 73 (shiki):
+// tests/TestCase/Controller/UsersControllerTest.php
+namespace App\Test\TestCase\Controller;
+
+use App\Service\EmailService;
+use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+
+class UsersControllerTest extends TestCase
+{
+    use IntegrationTestTrait;
+
+    protected array $fixtures = ['app.Users'];
+
+    public function testRegisterSendsWelcomeEmail(): void
+    {
+        // Create a mock that tracks if sendWelcome was called
+        $emailServiceMock = $this->createMock(EmailService::class);
+        $emailServiceMock->expects($this->once())
+            ->method('sendWelcome')
+            ->with($this->callback(function ($user) {
+                return $user->email === '[email protected]';
+            }));
+
+        // Replace the real service with our mock
+        $this->mockService(EmailService::class, function () use ($emailServiceMock) {
+            return $emailServiceMock;
+        });
+
+        // Make the request
+        $this->post('/users/register', [
+            'email' => '[email protected]',
+            'name' => 'Test User',
+            'password' => 'secret123',
+        ]);
+
+        $this->assertResponseSuccess();
+        $this->assertFlashMessage('Registration successful!');
+    }
+}
+
+// tests/TestCase/Controller/OrdersControllerTest.php
+namespace App\Test\TestCase\Controller;
+
+use App\Service\PaymentService;
+use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+
+class OrdersControllerTest extends TestCase
+{
+    use IntegrationTestTrait;
+
+    protected array $fixtures = ['app.Orders'];
+
+    public function testCheckoutWithSuccessfulPayment(): void
+    {
+        // Mock successful payment
+        $paymentMock = $this->createMock(PaymentService::class);
+        $paymentMock->method('processOrder')
+            ->willReturn([
+                'success' => true,
+                'client_secret' => 'test_secret_123',
+            ]);
+
+        $this->mockService(PaymentService::class, function () use ($paymentMock) {
+            return $paymentMock;
+        });
+
+        $this->get('/orders/checkout?order_id=1');
+
+        $this->assertResponseOk();
+        $this->assertEquals('test_secret_123', $this->viewVariable('clientSecret'));
+    }
+
+    public function testCheckoutWithFailedPayment(): void
+    {
+        // Mock failed payment
+        $paymentMock = $this->createMock(PaymentService::class);
+        $paymentMock->method('processOrder')
+            ->willReturn([
+                'success' => false,
+                'error' => 'Payment processing failed',
+            ]);
+
+        $this->mockService(PaymentService::class, function () use ($paymentMock) {
+            return $paymentMock;
+        });
+
+        $this->get('/orders/checkout?order_id=1');
+
+        $this->assertResponseOk();
+        $this->assertFlashMessage('Payment processing failed');
+    }
+}
+
+// tests/TestCase/Service/PaymentServiceTest.php
+namespace App\Test\TestCase\Service;
+
+use App\Service\PaymentService;
+use Cake\TestSuite\TestCase;
+use Psr\Log\LoggerInterface;
+use Stripe\StripeClient;
+
+class PaymentServiceTest extends TestCase
+{
+    protected array $fixtures = ['app.Orders'];
+
+    public function testProcessOrderSuccess(): void
+    {
+        // Mock Stripe client
+        $stripeMock = $this->createMock(StripeClient::class);
+        $stripeMock->paymentIntents = $this->createMock(\Stripe\Service\PaymentIntentService::class);
+        $stripeMock->paymentIntents->method('create')
+            ->willReturn((object)[
+                'id' => 'pi_test123',
+                'client_secret' => 'secret_test123',
+            ]);
+
+        // Mock logger
+        $loggerMock = $this->createMock(LoggerInterface::class);
+        $loggerMock->expects($this->once())
+            ->method('info')
+            ->with('Payment intent created', $this->anything());
+
+        // Create service with mocks
+        $service = new PaymentService($stripeMock, $loggerMock);
+
+        $order = $this->Orders->get(1);
+        $result = $service->processOrder($order);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals('secret_test123', $result['client_secret']);
+    }
+}
+----------------------------------------
+
+Code Block 74 ():
+// tests/TestCase/Controller/UsersControllerTest.php
+namespace App\Test\TestCase\Controller;
+
+use App\Service\EmailService;
+use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+
+class UsersControllerTest extends TestCase
+{
+    use IntegrationTestTrait;
+
+    protected array $fixtures = ['app.Users'];
+
+    public function testRegisterSendsWelcomeEmail(): void
+    {
+        // Create a mock that tracks if sendWelcome was called
+        $emailServiceMock = $this->createMock(EmailService::class);
+        $emailServiceMock->expects($this->once())
+            ->method('sendWelcome')
+            ->with($this->callback(function ($user) {
+                return $user->email === '[email protected]';
+            }));
+
+        // Replace the real service with our mock
+        $this->mockService(EmailService::class, function () use ($emailServiceMock) {
+            return $emailServiceMock;
+        });
+
+        // Make the request
+        $this->post('/users/register', [
+            'email' => '[email protected]',
+            'name' => 'Test User',
+            'password' => 'secret123',
+        ]);
+
+        $this->assertResponseSuccess();
+        $this->assertFlashMessage('Registration successful!');
+    }
+}
+
+// tests/TestCase/Controller/OrdersControllerTest.php
+namespace App\Test\TestCase\Controller;
+
+use App\Service\PaymentService;
+use Cake\TestSuite\IntegrationTestTrait;
+use Cake\TestSuite\TestCase;
+
+class OrdersControllerTest extends TestCase
+{
+    use IntegrationTestTrait;
+
+    protected array $fixtures = ['app.Orders'];
+
+    public function testCheckoutWithSuccessfulPayment(): void
+    {
+        // Mock successful payment
+        $paymentMock = $this->createMock(PaymentService::class);
+        $paymentMock->method('processOrder')
+            ->willReturn([
+                'success' => true,
+                'client_secret' => 'test_secret_123',
+            ]);
+
+        $this->mockService(PaymentService::class, function () use ($paymentMock) {
+            return $paymentMock;
+        });
+
+        $this->get('/orders/checkout?order_id=1');
+
+        $this->assertResponseOk();
+        $this->assertEquals('test_secret_123', $this->viewVariable('clientSecret'));
+    }
+
+    public function testCheckoutWithFailedPayment(): void
+    {
+        // Mock failed payment
+        $paymentMock = $this->createMock(PaymentService::class);
+        $paymentMock->method('processOrder')
+            ->willReturn([
+                'success' => false,
+                'error' => 'Payment processing failed',
+            ]);
+
+        $this->mockService(PaymentService::class, function () use ($paymentMock) {
+            return $paymentMock;
+        });
+
+        $this->get('/orders/checkout?order_id=1');
+
+        $this->assertResponseOk();
+        $this->assertFlashMessage('Payment processing failed');
+    }
+}
+
+// tests/TestCase/Service/PaymentServiceTest.php
+namespace App\Test\TestCase\Service;
+
+use App\Service\PaymentService;
+use Cake\TestSuite\TestCase;
+use Psr\Log\LoggerInterface;
+use Stripe\StripeClient;
+
+class PaymentServiceTest extends TestCase
+{
+    protected array $fixtures = ['app.Orders'];
+
+    public function testProcessOrderSuccess(): void
+    {
+        // Mock Stripe client
+        $stripeMock = $this->createMock(StripeClient::class);
+        $stripeMock->paymentIntents = $this->createMock(\Stripe\Service\PaymentIntentService::class);
+        $stripeMock->paymentIntents->method('create')
+            ->willReturn((object)[
+                'id' => 'pi_test123',
+                'client_secret' => 'secret_test123',
+            ]);
+
+        // Mock logger
+        $loggerMock = $this->createMock(LoggerInterface::class);
+        $loggerMock->expects($this->once())
+            ->method('info')
+            ->with('Payment intent created', $this->anything());
+
+        // Create service with mocks
+        $service = new PaymentService($stripeMock, $loggerMock);
+
+        $order = $this->Orders->get(1);
+        $result = $service->processOrder($order);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals('secret_test123', $result['client_secret']);
+    }
+}
+----------------------------------------
+
+Code Block 75 (shiki):
+// In src/Repository/UserRepository.php
+namespace App\Repository;
+
+use App\Model\Table\UsersTable;
+use Cake\ORM\Query\SelectQuery;
+
+class UserRepository
+{
+    public function __construct(private UsersTable $users)
+    {
+    }
+
+    public function findActive(): SelectQuery
+    {
+        return $this->users->find()
+            ->where(['active' => true])
+            ->orderBy(['created' => 'DESC']);
+    }
+
+    public function findByRole(string $role): SelectQuery
+    {
+        return $this->users->find()
+            ->matching('Roles', function ($q) use ($role) {
+                return $q->where(['Roles.name' => $role]);
+            });
+    }
+
+    public function countByStatus(string $status): int
+    {
+        return $this->users->find()
+            ->where(['status' => $status])
+            ->count();
+    }
+}
+
+// In src/Service/UserReportService.php
+class UserReportService
+{
+    public function __construct(private UserRepository $repository)
+    {
+    }
+
+    public function getActiveUsersReport(): array
+    {
+        return [
+            'active' => $this->repository->countByStatus('active'),
+            'pending' => $this->repository->countByStatus('pending'),
+            'suspended' => $this->repository->countByStatus('suspended'),
+        ];
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(UserRepository::class)
+        ->addArgument(UsersTable::class);
+
+    $container->add(UserReportService::class)
+        ->addArgument(UserRepository::class);
+}
+----------------------------------------
+
+Code Block 76 ():
+// In src/Repository/UserRepository.php
+namespace App\Repository;
+
+use App\Model\Table\UsersTable;
+use Cake\ORM\Query\SelectQuery;
+
+class UserRepository
+{
+    public function __construct(private UsersTable $users)
+    {
+    }
+
+    public function findActive(): SelectQuery
+    {
+        return $this->users->find()
+            ->where(['active' => true])
+            ->orderBy(['created' => 'DESC']);
+    }
+
+    public function findByRole(string $role): SelectQuery
+    {
+        return $this->users->find()
+            ->matching('Roles', function ($q) use ($role) {
+                return $q->where(['Roles.name' => $role]);
+            });
+    }
+
+    public function countByStatus(string $status): int
+    {
+        return $this->users->find()
+            ->where(['status' => $status])
+            ->count();
+    }
+}
+
+// In src/Service/UserReportService.php
+class UserReportService
+{
+    public function __construct(private UserRepository $repository)
+    {
+    }
+
+    public function getActiveUsersReport(): array
+    {
+        return [
+            'active' => $this->repository->countByStatus('active'),
+            'pending' => $this->repository->countByStatus('pending'),
+            'suspended' => $this->repository->countByStatus('suspended'),
+        ];
+    }
+}
+
+// In src/Application.php
+public function services(ContainerInterface $container): void
+{
+    $container->add(UserRepository::class)
+        ->addArgument(UsersTable::class);
+
+    $container->add(UserReportService::class)
+        ->addArgument(UserRepository::class);
+}
+----------------------------------------
+
+Code Block 77 (shiki):
+// In src/Service/OrderProcessingService.php
+namespace App\Service;
+
+class OrderProcessingService
+{
+    public function __construct(
+        private PaymentService $payments,
+        private EmailService $emails,
+        private InventoryService $inventory,
+        private OrdersTable $orders
+    ) {
+    }
+
+    public function processOrder(Order $order): bool
+    {
+        // Check inventory
+        if (!$this->inventory->checkAvailability($order)) {
+            return false;
+        }
+
+        // Process payment
+        $result = $this->payments->processOrder($order);
+        if (!$result['success']) {
+            return false;
+        }
+
+        // Reserve inventory
+        $this->inventory->reserve($order);
+
+        // Update order status
+        $order->status = 'paid';
+        $order->payment_intent_id = $result['intent_id'];
+        $this->orders->save($order);
+
+        // Send confirmation
+        $this->emails->sendOrderConfirmation($order);
+
+        return true;
+    }
+}
+----------------------------------------
+
+Code Block 78 ():
+// In src/Service/OrderProcessingService.php
+namespace App\Service;
+
+class OrderProcessingService
+{
+    public function __construct(
+        private PaymentService $payments,
+        private EmailService $emails,
+        private InventoryService $inventory,
+        private OrdersTable $orders
+    ) {
+    }
+
+    public function processOrder(Order $order): bool
+    {
+        // Check inventory
+        if (!$this->inventory->checkAvailability($order)) {
+            return false;
+        }
+
+        // Process payment
+        $result = $this->payments->processOrder($order);
+        if (!$result['success']) {
+            return false;
+        }
+
+        // Reserve inventory
+        $this->inventory->reserve($order);
+
+        // Update order status
+        $order->status = 'paid';
+        $order->payment_intent_id = $result['intent_id'];
+        $this->orders->save($order);
+
+        // Send confirmation
+        $this->emails->sendOrderConfirmation($order);
+
+        return true;
+    }
+}
+----------------------------------------
+
+Code Block 79 ():
+Configure
+----------------------------------------
+
+Code Block 80 (shiki):
+namespace App\Service;
+
+use Cake\Core\Attribute\Configure;
+use Cake\Http\Client;
+
+class ApiClientService
+{
+    public function __construct(
+        #[Configure('Api.key')] private string $apiKey,
+        #[Configure('Api.endpoint')] private string $endpoint,
+        private LoggerInterface $logger,
+        private Client $httpClient,
+    ) {
+    }
+
+    public function makeRequest(string $path, array $data = []): array
+    {
+        $url = $this->endpoint . '/' . $path;
+
+        $response = $this->httpClient->post($url, [
+            'headers' => ['Authorization' => 'Bearer ' . $this->apiKey],
+            'json' => $data,
+        ]);
+
+        $this->logger->debug('API request', ['path' => $path]);
+
+        return json_decode($response->getBody(), true);
+    }
+}
+----------------------------------------
+
+Code Block 81 ():
+namespace App\Service;
+
+use Cake\Core\Attribute\Configure;
+use Cake\Http\Client;
+
+class ApiClientService
+{
+    public function __construct(
+        #[Configure('Api.key')] private string $apiKey,
+        #[Configure('Api.endpoint')] private string $endpoint,
+        private LoggerInterface $logger,
+        private Client $httpClient,
+    ) {
+    }
+
+    public function makeRequest(string $path, array $data = []): array
+    {
+        $url = $this->endpoint . '/' . $path;
+
+        $response = $this->httpClient->post($url, [
+            'headers' => ['Authorization' => 'Bearer ' . $this->apiKey],
+            'json' => $data,
+        ]);
+
+        $this->logger->debug('API request', ['path' => $path]);
+
+        return json_decode($response->getBody(), true);
+    }
+}
+----------------------------------------
+
+Code Block 82 (shiki):
+// In src/Factory/NotificationFactory.php
+namespace App\Factory;
+
+class NotificationFactory
+{
+    public function __construct(
+        private EmailService $emails,
+        private SmsService $sms,
+        private PushNotificationService $push
+    ) {
+    }
+
+    public function create(string $type, User $user, array $data): NotificationInterface
+    {
+        return match($type) {
+            'email' => new EmailNotification($this->emails, $user, $data),
+            'sms' => new SmsNotification($this->sms, $user, $data),
+            'push' => new PushNotification($this->push, $user, $data),
+            default => throw new \InvalidArgumentException("Unknown notification type: {$type}"),
+        };
+    }
+}
+
+// In src/Service/NotificationService.php
+class NotificationService
+{
+    public function __construct(
+        private NotificationFactory $factory,
+        private UsersTable $users
+    ) {
+    }
+
+    public function notifyUser(int $userId, string $type, array $data): void
+    {
+        $user = $this->users->get($userId);
+        $notification = $this->factory->create($type, $user, $data);
+        $notification->send();
+    }
+}
+----------------------------------------
+
+Code Block 83 ():
+// In src/Factory/NotificationFactory.php
+namespace App\Factory;
+
+class NotificationFactory
+{
+    public function __construct(
+        private EmailService $emails,
+        private SmsService $sms,
+        private PushNotificationService $push
+    ) {
+    }
+
+    public function create(string $type, User $user, array $data): NotificationInterface
+    {
+        return match($type) {
+            'email' => new EmailNotification($this->emails, $user, $data),
+            'sms' => new SmsNotification($this->sms, $user, $data),
+            'push' => new PushNotification($this->push, $user, $data),
+            default => throw new \InvalidArgumentException("Unknown notification type: {$type}"),
+        };
+    }
+}
+
+// In src/Service/NotificationService.php
+class NotificationService
+{
+    public function __construct(
+        private NotificationFactory $factory,
+        private UsersTable $users
+    ) {
+    }
+
+    public function notifyUser(int $userId, string $type, array $data): void
+    {
+        $user = $this->users->get($userId);
+        $notification = $this->factory->create($type, $user, $data);
+        $notification->send();
+    }
+}
+----------------------------------------
+
+Code Block 84 (shiki):
+class ArticlesController extends AppController
+{
+    public function publish($id)
+    {
+        $article = $this->Articles->get($id);
+
+        if ($article->status === 'published') {
+            $this->Flash->error('Article already published');
+            return;
+        }
+
+        $article->status = 'published';
+        $article->published_at = new FrozenTime();
+
+        if ($this->Articles->save($article)) {
+            // Send notifications
+            $subscribers = $this->Articles->Authors->Subscribers
+                ->find()
+                ->where(['author_id' => $article->author_id])
+                ->toArray();
+
+            $mailer = new Mailer('default');
+            foreach ($subscribers as $subscriber) {
+                $mailer->reset()
+                    ->setTo($subscriber->email)
+                    ->setSubject('New article published')
+                    ->deliver();
+            }
+
+            // Update search index
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, Configure::read('Search.endpoint'));
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($article));
+            curl_exec($curl);
+
+            $this->Flash->success('Article published');
+        }
+    }
+}
+----------------------------------------
+
+Code Block 85 ():
+class ArticlesController extends AppController
+{
+    public function publish($id)
+    {
+        $article = $this->Articles->get($id);
+
+        if ($article->status === 'published') {
+            $this->Flash->error('Article already published');
+            return;
+        }
+
+        $article->status = 'published';
+        $article->published_at = new FrozenTime();
+
+        if ($this->Articles->save($article)) {
+            // Send notifications
+            $subscribers = $this->Articles->Authors->Subscribers
+                ->find()
+                ->where(['author_id' => $article->author_id])
+                ->toArray();
+
+            $mailer = new Mailer('default');
+            foreach ($subscribers as $subscriber) {
+                $mailer->reset()
+                    ->setTo($subscriber->email)
+                    ->setSubject('New article published')
+                    ->deliver();
+            }
+
+            // Update search index
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, Configure::read('Search.endpoint'));
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($article));
+            curl_exec($curl);
+
+            $this->Flash->success('Article published');
+        }
+    }
+}
+----------------------------------------
+
+Code Block 86 (shiki):
+// In src/Service/ArticlePublishingService.php
+class ArticlePublishingService
+{
+    public function __construct(
+        private ArticlesTable $articles,
+        private EmailService $emails,
+        private SearchIndexService $search
+    ) {
+    }
+
+    public function publish(Article $article): bool
+    {
+        if ($article->status === 'published') {
+            return false;
+        }
+
+        $article->status = 'published';
+        $article->published_at = new FrozenTime();
+
+        if (!$this->articles->save($article)) {
+            return false;
+        }
+
+        $this->notifySubscribers($article);
+        $this->search->index($article);
+
+        return true;
+    }
+
+    private function notifySubscribers(Article $article): void
+    {
+        $subscribers = $this->articles->Authors->Subscribers
+            ->find()
+            ->where(['author_id' => $article->author_id]);
+
+        foreach ($subscribers as $subscriber) {
+            $this->emails->sendNewArticle($subscriber, $article);
+        }
+    }
+}
+
+// In src/Controller/ArticlesController.php
+class ArticlesController extends AppController
+{
+    public function publish(int $id, ArticlePublishingService $publisher)
+    {
+        $article = $this->Articles->get($id);
+
+        if ($publisher->publish($article)) {
+            $this->Flash->success('Article published');
+        } else {
+            $this->Flash->error('Could not publish article');
+        }
+
+        return $this->redirect(['action' => 'view', $id]);
+    }
+}
+----------------------------------------
+
+Code Block 87 ():
+// In src/Service/ArticlePublishingService.php
+class ArticlePublishingService
+{
+    public function __construct(
+        private ArticlesTable $articles,
+        private EmailService $emails,
+        private SearchIndexService $search
+    ) {
+    }
+
+    public function publish(Article $article): bool
+    {
+        if ($article->status === 'published') {
+            return false;
+        }
+
+        $article->status = 'published';
+        $article->published_at = new FrozenTime();
+
+        if (!$this->articles->save($article)) {
+            return false;
+        }
+
+        $this->notifySubscribers($article);
+        $this->search->index($article);
+
+        return true;
+    }
+
+    private function notifySubscribers(Article $article): void
+    {
+        $subscribers = $this->articles->Authors->Subscribers
+            ->find()
+            ->where(['author_id' => $article->author_id]);
+
+        foreach ($subscribers as $subscriber) {
+            $this->emails->sendNewArticle($subscriber, $article);
+        }
+    }
+}
+
+// In src/Controller/ArticlesController.php
+class ArticlesController extends AppController
+{
+    public function publish(int $id, ArticlePublishingService $publisher)
+    {
+        $article = $this->Articles->get($id);
+
+        if ($publisher->publish($article)) {
+            $this->Flash->success('Article published');
+        } else {
+            $this->Flash->error('Could not publish article');
+        }
+
+        return $this->redirect(['action' => 'view', $id]);
+    }
+}
+----------------------------------------
+
+Code Block 88 (shiki):
+// In src/Application.php
+use League\Container\ReflectionContainer;
+
+public function services(ContainerInterface $container): void
+{
+    $container->delegate(
+        new ReflectionContainer(),
+    );
+}
+----------------------------------------
+
+Code Block 89 ():
+// In src/Application.php
+use League\Container\ReflectionContainer;
+
+public function services(ContainerInterface $container): void
+{
+    $container->delegate(
+        new ReflectionContainer(),
+    );
+}
+----------------------------------------
+
+Code Block 90 (shiki):
+use League\Container\ReflectionContainer;
+
+$container->delegate(
+     // or consider using the value of Configure::read('debug')
+    new ReflectionContainer(true),
+);
+----------------------------------------
+
+Code Block 91 ():
+use League\Container\ReflectionContainer;
+
+$container->delegate(
+     // or consider using the value of Configure::read('debug')
+    new ReflectionContainer(true),
+);
+----------------------------------------
+

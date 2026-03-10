@@ -1,0 +1,1755 @@
+URL: https://book.cakephp.org/5.x/core-libraries/email.html
+Title: Mailer | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Mailer ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Basic Usage ​
+  - Configuration ​
+  - Setting Headers ​
+  - Sending Templated Emails ​
+  - Sending Attachments ​
+  - Sending Emails from CLI ​
+  - Creating Reusable Emails ​
+  - Configuring Transports ​
+  - Sending emails without using Mailer ​
+  - Testing Mailers ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Choosing the Sender ​
+  - Configuration Profiles ​
+  - Mailer::setAttachments() ​
+  - Mailer::addAttachment() ​
+  - Relaxing Address Validation Rules ​
+  - Mailer::setEmailPattern() ​
+  - Mailer::drop() ​
+  - Creating Custom Transports ​
+  - Assertion methods ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Mailer\Mailer(string|array|null $profile = null)
+
+Mailer is a convenience class for sending email. With this class you can send email from any place inside of your application.
+
+First of all, you should ensure the class is loaded:
+
+After you've loaded Mailer, you can send an email with the following:
+
+Since Mailer's setter methods return the instance of the class, you are able to set its properties with method chaining.
+
+Mailer has several methods for defining recipients - setTo(), setCc(), setBcc(), addTo(), addCc() and addBcc(). The main difference being that the first three will overwrite what was already set and the latter will just add more recipients to their respective field:
+
+When sending email on behalf of other people, it's often a good idea to define the original sender using the Sender header. You can do so using setSender():
+
+NOTE
+
+It's also a good idea to set the envelope sender when sending mail on another person's behalf. This prevents them from getting any messages about deliverability.
+
+Mailer profiles and email transport settings are defined in your application's configuration files. The Email and EmailTransport keys define mailer profiles and email transport configurations respectively. During application bootstrap configuration settings are passed from Configure into the Mailer and TransportFactory classes using setConfig(). By defining profiles and transports, you can keep your application code free of configuration data, and avoid duplication that makes maintenance and deployment more difficult.
+
+To load a predefined configuration, you can use the setProfile() method or pass it to the constructor of Mailer:
+
+Instead of passing a string which matches a preset configuration name, you can also just load an array of options:
+
+Defining delivery profiles allows you to consolidate common email settings into re-usable profiles. Your application can have as many profiles as necessary. The following configuration keys are used:
+
+NOTE
+
+The values of above keys using Mailer or array, like from, to, cc, etc will be passed as first parameter of corresponding methods. The equivalent for: $mailer->setFrom('[email protected]', 'My Site') would be defined as 'from' => ['[email protected]' => 'My Site'] in your config
+
+In Mailer you are free to set whatever headers you want. Do not forget to put the X- prefix for your custom headers.
+
+See Mailer::setHeaders() and Mailer::addHeaders()
+
+Emails are often much more than just a simple text message. In order to facilitate that, CakePHP provides a way to send emails using CakePHP's view layer.
+
+The templates for emails reside in a special folder templates/email/ of your application. Mailer views can also use layouts and elements just like normal views:
+
+The above would use templates/email/html/welcome.php for the view and templates/layout/email/html/fancy.php for the layout. You can send multipart templated email messages as well:
+
+This would use the following template files:
+
+When sending templated emails you have the option of sending either text, html or both.
+
+You can set all view related config using the view builder instance got by Mailer::viewBuilder() similar to how you do the same in controller.
+
+You can set view variables with Mailer::setViewVars():
+
+Or you can use the view builder methods ViewBuilder::setVar() and ViewBuilder::setVars().
+
+In your email templates you can use these with:
+
+You can use helpers in emails as well, much like you can in normal template files. By default, only the HtmlHelper is loaded. You can load additional helpers using the ViewBuilder::addHelpers() method:
+
+When adding helpers be sure to include 'Html' or it will be removed from the helpers loaded in your email template.
+
+NOTE
+
+In versions prior to 4.3.0, you will need to use setHelpers() instead.
+
+If you want to send email using templates in a plugin you can use the familiar plugin syntax to do so:
+
+The above would use template and layout from the Blog plugin as an example.
+
+In some cases, you might need to override the default template provided by plugins. You can do this using themes:
+
+This allows you to override the new_comment template in your theme without modifying the Blog plugin. The template file needs to be created in the following path: templates/plugin/TestTheme/plugin/Blog/email/text/new_comment.php.
+
+method Cake\Mailer\Mailer::setAttachments(array $attachments): static
+
+You can attach files to email messages as well. There are a few different formats depending on what kind of files you have, and how you want the filenames to appear in the recipient's mail client:
+
+Array: $mailer->setAttachments(['/full/file/path/file.png']) will attach this file with the name file.png..
+
+Array with key: $mailer->setAttachments(['photo.png' => '/full/some_hash.png']) will attach some_hash.png with the name photo.png. The recipient will see photo.png, not some_hash.png.
+
+Nested arrays:
+
+The above will attach the file with different mimetype and with custom Content ID (when set the content ID the attachment is transformed to inline). The mimetype and contentId are optional in this form.
+
+3.1. When you are using the contentId, you can use the file in the HTML body like <img src="cid:my-content-id">.
+
+3.2. You can use the contentDisposition option to disable the Content-Disposition header for an attachment. This is useful when sending ical invites to clients using outlook.
+
+3.3 Instead of the file option you can provide the file contents as a string using the data option. This allows you to attach files without needing file paths to them.
+
+method Cake\Mailer\Mailer::addAttachment(\Psr\Http\Message\UploadedFileInterface|string $path, ?string $name = null, ?string $mimetype = null, ?string $contentId = null, ?bool $contentDisposition = null): static
+
+You can also add attachments using the addAttachment() method.
+
+$mailer->addAttachment('/full/file/path/file.png');
+
+method Cake\Mailer\Mailer::setEmailPattern(?string $regex): static
+
+If you are having validation issues when sending to non-compliant addresses, you can relax the pattern used to validate email addresses. This is sometimes necessary when dealing with some ISPs:
+
+When sending emails within a CLI script (Shells, Tasks, ...) you should manually set the domain name for Mailer to use. It will serve as the host name for the message id (since there is no host name in a CLI environment):
+
+A valid message id can help to prevent emails ending up in spam folders.
+
+Until now we have seen how to directly use the Mailer class to create and send one emails. But main feature of mailer is to allow creating reusable emails throughout your application. They can also be used to contain multiple email configurations in one location. This helps keep your code DRYer and keeps email configuration noise out of other areas in your application.
+
+In this example we will be creating a Mailer that contains user-related emails. To create our UserMailer, create the file src/Mailer/UserMailer.php. The contents of the file should look like the following:
+
+In our example we have created two methods, one for sending a welcome email, and another for sending a password reset email. Each of these methods expect a user Entity and utilizes its properties for configuring each email.
+
+We are now able to use our UserMailer to send out our user-related emails from anywhere in our application. For example, if we wanted to send our welcome email we could do the following:
+
+If we wanted to completely separate sending a user their welcome email from our application's code, we can have our UserMailer subscribe to the Model.afterSave event. By subscribing to an event, we can keep our application's user-related classes completely free of email-related logic and instructions. For example, we could add the following to our UserMailer:
+
+You can now register the mailer as an event listener and the onRegistration() method will be invoked every time the Model.afterSave event is fired:
+
+NOTE
+
+For information on how to register event listener objects, please refer to the Registering Event Listeners documentation.
+
+Email messages are delivered by transports. Different transports allow you to send messages via PHP's mail() function, SMTP servers, or not at all which is useful for debugging. Configuring transports allows you to keep configuration data out of your application code and makes deployment simpler as you can simply change the configuration data. An example transport configuration looks like:
+
+Transports can also be configured at runtime using TransportFactory::setConfig():
+
+You can configure SSL SMTP servers, like Gmail. To do so, put the ssl:// prefix in the host and configure the port value accordingly. You can also enable TLS SMTP using the tls option:
+
+The above configuration would enable TLS communication for email messages.
+
+To configure your mailer to use a specific transport you can use Cake\Mailer\Mailer::setTransport() method or have the transport in your configuration:
+
+WARNING
+
+You will need to have access for less secure apps enabled in your Google account for this to work: Allowing less secure apps to access your account.
+
+NOTE
+
+Gmail SMTP settings.
+
+NOTE
+
+To use SSL + SMTP, you will need to have the SSL configured in your PHP install.
+
+Configuration options can also be provided as a DSN string. This is useful when working with environment variables or PaaS providers:
+
+When using a DSN string you can define any additional parameters/options as query string arguments.
+
+static Cake\Mailer\Mailer::drop(string $config): bool
+
+Once configured, transports cannot be modified. In order to modify a transport you must first drop it and then reconfigure it.
+
+You are able to create your custom transports for situations such as send email using services like SendGrid, MailGun or Postmark. To create your transport, first create the file src/Mailer/Transport/ExampleTransport.php (where Example is the name of your transport). To start, your file should look like:
+
+You must implement the method send(Message $message) with your custom logic.
+
+The Mailer is a higher level abstraction class which acts as a bridge between the Cake\Mailer\Message, Cake\Mailer\Renderer and Cake\Mailer\AbstractTransport classes to configure emails with a fluent interface.
+
+If you want you can use these classes directly with the Mailer too.
+
+For example:
+
+You can even skip using the Renderer and set the message body directly using Message::setBodyText() and Message::setBodyHtml() methods.
+
+To test mailers, add Cake\TestSuite\EmailTrait to your test case. The EmailTrait uses PHPUnit hooks to replace your application's email transports with a proxy that intercepts email messages and allows you to do assertions on the mail that would be delivered.
+
+Add the trait to your test case to start testing emails, and load routes if your emails need to generate URLs:
+
+Let's assume we have a mailer that delivers welcome emails when a new user registers. We want to check that the subject and body contain the user's name:
+
+The Cake\TestSuite\EmailTrait trait provides the following assertions:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+Mailer
+----------------------------------------
+
+Code Block 3 (shiki):
+use Cake\Mailer\Mailer;
+----------------------------------------
+
+Code Block 4 ():
+use Cake\Mailer\Mailer;
+----------------------------------------
+
+Code Block 5 ():
+Mailer
+----------------------------------------
+
+Code Block 6 (shiki):
+$mailer = new Mailer('default');
+$mailer->setFrom(['[email protected]' => 'My Site'])
+    ->setTo('[email protected]')
+    ->setSubject('About')
+    ->deliver('My message');
+----------------------------------------
+
+Code Block 7 ():
+$mailer = new Mailer('default');
+$mailer->setFrom(['[email protected]' => 'My Site'])
+    ->setTo('[email protected]')
+    ->setSubject('About')
+    ->deliver('My message');
+----------------------------------------
+
+Code Block 8 ():
+Mailer
+----------------------------------------
+
+Code Block 9 ():
+Mailer
+----------------------------------------
+
+Code Block 10 ():
+setTo()
+----------------------------------------
+
+Code Block 11 ():
+setCc()
+----------------------------------------
+
+Code Block 12 ():
+setBcc()
+----------------------------------------
+
+Code Block 13 ():
+addTo()
+----------------------------------------
+
+Code Block 14 ():
+addCc()
+----------------------------------------
+
+Code Block 15 ():
+addBcc()
+----------------------------------------
+
+Code Block 16 (shiki):
+$mailer = new Mailer();
+$mailer->setTo('[email protected]', 'To Example');
+$mailer->addTo('[email protected]', 'To2 Example');
+// The email's To recipients are: [email protected] and [email protected]
+$mailer->setTo('[email protected]', 'ToTest Example');
+// The email's To recipient is: [email protected]
+----------------------------------------
+
+Code Block 17 ():
+$mailer = new Mailer();
+$mailer->setTo('[email protected]', 'To Example');
+$mailer->addTo('[email protected]', 'To2 Example');
+// The email's To recipients are: [email protected] and [email protected]
+$mailer->setTo('[email protected]', 'ToTest Example');
+// The email's To recipient is: [email protected]
+----------------------------------------
+
+Code Block 18 ():
+setSender()
+----------------------------------------
+
+Code Block 19 (shiki):
+$mailer = new Mailer();
+$mailer->setSender('[email protected]', 'MyApp emailer');
+----------------------------------------
+
+Code Block 20 ():
+$mailer = new Mailer();
+$mailer->setSender('[email protected]', 'MyApp emailer');
+----------------------------------------
+
+Code Block 21 ():
+Email
+----------------------------------------
+
+Code Block 22 ():
+EmailTransport
+----------------------------------------
+
+Code Block 23 ():
+Configure
+----------------------------------------
+
+Code Block 24 ():
+Mailer
+----------------------------------------
+
+Code Block 25 ():
+TransportFactory
+----------------------------------------
+
+Code Block 26 ():
+setConfig()
+----------------------------------------
+
+Code Block 27 ():
+setProfile()
+----------------------------------------
+
+Code Block 28 ():
+Mailer
+----------------------------------------
+
+Code Block 29 (shiki):
+$mailer = new Mailer();
+$mailer->setProfile('default');
+
+// Or in constructor
+$mailer = new Mailer('default');
+----------------------------------------
+
+Code Block 30 ():
+$mailer = new Mailer();
+$mailer->setProfile('default');
+
+// Or in constructor
+$mailer = new Mailer('default');
+----------------------------------------
+
+Code Block 31 (shiki):
+$mailer = new Mailer();
+$mailer->setProfile(['from' => '[email protected]', 'transport' => 'my_custom']);
+
+// Or in constructor
+$mailer = new Mailer(['from' => '[email protected]', 'transport' => 'my_custom']);
+----------------------------------------
+
+Code Block 32 ():
+$mailer = new Mailer();
+$mailer->setProfile(['from' => '[email protected]', 'transport' => 'my_custom']);
+
+// Or in constructor
+$mailer = new Mailer(['from' => '[email protected]', 'transport' => 'my_custom']);
+----------------------------------------
+
+Code Block 33 ():
+'from'
+----------------------------------------
+
+Code Block 34 ():
+Mailer::setFrom()
+----------------------------------------
+
+Code Block 35 ():
+'sender'
+----------------------------------------
+
+Code Block 36 ():
+Mailer::setSender()
+----------------------------------------
+
+Code Block 37 ():
+'to'
+----------------------------------------
+
+Code Block 38 ():
+Mailer::setTo()
+----------------------------------------
+
+Code Block 39 ():
+'cc'
+----------------------------------------
+
+Code Block 40 ():
+Mailer::setCc()
+----------------------------------------
+
+Code Block 41 ():
+'bcc'
+----------------------------------------
+
+Code Block 42 ():
+Mailer::setBcc()
+----------------------------------------
+
+Code Block 43 ():
+'replyTo'
+----------------------------------------
+
+Code Block 44 ():
+Mailer::setReplyTo()
+----------------------------------------
+
+Code Block 45 ():
+'readReceipt'
+----------------------------------------
+
+Code Block 46 ():
+Mailer::setReadReceipt()
+----------------------------------------
+
+Code Block 47 ():
+'returnPath'
+----------------------------------------
+
+Code Block 48 ():
+Mailer::setReturnPath()
+----------------------------------------
+
+Code Block 49 ():
+'messageId'
+----------------------------------------
+
+Code Block 50 ():
+Mailer::setMessageId()
+----------------------------------------
+
+Code Block 51 ():
+'subject'
+----------------------------------------
+
+Code Block 52 ():
+Mailer::setSubject()
+----------------------------------------
+
+Code Block 53 ():
+'message'
+----------------------------------------
+
+Code Block 54 ():
+'priority'
+----------------------------------------
+
+Code Block 55 ():
+'headers'
+----------------------------------------
+
+Code Block 56 ():
+Mailer::setHeaders()
+----------------------------------------
+
+Code Block 57 ():
+'viewRenderer'
+----------------------------------------
+
+Code Block 58 ():
+ViewBuilder::setClassName()
+----------------------------------------
+
+Code Block 59 ():
+'template'
+----------------------------------------
+
+Code Block 60 ():
+ViewBuilder::setTemplate()
+----------------------------------------
+
+Code Block 61 ():
+'theme'
+----------------------------------------
+
+Code Block 62 ():
+ViewBuilder::setTheme()
+----------------------------------------
+
+Code Block 63 ():
+'layout'
+----------------------------------------
+
+Code Block 64 ():
+ViewBuilder::setTemplate()
+----------------------------------------
+
+Code Block 65 ():
+'autoLayout'
+----------------------------------------
+
+Code Block 66 ():
+false
+----------------------------------------
+
+Code Block 67 ():
+ViewBuilder::disableAutoLayout()
+----------------------------------------
+
+Code Block 68 ():
+'viewVars'
+----------------------------------------
+
+Code Block 69 ():
+Mailer::setViewVars()
+----------------------------------------
+
+Code Block 70 ():
+'attachments'
+----------------------------------------
+
+Code Block 71 ():
+Mailer::setAttachments()
+----------------------------------------
+
+Code Block 72 ():
+'emailFormat'
+----------------------------------------
+
+Code Block 73 ():
+Mailer::setEmailFormat()
+----------------------------------------
+
+Code Block 74 ():
+'transport'
+----------------------------------------
+
+Code Block 75 ():
+'log'
+----------------------------------------
+
+Code Block 76 ():
+true
+----------------------------------------
+
+Code Block 77 ():
+email
+----------------------------------------
+
+Code Block 78 ():
+'helpers'
+----------------------------------------
+
+Code Block 79 ():
+ViewBuilder::setHelpers()
+----------------------------------------
+
+Code Block 80 ():
+ViewBuilder::addHelpers()
+----------------------------------------
+
+Code Block 81 ():
+$mailer->setFrom('[email protected]', 'My Site')
+----------------------------------------
+
+Code Block 82 ():
+'from' => ['[email protected]' => 'My Site']
+----------------------------------------
+
+Code Block 83 ():
+Mailer
+----------------------------------------
+
+Code Block 84 ():
+X-
+----------------------------------------
+
+Code Block 85 ():
+Mailer::setHeaders()
+----------------------------------------
+
+Code Block 86 ():
+Mailer::addHeaders()
+----------------------------------------
+
+Code Block 87 ():
+templates/email/
+----------------------------------------
+
+Code Block 88 (shiki):
+$mailer = new Mailer();
+$mailer
+    ->setEmailFormat('html')
+    ->setTo('[email protected]')
+    ->setFrom('[email protected]')
+    ->viewBuilder()
+        ->setTemplate('welcome')
+        ->setLayout('fancy');
+
+$mailer->deliver();
+----------------------------------------
+
+Code Block 89 ():
+$mailer = new Mailer();
+$mailer
+    ->setEmailFormat('html')
+    ->setTo('[email protected]')
+    ->setFrom('[email protected]')
+    ->viewBuilder()
+        ->setTemplate('welcome')
+        ->setLayout('fancy');
+
+$mailer->deliver();
+----------------------------------------
+
+Code Block 90 (shiki):
+$mailer = new Mailer();
+$mailer
+    ->setEmailFormat('both')
+    ->setTo('[email protected]')
+    ->setFrom('[email protected]')
+    ->viewBuilder()
+        ->setTemplate('welcome')
+        ->setLayout('fancy');
+
+$mailer->deliver();
+----------------------------------------
+
+Code Block 91 ():
+$mailer = new Mailer();
+$mailer
+    ->setEmailFormat('both')
+    ->setTo('[email protected]')
+    ->setFrom('[email protected]')
+    ->viewBuilder()
+        ->setTemplate('welcome')
+        ->setLayout('fancy');
+
+$mailer->deliver();
+----------------------------------------
+
+Code Block 92 ():
+text
+----------------------------------------
+
+Code Block 93 ():
+html
+----------------------------------------
+
+Code Block 94 ():
+both
+----------------------------------------
+
+Code Block 95 ():
+Mailer::viewBuilder()
+----------------------------------------
+
+Code Block 96 ():
+Mailer::setViewVars()
+----------------------------------------
+
+Code Block 97 (shiki):
+$mailer = new Mailer('templated');
+$mailer->setViewVars(['value' => 12345]);
+----------------------------------------
+
+Code Block 98 ():
+$mailer = new Mailer('templated');
+$mailer->setViewVars(['value' => 12345]);
+----------------------------------------
+
+Code Block 99 ():
+ViewBuilder::setVar()
+----------------------------------------
+
+Code Block 100 ():
+ViewBuilder::setVars()
+----------------------------------------
+
+Code Block 101 (shiki):
+<p>Here is your value: <b><?= $value ?></b></p>
+----------------------------------------
+
+Code Block 102 ():
+<p>Here is your value: <b><?= $value ?></b></p>
+----------------------------------------
+
+Code Block 103 ():
+HtmlHelper
+----------------------------------------
+
+Code Block 104 ():
+ViewBuilder::addHelpers()
+----------------------------------------
+
+Code Block 105 (shiki):
+$mailer->viewBuilder()->addHelpers(['Html', 'Custom', 'Text']);
+----------------------------------------
+
+Code Block 106 ():
+$mailer->viewBuilder()->addHelpers(['Html', 'Custom', 'Text']);
+----------------------------------------
+
+Code Block 107 ():
+setHelpers()
+----------------------------------------
+
+Code Block 108 ():
+plugin syntax
+----------------------------------------
+
+Code Block 109 (shiki):
+$mailer = new Mailer();
+$mailer->viewBuilder()->setTemplate('Blog.new_comment');
+----------------------------------------
+
+Code Block 110 ():
+$mailer = new Mailer();
+$mailer->viewBuilder()->setTemplate('Blog.new_comment');
+----------------------------------------
+
+Code Block 111 (shiki):
+$mailer->viewBuilder()
+    ->setTemplate('Blog.new_comment')
+    ->setLayout('Blog.auto_message')
+    ->setTheme('TestTheme');
+----------------------------------------
+
+Code Block 112 ():
+$mailer->viewBuilder()
+    ->setTemplate('Blog.new_comment')
+    ->setLayout('Blog.auto_message')
+    ->setTheme('TestTheme');
+----------------------------------------
+
+Code Block 113 ():
+new_comment
+----------------------------------------
+
+Code Block 114 ():
+method
+----------------------------------------
+
+Code Block 115 ():
+$mailer->setAttachments(['/full/file/path/file.png'])
+----------------------------------------
+
+Code Block 116 ():
+$mailer->setAttachments(['photo.png' => '/full/some_hash.png'])
+----------------------------------------
+
+Code Block 117 (shiki):
+$mailer->setAttachments([
+    'photo.png' => [
+        'file' => '/full/some_hash.png',
+        'mimetype' => 'image/png',
+        'contentId' => 'my-unique-id',
+    ],
+]);
+----------------------------------------
+
+Code Block 118 ():
+$mailer->setAttachments([
+    'photo.png' => [
+        'file' => '/full/some_hash.png',
+        'mimetype' => 'image/png',
+        'contentId' => 'my-unique-id',
+    ],
+]);
+----------------------------------------
+
+Code Block 119 ():
+contentId
+----------------------------------------
+
+Code Block 120 ():
+<img src="cid:my-content-id">
+----------------------------------------
+
+Code Block 121 ():
+contentDisposition
+----------------------------------------
+
+Code Block 122 ():
+Content-Disposition
+----------------------------------------
+
+Code Block 123 ():
+file
+----------------------------------------
+
+Code Block 124 ():
+data
+----------------------------------------
+
+Code Block 125 ():
+method
+----------------------------------------
+
+Code Block 126 ():
+addAttachment()
+----------------------------------------
+
+Code Block 127 ():
+$mailer->addAttachment('/full/file/path/file.png');
+----------------------------------------
+
+Code Block 128 ():
+method
+----------------------------------------
+
+Code Block 129 (shiki):
+$mailer = new Mailer('default');
+
+// Relax the email pattern, so you can send
+// to non-conformant addresses.
+$mailer->setEmailPattern($newPattern);
+----------------------------------------
+
+Code Block 130 ():
+$mailer = new Mailer('default');
+
+// Relax the email pattern, so you can send
+// to non-conformant addresses.
+$mailer->setEmailPattern($newPattern);
+----------------------------------------
+
+Code Block 131 (shiki):
+$mailer->setDomain('www.example.org');
+// Results in message ids like ``<[email protected]>`` (valid)
+// Instead of `<UUID@>`` (invalid)
+----------------------------------------
+
+Code Block 132 ():
+$mailer->setDomain('www.example.org');
+// Results in message ids like ``<[email protected]>`` (valid)
+// Instead of `<UUID@>`` (invalid)
+----------------------------------------
+
+Code Block 133 ():
+Mailer
+----------------------------------------
+
+Code Block 134 ():
+Mailer
+----------------------------------------
+
+Code Block 135 ():
+UserMailer
+----------------------------------------
+
+Code Block 136 (shiki):
+namespace App\Mailer;
+
+use Cake\Mailer\Mailer;
+
+class UserMailer extends Mailer
+{
+    public function welcome(User $user): void
+    {
+        $this
+            ->setTo($user->email)
+            ->setSubject(sprintf('Welcome %s', $user->name))
+            ->viewBuilder()
+                ->setTemplate('welcome_mail'); // By default, template with same name as method name is used.
+    }
+
+    public function resetPassword(User $user): void
+    {
+        $this
+            ->setTo($user->email)
+            ->setSubject('Reset password')
+            ->setViewVars(['token' => $user->token]);
+    }
+}
+----------------------------------------
+
+Code Block 137 ():
+namespace App\Mailer;
+
+use Cake\Mailer\Mailer;
+
+class UserMailer extends Mailer
+{
+    public function welcome(User $user): void
+    {
+        $this
+            ->setTo($user->email)
+            ->setSubject(sprintf('Welcome %s', $user->name))
+            ->viewBuilder()
+                ->setTemplate('welcome_mail'); // By default, template with same name as method name is used.
+    }
+
+    public function resetPassword(User $user): void
+    {
+        $this
+            ->setTo($user->email)
+            ->setSubject('Reset password')
+            ->setViewVars(['token' => $user->token]);
+    }
+}
+----------------------------------------
+
+Code Block 138 ():
+Entity
+----------------------------------------
+
+Code Block 139 ():
+UserMailer
+----------------------------------------
+
+Code Block 140 (shiki):
+namespace App\Controller;
+
+use Cake\Mailer\MailerAwareTrait;
+
+class UsersController extends AppController
+{
+    use MailerAwareTrait;
+
+    public function register()
+    {
+        $user = $this->Users->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                $this->getMailer('User')->send('welcome', [$user]);
+            }
+        }
+        $this->set('user', $user);
+    }
+}
+----------------------------------------
+
+Code Block 141 ():
+namespace App\Controller;
+
+use Cake\Mailer\MailerAwareTrait;
+
+class UsersController extends AppController
+{
+    use MailerAwareTrait;
+
+    public function register()
+    {
+        $user = $this->Users->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                $this->getMailer('User')->send('welcome', [$user]);
+            }
+        }
+        $this->set('user', $user);
+    }
+}
+----------------------------------------
+
+Code Block 142 ():
+UserMailer
+----------------------------------------
+
+Code Block 143 ():
+Model.afterSave
+----------------------------------------
+
+Code Block 144 ():
+UserMailer
+----------------------------------------
+
+Code Block 145 (shiki):
+public function implementedEvents(): array
+{
+    return [
+        'Model.afterSave' => 'onRegistration',
+    ];
+}
+
+public function onRegistration(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+{
+    if ($entity->isNew()) {
+        $this->send('welcome', [$entity]);
+    }
+}
+----------------------------------------
+
+Code Block 146 ():
+public function implementedEvents(): array
+{
+    return [
+        'Model.afterSave' => 'onRegistration',
+    ];
+}
+
+public function onRegistration(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
+{
+    if ($entity->isNew()) {
+        $this->send('welcome', [$entity]);
+    }
+}
+----------------------------------------
+
+Code Block 147 ():
+onRegistration()
+----------------------------------------
+
+Code Block 148 ():
+Model.afterSave
+----------------------------------------
+
+Code Block 149 (shiki):
+// attach to Users event manager
+$this->Users->getEventManager()->on($this->getMailer('User'));
+----------------------------------------
+
+Code Block 150 ():
+// attach to Users event manager
+$this->Users->getEventManager()->on($this->getMailer('User'));
+----------------------------------------
+
+Code Block 151 ():
+mail()
+----------------------------------------
+
+Code Block 152 (shiki):
+// In config/app.php
+'EmailTransport' => [
+    // Sample Mail configuration
+    'default' => [
+        'className' => 'Mail',
+    ],
+    // Sample SMTP configuration
+    'gmail' => [
+        'host' => 'smtp.gmail.com',
+        'port' => 587,
+        'username' => '[email protected]',
+        'password' => 'secret',
+        'className' => 'Smtp',
+        'tls' => true,
+    ],
+],
+----------------------------------------
+
+Code Block 153 ():
+// In config/app.php
+'EmailTransport' => [
+    // Sample Mail configuration
+    'default' => [
+        'className' => 'Mail',
+    ],
+    // Sample SMTP configuration
+    'gmail' => [
+        'host' => 'smtp.gmail.com',
+        'port' => 587,
+        'username' => '[email protected]',
+        'password' => 'secret',
+        'className' => 'Smtp',
+        'tls' => true,
+    ],
+],
+----------------------------------------
+
+Code Block 154 ():
+TransportFactory::setConfig()
+----------------------------------------
+
+Code Block 155 (shiki):
+use Cake\Mailer\TransportFactory;
+
+// Define an SMTP transport
+TransportFactory::setConfig('gmail', [
+    'host' => 'ssl://smtp.gmail.com',
+    'port' => 465,
+    'username' => '[email protected]',
+    'password' => 'secret',
+    'className' => 'Smtp',
+]);
+----------------------------------------
+
+Code Block 156 ():
+use Cake\Mailer\TransportFactory;
+
+// Define an SMTP transport
+TransportFactory::setConfig('gmail', [
+    'host' => 'ssl://smtp.gmail.com',
+    'port' => 465,
+    'username' => '[email protected]',
+    'password' => 'secret',
+    'className' => 'Smtp',
+]);
+----------------------------------------
+
+Code Block 157 ():
+ssl://
+----------------------------------------
+
+Code Block 158 ():
+tls
+----------------------------------------
+
+Code Block 159 (shiki):
+use Cake\Mailer\TransportFactory;
+
+TransportFactory::setConfig('gmail', [
+    'host' => 'smtp.gmail.com',
+    'port' => 587,
+    'username' => '[email protected]',
+    'password' => 'secret',
+    'className' => 'Smtp',
+    'tls' => true,
+]);
+----------------------------------------
+
+Code Block 160 ():
+use Cake\Mailer\TransportFactory;
+
+TransportFactory::setConfig('gmail', [
+    'host' => 'smtp.gmail.com',
+    'port' => 587,
+    'username' => '[email protected]',
+    'password' => 'secret',
+    'className' => 'Smtp',
+    'tls' => true,
+]);
+----------------------------------------
+
+Code Block 161 ():
+Cake\Mailer\Mailer::setTransport()
+----------------------------------------
+
+Code Block 162 (shiki):
+// Use a named transport already configured using TransportFactory::setConfig()
+$mailer->setTransport('gmail');
+
+// Use a constructed object.
+$mailer->setTransport(new \Cake\Mailer\Transport\DebugTransport());
+----------------------------------------
+
+Code Block 163 ():
+// Use a named transport already configured using TransportFactory::setConfig()
+$mailer->setTransport('gmail');
+
+// Use a constructed object.
+$mailer->setTransport(new \Cake\Mailer\Transport\DebugTransport());
+----------------------------------------
+
+Code Block 164 ():
+DSN
+----------------------------------------
+
+Code Block 165 ():
+PaaS
+----------------------------------------
+
+Code Block 166 (shiki):
+TransportFactory::setConfig('default', [
+    'url' => 'smtp://[email protected]:[email protected]:587?tls=true',
+]);
+----------------------------------------
+
+Code Block 167 ():
+TransportFactory::setConfig('default', [
+    'url' => 'smtp://[email protected]:[email protected]:587?tls=true',
+]);
+----------------------------------------
+
+Code Block 168 ():
+static
+----------------------------------------
+
+Code Block 169 (shiki):
+namespace App\Mailer\Transport;
+
+use Cake\Mailer\AbstractTransport;
+use Cake\Mailer\Message;
+
+class ExampleTransport extends AbstractTransport
+{
+    public function send(Message $message): array
+    {
+        // Do something.
+    }
+}
+----------------------------------------
+
+Code Block 170 ():
+namespace App\Mailer\Transport;
+
+use Cake\Mailer\AbstractTransport;
+use Cake\Mailer\Message;
+
+class ExampleTransport extends AbstractTransport
+{
+    public function send(Message $message): array
+    {
+        // Do something.
+    }
+}
+----------------------------------------
+
+Code Block 171 ():
+send(Message $message)
+----------------------------------------
+
+Code Block 172 ():
+Mailer
+----------------------------------------
+
+Code Block 173 ():
+Cake\Mailer\Message
+----------------------------------------
+
+Code Block 174 ():
+Cake\Mailer\Renderer
+----------------------------------------
+
+Code Block 175 ():
+Cake\Mailer\AbstractTransport
+----------------------------------------
+
+Code Block 176 ():
+Mailer
+----------------------------------------
+
+Code Block 177 (shiki):
+$render = new \Cake\Mailer\Renderer();
+$render->viewBuilder()
+    ->setTemplate('custom')
+    ->setLayout('sparkly');
+
+$message = new \Cake\Mailer\Message();
+$message
+    ->setFrom('[email protected]')
+    ->setTo('[email protected]')
+    ->setBody($render->render());
+
+$transport = new \Cake\Mailer\Transport\MailTransport();
+$result = $transport->send($message);
+----------------------------------------
+
+Code Block 178 ():
+$render = new \Cake\Mailer\Renderer();
+$render->viewBuilder()
+    ->setTemplate('custom')
+    ->setLayout('sparkly');
+
+$message = new \Cake\Mailer\Message();
+$message
+    ->setFrom('[email protected]')
+    ->setTo('[email protected]')
+    ->setBody($render->render());
+
+$transport = new \Cake\Mailer\Transport\MailTransport();
+$result = $transport->send($message);
+----------------------------------------
+
+Code Block 179 ():
+Renderer
+----------------------------------------
+
+Code Block 180 ():
+Message::setBodyText()
+----------------------------------------
+
+Code Block 181 ():
+Message::setBodyHtml()
+----------------------------------------
+
+Code Block 182 ():
+Cake\TestSuite\EmailTrait
+----------------------------------------
+
+Code Block 183 ():
+EmailTrait
+----------------------------------------
+
+Code Block 184 (shiki):
+namespace App\Test\TestCase\Mailer;
+
+use App\Mailer\WelcomeMailer;
+use App\Model\Entity\User;
+
+use Cake\TestSuite\EmailTrait;
+use Cake\TestSuite\TestCase;
+
+class WelcomeMailerTestCase extends TestCase
+{
+    use EmailTrait;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->loadRoutes();
+    }
+}
+----------------------------------------
+
+Code Block 185 ():
+namespace App\Test\TestCase\Mailer;
+
+use App\Mailer\WelcomeMailer;
+use App\Model\Entity\User;
+
+use Cake\TestSuite\EmailTrait;
+use Cake\TestSuite\TestCase;
+
+class WelcomeMailerTestCase extends TestCase
+{
+    use EmailTrait;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->loadRoutes();
+    }
+}
+----------------------------------------
+
+Code Block 186 (shiki):
+// in our WelcomeMailerTestCase class.
+public function testName()
+{
+    $user = new User([
+        'name' => 'Alice Alittea',
+        'email' => '[email protected]',
+    ]);
+    $mailer = new WelcomeMailer();
+    $mailer->send('welcome', [$user]);
+
+    $this->assertMailSentTo($user->email);
+    $this->assertMailContainsText('Hi ' . $user->name);
+    $this->assertMailContainsText('Welcome to CakePHP!');
+}
+----------------------------------------
+
+Code Block 187 ():
+// in our WelcomeMailerTestCase class.
+public function testName()
+{
+    $user = new User([
+        'name' => 'Alice Alittea',
+        'email' => '[email protected]',
+    ]);
+    $mailer = new WelcomeMailer();
+    $mailer->send('welcome', [$user]);
+
+    $this->assertMailSentTo($user->email);
+    $this->assertMailContainsText('Hi ' . $user->name);
+    $this->assertMailContainsText('Welcome to CakePHP!');
+}
+----------------------------------------
+
+Code Block 188 ():
+Cake\TestSuite\EmailTrait
+----------------------------------------
+
+Code Block 189 (shiki):
+// Asserts an expected number of emails were sent
+$this->assertMailCount($count);
+
+// Asserts that no emails were sent
+$this->assertNoMailSent();
+
+// Asserts an email was sent to an address
+$this->assertMailSentTo($address);
+
+// Asserts an email was sent from an address
+$this->assertMailSentFrom($emailAddress);
+$this->assertMailSentFrom([$emailAddress => $displayName]);
+
+// Asserts an email contains expected contents
+$this->assertMailContains($contents);
+
+// Asserts an email contains expected html contents
+$this->assertMailContainsHtml($contents);
+
+// Asserts an email contains expected text contents
+$this->assertMailContainsText($contents);
+
+// Asserts an email contains the expected value within an Message getter (for example, "subject")
+$this->assertMailSentWith($expected, $parameter);
+
+// Asserts an email at a specific index was sent to an address
+$this->assertMailSentToAt($at, $address);
+
+// Asserts an email at a specific index was sent from an address
+$this->assertMailSentFromAt($at, $address);
+
+// Asserts an email at a specific index contains expected contents
+$this->assertMailContainsAt($at, $contents);
+
+// Asserts an email at a specific index contains expected html contents
+$this->assertMailContainsHtmlAt($at, $contents);
+
+// Asserts an email at a specific index contains expected text contents
+$this->assertMailContainsTextAt($at, $contents);
+
+// Asserts an email contains an attachment
+$this->assertMailContainsAttachment('test.png');
+
+// Asserts an email at a specific index contains the expected value within an Message getter (for example, "cc")
+$this->assertMailSentWithAt($at, $expected, $parameter);
+
+// Asserts an email contains a substring in the subject.
+$this->assertMailSubjectContains('Free Offer');
+
+// Asserts an email at the specific index contains a substring in the subject.
+$this->assertMailSubjectContainsAt(1, 'Free Offer');
+----------------------------------------
+
+Code Block 190 ():
+// Asserts an expected number of emails were sent
+$this->assertMailCount($count);
+
+// Asserts that no emails were sent
+$this->assertNoMailSent();
+
+// Asserts an email was sent to an address
+$this->assertMailSentTo($address);
+
+// Asserts an email was sent from an address
+$this->assertMailSentFrom($emailAddress);
+$this->assertMailSentFrom([$emailAddress => $displayName]);
+
+// Asserts an email contains expected contents
+$this->assertMailContains($contents);
+
+// Asserts an email contains expected html contents
+$this->assertMailContainsHtml($contents);
+
+// Asserts an email contains expected text contents
+$this->assertMailContainsText($contents);
+
+// Asserts an email contains the expected value within an Message getter (for example, "subject")
+$this->assertMailSentWith($expected, $parameter);
+
+// Asserts an email at a specific index was sent to an address
+$this->assertMailSentToAt($at, $address);
+
+// Asserts an email at a specific index was sent from an address
+$this->assertMailSentFromAt($at, $address);
+
+// Asserts an email at a specific index contains expected contents
+$this->assertMailContainsAt($at, $contents);
+
+// Asserts an email at a specific index contains expected html contents
+$this->assertMailContainsHtmlAt($at, $contents);
+
+// Asserts an email at a specific index contains expected text contents
+$this->assertMailContainsTextAt($at, $contents);
+
+// Asserts an email contains an attachment
+$this->assertMailContainsAttachment('test.png');
+
+// Asserts an email at a specific index contains the expected value within an Message getter (for example, "cc")
+$this->assertMailSentWithAt($at, $expected, $parameter);
+
+// Asserts an email contains a substring in the subject.
+$this->assertMailSubjectContains('Free Offer');
+
+// Asserts an email at the specific index contains a substring in the subject.
+$this->assertMailSubjectContainsAt(1, 'Free Offer');
+----------------------------------------
+

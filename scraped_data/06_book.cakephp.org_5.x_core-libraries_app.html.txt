@@ -1,0 +1,551 @@
+URL: https://book.cakephp.org/5.x/core-libraries/app.html
+Title: App Class | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - App Class ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Finding Classes ​
+  - Finding Paths to Resources ​
+  - Finding Paths to Namespaces ​
+  - Locating Themes ​
+  - Loading Vendor Files ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - App::className() ​
+  - App::path() ​
+  - App::classPath() ​
+  - App::core() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Core\App
+
+The App class is responsible for resource location and path management.
+
+static Cake\Core\App::className(string $class, string $type = '', string $suffix = ''): ?string
+
+This method is used to resolve class names throughout CakePHP. It resolves the short form names CakePHP uses and returns the fully resolved class name:
+
+When resolving classes, the App namespace will be tried, and if the class does not exist the Cake namespace will be attempted. If both class names do not exist, false will be returned.
+
+static Cake\Core\App::path(string $package, ?string $plugin = null): array
+
+The method returns paths set using App.paths app config:
+
+The same way you can retrieve paths for locales and plugins.
+
+static Cake\Core\App::classPath(string $package, ?string $plugin = null): array
+
+Used to get locations for paths based on conventions:
+
+This can be done for all namespaces that are part of your application.
+
+App::classPath() will only return the default path, and will not be able to provide any information about additional paths the autoloader is configured for.
+
+static Cake\Core\App::core(string $package): array
+
+Used for finding the path to a package inside CakePHP:
+
+Since themes are plugins, you can use the methods above to get the path to a theme.
+
+Ideally vendor files should be autoloaded with Composer, if you have vendor files that cannot be autoloaded or installed with Composer you will need to use require to load them.
+
+If you cannot install a library with Composer, it is best to install each library in a directory following Composer's convention of vendor/$author/$package. If you had a library called AcmeLib, you could install it into vendor/Acme/AcmeLib. Assuming it did not use PSR-0 compatible classnames you could autoload the classes within it using classmap in your application's composer.json:
+
+If your vendor library does not use classes, and instead provides functions, you can configure Composer to load these files at the beginning of each request using the files autoloading strategy:
+
+After configuring the vendor libraries you will need to regenerate your application's autoloader using:
+
+If you happen to not be using Composer in your application, you will need to manually load all vendor libraries yourself.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+static
+----------------------------------------
+
+Code Block 3 (shiki):
+// Resolve a short class name with the namespace + suffix.
+App::className('Flash', 'Controller/Component', 'Component');
+// Returns Cake\Controller\Component\FlashComponent
+
+// Resolve a plugin name.
+App::className('DebugKit.Toolbar', 'Controller/Component', 'Component');
+// Returns DebugKit\Controller\Component\ToolbarComponent
+
+// Names with \ in them will be returned unaltered.
+App::className('App\Cache\ComboCache');
+// Returns App\Cache\ComboCache
+----------------------------------------
+
+Code Block 4 ():
+// Resolve a short class name with the namespace + suffix.
+App::className('Flash', 'Controller/Component', 'Component');
+// Returns Cake\Controller\Component\FlashComponent
+
+// Resolve a plugin name.
+App::className('DebugKit.Toolbar', 'Controller/Component', 'Component');
+// Returns DebugKit\Controller\Component\ToolbarComponent
+
+// Names with \ in them will be returned unaltered.
+App::className('App\Cache\ComboCache');
+// Returns App\Cache\ComboCache
+----------------------------------------
+
+Code Block 5 ():
+App
+----------------------------------------
+
+Code Block 6 ():
+Cake
+----------------------------------------
+
+Code Block 7 ():
+false
+----------------------------------------
+
+Code Block 8 ():
+static
+----------------------------------------
+
+Code Block 9 ():
+App.paths
+----------------------------------------
+
+Code Block 10 (shiki):
+// Get the templates path set using ``App.paths.templates`` app config.
+App::path('templates');
+----------------------------------------
+
+Code Block 11 ():
+// Get the templates path set using ``App.paths.templates`` app config.
+App::path('templates');
+----------------------------------------
+
+Code Block 12 ():
+locales
+----------------------------------------
+
+Code Block 13 ():
+plugins
+----------------------------------------
+
+Code Block 14 ():
+static
+----------------------------------------
+
+Code Block 15 (shiki):
+// Get the path to Controller/ in your application
+App::classPath('Controller');
+----------------------------------------
+
+Code Block 16 ():
+// Get the path to Controller/ in your application
+App::classPath('Controller');
+----------------------------------------
+
+Code Block 17 ():
+App::classPath()
+----------------------------------------
+
+Code Block 18 ():
+static
+----------------------------------------
+
+Code Block 19 (shiki):
+// Get the path to Cache engines.
+App::core('Cache/Engine');
+----------------------------------------
+
+Code Block 20 ():
+// Get the path to Cache engines.
+App::core('Cache/Engine');
+----------------------------------------
+
+Code Block 21 ():
+Composer
+----------------------------------------
+
+Code Block 22 ():
+require
+----------------------------------------
+
+Code Block 23 ():
+vendor/$author/$package
+----------------------------------------
+
+Code Block 24 ():
+vendor/Acme/AcmeLib
+----------------------------------------
+
+Code Block 25 ():
+classmap
+----------------------------------------
+
+Code Block 26 ():
+composer.json
+----------------------------------------
+
+Code Block 27 (shiki):
+"autoload": {
+    "psr-4": {
+        "App\\": "src/",
+        "App\\Test\\": "tests/"
+    },
+    "classmap": [
+        "vendor/Acme/AcmeLib"
+    ]
+}
+----------------------------------------
+
+Code Block 28 ():
+"autoload": {
+    "psr-4": {
+        "App\\": "src/",
+        "App\\Test\\": "tests/"
+    },
+    "classmap": [
+        "vendor/Acme/AcmeLib"
+    ]
+}
+----------------------------------------
+
+Code Block 29 ():
+files
+----------------------------------------
+
+Code Block 30 (shiki):
+"autoload": {
+    "psr-4": {
+        "App\\": "src/",
+        "App\\Test\\": "tests/"
+    },
+    "files": [
+        "vendor/Acme/AcmeLib/functions.php"
+    ]
+}
+----------------------------------------
+
+Code Block 31 ():
+"autoload": {
+    "psr-4": {
+        "App\\": "src/",
+        "App\\Test\\": "tests/"
+    },
+    "files": [
+        "vendor/Acme/AcmeLib/functions.php"
+    ]
+}
+----------------------------------------
+
+Code Block 32 (shiki):
+php composer.phar dump-autoload
+----------------------------------------
+
+Code Block 33 ():
+php composer.phar dump-autoload
+----------------------------------------
+

@@ -1,0 +1,1304 @@
+URL: https://book.cakephp.org/5.x/tutorials-and-examples/cms/articles-controller.html
+Title: CMS Tutorial - Creating the Articles Controller | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - CMS Tutorial - Creating the Articles Controller ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Create the Article List Template ​
+  - Create the View Action ​
+  - Create the View Template ​
+  - Adding Articles ​
+  - Create Add Template ​
+  - Adding Simple Slug Generation ​
+  - Add Edit Action ​
+  - Create Edit Template ​
+  - Update Validation Rules for Articles ​
+  - Add Delete Action ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+With our model created, we need a controller for our articles. Controllers in CakePHP handle HTTP requests and execute business logic contained in model methods, to prepare the response. We'll place this new controller in a file called ArticlesController.php inside the src/Controller directory. Here's what the basic controller should look like:
+
+Now, let's add an action to our controller. Actions are controller methods that have routes connected to them. For example, when a user requests <www.example.com/articles/index> (which is also the same as <www.example.com/articles>), CakePHP will call the index method of your ArticlesController. This method should query the model layer, and prepare a response by rendering a Template in the View. The code for that action would look like this:
+
+By defining function index() in our ArticlesController, users can now access the logic there by requesting <www.example.com/articles/index>. Similarly, if we were to define a function called foobar(), users would be able to access that at <www.example.com/articles/foobar>. You may be tempted to name your controllers and actions in a way that allows you to obtain specific URLs. Resist that temptation. Instead, follow the CakePHP Conventions creating readable, meaningful action names. You can then use Routing to connect the URLs you want to the actions you've created.
+
+Our controller action is very simple. It fetches a paginated set of articles from the database, using the Articles Model that is automatically loaded via naming conventions. It then uses set() to pass the articles into the Template (which we'll create soon). CakePHP will automatically render the template after our controller action completes.
+
+Now that we have our controller pulling data from the model, and preparing our view context, let's create a view template for our index action.
+
+CakePHP view templates are presentation-flavored PHP code that is inserted inside the application's layout. While we'll be creating HTML here, Views can also generate JSON, CSV or even binary files like PDFs.
+
+A layout is presentation code that is wrapped around a view. Layout files contain common site elements like headers, footers and navigation elements. Your application can have multiple layouts, and you can switch between them, but for now, let's just use the default layout.
+
+CakePHP's template files are stored in templates inside a folder named after the controller they correspond to. So we'll have to create a folder named 'Articles' in this case. Add the following code to your application:
+
+In the last section we assigned the 'articles' variable to the view using set(). Variables passed into the view are available in the view templates as local variables which we used in the above code.
+
+You might have noticed the use of an object called $this->Html. This is an instance of the CakePHP HtmlHelper. CakePHP comes with a set of view helpers that make tasks like creating links, forms, and pagination buttons. You can learn more about Helpers in their chapter, but what's important to note here is that the link() method will generate an HTML link with the given link text (the first parameter) and URL (the second parameter).
+
+When specifying URLs in CakePHP, it is recommended that you use arrays or named routes. These syntaxes allow you to leverage the reverse routing features CakePHP offers.
+
+At this point, you should be able to point your browser to http://localhost:8765/articles/index. You should see your list view, correctly formatted with the title and table listing of the articles.
+
+If you were to click one of the 'view' links in our Articles list page, you'd see an error page saying that action hasn't been implemented. Lets fix that now:
+
+While this is a simple action, we've used some powerful CakePHP features. We start our action off by using findBySlug() which is a Dynamic Finder. This method allows us to create a basic query that finds articles by a given slug. We then use firstOrFail() to either fetch the first record, or throw a \Cake\Datasource\Exception\RecordNotFoundException.
+
+Our action takes a $slug parameter, but where does that parameter come from? If a user requests /articles/view/first-post, then the value 'first-post' is passed as $slug by CakePHP's routing and dispatching layers. If we reload our browser with our new action saved, we'd see another CakePHP error page telling us we're missing a view template; let's fix that.
+
+Let's create the view for our new 'view' action and place it in templates/Articles/view.php
+
+Security: XSS Protection
+
+The h() helper function escapes output to prevent XSS (Cross-Site Scripting) attacks. Always use it when outputting user-generated content.
+
+You can verify that this is working by trying the links at /articles/index or manually requesting an article by accessing URLs like /articles/view/first-post.
+
+With the basic read views created, we need to make it possible for new articles to be created. Start by creating an add() action in the ArticlesController. Our controller should now look like:
+
+Flash Component
+
+You need to include the Flash component in any controller where you will use it. Often it makes sense to include it in your AppController, which is there already for this tutorial.
+
+Here's what the add() action does:
+
+Every CakePHP request includes a request object which is accessible using $this->request. The request object contains information regarding the request that was just received. We use the Cake\Http\ServerRequest::is() method to check that the request is a HTTP POST request.
+
+Our POST data is available in $this->request->getData(). You can use the pr() or debug() functions to print it out if you want to see what it looks like. To save our data, we first 'marshal' the POST data into an Article Entity. The Entity is then persisted using the ArticlesTable we created earlier.
+
+After saving our new article we use FlashComponent's success() method to set a message into the session. The success method is provided using PHP's magic method features. Flash messages will be displayed on the next page after redirecting. In our layout we have <?= $this->Flash->render() ?> which displays flash messages and clears the corresponding session variable. Finally, after saving is complete, we use Cake\Controller\Controller::redirect to send the user back to the articles list. The param ['action' => 'index'] translates to URL /articles i.e the index action of the ArticlesController. You can refer to Cake\Routing\Router::url() function on the API to see the formats in which you can specify a URL for various CakePHP functions.
+
+Here's our add view template:
+
+We use the FormHelper to generate the opening tag for an HTML form. Here's the HTML that $this->Form->create() generates:
+
+Because we called create() without a URL option, FormHelper assumes we want the form to submit back to the current action.
+
+The $this->Form->control() method is used to create form elements of the same name. The first parameter tells CakePHP which field they correspond to, and the second parameter allows you to specify a wide array of options - in this case, the number of rows for the textarea. There's a bit of introspection and conventions used here. The control() will output different form elements based on the model field specified, and use inflection to generate the label text. You can customize the label, the input or any other aspect of the form controls using options. The $this->Form->end() call closes the form.
+
+Now let's go back and update our templates/Articles/index.php view to include a new "Add Article" link. Before the <table>, add the following line:
+
+If we were to save an Article right now, saving would fail as we are not creating a slug attribute, and the column is NOT NULL. Slug values are typically a URL-safe version of an article's title. We can use the beforeSave() callback of the ORM to populate our slug:
+
+This code is simple, and doesn't take into account duplicate slugs. But we'll fix that later on.
+
+Our application can now save articles, but we can't edit them. Lets rectify that now. Add the following action to your ArticlesController:
+
+This action first ensures that the user has tried to access an existing record. If they haven't passed in an $slug parameter, or the article does not exist, a RecordNotFoundException will be thrown, and the CakePHP ErrorHandler will render the appropriate error page.
+
+Next the action checks whether the request is either a POST or a PUT request. If it is, then we use the POST/PUT data to update our article entity by using the patchEntity() method. Finally, we call save(), set the appropriate flash message, and either redirect or display validation errors.
+
+The edit template should look like this:
+
+This template outputs the edit form (with the values populated), along with any necessary validation error messages.
+
+You can now update your index view with links to edit specific articles:
+
+Up until this point our Articles had no input validation done. Lets fix that by using a validator:
+
+The validationDefault() method tells CakePHP how to validate your data when the save() method is called. Here, we've specified that both the title, and body fields must not be empty, and have certain length constraints.
+
+CakePHP's validation engine is powerful and flexible. It provides a suite of frequently used rules for tasks like email addresses, IP addresses etc. and the flexibility for adding your own validation rules. For more information on that setup, check the Validation documentation.
+
+Now that your validation rules are in place, use the app to try to add an article with an empty title or body to see how it works. Since we've used the Cake\View\Helper\FormHelper::control() method of the FormHelper to create our form elements, our validation error messages will be shown automatically.
+
+Next, let's make a way for users to delete articles. Start with a delete() action in the ArticlesController:
+
+This logic deletes the article specified by $slug, and uses $this->Flash->success() to show the user a confirmation message after redirecting them to /articles. If the user attempts to delete an article using a GET request, allowMethod() will throw an exception. Uncaught exceptions are captured by CakePHP's exception handler, and a nice error page is displayed. There are many built-in Exceptions that can be used to indicate the various HTTP errors your application might need to generate.
+
+Security Warning
+
+Allowing content to be deleted using GET requests is very dangerous, as web crawlers could accidentally delete all your content. That is why we used allowMethod() in our controller.
+
+Because we're only executing logic and redirecting to another action, this action has no template. You might want to update your index template with links that allow users to delete articles:
+
+Using Cake\View\Helper\FormHelper::deleteLink() will create a link that uses JavaScript to do a DELETE request deleting our article. Prior to CakePHP 5.2 you need to use postLink() instead.
+
+FormHelper Confirmation
+
+This view code also uses the FormHelper to prompt the user with a JavaScript confirmation dialog before they attempt to delete an article.
+
+Use Bake to Generate Controllers
+
+The ArticlesController can also be built with bake:
+
+However, this does not build the templates/Articles/*.php files.
+
+With a basic articles management setup, we'll create the basic actions for our Tags and Users tables.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+<?php
+// src/Controller/ArticlesController.php
+declare(strict_types=1);
+
+namespace App\Controller;
+
+class ArticlesController extends AppController
+{
+}
+----------------------------------------
+
+Code Block 2 ():
+<?php
+// src/Controller/ArticlesController.php
+declare(strict_types=1);
+
+namespace App\Controller;
+
+class ArticlesController extends AppController
+{
+}
+----------------------------------------
+
+Code Block 3 ():
+index
+----------------------------------------
+
+Code Block 4 ():
+ArticlesController
+----------------------------------------
+
+Code Block 5 (shiki):
+<?php
+// src/Controller/ArticlesController.php
+declare(strict_types=1);
+
+namespace App\Controller;
+
+class ArticlesController extends AppController
+{
+    public function index(): void
+    {
+        $articles = $this->paginate($this->Articles);
+        $this->set(compact('articles'));
+    }
+}
+----------------------------------------
+
+Code Block 6 ():
+<?php
+// src/Controller/ArticlesController.php
+declare(strict_types=1);
+
+namespace App\Controller;
+
+class ArticlesController extends AppController
+{
+    public function index(): void
+    {
+        $articles = $this->paginate($this->Articles);
+        $this->set(compact('articles'));
+    }
+}
+----------------------------------------
+
+Code Block 7 ():
+index()
+----------------------------------------
+
+Code Block 8 ():
+ArticlesController
+----------------------------------------
+
+Code Block 9 ():
+foobar()
+----------------------------------------
+
+Code Block 10 ():
+set()
+----------------------------------------
+
+Code Block 11 (shiki):
+<!-- File: templates/Articles/index.php -->
+
+<h1>Articles</h1>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Created</th>
+    </tr>
+
+    <!-- Here is where we iterate through our $articles query object, printing out article info -->
+
+    <?php foreach ($articles as $article): ?>
+    <tr>
+        <td>
+            <?= $this->Html->link($article->title, ['action' => 'view', $article->slug]) ?>
+        </td>
+        <td>
+            <?= $article->created->format(DATE_RFC850) ?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+----------------------------------------
+
+Code Block 12 ():
+<!-- File: templates/Articles/index.php -->
+
+<h1>Articles</h1>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Created</th>
+    </tr>
+
+    <!-- Here is where we iterate through our $articles query object, printing out article info -->
+
+    <?php foreach ($articles as $article): ?>
+    <tr>
+        <td>
+            <?= $this->Html->link($article->title, ['action' => 'view', $article->slug]) ?>
+        </td>
+        <td>
+            <?= $article->created->format(DATE_RFC850) ?>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+----------------------------------------
+
+Code Block 13 ():
+set()
+----------------------------------------
+
+Code Block 14 ():
+$this->Html
+----------------------------------------
+
+Code Block 15 ():
+link()
+----------------------------------------
+
+Code Block 16 (shiki):
+// Add to existing src/Controller/ArticlesController.php file
+
+public function view(?string $slug): void
+{
+    $article = $this->Articles->findBySlug($slug)->firstOrFail();
+    $this->set(compact('article'));
+}
+----------------------------------------
+
+Code Block 17 ():
+// Add to existing src/Controller/ArticlesController.php file
+
+public function view(?string $slug): void
+{
+    $article = $this->Articles->findBySlug($slug)->firstOrFail();
+    $this->set(compact('article'));
+}
+----------------------------------------
+
+Code Block 18 ():
+findBySlug()
+----------------------------------------
+
+Code Block 19 ():
+firstOrFail()
+----------------------------------------
+
+Code Block 20 ():
+\Cake\Datasource\Exception\RecordNotFoundException
+----------------------------------------
+
+Code Block 21 ():
+$slug
+----------------------------------------
+
+Code Block 22 ():
+/articles/view/first-post
+----------------------------------------
+
+Code Block 23 ():
+$slug
+----------------------------------------
+
+Code Block 24 (shiki):
+<!-- File: templates/Articles/view.php -->
+
+<h1><?= h($article->title) ?></h1>
+<p><?= h($article->body) ?></p>
+<p><small>Created: <?= $article->created->format(DATE_RFC850) ?></small></p>
+<p><?= $this->Html->link('Edit', ['action' => 'edit', $article->slug]) ?></p>
+----------------------------------------
+
+Code Block 25 ():
+<!-- File: templates/Articles/view.php -->
+
+<h1><?= h($article->title) ?></h1>
+<p><?= h($article->body) ?></p>
+<p><small>Created: <?= $article->created->format(DATE_RFC850) ?></small></p>
+<p><?= $this->Html->link('Edit', ['action' => 'edit', $article->slug]) ?></p>
+----------------------------------------
+
+Code Block 26 ():
+h()
+----------------------------------------
+
+Code Block 27 ():
+/articles/index
+----------------------------------------
+
+Code Block 28 ():
+/articles/view/first-post
+----------------------------------------
+
+Code Block 29 ():
+add()
+----------------------------------------
+
+Code Block 30 ():
+ArticlesController
+----------------------------------------
+
+Code Block 31 (shiki):
+<?php
+// src/Controller/ArticlesController.php
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use App\Controller\AppController;
+
+class ArticlesController extends AppController
+{
+    public function index(): void
+    {
+        $articles = $this->paginate($this->Articles);
+        $this->set(compact('articles'));
+    }
+
+    public function view(?string $slug): void
+    {
+        $article = $this->Articles->findBySlug($slug)->firstOrFail();
+        $this->set(compact('article'));
+    }
+
+    public function add(): void
+    {
+        $article = $this->Articles->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $article = $this->Articles->patchEntity($article, $this->request->getData());
+
+            // Hardcoding the user_id is temporary, and will be removed later
+            // when we build authentication out.
+            $article->user_id = 1;
+
+            if ($this->Articles->save($article)) {
+                $this->Flash->success(__('Your article has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('Unable to add your article.'));
+        }
+        $this->set('article', $article);
+    }
+}
+----------------------------------------
+
+Code Block 32 ():
+<?php
+// src/Controller/ArticlesController.php
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use App\Controller\AppController;
+
+class ArticlesController extends AppController
+{
+    public function index(): void
+    {
+        $articles = $this->paginate($this->Articles);
+        $this->set(compact('articles'));
+    }
+
+    public function view(?string $slug): void
+    {
+        $article = $this->Articles->findBySlug($slug)->firstOrFail();
+        $this->set(compact('article'));
+    }
+
+    public function add(): void
+    {
+        $article = $this->Articles->newEmptyEntity();
+        if ($this->request->is('post')) {
+            $article = $this->Articles->patchEntity($article, $this->request->getData());
+
+            // Hardcoding the user_id is temporary, and will be removed later
+            // when we build authentication out.
+            $article->user_id = 1;
+
+            if ($this->Articles->save($article)) {
+                $this->Flash->success(__('Your article has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('Unable to add your article.'));
+        }
+        $this->set('article', $article);
+    }
+}
+----------------------------------------
+
+Code Block 33 ():
+AppController
+----------------------------------------
+
+Code Block 34 ():
+add()
+----------------------------------------
+
+Code Block 35 ():
+$this->request
+----------------------------------------
+
+Code Block 36 ():
+Cake\Http\ServerRequest::is()
+----------------------------------------
+
+Code Block 37 ():
+$this->request->getData()
+----------------------------------------
+
+Code Block 38 ():
+pr()
+----------------------------------------
+
+Code Block 39 ():
+debug()
+----------------------------------------
+
+Code Block 40 ():
+success()
+----------------------------------------
+
+Code Block 41 ():
+success
+----------------------------------------
+
+Code Block 42 ():
+<?= $this->Flash->render() ?>
+----------------------------------------
+
+Code Block 43 ():
+Cake\Controller\Controller::redirect
+----------------------------------------
+
+Code Block 44 ():
+['action' => 'index']
+----------------------------------------
+
+Code Block 45 ():
+/articles
+----------------------------------------
+
+Code Block 46 ():
+ArticlesController
+----------------------------------------
+
+Code Block 47 ():
+Cake\Routing\Router::url()
+----------------------------------------
+
+Code Block 48 (shiki):
+<!-- File: templates/Articles/add.php -->
+
+<h1>Add Article</h1>
+<?php
+    echo $this->Form->create($article);
+    // Hard code the user for now.
+    echo $this->Form->control('user_id', ['type' => 'hidden', 'value' => 1]);
+    echo $this->Form->control('title');
+    echo $this->Form->control('body', ['rows' => '3']);
+    echo $this->Form->button(__('Save Article'));
+    echo $this->Form->end();
+?>
+----------------------------------------
+
+Code Block 49 ():
+<!-- File: templates/Articles/add.php -->
+
+<h1>Add Article</h1>
+<?php
+    echo $this->Form->create($article);
+    // Hard code the user for now.
+    echo $this->Form->control('user_id', ['type' => 'hidden', 'value' => 1]);
+    echo $this->Form->control('title');
+    echo $this->Form->control('body', ['rows' => '3']);
+    echo $this->Form->button(__('Save Article'));
+    echo $this->Form->end();
+?>
+----------------------------------------
+
+Code Block 50 ():
+$this->Form->create()
+----------------------------------------
+
+Code Block 51 (shiki):
+<form method="post" action="/articles/add">
+----------------------------------------
+
+Code Block 52 ():
+<form method="post" action="/articles/add">
+----------------------------------------
+
+Code Block 53 ():
+create()
+----------------------------------------
+
+Code Block 54 ():
+FormHelper
+----------------------------------------
+
+Code Block 55 ():
+$this->Form->control()
+----------------------------------------
+
+Code Block 56 ():
+control()
+----------------------------------------
+
+Code Block 57 ():
+$this->Form->end()
+----------------------------------------
+
+Code Block 58 ():
+<table>
+----------------------------------------
+
+Code Block 59 (shiki):
+<?= $this->Html->link('Add Article', ['action' => 'add']) ?>
+----------------------------------------
+
+Code Block 60 ():
+<?= $this->Html->link('Add Article', ['action' => 'add']) ?>
+----------------------------------------
+
+Code Block 61 ():
+NOT NULL
+----------------------------------------
+
+Code Block 62 (shiki):
+<?php
+// in src/Model/Table/ArticlesTable.php
+declare(strict_types=1);
+
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+use Cake\Utility\Text;
+use Cake\Event\EventInterface;
+
+// Add the following method.
+
+public function beforeSave(EventInterface $event, $entity, $options): void
+{
+    if ($entity->isNew() && !$entity->slug) {
+        $sluggedTitle = Text::slug($entity->title);
+        // trim slug to maximum length defined in schema
+        $entity->slug = substr($sluggedTitle, 0, 191);
+    }
+}
+----------------------------------------
+
+Code Block 63 ():
+<?php
+// in src/Model/Table/ArticlesTable.php
+declare(strict_types=1);
+
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+use Cake\Utility\Text;
+use Cake\Event\EventInterface;
+
+// Add the following method.
+
+public function beforeSave(EventInterface $event, $entity, $options): void
+{
+    if ($entity->isNew() && !$entity->slug) {
+        $sluggedTitle = Text::slug($entity->title);
+        // trim slug to maximum length defined in schema
+        $entity->slug = substr($sluggedTitle, 0, 191);
+    }
+}
+----------------------------------------
+
+Code Block 64 ():
+ArticlesController
+----------------------------------------
+
+Code Block 65 (shiki):
+// in src/Controller/ArticlesController.php
+
+public function edit(?string $slug): void
+{
+    $article = $this->Articles
+        ->findBySlug($slug)
+        ->firstOrFail();
+
+    if ($this->request->is(['post', 'put'])) {
+        $this->Articles->patchEntity($article, $this->request->getData());
+        if ($this->Articles->save($article)) {
+            $this->Flash->success(__('Your article has been updated.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+        $this->Flash->error(__('Unable to update your article.'));
+    }
+
+    $this->set('article', $article);
+}
+----------------------------------------
+
+Code Block 66 ():
+// in src/Controller/ArticlesController.php
+
+public function edit(?string $slug): void
+{
+    $article = $this->Articles
+        ->findBySlug($slug)
+        ->firstOrFail();
+
+    if ($this->request->is(['post', 'put'])) {
+        $this->Articles->patchEntity($article, $this->request->getData());
+        if ($this->Articles->save($article)) {
+            $this->Flash->success(__('Your article has been updated.'));
+
+            return $this->redirect(['action' => 'index']);
+        }
+        $this->Flash->error(__('Unable to update your article.'));
+    }
+
+    $this->set('article', $article);
+}
+----------------------------------------
+
+Code Block 67 ():
+$slug
+----------------------------------------
+
+Code Block 68 ():
+RecordNotFoundException
+----------------------------------------
+
+Code Block 69 ():
+patchEntity()
+----------------------------------------
+
+Code Block 70 ():
+save()
+----------------------------------------
+
+Code Block 71 (shiki):
+<!-- File: templates/Articles/edit.php -->
+
+<h1>Edit Article</h1>
+<?php
+    echo $this->Form->create($article);
+    echo $this->Form->control('user_id', ['type' => 'hidden']);
+    echo $this->Form->control('title');
+    echo $this->Form->control('body', ['rows' => '3']);
+    echo $this->Form->button(__('Save Article'));
+    echo $this->Form->end();
+?>
+----------------------------------------
+
+Code Block 72 ():
+<!-- File: templates/Articles/edit.php -->
+
+<h1>Edit Article</h1>
+<?php
+    echo $this->Form->create($article);
+    echo $this->Form->control('user_id', ['type' => 'hidden']);
+    echo $this->Form->control('title');
+    echo $this->Form->control('body', ['rows' => '3']);
+    echo $this->Form->button(__('Save Article'));
+    echo $this->Form->end();
+?>
+----------------------------------------
+
+Code Block 73 (shiki):
+<!-- File: templates/Articles/index.php  (edit links added) -->
+
+<h1>Articles</h1>
+<p><?= $this->Html->link("Add Article", ['action' => 'add']) ?></p>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Created</th>
+        <th>Action</th>
+    </tr>
+
+<!-- Here's where we iterate through our $articles query object, printing out article info -->
+
+<?php foreach ($articles as $article): ?>
+    <tr>
+        <td>
+            <?= $this->Html->link($article->title, ['action' => 'view', $article->slug]) ?>
+        </td>
+        <td>
+            <?= $article->created->format(DATE_RFC850) ?>
+        </td>
+        <td>
+            <?= $this->Html->link('Edit', ['action' => 'edit', $article->slug]) ?>
+        </td>
+    </tr>
+<?php endforeach; ?>
+
+</table>
+----------------------------------------
+
+Code Block 74 ():
+<!-- File: templates/Articles/index.php  (edit links added) -->
+
+<h1>Articles</h1>
+<p><?= $this->Html->link("Add Article", ['action' => 'add']) ?></p>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Created</th>
+        <th>Action</th>
+    </tr>
+
+<!-- Here's where we iterate through our $articles query object, printing out article info -->
+
+<?php foreach ($articles as $article): ?>
+    <tr>
+        <td>
+            <?= $this->Html->link($article->title, ['action' => 'view', $article->slug]) ?>
+        </td>
+        <td>
+            <?= $article->created->format(DATE_RFC850) ?>
+        </td>
+        <td>
+            <?= $this->Html->link('Edit', ['action' => 'edit', $article->slug]) ?>
+        </td>
+    </tr>
+<?php endforeach; ?>
+
+</table>
+----------------------------------------
+
+Code Block 75 (shiki):
+// src/Model/Table/ArticlesTable.php
+
+// add this use statement right below the namespace declaration
+// to import the Validator class
+use Cake\Validation\Validator;
+
+// Add the following method.
+public function validationDefault(Validator $validator): Validator
+{
+    $validator
+        ->notEmptyString('title')
+        ->minLength('title', 10)
+        ->maxLength('title', 255)
+
+        ->notEmptyString('body')
+        ->minLength('body', 10);
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 76 ():
+// src/Model/Table/ArticlesTable.php
+
+// add this use statement right below the namespace declaration
+// to import the Validator class
+use Cake\Validation\Validator;
+
+// Add the following method.
+public function validationDefault(Validator $validator): Validator
+{
+    $validator
+        ->notEmptyString('title')
+        ->minLength('title', 10)
+        ->maxLength('title', 255)
+
+        ->notEmptyString('body')
+        ->minLength('body', 10);
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 77 ():
+validationDefault()
+----------------------------------------
+
+Code Block 78 ():
+save()
+----------------------------------------
+
+Code Block 79 ():
+Cake\View\Helper\FormHelper::control()
+----------------------------------------
+
+Code Block 80 ():
+delete()
+----------------------------------------
+
+Code Block 81 ():
+ArticlesController
+----------------------------------------
+
+Code Block 82 (shiki):
+// src/Controller/ArticlesController.php
+
+public function delete(?string $slug): void
+{
+    $this->request->allowMethod(['post', 'delete']);
+
+    $article = $this->Articles->findBySlug($slug)->firstOrFail();
+    if ($this->Articles->delete($article)) {
+        $this->Flash->success(__('The {0} article has been deleted.', $article->title));
+
+        return $this->redirect(['action' => 'index']);
+    }
+}
+----------------------------------------
+
+Code Block 83 ():
+// src/Controller/ArticlesController.php
+
+public function delete(?string $slug): void
+{
+    $this->request->allowMethod(['post', 'delete']);
+
+    $article = $this->Articles->findBySlug($slug)->firstOrFail();
+    if ($this->Articles->delete($article)) {
+        $this->Flash->success(__('The {0} article has been deleted.', $article->title));
+
+        return $this->redirect(['action' => 'index']);
+    }
+}
+----------------------------------------
+
+Code Block 84 ():
+$slug
+----------------------------------------
+
+Code Block 85 ():
+$this->Flash->success()
+----------------------------------------
+
+Code Block 86 ():
+/articles
+----------------------------------------
+
+Code Block 87 ():
+allowMethod()
+----------------------------------------
+
+Code Block 88 ():
+allowMethod()
+----------------------------------------
+
+Code Block 89 (shiki):
+<!-- File: templates/Articles/index.php  (delete links added) -->
+
+<h1>Articles</h1>
+<p><?= $this->Html->link("Add Article", ['action' => 'add']) ?></p>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Created</th>
+        <th>Action</th>
+    </tr>
+
+<!-- Here's where we iterate through our $articles query object, printing out article info -->
+
+<?php foreach ($articles as $article): ?>
+    <tr>
+        <td>
+            <?= $this->Html->link($article->title, ['action' => 'view', $article->slug]) ?>
+        </td>
+        <td>
+            <?= $article->created->format(DATE_RFC850) ?>
+        </td>
+        <td>
+            <?= $this->Html->link('Edit', ['action' => 'edit', $article->slug]) ?>
+            <?= $this->Form->deleteLink(
+                'Delete',
+                ['action' => 'delete', $article->slug],
+                ['confirm' => 'Are you sure?'])
+            ?>
+        </td>
+    </tr>
+<?php endforeach; ?>
+
+</table>
+----------------------------------------
+
+Code Block 90 ():
+<!-- File: templates/Articles/index.php  (delete links added) -->
+
+<h1>Articles</h1>
+<p><?= $this->Html->link("Add Article", ['action' => 'add']) ?></p>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Created</th>
+        <th>Action</th>
+    </tr>
+
+<!-- Here's where we iterate through our $articles query object, printing out article info -->
+
+<?php foreach ($articles as $article): ?>
+    <tr>
+        <td>
+            <?= $this->Html->link($article->title, ['action' => 'view', $article->slug]) ?>
+        </td>
+        <td>
+            <?= $article->created->format(DATE_RFC850) ?>
+        </td>
+        <td>
+            <?= $this->Html->link('Edit', ['action' => 'edit', $article->slug]) ?>
+            <?= $this->Form->deleteLink(
+                'Delete',
+                ['action' => 'delete', $article->slug],
+                ['confirm' => 'Are you sure?'])
+            ?>
+        </td>
+    </tr>
+<?php endforeach; ?>
+
+</table>
+----------------------------------------
+
+Code Block 91 ():
+Cake\View\Helper\FormHelper::deleteLink()
+----------------------------------------
+
+Code Block 92 ():
+postLink()
+----------------------------------------
+
+Code Block 93 ():
+FormHelper
+----------------------------------------
+
+Code Block 94 ():
+ArticlesController
+----------------------------------------
+
+Code Block 95 ():
+bake
+----------------------------------------
+
+Code Block 96 (shiki):
+bin/cake bake controller articles
+----------------------------------------
+
+Code Block 97 ():
+bin/cake bake controller articles
+----------------------------------------
+

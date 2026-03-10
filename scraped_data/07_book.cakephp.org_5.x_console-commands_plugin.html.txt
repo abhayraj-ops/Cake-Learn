@@ -1,0 +1,393 @@
+URL: https://book.cakephp.org/5.x/console-commands/plugin.html
+Title: Plugin Tool | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Plugin Tool ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Loading Plugins ​
+  - Unloading Plugins ​
+  - Plugin Assets ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The plugin tool allows you to load and unload plugins via the command prompt. If you need help, run:
+
+Via the Load task you are able to load plugins in your config/bootstrap.php. You can do this by running:
+
+This will add the following to your src/Application.php:
+
+You can unload a plugin by specifying its name:
+
+This will remove the line $this->addPlugin('MyPlugin',...) from src/Application.php.
+
+CakePHP by default serves plugins assets using the AssetMiddleware middleware. While this is a good convenience, it is recommended to symlink / copy the plugin assets under app's webroot so that they can be directly served by the web server without invoking PHP. You can do this by running:
+
+Running the above command will symlink all plugins assets under app's webroot. On Windows, which doesn't support symlinks, the assets will be copied in respective folders instead of being symlinked.
+
+You can symlink assets of one particular plugin by specifying its name:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+bin/cake plugin --help
+----------------------------------------
+
+Code Block 2 ():
+bin/cake plugin --help
+----------------------------------------
+
+Code Block 3 ():
+Load
+----------------------------------------
+
+Code Block 4 (shiki):
+bin/cake plugin load MyPlugin
+----------------------------------------
+
+Code Block 5 ():
+bin/cake plugin load MyPlugin
+----------------------------------------
+
+Code Block 6 (shiki):
+// In the bootstrap method add:
+$this->addPlugin('MyPlugin');
+----------------------------------------
+
+Code Block 7 ():
+// In the bootstrap method add:
+$this->addPlugin('MyPlugin');
+----------------------------------------
+
+Code Block 8 (shiki):
+bin/cake plugin unload MyPlugin
+----------------------------------------
+
+Code Block 9 ():
+bin/cake plugin unload MyPlugin
+----------------------------------------
+
+Code Block 10 ():
+$this->addPlugin('MyPlugin',...)
+----------------------------------------
+
+Code Block 11 ():
+AssetMiddleware
+----------------------------------------
+
+Code Block 12 (shiki):
+bin/cake plugin assets symlink
+----------------------------------------
+
+Code Block 13 ():
+bin/cake plugin assets symlink
+----------------------------------------
+
+Code Block 14 (shiki):
+bin/cake plugin assets symlink MyPlugin
+----------------------------------------
+
+Code Block 15 ():
+bin/cake plugin assets symlink MyPlugin
+----------------------------------------
+

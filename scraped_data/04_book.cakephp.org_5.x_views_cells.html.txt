@@ -1,0 +1,854 @@
+URL: https://book.cakephp.org/5.x/views/cells.html
+Title: View Cells | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - View Cells ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - When to use Cells ​
+  - Creating a Cell ​
+  - Implementing the Cell ​
+  - Loading Cells ​
+  - Passing Arguments to a Cell ​
+  - Rendering a Cell ​
+  - Paginating Data inside a Cell ​
+  - Cell Options ​
+  - Using Helpers inside a Cell ​
+  - Cell Events ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Rendering Alternate Templates ​
+  - Caching Cell Output ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+View cells are small mini-controllers that can invoke view logic and render out templates. The idea of cells is borrowed from cells in Ruby, where they fulfill a similar role and purpose.
+
+Cells are ideal for building reusable page components that require interaction with models, view logic, and rendering logic. A simple example would be the cart in an online store, or a data-driven navigation menu in a CMS.
+
+To create a cell, define a class in src/View/Cell and a template in templates/cell/. In this example, we'll be making a cell to display the number of messages in a user's notification inbox. First, create the class file. Its contents should look like:
+
+Save this file into src/View/Cell/InboxCell.php. As you can see, like other classes in CakePHP, Cells have a few conventions:
+
+We added an empty display() method to our cell; this is the conventional default method when rendering a cell. We'll cover how to use other methods later in the docs. Now, create the file templates/cell/Inbox/display.php. This will be our template for our new cell.
+
+You can generate this stub code quickly using bake:
+
+Would generate the code we created above.
+
+Assume that we are working on an application that allows users to send messages to each other. We have a Messages model, and we want to show the count of unread messages without having to pollute AppController. This is a perfect use case for a cell. In the class we just made, add the following:
+
+Because Cells use the LocatorAwareTrait and ViewVarsTrait, they behave very much like a controller would. We can use the fetchTable() and set() methods just like we would in a controller. In our template file, add the following:
+
+NOTE
+
+Cell templates have an isolated scope that does not share the same View instance as the one used to render template and layout for the current controller action or other cells. Hence they are unaware of any helper calls made or blocks set in the action's template / layout and vice versa.
+
+Cells can be loaded from views using the cell() method and works the same in both contexts:
+
+The above will load the named cell class and execute the display() method. You can execute other methods using the following:
+
+If you need controller logic to decide which cells to load in a request, you can use the CellTrait in your controller to enable the cell() method there:
+
+You will often want to parameterize cell methods to make cells more flexible. By using the second and third arguments of cell(), you can pass action parameters and additional options to your cell classes, as an indexed array:
+
+The above would match the following function signature:
+
+Once a cell has been loaded and executed, you'll probably want to render it. The easiest way to render a cell is to echo it:
+
+This will render the template matching the lowercased and underscored version of our action name like display.php.
+
+Because cells use View to render templates, you can load additional cells within a cell template if required.
+
+NOTE
+
+Echoing a cell uses the PHP __toString() magic method which prevents PHP from showing the filename and line number for any fatal errors raised. To obtain a meaningful error message, it is recommended to use the Cell::render() method, for example <?= $cell->render() ?>.
+
+By convention cells render templates that match the action they are executing. If you need to render a different view template, you can specify the template to use when rendering the cell:
+
+When rendering a cell you may want to cache the rendered output if the contents don't change often or to help improve performance of your application. You can define the cache option when creating a cell to enable & configure caching:
+
+If a key is generated the underscored version of the cell class and template name will be used.
+
+NOTE
+
+A new View instance is used to render each cell and these new objects do not share context with the main template / layout. Each cell is self-contained and only has access to variables passed as arguments to the View::cell() call.
+
+Creating a cell that renders a paginated result set can be done by leveraging a paginator class of the ORM. An example of paginating a user's favorite messages could look like:
+
+The above cell would paginate the Messages model using scoped pagination parameters.
+
+Cells can declare constructor options that are converted into properties when creating a cell object:
+
+Here we have defined a $limit property and add limit as a cell option. This will allow us to define the option when creating the cell:
+
+Cell options are handy when you want data available as properties allowing you to override default values.
+
+Cells have their own context and their own View instance but Helpers loaded inside your AppView::initialize() function are still loaded as usual.
+
+Loading a specific Helper just for a specific cell can be done via the following example:
+
+Cells trigger the following events around the cell action:
+
+Added in version 5.1.0
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+
+class InboxCell extends Cell
+{
+    public function display(): void
+    {
+    }
+}
+----------------------------------------
+
+Code Block 2 ():
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+
+class InboxCell extends Cell
+{
+    public function display(): void
+    {
+    }
+}
+----------------------------------------
+
+Code Block 3 ():
+App\View\Cell
+----------------------------------------
+
+Code Block 4 ():
+PluginName\View\Cell
+----------------------------------------
+
+Code Block 5 ():
+Cake\View\Cell
+----------------------------------------
+
+Code Block 6 ():
+display()
+----------------------------------------
+
+Code Block 7 ():
+bake
+----------------------------------------
+
+Code Block 8 ():
+bin/cake bake cell Inbox
+----------------------------------------
+
+Code Block 9 ():
+bin/cake bake cell Inbox
+----------------------------------------
+
+Code Block 10 ():
+Messages
+----------------------------------------
+
+Code Block 11 (shiki):
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+
+class InboxCell extends Cell
+{
+    public function display(): void
+    {
+        $unread = $this->fetchTable('Messages')->find('unread');
+        $this->set('unread_count', $unread->count());
+    }
+}
+----------------------------------------
+
+Code Block 12 ():
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+
+class InboxCell extends Cell
+{
+    public function display(): void
+    {
+        $unread = $this->fetchTable('Messages')->find('unread');
+        $this->set('unread_count', $unread->count());
+    }
+}
+----------------------------------------
+
+Code Block 13 ():
+LocatorAwareTrait
+----------------------------------------
+
+Code Block 14 ():
+ViewVarsTrait
+----------------------------------------
+
+Code Block 15 ():
+fetchTable()
+----------------------------------------
+
+Code Block 16 ():
+set()
+----------------------------------------
+
+Code Block 17 (shiki):
+<!-- templates/cell/Inbox/display.php -->
+<div class="notification-icon">
+    You have <?= $unread_count ?> unread messages.
+</div>
+----------------------------------------
+
+Code Block 18 ():
+<!-- templates/cell/Inbox/display.php -->
+<div class="notification-icon">
+    You have <?= $unread_count ?> unread messages.
+</div>
+----------------------------------------
+
+Code Block 19 ():
+cell()
+----------------------------------------
+
+Code Block 20 (shiki):
+// Load an application cell
+$cell = $this->cell('Inbox');
+
+// Load a plugin cell
+$cell = $this->cell('Messaging.Inbox');
+----------------------------------------
+
+Code Block 21 ():
+// Load an application cell
+$cell = $this->cell('Inbox');
+
+// Load a plugin cell
+$cell = $this->cell('Messaging.Inbox');
+----------------------------------------
+
+Code Block 22 ():
+display()
+----------------------------------------
+
+Code Block 23 (shiki):
+// Run the expanded() method on the Inbox cell
+$cell = $this->cell('Inbox::expanded');
+----------------------------------------
+
+Code Block 24 ():
+// Run the expanded() method on the Inbox cell
+$cell = $this->cell('Inbox::expanded');
+----------------------------------------
+
+Code Block 25 ():
+CellTrait
+----------------------------------------
+
+Code Block 26 ():
+cell()
+----------------------------------------
+
+Code Block 27 (shiki):
+namespace App\Controller;
+
+use App\Controller\AppController;
+use Cake\View\CellTrait;
+
+class DashboardsController extends AppController
+{
+    use CellTrait;
+
+    // More code.
+}
+----------------------------------------
+
+Code Block 28 ():
+namespace App\Controller;
+
+use App\Controller\AppController;
+use Cake\View\CellTrait;
+
+class DashboardsController extends AppController
+{
+    use CellTrait;
+
+    // More code.
+}
+----------------------------------------
+
+Code Block 29 ():
+cell()
+----------------------------------------
+
+Code Block 30 (shiki):
+$cell = $this->cell('Inbox::recent', ['-3 days']);
+----------------------------------------
+
+Code Block 31 ():
+$cell = $this->cell('Inbox::recent', ['-3 days']);
+----------------------------------------
+
+Code Block 32 (shiki):
+public function recent(string $since): void
+{
+}
+----------------------------------------
+
+Code Block 33 ():
+public function recent(string $since): void
+{
+}
+----------------------------------------
+
+Code Block 34 (shiki):
+<?= $cell ?>
+----------------------------------------
+
+Code Block 35 ():
+<?= $cell ?>
+----------------------------------------
+
+Code Block 36 ():
+View
+----------------------------------------
+
+Code Block 37 ():
+__toString()
+----------------------------------------
+
+Code Block 38 ():
+Cell::render()
+----------------------------------------
+
+Code Block 39 ():
+<?= $cell->render() ?>
+----------------------------------------
+
+Code Block 40 (shiki):
+// Calling render() explicitly
+echo $this->cell('Inbox::recent', ['-3 days'])->render('messages');
+
+// Set template before echoing the cell.
+$cell = $this->cell('Inbox');
+$cell->viewBuilder()->setTemplate('messages');
+
+echo $cell;
+----------------------------------------
+
+Code Block 41 ():
+// Calling render() explicitly
+echo $this->cell('Inbox::recent', ['-3 days'])->render('messages');
+
+// Set template before echoing the cell.
+$cell = $this->cell('Inbox');
+$cell->viewBuilder()->setTemplate('messages');
+
+echo $cell;
+----------------------------------------
+
+Code Block 42 ():
+cache
+----------------------------------------
+
+Code Block 43 (shiki):
+// Cache using the default config and a generated key
+$cell = $this->cell('Inbox', [], ['cache' => true]);
+
+// Cache to a specific cache config and a generated key
+$cell = $this->cell('Inbox', [], ['cache' => ['config' => 'cell_cache']]);
+
+// Specify the key and config to use.
+$cell = $this->cell('Inbox', [], [
+    'cache' => ['config' => 'cell_cache', 'key' => 'inbox_' . $user->id],
+]);
+----------------------------------------
+
+Code Block 44 ():
+// Cache using the default config and a generated key
+$cell = $this->cell('Inbox', [], ['cache' => true]);
+
+// Cache to a specific cache config and a generated key
+$cell = $this->cell('Inbox', [], ['cache' => ['config' => 'cell_cache']]);
+
+// Specify the key and config to use.
+$cell = $this->cell('Inbox', [], [
+    'cache' => ['config' => 'cell_cache', 'key' => 'inbox_' . $user->id],
+]);
+----------------------------------------
+
+Code Block 45 ():
+View
+----------------------------------------
+
+Code Block 46 ():
+View::cell()
+----------------------------------------
+
+Code Block 47 (shiki):
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+use Cake\Datasource\Paging\NumericPaginator;
+
+class FavoritesCell extends Cell
+{
+    public function display(User $user): void
+    {
+        // Create a paginator
+        $paginator = new NumericPaginator();
+
+        // Paginate the model
+        $results = $paginator->paginate(
+            $this->fetchTable('Messages'),
+            $this->request->getQueryParams(),
+            [
+                // Use a parameterized custom finder.
+                'finder' => ['favorites' => [$user]],
+
+                // Use scoped query string parameters.
+                'scope' => 'favorites',
+            ]
+        );
+
+        $this->set('favorites', $results);
+    }
+}
+----------------------------------------
+
+Code Block 48 ():
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+use Cake\Datasource\Paging\NumericPaginator;
+
+class FavoritesCell extends Cell
+{
+    public function display(User $user): void
+    {
+        // Create a paginator
+        $paginator = new NumericPaginator();
+
+        // Paginate the model
+        $results = $paginator->paginate(
+            $this->fetchTable('Messages'),
+            $this->request->getQueryParams(),
+            [
+                // Use a parameterized custom finder.
+                'finder' => ['favorites' => [$user]],
+
+                // Use scoped query string parameters.
+                'scope' => 'favorites',
+            ]
+        );
+
+        $this->set('favorites', $results);
+    }
+}
+----------------------------------------
+
+Code Block 49 ():
+Messages
+----------------------------------------
+
+Code Block 50 (shiki):
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+
+class FavoritesCell extends Cell
+{
+    protected array $_validCellOptions = ['limit'];
+
+    protected int $limit = 3;
+
+    public function display(int $userId): void
+    {
+        $result = $this->fetchTable('Users')->find('friends', ['for' => $userId])
+            ->limit($this->limit)
+            ->all();
+        $this->set('favorites', $result);
+    }
+}
+----------------------------------------
+
+Code Block 51 ():
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+
+class FavoritesCell extends Cell
+{
+    protected array $_validCellOptions = ['limit'];
+
+    protected int $limit = 3;
+
+    public function display(int $userId): void
+    {
+        $result = $this->fetchTable('Users')->find('friends', ['for' => $userId])
+            ->limit($this->limit)
+            ->all();
+        $this->set('favorites', $result);
+    }
+}
+----------------------------------------
+
+Code Block 52 ():
+$limit
+----------------------------------------
+
+Code Block 53 ():
+limit
+----------------------------------------
+
+Code Block 54 (shiki):
+$cell = $this->cell('Favorites', [$user->id], ['limit' => 10])
+----------------------------------------
+
+Code Block 55 ():
+$cell = $this->cell('Favorites', [$user->id], ['limit' => 10])
+----------------------------------------
+
+Code Block 56 ():
+AppView::initialize()
+----------------------------------------
+
+Code Block 57 (shiki):
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+
+class FavoritesCell extends Cell
+{
+    public function initialize(): void
+    {
+        $this->viewBuilder()->addHelper('MyCustomHelper');
+    }
+}
+----------------------------------------
+
+Code Block 58 ():
+namespace App\View\Cell;
+
+use Cake\View\Cell;
+
+class FavoritesCell extends Cell
+{
+    public function initialize(): void
+    {
+        $this->viewBuilder()->addHelper('MyCustomHelper');
+    }
+}
+----------------------------------------
+
+Code Block 59 ():
+Cell.beforeAction
+----------------------------------------
+
+Code Block 60 ():
+Cell.afterAction
+----------------------------------------
+

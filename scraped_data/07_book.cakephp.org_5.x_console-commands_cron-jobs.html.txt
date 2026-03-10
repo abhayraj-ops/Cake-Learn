@@ -1,0 +1,381 @@
+URL: https://book.cakephp.org/5.x/console-commands/cron-jobs.html
+Title: Running Shells as Cron Jobs | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Running Shells as Cron Jobs ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Cron Jobs on Shared Hosting ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+A common thing to do with a shell is making it run as a cronjob to clean up the database once in a while or send newsletters. This is trivial to setup, for example:
+
+You can see more info here: https://en.wikipedia.org/wiki/Cron
+
+TIP
+
+Use -q (or --quiet) to silence any output for cronjobs.
+
+On some shared hostings cd /full/path/to/root && bin/cake mycommand myparam might not work. Instead you can use php /full/path/to/root/bin/cake.php mycommand myparam.
+
+NOTE
+
+register_argc_argv has to be turned on by including register_argc_argv = 1 in your php.ini. If you cannot change register_argc_argv globally, you can tell the cron job to use your own configuration by specifying it with -d register_argc_argv=1 parameter. Example: php -d register_argc_argv=1 /full/path/to/root/bin/cake.php myshell myparam
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+*/5  *    *    *    *  cd /full/path/to/root && bin/cake myshell myparam
+# *    *    *    *    *  command to execute
+# │    │    │    │    │
+# │    │    │    │    │
+# │    │    │    │    \───── day of week (0 - 6) (0 to 6 are Sunday to Saturday,
+# |    |    |    |           or use names)
+# │    │    │    \────────── month (1 - 12)
+# │    │    \─────────────── day of month (1 - 31)
+# │    \──────────────────── hour (0 - 23)
+# \───────────────────────── min (0 - 59)
+----------------------------------------
+
+Code Block 2 ():
+*/5  *    *    *    *  cd /full/path/to/root && bin/cake myshell myparam
+# *    *    *    *    *  command to execute
+# │    │    │    │    │
+# │    │    │    │    │
+# │    │    │    │    \───── day of week (0 - 6) (0 to 6 are Sunday to Saturday,
+# |    |    |    |           or use names)
+# │    │    │    \────────── month (1 - 12)
+# │    │    \─────────────── day of month (1 - 31)
+# │    \──────────────────── hour (0 - 23)
+# \───────────────────────── min (0 - 59)
+----------------------------------------
+
+Code Block 3 ():
+-q
+----------------------------------------
+
+Code Block 4 ():
+--quiet
+----------------------------------------
+
+Code Block 5 ():
+cd /full/path/to/root && bin/cake mycommand myparam
+----------------------------------------
+
+Code Block 6 ():
+php /full/path/to/root/bin/cake.php mycommand myparam
+----------------------------------------
+
+Code Block 7 ():
+register_argc_argv = 1
+----------------------------------------
+
+Code Block 8 ():
+-d register_argc_argv=1
+----------------------------------------
+
+Code Block 9 ():
+php -d register_argc_argv=1 /full/path/to/root/bin/cake.php myshell myparam
+----------------------------------------
+

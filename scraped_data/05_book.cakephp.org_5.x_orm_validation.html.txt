@@ -1,0 +1,1891 @@
+URL: https://book.cakephp.org/5.x/orm/validation.html
+Title: Validating Data | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Validating Data ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Validating Data Before Building Entities ​
+  - Creating A Default Validation Set ​
+  - Using A Different Validation Set ​
+  - Combining Validators ​
+  - Validation Providers ​
+  - Using Closures as Validation Rules ​
+  - Getting Validators From Tables ​
+  - Default Validator Class ​
+  - Applying Application Rules ​
+  - Validation vs. Application Rules ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Using A Different Validation Set For Associations ​
+  - Using Provider Methods Directly ​
+  - Creating a Rules Checker ​
+  - Creating Unique Field Rules ​
+  - Foreign Key Rules ​
+  - Association Count Rules ​
+  - Association Link Constraint Rule ​
+  - Using Entity Methods as Rules ​
+  - Using Conditional Rules ​
+  - Conditional/Dynamic Error Messages ​
+  - Creating Custom re-usable Rules ​
+  - Creating Custom Rule Objects ​
+  - Disabling Rules ​
+  - Using Validation as Application Rules ​
+  - Removing Rules ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Before you save your data you will probably want to ensure the data is correct and consistent. In CakePHP we have two stages of validation:
+
+When marshalling data into entities, you can validate data. Validating data allows you to check the type, shape and size of data. By default, request data will be validated before it is converted into entities. If any validation rules fail, the returned entity will contain errors. The fields with errors will not be present in the returned entity:
+
+When building an entity with validation enabled the following occurs:
+
+If you'd like to disable validation when converting request data, set the validate option to false:
+
+The same can be said about the patchEntity() method:
+
+Validation rules are defined in the Table classes for convenience. This defines what data should be validated in conjunction with where it will be saved.
+
+To create a default validation object in your table, create the validationDefault() function:
+
+The available validation methods and rules come from the Validator class and are documented in the Creating Validators section.
+
+NOTE
+
+Validation objects are intended primarily for validating user input, i.e. forms and any other posted request data.
+
+In addition to disabling validation you can choose which validation rule set you want applied:
+
+The above would call the validationUpdate() method on the table instance to build the required rules. By default, the validationDefault() method will be used. An example validator for our articles table would be:
+
+You can have as many validation sets as necessary. See the validation chapter for more information on building validation rule-sets.
+
+Validation sets can also be defined per association. When using the newEntity() or patchEntity() methods, you can pass extra options to each of the associations to be converted:
+
+Because of how validator objects are built, you can decompose their construction process into multiple reusable steps:
+
+Given the above setup, when using the hardened validation set, it will also contain the validation rules declared in the default set.
+
+Validation rules can use functions defined on any known providers. By default CakePHP sets up a few providers:
+
+When a validation rule is created you can name the provider of that rule. For example, if your table has an isValidRole method you can use it as a validation rule:
+
+In some cases, you may want to call provider methods directly within a custom validation rule. You can access a provider class using getProvider() and then call its methods statically. However, for the default Validation class, you can simply call its methods directly:
+
+This approach is useful when you need to combine multiple validation rules with OR logic, which is not directly supported by the validator's fluent interface.
+
+You can also use closures for validation rules:
+
+Validation methods can return error messages when they fail. This is a simple way to make error messages dynamic based on the provided value.
+
+Once you have created a few validation sets in your table class, you can get the resulting object by name:
+
+As stated above, by default the validation methods receive an instance of Cake\Validation\Validator. Instead, if you want your custom validator's instance to be used each time, you can use table's $_validatorClass property:
+
+While basic data validation is done when request data is converted into entities, many applications also have more complex validation that should only be applied after basic validation has completed.
+
+Where validation ensures the form or syntax of your data is correct, rules focus on comparing data against the existing state of your application and/or network.
+
+These types of rules are often referred to as 'domain rules' or 'application rules'. CakePHP exposes this concept through 'RulesCheckers' which are applied before entities are persisted. Some example application rules are:
+
+Application rules are checked when calling the Table save() and delete() methods.
+
+Rules checker classes are generally defined by the buildRules() method in your table class. Behaviors and other event subscribers can use the Model.buildRules event to augment the rules checker for a given Table class:
+
+Your rules functions can expect to get the Entity being checked and an array of options. The options array will contain errorField, message, and repository. The repository option will contain the table class the rules are attached to. Because rules accept any callable, you can also use instance functions:
+
+or callable classes:
+
+When adding rules you can define the field the rule is for and the error message as options:
+
+The error will be visible when calling the getErrors() method on the entity:
+
+Because unique rules are quite common, CakePHP includes a simple Rule class that allows you to define unique field sets:
+
+When setting rules on foreign key fields it is important to remember, that only the fields listed are used in the rule. The unique set of rules will be found with find('all'). This means that setting $user->account->id will not trigger the above rule.
+
+Many database engines allow NULLs to be unique values in UNIQUE indexes. To simulate this, set the allowMultipleNulls options to true:
+
+While you could rely on database errors to enforce constraints, using rules code can help provide a nicer user experience. Because of this CakePHP includes an ExistsIn rule class:
+
+The fields to check existence against in the related table must be part of the primary key.
+
+You can enforce existsIn to pass when nullable parts of your composite foreign key are null:
+
+You can also use existsInNullable() for nullable composite foreign keys. This rule allows null values in nullable foreign key columns, which is semantically correct for optional relationships:
+
+Use existsInNullable() instead of existsIn() when you want to permit null values in foreign keys without requiring the allowNullableNulls option.
+
+Added in version 5.3.0
+
+The existsInNullable() rule was added.
+
+In most SQL databases multi-column UNIQUE indexes allow multiple null values to exist as NULL is not equal to itself. While, allowing multiple null values is the default behavior of CakePHP, you can include null values in your unique checks using allowMultipleNulls:
+
+If you need to validate that a property or association contains the correct number of values, you can use the validCount() rule:
+
+When defining count based rules, the third parameter lets you define the comparison operator to use. ==, >=, <=, >, <, and != are the accepted operators. To ensure a property's count is within a range, use two rules:
+
+Note that validCount returns false if the property is not countable or does not exist:
+
+The LinkConstraint lets you emulate SQL constraints in databases that don't support them, or when you want to provide more user friendly error messages when constraints would fail. This rule enables you to check if an association does or does not have related records depending on the mode used:
+
+You may want to use entity methods as domain rules:
+
+You may want to conditionally apply rules based on entity data:
+
+Rules, being it custom callables, or rule objects, can either return a boolean, indicating whether they passed, or they can return a string, which means that the rule did not pass, and that the returned string should be used as the error message.
+
+Possible existing error messages defined via the message option will be overwritten by the ones returned from the rule:
+
+As of 5.2.0, you can also provide a Closure for the message key. When the validation rule fails, you can create dynamic error messages based on the entity and options:
+
+NOTE
+
+Note that in order for the returned message to be actually used, you must also supply the errorField option, otherwise the rule will just silently fail to pass, ie without an error message being set on the entity.
+
+You may want to re-use custom domain rules. You can do so by creating your own invokable rule:
+
+See the core rules for examples on how to create such rules.
+
+If your application has rules that are commonly reused, it is helpful to package those rules into re-usable classes:
+
+By creating custom rule classes you can keep your code DRY and test your domain rules in isolation.
+
+When saving an entity, you can disable the rules if necessary:
+
+The CakePHP ORM is unique in that it uses a two-layered approach to validation.
+
+The first layer is validation. Validation rules are intended to operate in a stateless way. They are best leveraged to ensure that the shape, data types and format of data is correct.
+
+The second layer is application rules. Application rules are best leveraged to check stateful properties of your entities. For example, validation rules could ensure that an email address is valid, while an application rule could ensure that the email address is unique.
+
+As you already discovered, the first layer is done through the Validator objects when calling newEntity() or patchEntity():
+
+In the above example, we'll use a 'custom' validator, which is defined using the validationCustomName() method:
+
+Validation assumes strings or array are passed since that is what is received from any request:
+
+Validation is not triggered when directly setting properties on your entities:
+
+In the above example the entity will be saved as validation is only triggered for the newEntity() and patchEntity() methods. The second level of validation is meant to address this situation.
+
+Application rules as explained above will be checked whenever save() or delete() are called:
+
+While Validation is meant for direct user input, application rules are specific for data transitions generated inside your application:
+
+In certain situations you may want to run the same data validation routines for data that was both generated by users and inside your application. This could come up when running a CLI script that directly sets properties on entities:
+
+When executed the save will fail thanks to the new application rule that was added:
+
+The same result can be expected when using newEntity() or patchEntity():
+
+If you need to remove rules from a RulesChecker use a remove method:
+
+Added in version 5.1.0
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+$article = $articles->newEntity($this->request->getData());
+if ($article->getErrors()) {
+    // Entity failed validation.
+}
+----------------------------------------
+
+Code Block 2 ():
+$article = $articles->newEntity($this->request->getData());
+if ($article->getErrors()) {
+    // Entity failed validation.
+}
+----------------------------------------
+
+Code Block 3 ():
+table
+----------------------------------------
+
+Code Block 4 ():
+default
+----------------------------------------
+
+Code Block 5 ():
+validationDefault
+----------------------------------------
+
+Code Block 6 ():
+Model.buildValidator
+----------------------------------------
+
+Code Block 7 ():
+validate
+----------------------------------------
+
+Code Block 8 (shiki):
+$article = $articles->newEntity(
+    $this->request->getData(),
+    ['validate' => false],
+);
+----------------------------------------
+
+Code Block 9 ():
+$article = $articles->newEntity(
+    $this->request->getData(),
+    ['validate' => false],
+);
+----------------------------------------
+
+Code Block 10 ():
+patchEntity()
+----------------------------------------
+
+Code Block 11 (shiki):
+$article = $articles->patchEntity($article, $newData, [
+    'validate' => false,
+]);
+----------------------------------------
+
+Code Block 12 ():
+$article = $articles->patchEntity($article, $newData, [
+    'validate' => false,
+]);
+----------------------------------------
+
+Code Block 13 ():
+validationDefault()
+----------------------------------------
+
+Code Block 14 (shiki):
+use Cake\ORM\Table;
+use Cake\Validation\Validator;
+
+class ArticlesTable extends Table
+{
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator
+            ->requirePresence('title', 'create')
+            ->notEmptyString('title');
+
+        $validator
+            ->allowEmptyString('link')
+            ->add('link', 'valid-url', ['rule' => 'url']);
+
+        ...
+
+        return $validator;
+    }
+}
+----------------------------------------
+
+Code Block 15 ():
+use Cake\ORM\Table;
+use Cake\Validation\Validator;
+
+class ArticlesTable extends Table
+{
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator
+            ->requirePresence('title', 'create')
+            ->notEmptyString('title');
+
+        $validator
+            ->allowEmptyString('link')
+            ->add('link', 'valid-url', ['rule' => 'url']);
+
+        ...
+
+        return $validator;
+    }
+}
+----------------------------------------
+
+Code Block 16 ():
+Validator
+----------------------------------------
+
+Code Block 17 (shiki):
+$article = $articles->newEntity(
+    $this->request->getData(),
+    ['validate' => 'update'],
+);
+----------------------------------------
+
+Code Block 18 ():
+$article = $articles->newEntity(
+    $this->request->getData(),
+    ['validate' => 'update'],
+);
+----------------------------------------
+
+Code Block 19 ():
+validationUpdate()
+----------------------------------------
+
+Code Block 20 ():
+validationDefault()
+----------------------------------------
+
+Code Block 21 (shiki):
+class ArticlesTable extends Table
+{
+    public function validationUpdate(Validator $validator): Validator
+    {
+        $validator
+            ->notEmptyString('title', __('You need to provide a title'))
+            ->notEmptyString('body', __('A body is required'));
+
+        return $validator;
+    }
+}
+----------------------------------------
+
+Code Block 22 ():
+class ArticlesTable extends Table
+{
+    public function validationUpdate(Validator $validator): Validator
+    {
+        $validator
+            ->notEmptyString('title', __('You need to provide a title'))
+            ->notEmptyString('body', __('A body is required'));
+
+        return $validator;
+    }
+}
+----------------------------------------
+
+Code Block 23 ():
+newEntity()
+----------------------------------------
+
+Code Block 24 ():
+patchEntity()
+----------------------------------------
+
+Code Block 25 (shiki):
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'user_id' => 1,
+    'user' => [
+        'username' => 'mark',
+    ],
+    'comments' => [
+        ['body' => 'First comment'],
+        ['body' => 'Second comment'],
+    ],
+];
+
+$article = $articles->patchEntity($article, $data, [
+    'validate' => 'update',
+    'associated' => [
+        'Users' => ['validate' => 'signup'],
+        'Comments' => ['validate' => 'custom'],
+    ],
+]);
+----------------------------------------
+
+Code Block 26 ():
+$data = [
+    'title' => 'My title',
+    'body' => 'The text',
+    'user_id' => 1,
+    'user' => [
+        'username' => 'mark',
+    ],
+    'comments' => [
+        ['body' => 'First comment'],
+        ['body' => 'Second comment'],
+    ],
+];
+
+$article = $articles->patchEntity($article, $data, [
+    'validate' => 'update',
+    'associated' => [
+        'Users' => ['validate' => 'signup'],
+        'Comments' => ['validate' => 'custom'],
+    ],
+]);
+----------------------------------------
+
+Code Block 27 (shiki):
+// UsersTable.php
+
+public function validationDefault(Validator $validator): Validator
+{
+    $validator->notEmptyString('username');
+    $validator->notEmptyString('password');
+    $validator->add('email', 'valid-email', ['rule' => 'email']);
+    ...
+
+    return $validator;
+}
+
+public function validationHardened(Validator $validator): Validator
+{
+    $validator = $this->validationDefault($validator);
+
+    $validator->add('password', 'length', ['rule' => ['lengthBetween', 8, 100]]);
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 28 ():
+// UsersTable.php
+
+public function validationDefault(Validator $validator): Validator
+{
+    $validator->notEmptyString('username');
+    $validator->notEmptyString('password');
+    $validator->add('email', 'valid-email', ['rule' => 'email']);
+    ...
+
+    return $validator;
+}
+
+public function validationHardened(Validator $validator): Validator
+{
+    $validator = $this->validationDefault($validator);
+
+    $validator->add('password', 'length', ['rule' => ['lengthBetween', 8, 100]]);
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 29 ():
+hardened
+----------------------------------------
+
+Code Block 30 ():
+default
+----------------------------------------
+
+Code Block 31 ():
+table
+----------------------------------------
+
+Code Block 32 ():
+Cake\Validation\Validation
+----------------------------------------
+
+Code Block 33 ():
+default
+----------------------------------------
+
+Code Block 34 ():
+isValidRole
+----------------------------------------
+
+Code Block 35 (shiki):
+use Cake\ORM\Table;
+use Cake\Validation\Validator;
+
+class UsersTable extends Table
+{
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator
+            ->add('role', 'validRole', [
+                'rule' => 'isValidRole',
+                'message' => __('You need to provide a valid role'),
+                'provider' => 'table',
+            ]);
+
+        return $validator;
+    }
+
+    public function isValidRole($value, array $context): bool
+    {
+        return in_array($value, ['admin', 'editor', 'author'], true);
+    }
+
+}
+----------------------------------------
+
+Code Block 36 ():
+use Cake\ORM\Table;
+use Cake\Validation\Validator;
+
+class UsersTable extends Table
+{
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator
+            ->add('role', 'validRole', [
+                'rule' => 'isValidRole',
+                'message' => __('You need to provide a valid role'),
+                'provider' => 'table',
+            ]);
+
+        return $validator;
+    }
+
+    public function isValidRole($value, array $context): bool
+    {
+        return in_array($value, ['admin', 'editor', 'author'], true);
+    }
+
+}
+----------------------------------------
+
+Code Block 37 ():
+getProvider()
+----------------------------------------
+
+Code Block 38 ():
+Validation
+----------------------------------------
+
+Code Block 39 (shiki):
+use Cake\Validation\Validation;
+
+$validator->add('start_on', 'dateOrDatetime', [
+    'rule' => function ($value): bool {
+        return Validation::datetime($value) || Validation::date($value);
+    },
+    'message' => __('Must be a date or datetime'),
+]);
+----------------------------------------
+
+Code Block 40 ():
+use Cake\Validation\Validation;
+
+$validator->add('start_on', 'dateOrDatetime', [
+    'rule' => function ($value): bool {
+        return Validation::datetime($value) || Validation::date($value);
+    },
+    'message' => __('Must be a date or datetime'),
+]);
+----------------------------------------
+
+Code Block 41 (shiki):
+$validator->add('name', 'myRule', [
+    'rule' => function ($value, array $context) {
+        if ($value > 1) {
+            return true;
+        }
+
+        return 'Not a good value.';
+    },
+]);
+----------------------------------------
+
+Code Block 42 ():
+$validator->add('name', 'myRule', [
+    'rule' => function ($value, array $context) {
+        if ($value > 1) {
+            return true;
+        }
+
+        return 'Not a good value.';
+    },
+]);
+----------------------------------------
+
+Code Block 43 (shiki):
+$defaultValidator = $usersTable->getValidator('default');
+
+$hardenedValidator = $usersTable->getValidator('hardened');
+----------------------------------------
+
+Code Block 44 ():
+$defaultValidator = $usersTable->getValidator('default');
+
+$hardenedValidator = $usersTable->getValidator('hardened');
+----------------------------------------
+
+Code Block 45 ():
+Cake\Validation\Validator
+----------------------------------------
+
+Code Block 46 ():
+$_validatorClass
+----------------------------------------
+
+Code Block 47 (shiki):
+// In your table class
+public function initialize(array $config): void
+{
+    $this->_validatorClass = \FullyNamespaced\Custom\Validator::class;
+}
+----------------------------------------
+
+Code Block 48 ():
+// In your table class
+public function initialize(array $config): void
+{
+    $this->_validatorClass = \FullyNamespaced\Custom\Validator::class;
+}
+----------------------------------------
+
+Code Block 49 ():
+save()
+----------------------------------------
+
+Code Block 50 ():
+delete()
+----------------------------------------
+
+Code Block 51 ():
+buildRules()
+----------------------------------------
+
+Code Block 52 ():
+Model.buildRules
+----------------------------------------
+
+Code Block 53 (shiki):
+use Cake\ORM\RulesChecker;
+
+// In a table class
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    // Add a rule that is applied for create and update operations
+    $rules->add(function ($entity, $options) {
+        // Return a boolean to indicate pass/failure
+    }, 'ruleName');
+
+    // Add a rule for create.
+    $rules->addCreate(function ($entity, $options) {
+        // Return a boolean to indicate pass/failure
+    }, 'ruleName');
+
+    // Add a rule for update
+    $rules->addUpdate(function ($entity, $options) {
+        // Return a boolean to indicate pass/failure
+    }, 'ruleName');
+
+    // Add a rule for the deleting.
+    $rules->addDelete(function ($entity, $options) {
+        // Return a boolean to indicate pass/failure
+    }, 'ruleName');
+
+    return $rules;
+}
+----------------------------------------
+
+Code Block 54 ():
+use Cake\ORM\RulesChecker;
+
+// In a table class
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    // Add a rule that is applied for create and update operations
+    $rules->add(function ($entity, $options) {
+        // Return a boolean to indicate pass/failure
+    }, 'ruleName');
+
+    // Add a rule for create.
+    $rules->addCreate(function ($entity, $options) {
+        // Return a boolean to indicate pass/failure
+    }, 'ruleName');
+
+    // Add a rule for update
+    $rules->addUpdate(function ($entity, $options) {
+        // Return a boolean to indicate pass/failure
+    }, 'ruleName');
+
+    // Add a rule for the deleting.
+    $rules->addDelete(function ($entity, $options) {
+        // Return a boolean to indicate pass/failure
+    }, 'ruleName');
+
+    return $rules;
+}
+----------------------------------------
+
+Code Block 55 ():
+errorField
+----------------------------------------
+
+Code Block 56 ():
+message
+----------------------------------------
+
+Code Block 57 ():
+repository
+----------------------------------------
+
+Code Block 58 ():
+repository
+----------------------------------------
+
+Code Block 59 ():
+callable
+----------------------------------------
+
+Code Block 60 (shiki):
+$rules->addCreate([$this, 'uniqueEmail'], 'uniqueEmail');
+----------------------------------------
+
+Code Block 61 ():
+$rules->addCreate([$this, 'uniqueEmail'], 'uniqueEmail');
+----------------------------------------
+
+Code Block 62 (shiki):
+$rules->addCreate(new IsUnique(['email']), 'uniqueEmail');
+----------------------------------------
+
+Code Block 63 ():
+$rules->addCreate(new IsUnique(['email']), 'uniqueEmail');
+----------------------------------------
+
+Code Block 64 (shiki):
+$rules->add([$this, 'isValidState'], 'validState', [
+    'errorField' => 'status',
+    'message' => 'This invoice cannot be moved to that status.',
+]);
+----------------------------------------
+
+Code Block 65 ():
+$rules->add([$this, 'isValidState'], 'validState', [
+    'errorField' => 'status',
+    'message' => 'This invoice cannot be moved to that status.',
+]);
+----------------------------------------
+
+Code Block 66 ():
+getErrors()
+----------------------------------------
+
+Code Block 67 (shiki):
+$entity->getErrors(); // Contains the domain rules error messages
+----------------------------------------
+
+Code Block 68 ():
+$entity->getErrors(); // Contains the domain rules error messages
+----------------------------------------
+
+Code Block 69 (shiki):
+use Cake\ORM\Rule\IsUnique;
+
+// A single field.
+$rules->add($rules->isUnique(['email']));
+
+// A list of fields
+$rules->add($rules->isUnique(
+    ['username', 'account_id'],
+    'This username & account_id combination has already been used.',
+));
+----------------------------------------
+
+Code Block 70 ():
+use Cake\ORM\Rule\IsUnique;
+
+// A single field.
+$rules->add($rules->isUnique(['email']));
+
+// A list of fields
+$rules->add($rules->isUnique(
+    ['username', 'account_id'],
+    'This username & account_id combination has already been used.',
+));
+----------------------------------------
+
+Code Block 71 ():
+find('all')
+----------------------------------------
+
+Code Block 72 ():
+$user->account->id
+----------------------------------------
+
+Code Block 73 ():
+allowMultipleNulls
+----------------------------------------
+
+Code Block 74 (shiki):
+$rules->add($rules->isUnique(
+    ['username', 'account_id'],
+    ['allowMultipleNulls' => true],
+));
+----------------------------------------
+
+Code Block 75 ():
+$rules->add($rules->isUnique(
+    ['username', 'account_id'],
+    ['allowMultipleNulls' => true],
+));
+----------------------------------------
+
+Code Block 76 ():
+ExistsIn
+----------------------------------------
+
+Code Block 77 (shiki):
+// A single field.
+$rules->add($rules->existsIn('article_id', 'Articles'));
+
+// Multiple keys, useful for composite primary keys.
+$rules->add($rules->existsIn(['site_id', 'article_id'], 'Articles'));
+----------------------------------------
+
+Code Block 78 ():
+// A single field.
+$rules->add($rules->existsIn('article_id', 'Articles'));
+
+// Multiple keys, useful for composite primary keys.
+$rules->add($rules->existsIn(['site_id', 'article_id'], 'Articles'));
+----------------------------------------
+
+Code Block 79 ():
+existsIn
+----------------------------------------
+
+Code Block 80 (shiki):
+// Example: A composite primary key within NodesTable is (parent_id, site_id).
+// A Node may reference a parent Node but does not need to. In latter case, parent_id is null.
+// Allow this rule to pass, even if fields that are nullable, like parent_id, are null:
+$rules->add($rules->existsIn(
+    ['parent_id', 'site_id'], // Schema: parent_id NULL, site_id NOT NULL
+    'ParentNodes',
+    ['allowNullableNulls' => true],
+));
+
+// A Node however should in addition also always reference a Site.
+$rules->add($rules->existsIn(['site_id'], 'Sites'));
+----------------------------------------
+
+Code Block 81 ():
+// Example: A composite primary key within NodesTable is (parent_id, site_id).
+// A Node may reference a parent Node but does not need to. In latter case, parent_id is null.
+// Allow this rule to pass, even if fields that are nullable, like parent_id, are null:
+$rules->add($rules->existsIn(
+    ['parent_id', 'site_id'], // Schema: parent_id NULL, site_id NOT NULL
+    'ParentNodes',
+    ['allowNullableNulls' => true],
+));
+
+// A Node however should in addition also always reference a Site.
+$rules->add($rules->existsIn(['site_id'], 'Sites'));
+----------------------------------------
+
+Code Block 82 ():
+existsInNullable()
+----------------------------------------
+
+Code Block 83 ():
+null
+----------------------------------------
+
+Code Block 84 (shiki):
+// Allow null values in nullable composite foreign keys.
+$rules->add($rules->existsInNullable(
+    ['author_id', 'site_id'],
+    'SiteAuthors',
+));
+----------------------------------------
+
+Code Block 85 ():
+// Allow null values in nullable composite foreign keys.
+$rules->add($rules->existsInNullable(
+    ['author_id', 'site_id'],
+    'SiteAuthors',
+));
+----------------------------------------
+
+Code Block 86 ():
+existsInNullable()
+----------------------------------------
+
+Code Block 87 ():
+existsIn()
+----------------------------------------
+
+Code Block 88 ():
+allowNullableNulls
+----------------------------------------
+
+Code Block 89 ():
+existsInNullable()
+----------------------------------------
+
+Code Block 90 ():
+UNIQUE
+----------------------------------------
+
+Code Block 91 ():
+NULL
+----------------------------------------
+
+Code Block 92 ():
+allowMultipleNulls
+----------------------------------------
+
+Code Block 93 (shiki):
+// Only one null value can exist in `parent_id` and `site_id`
+$rules->add($rules->existsIn(
+    ['parent_id', 'site_id'],
+    'ParentNodes',
+    ['allowMultipleNulls' => false],
+));
+----------------------------------------
+
+Code Block 94 ():
+// Only one null value can exist in `parent_id` and `site_id`
+$rules->add($rules->existsIn(
+    ['parent_id', 'site_id'],
+    'ParentNodes',
+    ['allowMultipleNulls' => false],
+));
+----------------------------------------
+
+Code Block 95 ():
+validCount()
+----------------------------------------
+
+Code Block 96 (shiki):
+// In the ArticlesTable.php file
+// No more than 5 tags on an article.
+$rules->add($rules->validCount('tags', 5, '<=', 'You can only have 5 tags'));
+----------------------------------------
+
+Code Block 97 ():
+// In the ArticlesTable.php file
+// No more than 5 tags on an article.
+$rules->add($rules->validCount('tags', 5, '<=', 'You can only have 5 tags'));
+----------------------------------------
+
+Code Block 98 ():
+==
+----------------------------------------
+
+Code Block 99 ():
+>=
+----------------------------------------
+
+Code Block 100 ():
+<=
+----------------------------------------
+
+Code Block 101 ():
+>
+----------------------------------------
+
+Code Block 102 ():
+<
+----------------------------------------
+
+Code Block 103 ():
+!=
+----------------------------------------
+
+Code Block 104 (shiki):
+// In the ArticlesTable.php file
+// Between 3 and 5 tags
+$rules->add($rules->validCount('tags', 3, '>=', 'You must have at least 3 tags'));
+$rules->add($rules->validCount('tags', 5, '<=', 'You must have at most 5 tags'));
+----------------------------------------
+
+Code Block 105 ():
+// In the ArticlesTable.php file
+// Between 3 and 5 tags
+$rules->add($rules->validCount('tags', 3, '>=', 'You must have at least 3 tags'));
+$rules->add($rules->validCount('tags', 5, '<=', 'You must have at most 5 tags'));
+----------------------------------------
+
+Code Block 106 ():
+validCount
+----------------------------------------
+
+Code Block 107 ():
+false
+----------------------------------------
+
+Code Block 108 (shiki):
+// The save operation will fail if tags is null.
+$rules->add($rules->validCount('tags', 0, '<=', 'You must not have any tags'));
+----------------------------------------
+
+Code Block 109 ():
+// The save operation will fail if tags is null.
+$rules->add($rules->validCount('tags', 0, '<=', 'You must not have any tags'));
+----------------------------------------
+
+Code Block 110 ():
+LinkConstraint
+----------------------------------------
+
+Code Block 111 (shiki):
+// Ensure that each comment is linked to an Article during updates.
+$rules->addUpdate($rules->isLinkedTo(
+    'Articles',
+    'article',
+    'Requires an article',
+));
+
+// Ensure that an article has no linked comments during delete.
+$rules->addDelete($rules->isNotLinkedTo(
+    'Comments',
+    'comments',
+    'Must have zero comments before deletion.',
+));
+----------------------------------------
+
+Code Block 112 ():
+// Ensure that each comment is linked to an Article during updates.
+$rules->addUpdate($rules->isLinkedTo(
+    'Articles',
+    'article',
+    'Requires an article',
+));
+
+// Ensure that an article has no linked comments during delete.
+$rules->addDelete($rules->isNotLinkedTo(
+    'Comments',
+    'comments',
+    'Must have zero comments before deletion.',
+));
+----------------------------------------
+
+Code Block 113 (shiki):
+$rules->add(function ($entity, $options) {
+    return $entity->isOkLooking();
+}, 'ruleName');
+----------------------------------------
+
+Code Block 114 ():
+$rules->add(function ($entity, $options) {
+    return $entity->isOkLooking();
+}, 'ruleName');
+----------------------------------------
+
+Code Block 115 (shiki):
+$rules->add(function ($entity, $options) use($rules) {
+    if ($entity->role == 'admin') {
+        $rule = $rules->existsIn('user_id', 'Admins');
+
+        return $rule($entity, $options);
+    }
+    if ($entity->role == 'user') {
+        $rule = $rules->existsIn('user_id', 'Users');
+
+        return $rule($entity, $options);
+    }
+
+    return false;
+}, 'userExists');
+----------------------------------------
+
+Code Block 116 ():
+$rules->add(function ($entity, $options) use($rules) {
+    if ($entity->role == 'admin') {
+        $rule = $rules->existsIn('user_id', 'Admins');
+
+        return $rule($entity, $options);
+    }
+    if ($entity->role == 'user') {
+        $rule = $rules->existsIn('user_id', 'Users');
+
+        return $rule($entity, $options);
+    }
+
+    return false;
+}, 'userExists');
+----------------------------------------
+
+Code Block 117 ():
+message
+----------------------------------------
+
+Code Block 118 (shiki):
+$rules->add(
+    function ($entity, $options) {
+        if (!$entity->length) {
+            return false;
+        }
+
+        if ($entity->length < 10) {
+            return 'Error message when value is less than 10';
+        }
+
+        if ($entity->length > 20) {
+            return 'Error message when value is greater than 20';
+        }
+
+        return true;
+    },
+    'ruleName',
+    [
+        'errorField' => 'length',
+        'message' => 'Generic error message used when `false` is returned',
+    ]
+);
+----------------------------------------
+
+Code Block 119 ():
+$rules->add(
+    function ($entity, $options) {
+        if (!$entity->length) {
+            return false;
+        }
+
+        if ($entity->length < 10) {
+            return 'Error message when value is less than 10';
+        }
+
+        if ($entity->length > 20) {
+            return 'Error message when value is greater than 20';
+        }
+
+        return true;
+    },
+    'ruleName',
+    [
+        'errorField' => 'length',
+        'message' => 'Generic error message used when `false` is returned',
+    ]
+);
+----------------------------------------
+
+Code Block 120 ():
+Closure
+----------------------------------------
+
+Code Block 121 ():
+message
+----------------------------------------
+
+Code Block 122 (shiki):
+$rules->add(
+    $rules->existsIn('article_id', 'Articles'),
+    'article_exists',
+    [
+        'message' => function ($entity, $options) {
+            return sprintf(
+                'Article with ID %s does not exist',
+                $entity->article_id,
+            );
+        }
+    ]
+);
+----------------------------------------
+
+Code Block 123 ():
+$rules->add(
+    $rules->existsIn('article_id', 'Articles'),
+    'article_exists',
+    [
+        'message' => function ($entity, $options) {
+            return sprintf(
+                'Article with ID %s does not exist',
+                $entity->article_id,
+            );
+        }
+    ]
+);
+----------------------------------------
+
+Code Block 124 ():
+errorField
+----------------------------------------
+
+Code Block 125 (shiki):
+// Using a custom rule of the application
+use App\ORM\Rule\IsUniqueWithNulls;
+// ...
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    $rules->add(new IsUniqueWithNulls(['parent_id', 'instance_id', 'name']), 'uniqueNamePerParent', [
+        'errorField' => 'name',
+        'message' => 'Name must be unique per parent.',
+    ]);
+
+    return $rules;
+}
+----------------------------------------
+
+Code Block 126 ():
+// Using a custom rule of the application
+use App\ORM\Rule\IsUniqueWithNulls;
+// ...
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    $rules->add(new IsUniqueWithNulls(['parent_id', 'instance_id', 'name']), 'uniqueNamePerParent', [
+        'errorField' => 'name',
+        'message' => 'Name must be unique per parent.',
+    ]);
+
+    return $rules;
+}
+----------------------------------------
+
+Code Block 127 (shiki):
+// in src/Model/Rule/CustomRule.php
+namespace App\Model\Rule;
+
+use Cake\Datasource\EntityInterface;
+
+class CustomRule
+{
+    public function __invoke(EntityInterface $entity, array $options): bool
+    {
+        // Do work
+        return false;
+    }
+}
+
+// Add the custom rule
+use App\Model\Rule\CustomRule;
+
+$rules->add(new CustomRule(/* ... */), 'ruleName');
+----------------------------------------
+
+Code Block 128 ():
+// in src/Model/Rule/CustomRule.php
+namespace App\Model\Rule;
+
+use Cake\Datasource\EntityInterface;
+
+class CustomRule
+{
+    public function __invoke(EntityInterface $entity, array $options): bool
+    {
+        // Do work
+        return false;
+    }
+}
+
+// Add the custom rule
+use App\Model\Rule\CustomRule;
+
+$rules->add(new CustomRule(/* ... */), 'ruleName');
+----------------------------------------
+
+Code Block 129 (shiki):
+$articles->save($article, ['checkRules' => false]);
+----------------------------------------
+
+Code Block 130 ():
+$articles->save($article, ['checkRules' => false]);
+----------------------------------------
+
+Code Block 131 ():
+Validator
+----------------------------------------
+
+Code Block 132 ():
+newEntity()
+----------------------------------------
+
+Code Block 133 ():
+patchEntity()
+----------------------------------------
+
+Code Block 134 (shiki):
+$validatedEntity = $articlesTable->newEntity(
+    $unsafeData,
+    ['validate' => 'customName'],
+);
+$validatedEntity = $articlesTable->patchEntity(
+    $entity,
+    $unsafeData,
+    ['validate' => 'customName'],
+);
+----------------------------------------
+
+Code Block 135 ():
+$validatedEntity = $articlesTable->newEntity(
+    $unsafeData,
+    ['validate' => 'customName'],
+);
+$validatedEntity = $articlesTable->patchEntity(
+    $entity,
+    $unsafeData,
+    ['validate' => 'customName'],
+);
+----------------------------------------
+
+Code Block 136 ():
+validationCustomName()
+----------------------------------------
+
+Code Block 137 (shiki):
+public function validationCustomName(Validator $validator): Validator
+{
+    $validator->add(
+        // ...
+    );
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 138 ():
+public function validationCustomName(Validator $validator): Validator
+{
+    $validator->add(
+        // ...
+    );
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 139 (shiki):
+// In src/Model/Table/UsersTable.php
+public function validatePasswords(Validator $validator): Validator
+{
+    $validator->add('confirm_password', 'no-misspelling', [
+        'rule' => ['compareWith', 'password'],
+        'message' => 'Passwords are not equal',
+    ]);
+
+    // ...
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 140 ():
+// In src/Model/Table/UsersTable.php
+public function validatePasswords(Validator $validator): Validator
+{
+    $validator->add('confirm_password', 'no-misspelling', [
+        'rule' => ['compareWith', 'password'],
+        'message' => 'Passwords are not equal',
+    ]);
+
+    // ...
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 141 (shiki):
+$userEntity->email = 'not an email!!';
+$usersTable->save($userEntity);
+----------------------------------------
+
+Code Block 142 ():
+$userEntity->email = 'not an email!!';
+$usersTable->save($userEntity);
+----------------------------------------
+
+Code Block 143 ():
+newEntity()
+----------------------------------------
+
+Code Block 144 ():
+patchEntity()
+----------------------------------------
+
+Code Block 145 ():
+save()
+----------------------------------------
+
+Code Block 146 ():
+delete()
+----------------------------------------
+
+Code Block 147 (shiki):
+// In src/Model/Table/UsersTable.php
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    $rules->add($rules->isUnique(['email']));
+
+    return $rules;
+}
+
+// Elsewhere in your application code
+$userEntity->email = '[email protected]';
+$usersTable->save($userEntity); // Returns false
+----------------------------------------
+
+Code Block 148 ():
+// In src/Model/Table/UsersTable.php
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    $rules->add($rules->isUnique(['email']));
+
+    return $rules;
+}
+
+// Elsewhere in your application code
+$userEntity->email = '[email protected]';
+$usersTable->save($userEntity); // Returns false
+----------------------------------------
+
+Code Block 149 (shiki):
+// In src/Model/Table/OrdersTable.php
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    $check = function($order) {
+        if ($order->shipping_mode !== 'free') {
+            return true;
+        }
+
+        return $order->price >= 100;
+    };
+    $rules->add($check, [
+        'errorField' => 'shipping_mode',
+        'message' => 'No free shipping for orders under 100!',
+    ]);
+
+    return $rules;
+}
+
+// Elsewhere in application code
+$order->price = 50;
+$order->shipping_mode = 'free';
+$ordersTable->save($order); // Returns false
+----------------------------------------
+
+Code Block 150 ():
+// In src/Model/Table/OrdersTable.php
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    $check = function($order) {
+        if ($order->shipping_mode !== 'free') {
+            return true;
+        }
+
+        return $order->price >= 100;
+    };
+    $rules->add($check, [
+        'errorField' => 'shipping_mode',
+        'message' => 'No free shipping for orders under 100!',
+    ]);
+
+    return $rules;
+}
+
+// Elsewhere in application code
+$order->price = 50;
+$order->shipping_mode = 'free';
+$ordersTable->save($order); // Returns false
+----------------------------------------
+
+Code Block 151 (shiki):
+// In src/Model/Table/UsersTable.php
+public function validationDefault(Validator $validator): Validator
+{
+    $validator->add('email', 'valid_email', [
+        'rule' => 'email',
+        'message' => 'Invalid email',
+    ]);
+
+    // ...
+
+    return $validator;
+}
+
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    // Add validation rules
+    $rules->add(function($entity) {
+        $data = $entity->extract($this->getSchema()->columns(), true);
+        if (!$entity->isNew() && !empty($data)) {
+            $data += $entity->extract((array)$this->getPrimaryKey());
+        }
+        $validator = $this->getValidator('default');
+        $errors = $validator->validate($data, $entity->isNew());
+        $entity->setErrors($errors);
+
+        return empty($errors);
+    });
+
+    // ...
+
+    return $rules;
+}
+----------------------------------------
+
+Code Block 152 ():
+// In src/Model/Table/UsersTable.php
+public function validationDefault(Validator $validator): Validator
+{
+    $validator->add('email', 'valid_email', [
+        'rule' => 'email',
+        'message' => 'Invalid email',
+    ]);
+
+    // ...
+
+    return $validator;
+}
+
+public function buildRules(RulesChecker $rules): RulesChecker
+{
+    // Add validation rules
+    $rules->add(function($entity) {
+        $data = $entity->extract($this->getSchema()->columns(), true);
+        if (!$entity->isNew() && !empty($data)) {
+            $data += $entity->extract((array)$this->getPrimaryKey());
+        }
+        $validator = $this->getValidator('default');
+        $errors = $validator->validate($data, $entity->isNew());
+        $entity->setErrors($errors);
+
+        return empty($errors);
+    });
+
+    // ...
+
+    return $rules;
+}
+----------------------------------------
+
+Code Block 153 (shiki):
+$userEntity->email = 'not an email!!!';
+$usersTable->save($userEntity);
+$userEntity->getError('email'); // Invalid email
+----------------------------------------
+
+Code Block 154 ():
+$userEntity->email = 'not an email!!!';
+$usersTable->save($userEntity);
+$userEntity->getError('email'); // Invalid email
+----------------------------------------
+
+Code Block 155 ():
+newEntity()
+----------------------------------------
+
+Code Block 156 ():
+patchEntity()
+----------------------------------------
+
+Code Block 157 (shiki):
+$userEntity = $usersTable->newEntity(['email' => 'not an email!!']);
+$userEntity->getError('email'); // Invalid email
+----------------------------------------
+
+Code Block 158 ():
+$userEntity = $usersTable->newEntity(['email' => 'not an email!!']);
+$userEntity->getError('email'); // Invalid email
+----------------------------------------
+
+Code Block 159 ():
+RulesChecker
+----------------------------------------
+
+Code Block 160 (shiki):
+// Remove a general rule by name
+$rules->remove('ruleName');
+
+// Remove a create rule
+$rules->removeCreate('ruleName');
+
+// Remove an update rule
+$rules->removeUpdate('ruleName');
+
+// Remove a delete rule
+$rules->removeDelete('ruleName');
+----------------------------------------
+
+Code Block 161 ():
+// Remove a general rule by name
+$rules->remove('ruleName');
+
+// Remove a create rule
+$rules->removeCreate('ruleName');
+
+// Remove an update rule
+$rules->removeUpdate('ruleName');
+
+// Remove a delete rule
+$rules->removeDelete('ruleName');
+----------------------------------------
+

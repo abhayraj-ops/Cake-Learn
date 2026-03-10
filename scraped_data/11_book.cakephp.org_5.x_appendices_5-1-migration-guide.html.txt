@@ -1,0 +1,805 @@
+URL: https://book.cakephp.org/5.x/appendices/5-1-migration-guide.html
+Title: 5.1 Migration Guide | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - 5.1 Migration Guide ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Upgrade Tool ​
+  - Behavior Changes ​
+  - Deprecations ​
+  - New Features ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - I18n ​
+  - Mailer ​
+  - Cache ​
+  - Command ​
+  - Console ​
+  - Controller ​
+  - Core ​
+  - Database ​
+  - Datasource ​
+  - Http ​
+  - I18n ​
+  - ORM ​
+  - TestSuite ​
+  - Utility ​
+  - Validation ​
+  - View ​
+  - Helpers ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The 5.1.0 release is backwards compatible with 5.0. It adds new functionality and introduces new deprecations. Any functionality deprecated in 5.x will be removed in 6.0.0.
+
+The upgrade tool provides rector rules for automating some of the migration work. Run rector before updating your composer.json dependencies:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+composer.json
+----------------------------------------
+
+Code Block 2 (shiki):
+bin/cake upgrade rector --rules cakephp51 <path/to/app/src>
+----------------------------------------
+
+Code Block 3 ():
+bin/cake upgrade rector --rules cakephp51 <path/to/app/src>
+----------------------------------------
+
+Code Block 4 ():
+read
+----------------------------------------
+
+Code Block 5 ():
+write
+----------------------------------------
+
+Code Block 6 ():
+aria-required
+----------------------------------------
+
+Code Block 7 ():
+required
+----------------------------------------
+
+Code Block 8 ():
+aria-required
+----------------------------------------
+
+Code Block 9 ():
+aria-required
+----------------------------------------
+
+Code Block 10 ():
+$table->associations()->has()
+----------------------------------------
+
+Code Block 11 ():
+ellipsis
+----------------------------------------
+
+Code Block 12 ():
+...
+----------------------------------------
+
+Code Block 13 ():
+TableSchema::setColumnType()
+----------------------------------------
+
+Code Block 14 ():
+PluginCollection::addPlugin()
+----------------------------------------
+
+Code Block 15 ():
+TestCase::loadPlugins()
+----------------------------------------
+
+Code Block 16 ():
+Cache
+----------------------------------------
+
+Code Block 17 ():
+groups
+----------------------------------------
+
+Code Block 18 ():
+FormHelper::getFormProtector()
+----------------------------------------
+
+Code Block 19 ():
+null
+----------------------------------------
+
+Code Block 20 ():
+valueSeparator
+----------------------------------------
+
+Code Block 21 ():
+Table::findList()
+----------------------------------------
+
+Code Block 22 ():
+;
+----------------------------------------
+
+Code Block 23 ():
+ErrorLogger
+----------------------------------------
+
+Code Block 24 ():
+Psr\Log\LogTrait
+----------------------------------------
+
+Code Block 25 ():
+Database\QueryCompiler::$_orderedUnion
+----------------------------------------
+
+Code Block 26 ():
+_cake_core_
+----------------------------------------
+
+Code Block 27 ():
+_cake_translations_
+----------------------------------------
+
+Code Block 28 ():
+Mailer::setMessage()
+----------------------------------------
+
+Code Block 29 ():
+RedisEngine
+----------------------------------------
+
+Code Block 30 ():
+tls
+----------------------------------------
+
+Code Block 31 ():
+ssl_ca
+----------------------------------------
+
+Code Block 32 ():
+ssl_cert
+----------------------------------------
+
+Code Block 33 ():
+ssl_key
+----------------------------------------
+
+Code Block 34 ():
+bin/cake plugin list
+----------------------------------------
+
+Code Block 35 ():
+Command
+----------------------------------------
+
+Code Block 36 ():
+default
+----------------------------------------
+
+Code Block 37 ():
+BannerHelper
+----------------------------------------
+
+Code Block 38 ():
+info.bg
+----------------------------------------
+
+Code Block 39 ():
+warning.bg
+----------------------------------------
+
+Code Block 40 ():
+error.bg
+----------------------------------------
+
+Code Block 41 ():
+success.bg
+----------------------------------------
+
+Code Block 42 ():
+ConsoleOutput
+----------------------------------------
+
+Code Block 43 ():
+Arguments::getBooleanOption()
+----------------------------------------
+
+Code Block 44 ():
+Arguments::getMultipleOption()
+----------------------------------------
+
+Code Block 45 ():
+Arguments::getArgument()
+----------------------------------------
+
+Code Block 46 ():
+PluginConfig
+----------------------------------------
+
+Code Block 47 ():
+toString
+----------------------------------------
+
+Code Block 48 ():
+toInt
+----------------------------------------
+
+Code Block 49 ():
+toBool
+----------------------------------------
+
+Code Block 50 ():
+null
+----------------------------------------
+
+Code Block 51 ():
+pathCombine()
+----------------------------------------
+
+Code Block 52 ():
+events
+----------------------------------------
+
+Code Block 53 ():
+BaseApplication
+----------------------------------------
+
+Code Block 54 ():
+BasePlugin
+----------------------------------------
+
+Code Block 55 ():
+point
+----------------------------------------
+
+Code Block 56 ():
+linestring
+----------------------------------------
+
+Code Block 57 ():
+polygon
+----------------------------------------
+
+Code Block 58 ():
+geometry
+----------------------------------------
+
+Code Block 59 ():
+SelectQuery::__debugInfo()
+----------------------------------------
+
+Code Block 60 ():
+SelectQuery::intersect()
+----------------------------------------
+
+Code Block 61 ():
+SelectQuery::intersectAll()
+----------------------------------------
+
+Code Block 62 ():
+INTERSECT
+----------------------------------------
+
+Code Block 63 ():
+INTERSECT ALL
+----------------------------------------
+
+Code Block 64 ():
+intersect
+----------------------------------------
+
+Code Block 65 ():
+intersect-all
+----------------------------------------
+
+Code Block 66 ():
+set-operations-order-by
+----------------------------------------
+
+Code Block 67 ():
+SelectQuery::enableBufferedResults()
+----------------------------------------
+
+Code Block 68 ():
+SelectQuery::disableBufferedResults()
+----------------------------------------
+
+Code Block 69 ():
+SelectQuery::isBufferedResultsEnabled()
+----------------------------------------
+
+Code Block 70 ():
+RulesChecker::remove()
+----------------------------------------
+
+Code Block 71 ():
+removeCreate()
+----------------------------------------
+
+Code Block 72 ():
+removeUpdate()
+----------------------------------------
+
+Code Block 73 ():
+removeDelete()
+----------------------------------------
+
+Code Block 74 ():
+SecurityHeadersMiddleware::setPermissionsPolicy()
+----------------------------------------
+
+Code Block 75 ():
+permissions-policy
+----------------------------------------
+
+Code Block 76 ():
+Client
+----------------------------------------
+
+Code Block 77 ():
+HttpClient.beforeSend
+----------------------------------------
+
+Code Block 78 ():
+HttpClient.afterSend
+----------------------------------------
+
+Code Block 79 ():
+Http\Server::terminate()
+----------------------------------------
+
+Code Block 80 ():
+Server.terminate
+----------------------------------------
+
+Code Block 81 ():
+Server.terminate
+----------------------------------------
+
+Code Block 82 ():
+Number::formatter()
+----------------------------------------
+
+Code Block 83 ():
+currency()
+----------------------------------------
+
+Code Block 84 ():
+roundingMode
+----------------------------------------
+
+Code Block 85 ():
+toDate
+----------------------------------------
+
+Code Block 86 ():
+toDateTime
+----------------------------------------
+
+Code Block 87 ():
+null
+----------------------------------------
+
+Code Block 88 ():
+preserveKeys
+----------------------------------------
+
+Code Block 89 ():
+formatResults()
+----------------------------------------
+
+Code Block 90 ():
+json
+----------------------------------------
+
+Code Block 91 ():
+JsonType
+----------------------------------------
+
+Code Block 92 ():
+ORM.mapJsonTypeForSqlite
+----------------------------------------
+
+Code Block 93 ():
+true
+----------------------------------------
+
+Code Block 94 ():
+^10.5.5 || ^11.1.3"
+----------------------------------------
+
+Code Block 95 ():
+ConnectionHelper
+----------------------------------------
+
+Code Block 96 ():
+LogTestTrait
+----------------------------------------
+
+Code Block 97 ():
+IntegrationTestTrait::replaceRequest()
+----------------------------------------
+
+Code Block 98 ():
+Hash::insert()
+----------------------------------------
+
+Code Block 99 ():
+Hash::remove()
+----------------------------------------
+
+Code Block 100 ():
+ArrayAccess
+----------------------------------------
+
+Code Block 101 ():
+array
+----------------------------------------
+
+Code Block 102 ():
+Validation::enum()
+----------------------------------------
+
+Code Block 103 ():
+Validator::enum()
+----------------------------------------
+
+Code Block 104 ():
+Validation::enumOnly()
+----------------------------------------
+
+Code Block 105 ():
+Validation::enumExcept()
+----------------------------------------
+
+Code Block 106 ():
+Cell.beforeAction
+----------------------------------------
+
+Code Block 107 ():
+Cell.afterAction
+----------------------------------------
+
+Code Block 108 ():
+NumberHelper::format()
+----------------------------------------
+
+Code Block 109 ():
+roundingMode
+----------------------------------------
+
+Code Block 110 ():
+TextHelper::autoLinkUrls()
+----------------------------------------
+
+Code Block 111 ():
+stripProtocol
+----------------------------------------
+
+Code Block 112 ():
+http://
+----------------------------------------
+
+Code Block 113 ():
+https://
+----------------------------------------
+
+Code Block 114 ():
+maxLength
+----------------------------------------
+
+Code Block 115 ():
+ellipsis
+----------------------------------------
+
+Code Block 116 ():
+HtmlHelper::meta()
+----------------------------------------
+
+Code Block 117 ():
+meta('csrfToken')
+----------------------------------------
+

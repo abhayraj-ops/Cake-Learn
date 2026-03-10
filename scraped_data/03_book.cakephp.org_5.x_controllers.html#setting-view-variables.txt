@@ -1,0 +1,1523 @@
+URL: https://book.cakephp.org/5.x/controllers.html#setting-view-variables
+Title: Controllers | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Controllers ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - The App Controller ​
+  - Request Flow ​
+  - Controller Actions ​
+  - Interacting with Views ​
+  - Content Type Negotiation ​
+  - Content Type Negotiation Fallbacks ​
+  - Using AjaxView ​
+  - Redirecting to Other Pages ​
+  - Loading Additional Tables/Models ​
+  - Paginating a Model ​
+  - Configuring Components to Load ​
+  - Request Life-cycle Callbacks ​
+  - Using Redirects in Controller Events ​
+  - Controller Middleware ​
+  - More on Controllers ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Setting View Variables ​
+  - Setting View Options ​
+  - Rendering a View ​
+  - fetchModel() ​
+  - Controller Callback Methods ​
+H4:
+  - CMS Tutorial
+  - Config Merge Strategy ​
+  - Rendering a Specific Template ​
+  - beforeFilter() ​
+  - beforeRender() ​
+  - afterFilter() ​
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Controller\Controller
+
+Controllers are the 'C' in MVC. After routing is applied and the correct controller is found, your controller's action is called. Your controller should interpret the request, ensure the right models are called, and return the appropriate response or view. Controllers sit between Model and View.
+
+Keep Controllers Thin
+
+Move heavy business logic into models and services. Thin controllers are easier to test and reuse.
+
+Commonly, a controller manages logic around a single model. For example, for an online bakery you might have a RecipesController managing recipes and an IngredientsController managing ingredients. However, it's also possible to have controllers work with more than one model. In CakePHP, a controller is named after the primary model it handles.
+
+At a Glance
+
+Your application's controllers extend the AppController class, which extends the core Controller class. The AppController class can be defined in src/Controller/AppController.php and should contain methods shared between all of your application's controllers.
+
+Controllers provide methods that handle requests. These are called actions. By default, each public method in a controller is an action and is accessible from a URL. An action interprets the request and creates the response. Usually responses are rendered views, but there are other response types as well.
+
+As stated in the introduction, the AppController class is the parent class to all of your application's controllers. AppController itself extends the Cake\Controller\Controller class included in CakePHP. AppController is defined in src/Controller/AppController.php as follows:
+
+Controller attributes and methods created in your AppController will be available in all controllers that extend it. Components (which you'll learn about later) are best used for code that is used in many (but not necessarily all) controllers.
+
+You can use your AppController to load components that will be used in every controller in your application. CakePHP provides a initialize() method that is invoked at the end of a Controller's constructor for this kind of use:
+
+When a request is made to a CakePHP application, CakePHP's Cake\Routing\Router and Cake\Routing\Dispatcher classes use Routes Configuration to find and create the correct controller instance. The request data is encapsulated in a request object. CakePHP puts all the important request information into the $this->request property. See the section on Cake Request for more information on the CakePHP request object.
+
+Request Flow Summary
+
+Controller actions are responsible for converting the request parameters into a response for the browser/user making the request. CakePHP uses conventions to automate this process and remove some boilerplate code you would otherwise need to write.
+
+By convention, CakePHP renders a view with an inflected version of the action name. Returning to our online bakery example, our RecipesController might contain the view(), share(), and search() actions. The controller would be found in src/Controller/RecipesController.php and contain:
+
+The template files for these actions would be templates/Recipes/view.php, templates/Recipes/share.php, and templates/Recipes/search.php. The conventional view file name is the lowercased and underscored version of the action name.
+
+Controller actions generally use Controller::set() to create a context that View uses to render the view layer. Because of the conventions that CakePHP uses, you don't need to create and render the view manually. Instead, once a controller action has completed, CakePHP will handle rendering and delivering the View.
+
+If for some reason you'd like to skip the default behavior, you can return a Cake\Http\Response object from the action with the fully created response.
+
+Explicit Responses
+
+Return a Response when you need full control (JSON, file downloads, or custom status codes).
+
+In order for you to use a controller effectively in your own application, we'll cover some of the core attributes and methods provided by CakePHP's controllers.
+
+Controllers interact with views in a number of ways. First, they are able to pass data to the views, using Controller::set(). You can also decide which view class to use, and which view file should be rendered from the controller.
+
+method Cake\Controller\Controller::set(string $var, mixed $value): void
+
+The Controller::set() method is the main way to send data from your controller to your view. Once you've used Controller::set(), the variable can be accessed in your view:
+
+The Controller::set() method also takes an associative array as its first parameter. This can often be a quick way to assign a set of information to the view:
+
+Keep in mind that view vars are shared among all parts rendered by your view. They will be available in all parts of the view: the template, the layout and all elements inside the former two.
+
+View Data Scope
+
+View variables are shared with the layout and elements. Prefer specific keys to avoid accidental collisions.
+
+If you want to customize the view class, layout/template paths, helpers or the theme that will be used when rendering the view, you can use the viewBuilder() method to get a builder. This builder can be used to define properties of the view before it is created:
+
+The above shows how you can load custom helpers, set the theme and use a custom view class.
+
+By default, view options set via ViewBuilder are deep-merged with the View class's default configuration. You can control this behavior using setConfigMergeStrategy():
+
+Available strategies are:
+
+You can retrieve the current strategy using getConfigMergeStrategy().
+
+Added in version 5.3.0
+
+ViewBuilder::setConfigMergeStrategy() and ViewBuilder::getConfigMergeStrategy() were added.
+
+method Cake\Controller\Controller::render(string $view, string $layout): Response
+
+The Controller::render() method is automatically called at the end of each requested controller action. This method performs all the view logic (using the data you've submitted using the Controller::set() method), places the view inside its View::$layout, and serves it back to the end user.
+
+The default view file used by render is determined by convention. If the search() action of the RecipesController is requested, the view file in templates/Recipes/search.php will be rendered:
+
+Although CakePHP will automatically call it after every action's logic (unless you've called $this->disableAutoRender()), you can use it to specify an alternate view file by specifying a view file name as first argument of Controller::render() method.
+
+Skipping Auto-Render
+
+Call $this->disableAutoRender() when the action fully handles the response.
+
+If $view starts with '/', it is assumed to be a view or element file relative to the templates folder. This allows direct rendering of elements, very useful in AJAX calls:
+
+The second parameter $layout of Controller::render() allows you to specify the layout with which the view is rendered.
+
+In your controller, you may want to render a different view than the conventional one. You can do this by calling Controller::render() directly. Once you have called Controller::render(), CakePHP will not try to re-render the view.
+
+This renders templates/Posts/custom_file.php instead of templates/Posts/my_action.php. Rendering plugin templates uses the syntax $this->render('Users.UserDetails/custom_file') and renders plugins/Users/templates/UserDetails/custom_file.php.
+
+method Cake\Controller\Controller::addViewClasses(array $viewClasses): static
+
+Controllers can define a list of view classes they support. After the controller's action is complete CakePHP will use the view list to perform content-type negotiation with either File Extensions or Accept headers. This enables your application to re-use the same controller action to render an HTML view or render a JSON or XML response. To define the list of supported view classes for a controller is done with the addViewClasses() method:
+
+Content Negotiation
+
+Use addViewClasses() to serve multiple formats from the same action.
+
+The application's View class is automatically used as a fallback when no other view can be selected based on the request's Accept header or routing extension. If your application only supports content types for a specific actions, you can call addClasses() within your action too:
+
+If within your controller actions you need to process the request or load data differently based on the content type you can use Check The Request:
+
+In case your app need more complex logic to decide which view classes to use then you can override the Controller::viewClasses() method and return an array of view classes as required.
+
+NOTE
+
+View classes must implement the static contentType() hook method to participate in content-type negotiation.
+
+If no View can be matched with the request's content type preferences, CakePHP will use the base View class. If you want to require content-type negotiation, you can use the NegotiationRequiredView which sets a 406 status code:
+
+You can use the TYPE_MATCH_ALL content type value to build your own fallback view logic:
+
+It is important to remember that match-all views are applied only after content-type negotiation is attempted.
+
+In applications that use hypermedia or AJAX clients, you often need to render view contents without the wrapping layout. You can use the AjaxView that is bundled with the application skeleton:
+
+AjaxView will respond as text/html and use the ajax layout. Generally this layout is minimal or contains client specific markup. This replaces usage of RequestHandlerComponent automatically using the AjaxView in 4.x.
+
+method Cake\Controller\Controller::redirect(string|array $url, integer $status): Response|null
+
+The redirect() method adds a Location header and sets the status code of a response and returns it. You should return the response created by redirect() to have CakePHP send the redirect instead of completing the controller action and rendering a view.
+
+You can redirect using routing array values:
+
+By using the second parameter you can define a status code for your redirect:
+
+See the Redirect Component Events section for how to redirect out of a life-cycle handler.
+
+method Cake\Controller\Controller::fetchTable(?string $alias = null, array $options = []): Table
+
+The fetchTable() method comes handy when you need to use an ORM table that is not the controller's default one:
+
+method Cake\Controller\Controller::fetchModel(?string $modelClass = null, ?string $modelType = null): object
+
+The fetchModel() method is useful to load non ORM models or ORM tables that are not the controller's default:
+
+Added in version 4.5.0
+
+method Cake\Controller\Controller::paginate(): PaginatedInterface
+
+This method is used for paginating results fetched by your models. You can specify page sizes, model find conditions and more. See the pagination section for more details on how to use paginate().
+
+The $paginate attribute gives you a way to customize how paginate() behaves:
+
+method Cake\Controller\Controller::loadComponent(string $name, array $config = []): Component
+
+In your Controller's initialize() method you can define any components you want loaded, and any configuration data for them:
+
+CakePHP controllers trigger several events/callbacks that you can use to insert logic around the request life-cycle.
+
+By default, the following callback methods are connected to related events if the methods are implemented by your controllers.
+
+method Cake\Controller\Controller::beforeFilter(EventInterface $event): void
+
+method Cake\Controller\Controller::beforeRender(EventInterface $event): void
+
+method Cake\Controller\Controller::afterFilter(EventInterface $event): void
+
+In addition to controller life-cycle callbacks, Components also provide a similar set of callbacks.
+
+Remember to call AppController's callbacks within child controller callbacks for best results:
+
+To redirect from within a controller callback method you can use the following:
+
+By setting a redirect as event result you let CakePHP know that you don't want any other component callbacks to run, and that the controller should not handle the action any further.
+
+As of 4.1.0 you can also raise a RedirectException to signal a redirect.
+
+method Cake\Controller\Controller::middleware(MiddlewareInterface|Closure|string $middleware, array $options = []): void
+
+Middleware can be defined globally, in a routing scope or within a controller. To define middleware for a specific controller use the middleware() method from your controller's initialize() method:
+
+Middleware defined by a controller will be called before beforeFilter() and action methods are called.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+AppController
+----------------------------------------
+
+Code Block 3 ():
+AppController
+----------------------------------------
+
+Code Block 4 ():
+Controller
+----------------------------------------
+
+Code Block 5 ():
+AppController
+----------------------------------------
+
+Code Block 6 ():
+RecipesController
+----------------------------------------
+
+Code Block 7 ():
+AppController
+----------------------------------------
+
+Code Block 8 ():
+AppController
+----------------------------------------
+
+Code Block 9 ():
+AppController
+----------------------------------------
+
+Code Block 10 ():
+Cake\Controller\Controller
+----------------------------------------
+
+Code Block 11 ():
+AppController
+----------------------------------------
+
+Code Block 12 (shiki):
+namespace App\Controller;
+
+use Cake\Controller\Controller;
+
+class AppController extends Controller
+{
+}
+----------------------------------------
+
+Code Block 13 ():
+namespace App\Controller;
+
+use Cake\Controller\Controller;
+
+class AppController extends Controller
+{
+}
+----------------------------------------
+
+Code Block 14 ():
+AppController
+----------------------------------------
+
+Code Block 15 ():
+AppController
+----------------------------------------
+
+Code Block 16 ():
+initialize()
+----------------------------------------
+
+Code Block 17 (shiki):
+namespace App\Controller;
+
+use Cake\Controller\Controller;
+
+class AppController extends Controller
+{
+    public function initialize(): void
+    {
+        // Always enable the FormProtection component.
+        $this->loadComponent('FormProtection');
+    }
+}
+----------------------------------------
+
+Code Block 18 ():
+namespace App\Controller;
+
+use Cake\Controller\Controller;
+
+class AppController extends Controller
+{
+    public function initialize(): void
+    {
+        // Always enable the FormProtection component.
+        $this->loadComponent('FormProtection');
+    }
+}
+----------------------------------------
+
+Code Block 19 ():
+Cake\Routing\Router
+----------------------------------------
+
+Code Block 20 ():
+Cake\Routing\Dispatcher
+----------------------------------------
+
+Code Block 21 ():
+$this->request
+----------------------------------------
+
+Code Block 22 ():
+$this->request
+----------------------------------------
+
+Code Block 23 ():
+view()
+----------------------------------------
+
+Code Block 24 ():
+share()
+----------------------------------------
+
+Code Block 25 ():
+search()
+----------------------------------------
+
+Code Block 26 (shiki):
+// src/Controller/RecipesController.php
+
+class RecipesController extends AppController
+{
+    public function view($id)
+    {
+        // Action logic goes here.
+    }
+
+    public function share($customerId, $recipeId)
+    {
+        // Action logic goes here.
+    }
+
+    public function search($query)
+    {
+        // Action logic goes here.
+    }
+}
+----------------------------------------
+
+Code Block 27 ():
+// src/Controller/RecipesController.php
+
+class RecipesController extends AppController
+{
+    public function view($id)
+    {
+        // Action logic goes here.
+    }
+
+    public function share($customerId, $recipeId)
+    {
+        // Action logic goes here.
+    }
+
+    public function search($query)
+    {
+        // Action logic goes here.
+    }
+}
+----------------------------------------
+
+Code Block 28 ():
+Controller::set()
+----------------------------------------
+
+Code Block 29 ():
+View
+----------------------------------------
+
+Code Block 30 ():
+Cake\Http\Response
+----------------------------------------
+
+Code Block 31 ():
+Response
+----------------------------------------
+
+Code Block 32 ():
+Controller::set()
+----------------------------------------
+
+Code Block 33 ():
+method
+----------------------------------------
+
+Code Block 34 ():
+Controller::set()
+----------------------------------------
+
+Code Block 35 ():
+Controller::set()
+----------------------------------------
+
+Code Block 36 (shiki):
+// First you pass data from the controller:
+$this->set('color', 'pink');
+----------------------------------------
+
+Code Block 37 ():
+// First you pass data from the controller:
+$this->set('color', 'pink');
+----------------------------------------
+
+Code Block 38 (shiki):
+// Then, in the view, you can utilize the data:
+You have selected <?= h($color) ?> icing for the cake.
+----------------------------------------
+
+Code Block 39 ():
+// Then, in the view, you can utilize the data:
+You have selected <?= h($color) ?> icing for the cake.
+----------------------------------------
+
+Code Block 40 ():
+Controller::set()
+----------------------------------------
+
+Code Block 41 (shiki):
+$data = [
+    'color' => 'pink',
+    'type' => 'sugar',
+    'base_price' => 23.95,
+];
+
+// Make $color, $type, and $base_price
+// available to the view:
+
+$this->set($data);
+----------------------------------------
+
+Code Block 42 ():
+$data = [
+    'color' => 'pink',
+    'type' => 'sugar',
+    'base_price' => 23.95,
+];
+
+// Make $color, $type, and $base_price
+// available to the view:
+
+$this->set($data);
+----------------------------------------
+
+Code Block 43 ():
+viewBuilder()
+----------------------------------------
+
+Code Block 44 (shiki):
+$this->viewBuilder()
+    ->addHelper('MyCustom')
+    ->setTheme('Modern')
+    ->setClassName('Modern.Admin');
+----------------------------------------
+
+Code Block 45 ():
+$this->viewBuilder()
+    ->addHelper('MyCustom')
+    ->setTheme('Modern')
+    ->setClassName('Modern.Admin');
+----------------------------------------
+
+Code Block 46 ():
+ViewBuilder
+----------------------------------------
+
+Code Block 47 ():
+setConfigMergeStrategy()
+----------------------------------------
+
+Code Block 48 (shiki):
+use Cake\View\ViewBuilder;
+
+$this->viewBuilder()
+    ->setConfigMergeStrategy(ViewBuilder::MERGE_SHALLOW)
+    ->setOption('customArray', ['a', 'b', 'c']);
+----------------------------------------
+
+Code Block 49 ():
+use Cake\View\ViewBuilder;
+
+$this->viewBuilder()
+    ->setConfigMergeStrategy(ViewBuilder::MERGE_SHALLOW)
+    ->setOption('customArray', ['a', 'b', 'c']);
+----------------------------------------
+
+Code Block 50 ():
+ViewBuilder::MERGE_DEEP
+----------------------------------------
+
+Code Block 51 ():
+ViewBuilder::MERGE_SHALLOW
+----------------------------------------
+
+Code Block 52 ():
+getConfigMergeStrategy()
+----------------------------------------
+
+Code Block 53 ():
+ViewBuilder::setConfigMergeStrategy()
+----------------------------------------
+
+Code Block 54 ():
+ViewBuilder::getConfigMergeStrategy()
+----------------------------------------
+
+Code Block 55 ():
+method
+----------------------------------------
+
+Code Block 56 ():
+Controller::render()
+----------------------------------------
+
+Code Block 57 ():
+Controller::set()
+----------------------------------------
+
+Code Block 58 ():
+View::$layout
+----------------------------------------
+
+Code Block 59 ():
+search()
+----------------------------------------
+
+Code Block 60 (shiki):
+namespace App\Controller;
+
+class RecipesController extends AppController
+{
+// ...
+    public function search()
+    {
+        // Render the view in templates/Recipes/search.php
+        return $this->render();
+    }
+// ...
+}
+----------------------------------------
+
+Code Block 61 ():
+namespace App\Controller;
+
+class RecipesController extends AppController
+{
+// ...
+    public function search()
+    {
+        // Render the view in templates/Recipes/search.php
+        return $this->render();
+    }
+// ...
+}
+----------------------------------------
+
+Code Block 62 ():
+$this->disableAutoRender()
+----------------------------------------
+
+Code Block 63 ():
+Controller::render()
+----------------------------------------
+
+Code Block 64 ():
+$this->disableAutoRender()
+----------------------------------------
+
+Code Block 65 ():
+$view
+----------------------------------------
+
+Code Block 66 (shiki):
+// Render the element in templates/element/ajaxreturn.php
+return $this->render('/element/ajaxreturn');
+----------------------------------------
+
+Code Block 67 ():
+// Render the element in templates/element/ajaxreturn.php
+return $this->render('/element/ajaxreturn');
+----------------------------------------
+
+Code Block 68 (shiki):
+namespace App\Controller;
+
+class PostsController extends AppController
+{
+    public function myAction()
+    {
+        return $this->render('custom_file');
+    }
+}
+----------------------------------------
+
+Code Block 69 ():
+namespace App\Controller;
+
+class PostsController extends AppController
+{
+    public function myAction()
+    {
+        return $this->render('custom_file');
+    }
+}
+----------------------------------------
+
+Code Block 70 (shiki):
+namespace App\Controller;
+
+class PostsController extends AppController
+{
+    public function myAction()
+    {
+        return $this->render('Users.UserDetails/custom_file');
+    }
+}
+----------------------------------------
+
+Code Block 71 ():
+namespace App\Controller;
+
+class PostsController extends AppController
+{
+    public function myAction()
+    {
+        return $this->render('Users.UserDetails/custom_file');
+    }
+}
+----------------------------------------
+
+Code Block 72 ():
+$layout
+----------------------------------------
+
+Code Block 73 ():
+Controller::render()
+----------------------------------------
+
+Code Block 74 ():
+Controller::render()
+----------------------------------------
+
+Code Block 75 ():
+Controller::render()
+----------------------------------------
+
+Code Block 76 ():
+$this->render('Users.UserDetails/custom_file')
+----------------------------------------
+
+Code Block 77 ():
+method
+----------------------------------------
+
+Code Block 78 ():
+Accept
+----------------------------------------
+
+Code Block 79 ():
+addViewClasses()
+----------------------------------------
+
+Code Block 80 ():
+addViewClasses()
+----------------------------------------
+
+Code Block 81 (shiki):
+namespace App\Controller;
+
+use Cake\View\JsonView;
+use Cake\View\XmlView;
+
+class PostsController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->addViewClasses([JsonView::class, XmlView::class]);
+    }
+}
+----------------------------------------
+
+Code Block 82 ():
+namespace App\Controller;
+
+use Cake\View\JsonView;
+use Cake\View\XmlView;
+
+class PostsController extends AppController
+{
+    public function initialize(): void
+    {
+        parent::initialize();
+
+        $this->addViewClasses([JsonView::class, XmlView::class]);
+    }
+}
+----------------------------------------
+
+Code Block 83 ():
+View
+----------------------------------------
+
+Code Block 84 ():
+Accept
+----------------------------------------
+
+Code Block 85 ():
+addClasses()
+----------------------------------------
+
+Code Block 86 (shiki):
+public function export(): void
+{
+    // Use a custom CSV view for data exports.
+    $this->addViewClasses([CsvView::class]);
+
+    // Rest of the action code
+}
+----------------------------------------
+
+Code Block 87 ():
+public function export(): void
+{
+    // Use a custom CSV view for data exports.
+    $this->addViewClasses([CsvView::class]);
+
+    // Rest of the action code
+}
+----------------------------------------
+
+Code Block 88 (shiki):
+// In a controller action
+
+// Load additional data when preparing JSON responses
+if ($this->request->is('json')) {
+    $query->contain('Authors');
+}
+----------------------------------------
+
+Code Block 89 ():
+// In a controller action
+
+// Load additional data when preparing JSON responses
+if ($this->request->is('json')) {
+    $query->contain('Authors');
+}
+----------------------------------------
+
+Code Block 90 ():
+Controller::viewClasses()
+----------------------------------------
+
+Code Block 91 ():
+contentType()
+----------------------------------------
+
+Code Block 92 ():
+View
+----------------------------------------
+
+Code Block 93 ():
+NegotiationRequiredView
+----------------------------------------
+
+Code Block 94 ():
+406
+----------------------------------------
+
+Code Block 95 (shiki):
+public function initialize(): void
+{
+    parent::initialize();
+
+    // Require Accept header negotiation or return a 406 response.
+    $this->addViewClasses([JsonView::class, NegotiationRequiredView::class]);
+}
+----------------------------------------
+
+Code Block 96 ():
+public function initialize(): void
+{
+    parent::initialize();
+
+    // Require Accept header negotiation or return a 406 response.
+    $this->addViewClasses([JsonView::class, NegotiationRequiredView::class]);
+}
+----------------------------------------
+
+Code Block 97 ():
+TYPE_MATCH_ALL
+----------------------------------------
+
+Code Block 98 (shiki):
+namespace App\View;
+
+use Cake\View\View;
+
+class CustomFallbackView extends View
+{
+    public static function contentType(): string
+    {
+        return static::TYPE_MATCH_ALL;
+    }
+
+}
+----------------------------------------
+
+Code Block 99 ():
+namespace App\View;
+
+use Cake\View\View;
+
+class CustomFallbackView extends View
+{
+    public static function contentType(): string
+    {
+        return static::TYPE_MATCH_ALL;
+    }
+
+}
+----------------------------------------
+
+Code Block 100 ():
+AjaxView
+----------------------------------------
+
+Code Block 101 (shiki):
+// In a controller action, or in beforeRender.
+if ($this->request->is('ajax')) {
+    $this->viewBuilder()->setClassName('Ajax');
+}
+----------------------------------------
+
+Code Block 102 ():
+// In a controller action, or in beforeRender.
+if ($this->request->is('ajax')) {
+    $this->viewBuilder()->setClassName('Ajax');
+}
+----------------------------------------
+
+Code Block 103 ():
+AjaxView
+----------------------------------------
+
+Code Block 104 ():
+text/html
+----------------------------------------
+
+Code Block 105 ():
+ajax
+----------------------------------------
+
+Code Block 106 ():
+RequestHandlerComponent
+----------------------------------------
+
+Code Block 107 ():
+AjaxView
+----------------------------------------
+
+Code Block 108 ():
+method
+----------------------------------------
+
+Code Block 109 ():
+redirect()
+----------------------------------------
+
+Code Block 110 ():
+Location
+----------------------------------------
+
+Code Block 111 ():
+redirect()
+----------------------------------------
+
+Code Block 112 ():
+routing array
+----------------------------------------
+
+Code Block 113 (shiki):
+return $this->redirect([
+    'controller' => 'Orders',
+    'action' => 'confirm',
+    $order->id,
+    '?' => [
+        'product' => 'pizza',
+        'quantity' => 5,
+    ],
+    '#' => 'top',
+]);
+----------------------------------------
+
+Code Block 114 ():
+return $this->redirect([
+    'controller' => 'Orders',
+    'action' => 'confirm',
+    $order->id,
+    '?' => [
+        'product' => 'pizza',
+        'quantity' => 5,
+    ],
+    '#' => 'top',
+]);
+----------------------------------------
+
+Code Block 115 (shiki):
+return $this->redirect('/orders/confirm');
+----------------------------------------
+
+Code Block 116 ():
+return $this->redirect('/orders/confirm');
+----------------------------------------
+
+Code Block 117 (shiki):
+return $this->redirect('https://www.example.com');
+----------------------------------------
+
+Code Block 118 ():
+return $this->redirect('https://www.example.com');
+----------------------------------------
+
+Code Block 119 (shiki):
+return $this->redirect($this->referer());
+----------------------------------------
+
+Code Block 120 ():
+return $this->redirect($this->referer());
+----------------------------------------
+
+Code Block 121 (shiki):
+// Do a 301 (moved permanently)
+return $this->redirect('/order/confirm', 301);
+
+// Do a 303 (see other)
+return $this->redirect('/order/confirm', 303);
+----------------------------------------
+
+Code Block 122 ():
+// Do a 301 (moved permanently)
+return $this->redirect('/order/confirm', 301);
+
+// Do a 303 (see other)
+return $this->redirect('/order/confirm', 303);
+----------------------------------------
+
+Code Block 123 ():
+method
+----------------------------------------
+
+Code Block 124 ():
+fetchTable()
+----------------------------------------
+
+Code Block 125 (shiki):
+// In a controller method.
+$recentArticles = $this->fetchTable('Articles')->find('all',
+    limit: 5,
+    order: 'Articles.created DESC',
+)->all();
+----------------------------------------
+
+Code Block 126 ():
+// In a controller method.
+$recentArticles = $this->fetchTable('Articles')->find('all',
+    limit: 5,
+    order: 'Articles.created DESC',
+)->all();
+----------------------------------------
+
+Code Block 127 ():
+method
+----------------------------------------
+
+Code Block 128 ():
+fetchModel()
+----------------------------------------
+
+Code Block 129 (shiki):
+// ModelAwareTrait need to be explicitly added to your controller first for fetchModel() to work.
+use ModelAwareTrait;
+
+// Get an ElasticSearch model
+$articles = $this->fetchModel('Articles', 'Elastic');
+
+// Get a webservices model
+$github = $this->fetchModel('GitHub', 'Webservice');
+
+// If you skip the 2nd argument it will by default try to load a ORM table.
+$authors = $this->fetchModel('Authors');
+----------------------------------------
+
+Code Block 130 ():
+// ModelAwareTrait need to be explicitly added to your controller first for fetchModel() to work.
+use ModelAwareTrait;
+
+// Get an ElasticSearch model
+$articles = $this->fetchModel('Articles', 'Elastic');
+
+// Get a webservices model
+$github = $this->fetchModel('GitHub', 'Webservice');
+
+// If you skip the 2nd argument it will by default try to load a ORM table.
+$authors = $this->fetchModel('Authors');
+----------------------------------------
+
+Code Block 131 ():
+method
+----------------------------------------
+
+Code Block 132 ():
+paginate()
+----------------------------------------
+
+Code Block 133 ():
+$paginate
+----------------------------------------
+
+Code Block 134 ():
+paginate()
+----------------------------------------
+
+Code Block 135 (shiki):
+class ArticlesController extends AppController
+{
+    protected array $paginate = [
+        'Articles' => [
+            'conditions' => ['published' => 1],
+        ],
+    ];
+}
+----------------------------------------
+
+Code Block 136 ():
+class ArticlesController extends AppController
+{
+    protected array $paginate = [
+        'Articles' => [
+            'conditions' => ['published' => 1],
+        ],
+    ];
+}
+----------------------------------------
+
+Code Block 137 ():
+method
+----------------------------------------
+
+Code Block 138 ():
+initialize()
+----------------------------------------
+
+Code Block 139 (shiki):
+public function initialize(): void
+{
+    parent::initialize();
+    $this->loadComponent('Flash');
+    $this->loadComponent('Comments', Configure::read('Comments'));
+}
+----------------------------------------
+
+Code Block 140 ():
+public function initialize(): void
+{
+    parent::initialize();
+    $this->loadComponent('Flash');
+    $this->loadComponent('Comments', Configure::read('Comments'));
+}
+----------------------------------------
+
+Code Block 141 ():
+Controller.initialize
+----------------------------------------
+
+Code Block 142 ():
+Controller.startup
+----------------------------------------
+
+Code Block 143 ():
+Controller.beforeRedirect
+----------------------------------------
+
+Code Block 144 ():
+Controller.beforeRender
+----------------------------------------
+
+Code Block 145 ():
+Controller.shutdown
+----------------------------------------
+
+Code Block 146 ():
+method
+----------------------------------------
+
+Code Block 147 ():
+method
+----------------------------------------
+
+Code Block 148 ():
+method
+----------------------------------------
+
+Code Block 149 ():
+AppController
+----------------------------------------
+
+Code Block 150 (shiki):
+//use Cake\Event\EventInterface;
+public function beforeFilter(EventInterface $event): void
+{
+    parent::beforeFilter($event);
+}
+----------------------------------------
+
+Code Block 151 ():
+//use Cake\Event\EventInterface;
+public function beforeFilter(EventInterface $event): void
+{
+    parent::beforeFilter($event);
+}
+----------------------------------------
+
+Code Block 152 (shiki):
+public function beforeFilter(EventInterface $event): void
+{
+    if ($this->request->getParam('prefix') !== 'Admin') {
+        $event->setResult($this->redirect('/'));
+
+        return;
+    }
+    // Normal request handling continues.
+}
+----------------------------------------
+
+Code Block 153 ():
+public function beforeFilter(EventInterface $event): void
+{
+    if ($this->request->getParam('prefix') !== 'Admin') {
+        $event->setResult($this->redirect('/'));
+
+        return;
+    }
+    // Normal request handling continues.
+}
+----------------------------------------
+
+Code Block 154 ():
+RedirectException
+----------------------------------------
+
+Code Block 155 ():
+method
+----------------------------------------
+
+Code Block 156 ():
+middleware()
+----------------------------------------
+
+Code Block 157 ():
+initialize()
+----------------------------------------
+
+Code Block 158 (shiki):
+public function initialize(): void
+{
+    parent::initialize();
+
+    $this->middleware(function ($request, $handler) {
+        // Do middleware logic.
+
+        // Make sure you return a response or call handle()
+        return $handler->handle($request);
+    });
+}
+----------------------------------------
+
+Code Block 159 ():
+public function initialize(): void
+{
+    parent::initialize();
+
+    $this->middleware(function ($request, $handler) {
+        // Do middleware logic.
+
+        // Make sure you return a response or call handle()
+        return $handler->handle($request);
+    });
+}
+----------------------------------------
+
+Code Block 160 ():
+beforeFilter()
+----------------------------------------
+

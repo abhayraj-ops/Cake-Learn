@@ -1,0 +1,2065 @@
+URL: https://book.cakephp.org/5.x/views/helpers/html.html
+Title: Html | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Html ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Inserting Well-Formatted Elements ​
+  - Changing the Tags Output by HtmlHelper ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Creating Charset Tags ​
+  - Linking to CSS Files ​
+  - Creating CSS Programatically ​
+  - Creating meta Tags ​
+  - Linking to Images ​
+  - Creating Links ​
+  - Creating Links from Route Paths ​
+  - Linking to Videos and Audio Files ​
+  - Linking to Javascript Files ​
+  - Creating Inline Javascript Blocks ​
+  - Starting and Ending Script Blocks ​
+  - Creating Javascript Importmap ​
+  - Creating Nested Lists ​
+  - Creating Table Headings ​
+  - Creating Table Cells ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\View\Helper\HtmlHelper(View $view, array $config = [])
+
+The role of the HtmlHelper in CakePHP is to make HTML-related options easier, faster, and more resilient to change. Using this helper will enable your application to be more light on its feet, and more flexible on where it is placed in relation to the root of a domain.
+
+Many HtmlHelper methods include a $attributes parameter, that allow you to tack on any extra attributes on your tags. Here are a few examples of how to use the $attributes parameter:
+
+The most important task the HtmlHelper accomplishes is creating well formed markup. This section will cover some of the methods of the HtmlHelper and how to use them.
+
+method Cake\View\Helper\HtmlHelper::charset(?string $charset = null): string
+
+Used to create a meta tag specifying the document's character. The default value is UTF-8. An example use:
+
+Will output:
+
+Alternatively:
+
+Will output:
+
+method Cake\View\Helper\HtmlHelper::css(mixed $path, array $options = []): string|null
+
+Creates a link(s) to a CSS style-sheet. If the block option is set to true, the link tags are added to the css block which you can print inside the head tag of the document.
+
+You can use the block option to control which block the link element will be appended to. By default, it will append to the css block.
+
+If key 'rel' in $options array is set to 'import' the stylesheet will be imported.
+
+This method of CSS inclusion assumes that the CSS file specified resides inside the webroot/css directory if path doesn't start with a '/'.
+
+Will output:
+
+The first parameter can be an array to include multiple files.
+
+Will output:
+
+You can include CSS files from any loaded plugin using plugin syntax. To include plugins/DebugKit/webroot/css/toolbar.css you could use the following:
+
+If you want to include a CSS file which shares a name with a loaded plugin you can do the following. For example if you had a Blog plugin, and also wanted to include webroot/css/Blog.common.css, you would:
+
+method Cake\View\Helper\HtmlHelper::style(array $data, boolean $oneline = true): string
+
+Builds CSS style definitions based on the keys and values of the array passed to the method. Especially handy if your CSS file is dynamic.
+
+Will output:
+
+method Cake\View\Helper\HtmlHelper::meta(string|array $type, string $url = null, array $options = []): string|null
+
+This method is handy for linking to external resources like RSS/Atom feeds and favicons. Like css(), you can specify whether you'd like this tag to appear inline or appended to the meta block by setting the 'block' key in the $attributes parameter to true, ie - ['block' => true].
+
+If you set the "type" attribute using the $attributes parameter, CakePHP contains a few shortcuts:
+
+This method can also be used to add the meta keywords and descriptions. Example:
+
+In addition to making predefined meta tags, you can create link elements:
+
+Any attributes provided to meta() when called this way will be added to the generated link tag.
+
+Changed in version 5.1.0
+
+The csrfToken type was added.
+
+method Cake\View\Helper\HtmlHelper::image(string $path, array $options = []): string
+
+Creates a formatted image tag. The path supplied should be relative to webroot/img/.
+
+Will output:
+
+To create an image link specify the link destination using the url option in $attributes.
+
+Will output:
+
+If you are creating images in emails, or want absolute paths to images you can use the fullBase option:
+
+Will output:
+
+You can include image files from any loaded plugin using plugin syntax. To include plugins/DebugKit/webroot/img/icon.png You could use the following:
+
+If you want to include an image file which shares a name with a loaded plugin you can do the following. For example if you had a Blog plugin, and also wanted to include webroot/img/Blog.icon.png, you would:
+
+If you would like the prefix of the URL to not be /img, you can override this setting by specifying the prefix in the $options array:
+
+Will output:
+
+method Cake\View\Helper\HtmlHelper::link(array|string $title, array|string|null $url = null, array $options = []): string
+
+General purpose method for creating HTML links. Use $options to specify attributes for the element and whether or not the $title should be escaped.
+
+Will output:
+
+Use '_full'=>true option for absolute URLs:
+
+Will output:
+
+Specify confirm key in options to display a JavaScript confirm() dialog:
+
+Will output:
+
+Query strings can also be created with link().
+
+Will output:
+
+HTML special characters in $title will be converted to HTML entities. To disable this conversion, set the escape option to false in the $options array.
+
+Will output:
+
+Setting escape to false will also disable escaping of attributes of the link. You can use the option escapeTitle to disable just escaping of title and not the attributes.
+
+Will output:
+
+Also check Cake\View\Helper\UrlHelper::build() method for more examples of different types of URLs.
+
+method Cake\View\Helper\HtmlHelper::linkFromPath(string $title, string $path, array $params = [], array $options = []): string
+
+If you want to use route path strings, you can do that using this method:
+
+method Cake\View\Helper\HtmlHelper::media(string|array $path, array $options): string
+
+Options:
+
+Returns a formatted audio/video tag:
+
+method Cake\View\Helper\HtmlHelper::script(mixed $url, mixed $options): string|null
+
+Include a script file(s), contained either locally or as a remote URL.
+
+By default, script tags are added to the document inline. If you override this by setting $options['block'] to true, the script tags will instead be added to the script block which you can print elsewhere in the document. If you wish to override which block name is used, you can do so by setting $options['block'].
+
+$options['once'] controls whether or not you want to include this script once per request or more than once. This defaults to true.
+
+You can use $options to set additional properties to the generated script tag. If an array of script tags is used, the attributes will be applied to all the generated script tags.
+
+This method of JavaScript file inclusion assumes that the JavaScript file specified resides inside the webroot/js directory:
+
+Will output:
+
+You can link to files with absolute paths as well to link files that are not in webroot/js:
+
+You can also link to a remote URL:
+
+Will output:
+
+The first parameter can be an array to include multiple files.
+
+Will output:
+
+You can append the script tag to a specific block using the block option:
+
+In your layout you can output all the script tags added to 'scriptBottom':
+
+You can include script files from any loaded plugin using plugin syntax. To include plugins/DebugKit/webroot/js/toolbar.js You could use the following:
+
+If you want to include a script file which shares a name with a loaded plugin you can do the following. For example if you had a Blog plugin, and also wanted to include webroot/js/Blog.plugins.js, you would:
+
+method Cake\View\Helper\HtmlHelper::scriptBlock(string $code, array $options = []): string|null
+
+To generate Javascript blocks from PHP view code, you can use one of the script block methods. Scripts can either be output in place, or buffered into a block:
+
+method Cake\View\Helper\HtmlHelper::scriptStart(array $options = []): void
+
+method Cake\View\Helper\HtmlHelper::scriptEnd(): string|null
+
+You can use the scriptStart() method to create a capturing block that will output into a <script> tag. Captured script snippets can be output inline, or buffered into a block:
+
+You can use simple <script>...</script> tags inside the script block to enable syntax highlighting and LSP support in many editors:
+
+The wrapping script tag will be removed and replaced with a script tag generated by the helper that includes a CSP nonce if available.
+
+Once you have buffered javascript, you can output it as you would any other View Block:
+
+Changed in version 5.3.0
+
+Support for script tags inside scriptStart()/scriptEnd() was added.
+
+method Cake\View\Helper\HtmlHelper::importmap(array $map, array $options = []): string
+
+Creates an importmap script tag for your JavaScript files:
+
+Will output:
+
+Generating maps with imports, scopes and integrity:
+
+Will output:
+
+method Cake\View\Helper\HtmlHelper::nestedList(array $list, array $options = [], array $itemOptions = []): string
+
+Build a nested list (UL/OL) out of an associative array:
+
+Output:
+
+method Cake\View\Helper\HtmlHelper::tableHeaders(array $names, array $trOptions = null, array $thOptions = null): string
+
+Creates a row of table header cells to be placed inside of <table> tags.
+
+Output:
+
+Output:
+
+You can set attributes per column, these are used instead of the defaults provided in the $thOptions:
+
+Output:
+
+method Cake\View\Helper\HtmlHelper::tableCells(array $data, array $oddTrOptions = null, array $evenTrOptions = null, $useCount = false, $continueOddEven = true): string
+
+Creates table cells, in rows, assigning <tr> attributes differently for odd- and even-numbered rows. Wrap a single table cell within an [] for specific <td>-attributes.
+
+Output:
+
+Output:
+
+Output:
+
+method Cake\View\Helper\HtmlHelper::setTemplates(array $templates): $this
+
+Load an array of templates to add/replace templates:
+
+You can load a configuration file containing templates using the templater directly:
+
+When loading files of templates, your file should look like:
+
+WARNING
+
+Template strings containing a percentage sign (%) need special attention, you should prefix this character with another percentage so it looks like %%. The reason is that internally templates are compiled to be used with sprintf(). Example: <div style="width:%%"></div>
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+$attributes
+----------------------------------------
+
+Code Block 3 ():
+$attributes
+----------------------------------------
+
+Code Block 4 (shiki):
+Desired attributes: <tag class="someClass" />
+Array parameter: ['class' => 'someClass']
+
+Desired attributes: <tag name="foo" value="bar" />
+Array parameter:  ['name' => 'foo', 'value' => 'bar']
+----------------------------------------
+
+Code Block 5 ():
+Desired attributes: <tag class="someClass" />
+Array parameter: ['class' => 'someClass']
+
+Desired attributes: <tag name="foo" value="bar" />
+Array parameter:  ['name' => 'foo', 'value' => 'bar']
+----------------------------------------
+
+Code Block 6 ():
+method
+----------------------------------------
+
+Code Block 7 (shiki):
+echo $this->Html->charset();
+----------------------------------------
+
+Code Block 8 ():
+echo $this->Html->charset();
+----------------------------------------
+
+Code Block 9 (shiki):
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+----------------------------------------
+
+Code Block 10 ():
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+----------------------------------------
+
+Code Block 11 (shiki):
+echo $this->Html->charset('ISO-8859-1');
+----------------------------------------
+
+Code Block 12 ():
+echo $this->Html->charset('ISO-8859-1');
+----------------------------------------
+
+Code Block 13 (shiki):
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+----------------------------------------
+
+Code Block 14 ():
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+----------------------------------------
+
+Code Block 15 ():
+method
+----------------------------------------
+
+Code Block 16 ():
+block
+----------------------------------------
+
+Code Block 17 ():
+true
+----------------------------------------
+
+Code Block 18 ():
+css
+----------------------------------------
+
+Code Block 19 ():
+block
+----------------------------------------
+
+Code Block 20 ():
+css
+----------------------------------------
+
+Code Block 21 ():
+$options
+----------------------------------------
+
+Code Block 22 (shiki):
+echo $this->Html->css('forms');
+----------------------------------------
+
+Code Block 23 ():
+echo $this->Html->css('forms');
+----------------------------------------
+
+Code Block 24 (shiki):
+<link rel="stylesheet" href="/css/forms.css" />
+----------------------------------------
+
+Code Block 25 ():
+<link rel="stylesheet" href="/css/forms.css" />
+----------------------------------------
+
+Code Block 26 (shiki):
+echo $this->Html->css(['forms', 'tables', 'menu']);
+----------------------------------------
+
+Code Block 27 ():
+echo $this->Html->css(['forms', 'tables', 'menu']);
+----------------------------------------
+
+Code Block 28 (shiki):
+<link rel="stylesheet" href="/css/forms.css" />
+<link rel="stylesheet" href="/css/tables.css" />
+<link rel="stylesheet" href="/css/menu.css" />
+----------------------------------------
+
+Code Block 29 ():
+<link rel="stylesheet" href="/css/forms.css" />
+<link rel="stylesheet" href="/css/tables.css" />
+<link rel="stylesheet" href="/css/menu.css" />
+----------------------------------------
+
+Code Block 30 ():
+plugin syntax
+----------------------------------------
+
+Code Block 31 (shiki):
+echo $this->Html->css('DebugKit.toolbar.css');
+----------------------------------------
+
+Code Block 32 ():
+echo $this->Html->css('DebugKit.toolbar.css');
+----------------------------------------
+
+Code Block 33 ():
+Blog
+----------------------------------------
+
+Code Block 34 (shiki):
+echo $this->Html->css('Blog.common.css', ['plugin' => false]);
+----------------------------------------
+
+Code Block 35 ():
+echo $this->Html->css('Blog.common.css', ['plugin' => false]);
+----------------------------------------
+
+Code Block 36 ():
+method
+----------------------------------------
+
+Code Block 37 (shiki):
+echo $this->Html->style([
+    'background' => '#633',
+    'border-bottom' => '1px solid #000',
+    'padding' => '10px',
+]);
+----------------------------------------
+
+Code Block 38 ():
+echo $this->Html->style([
+    'background' => '#633',
+    'border-bottom' => '1px solid #000',
+    'padding' => '10px',
+]);
+----------------------------------------
+
+Code Block 39 (shiki):
+background:#633; border-bottom:1px solid #000; padding:10px;
+----------------------------------------
+
+Code Block 40 ():
+background:#633; border-bottom:1px solid #000; padding:10px;
+----------------------------------------
+
+Code Block 41 ():
+method
+----------------------------------------
+
+Code Block 42 ():
+meta
+----------------------------------------
+
+Code Block 43 ():
+$attributes
+----------------------------------------
+
+Code Block 44 ():
+true
+----------------------------------------
+
+Code Block 45 ():
+['block' => true]
+----------------------------------------
+
+Code Block 46 ():
+$attributes
+----------------------------------------
+
+Code Block 47 (shiki):
+echo $this->Html->meta(
+    'favicon.ico',
+    '/favicon.ico',
+    ['type' => 'icon'],
+);
+// Output (line breaks added)
+// Note: The helper code makes two meta tags to ensure the
+// icon is downloaded by both newer and older browsers
+// which require different rel attribute values.
+<link
+    href="/subdir/favicon.ico"
+    type="image/x-icon"
+    rel="icon"
+/>
+<link
+    href="/subdir/favicon.ico"
+    type="image/x-icon"
+    rel="shortcut icon"
+/>
+
+echo $this->Html->meta(
+    'Comments',
+    '/comments/index.rss',
+    ['type' => 'rss'],
+);
+// Output (line breaks added)
+<link
+    href="https://example.com/comments/index.rss"
+    title="Comments"
+    type="application/rss+xml"
+    rel="alternate"
+/>
+----------------------------------------
+
+Code Block 48 ():
+echo $this->Html->meta(
+    'favicon.ico',
+    '/favicon.ico',
+    ['type' => 'icon'],
+);
+// Output (line breaks added)
+// Note: The helper code makes two meta tags to ensure the
+// icon is downloaded by both newer and older browsers
+// which require different rel attribute values.
+<link
+    href="/subdir/favicon.ico"
+    type="image/x-icon"
+    rel="icon"
+/>
+<link
+    href="/subdir/favicon.ico"
+    type="image/x-icon"
+    rel="shortcut icon"
+/>
+
+echo $this->Html->meta(
+    'Comments',
+    '/comments/index.rss',
+    ['type' => 'rss'],
+);
+// Output (line breaks added)
+<link
+    href="https://example.com/comments/index.rss"
+    title="Comments"
+    type="application/rss+xml"
+    rel="alternate"
+/>
+----------------------------------------
+
+Code Block 49 (shiki):
+echo $this->Html->meta(
+    'keywords',
+    'enter any meta keyword here',
+);
+// Output
+<meta name="keywords" content="enter any meta keyword here" />
+
+echo $this->Html->meta(
+    'description',
+    'enter any meta description here',
+);
+// Output
+<meta name="description" content="enter any meta description here" />
+
+echo $this->Html->meta('csrfToken');
+// The CsrfProtection middleware must be loaded for your application
+<meta name="csrf-token" content="CSRF token here" />
+----------------------------------------
+
+Code Block 50 ():
+echo $this->Html->meta(
+    'keywords',
+    'enter any meta keyword here',
+);
+// Output
+<meta name="keywords" content="enter any meta keyword here" />
+
+echo $this->Html->meta(
+    'description',
+    'enter any meta description here',
+);
+// Output
+<meta name="description" content="enter any meta description here" />
+
+echo $this->Html->meta('csrfToken');
+// The CsrfProtection middleware must be loaded for your application
+<meta name="csrf-token" content="CSRF token here" />
+----------------------------------------
+
+Code Block 51 (shiki):
+<?= $this->Html->meta([
+    'link' => 'https://example.com/manifest',
+    'rel' => 'manifest',
+]);
+?>
+// Output
+<link href="https://example.com/manifest" rel="manifest"/>
+----------------------------------------
+
+Code Block 52 ():
+<?= $this->Html->meta([
+    'link' => 'https://example.com/manifest',
+    'rel' => 'manifest',
+]);
+?>
+// Output
+<link href="https://example.com/manifest" rel="manifest"/>
+----------------------------------------
+
+Code Block 53 ():
+csrfToken
+----------------------------------------
+
+Code Block 54 ():
+method
+----------------------------------------
+
+Code Block 55 (shiki):
+echo $this->Html->image('cake_logo.png', ['alt' => 'CakePHP']);
+----------------------------------------
+
+Code Block 56 ():
+echo $this->Html->image('cake_logo.png', ['alt' => 'CakePHP']);
+----------------------------------------
+
+Code Block 57 (shiki):
+<img src="/img/cake_logo.png" alt="CakePHP" />
+----------------------------------------
+
+Code Block 58 ():
+<img src="/img/cake_logo.png" alt="CakePHP" />
+----------------------------------------
+
+Code Block 59 ():
+url
+----------------------------------------
+
+Code Block 60 ():
+$attributes
+----------------------------------------
+
+Code Block 61 (shiki):
+echo $this->Html->image("recipes/6.jpg", [
+    "alt" => "Brownies",
+    'url' => ['controller' => 'Recipes', 'action' => 'view', 6],
+]);
+----------------------------------------
+
+Code Block 62 ():
+echo $this->Html->image("recipes/6.jpg", [
+    "alt" => "Brownies",
+    'url' => ['controller' => 'Recipes', 'action' => 'view', 6],
+]);
+----------------------------------------
+
+Code Block 63 (shiki):
+<a href="/recipes/view/6">
+    <img src="/img/recipes/6.jpg" alt="Brownies" />
+</a>
+----------------------------------------
+
+Code Block 64 ():
+<a href="/recipes/view/6">
+    <img src="/img/recipes/6.jpg" alt="Brownies" />
+</a>
+----------------------------------------
+
+Code Block 65 ():
+fullBase
+----------------------------------------
+
+Code Block 66 (shiki):
+echo $this->Html->image("logo.png", ['fullBase' => true]);
+----------------------------------------
+
+Code Block 67 ():
+echo $this->Html->image("logo.png", ['fullBase' => true]);
+----------------------------------------
+
+Code Block 68 (shiki):
+<img src="https://example.com/img/logo.jpg" alt="" />
+----------------------------------------
+
+Code Block 69 ():
+<img src="https://example.com/img/logo.jpg" alt="" />
+----------------------------------------
+
+Code Block 70 ():
+plugin syntax
+----------------------------------------
+
+Code Block 71 (shiki):
+echo $this->Html->image('DebugKit.icon.png');
+----------------------------------------
+
+Code Block 72 ():
+echo $this->Html->image('DebugKit.icon.png');
+----------------------------------------
+
+Code Block 73 ():
+Blog
+----------------------------------------
+
+Code Block 74 (shiki):
+echo $this->Html->image('Blog.icon.png', ['plugin' => false]);
+----------------------------------------
+
+Code Block 75 ():
+echo $this->Html->image('Blog.icon.png', ['plugin' => false]);
+----------------------------------------
+
+Code Block 76 ():
+/img
+----------------------------------------
+
+Code Block 77 ():
+$options
+----------------------------------------
+
+Code Block 78 (shiki):
+echo $this->Html->image("logo.png", ['pathPrefix' => '']);
+----------------------------------------
+
+Code Block 79 ():
+echo $this->Html->image("logo.png", ['pathPrefix' => '']);
+----------------------------------------
+
+Code Block 80 (shiki):
+<img src="logo.jpg" alt="" />
+----------------------------------------
+
+Code Block 81 ():
+<img src="logo.jpg" alt="" />
+----------------------------------------
+
+Code Block 82 ():
+method
+----------------------------------------
+
+Code Block 83 ():
+$options
+----------------------------------------
+
+Code Block 84 ():
+$title
+----------------------------------------
+
+Code Block 85 (shiki):
+echo $this->Html->link(
+    'Enter',
+    '/pages/home',
+    ['class' => 'button', 'target' => '_blank'],
+);
+----------------------------------------
+
+Code Block 86 ():
+echo $this->Html->link(
+    'Enter',
+    '/pages/home',
+    ['class' => 'button', 'target' => '_blank'],
+);
+----------------------------------------
+
+Code Block 87 (shiki):
+<a href="/pages/home" class="button" target="_blank">Enter</a>
+----------------------------------------
+
+Code Block 88 ():
+<a href="/pages/home" class="button" target="_blank">Enter</a>
+----------------------------------------
+
+Code Block 89 ():
+'_full'=>true
+----------------------------------------
+
+Code Block 90 (shiki):
+echo $this->Html->link(
+    'Dashboard',
+    ['controller' => 'Dashboards', 'action' => 'index', '_full' => true],
+);
+----------------------------------------
+
+Code Block 91 ():
+echo $this->Html->link(
+    'Dashboard',
+    ['controller' => 'Dashboards', 'action' => 'index', '_full' => true],
+);
+----------------------------------------
+
+Code Block 92 (shiki):
+<a href="http://www.yourdomain.com/dashboards/index">Dashboard</a>
+----------------------------------------
+
+Code Block 93 ():
+<a href="http://www.yourdomain.com/dashboards/index">Dashboard</a>
+----------------------------------------
+
+Code Block 94 ():
+confirm
+----------------------------------------
+
+Code Block 95 ():
+confirm()
+----------------------------------------
+
+Code Block 96 (shiki):
+echo $this->Html->link(
+    'Delete',
+    ['controller' => 'Recipes', 'action' => 'delete', 6],
+    ['confirm' => 'Are you sure you wish to delete this recipe?'],
+);
+----------------------------------------
+
+Code Block 97 ():
+echo $this->Html->link(
+    'Delete',
+    ['controller' => 'Recipes', 'action' => 'delete', 6],
+    ['confirm' => 'Are you sure you wish to delete this recipe?'],
+);
+----------------------------------------
+
+Code Block 98 (shiki):
+<a href="/recipes/delete/6"
+    onclick="return confirm(
+        'Are you sure you wish to delete this recipe?'
+    );">
+    Delete
+</a>
+----------------------------------------
+
+Code Block 99 ():
+<a href="/recipes/delete/6"
+    onclick="return confirm(
+        'Are you sure you wish to delete this recipe?'
+    );">
+    Delete
+</a>
+----------------------------------------
+
+Code Block 100 ():
+link()
+----------------------------------------
+
+Code Block 101 (shiki):
+echo $this->Html->link('View image', [
+    'controller' => 'Images',
+    'action' => 'view',
+    1,
+    '?' => ['height' => 400, 'width' => 500],
+]);
+----------------------------------------
+
+Code Block 102 ():
+echo $this->Html->link('View image', [
+    'controller' => 'Images',
+    'action' => 'view',
+    1,
+    '?' => ['height' => 400, 'width' => 500],
+]);
+----------------------------------------
+
+Code Block 103 (shiki):
+<a href="/images/view/1?height=400&width=500">View image</a>
+----------------------------------------
+
+Code Block 104 ():
+<a href="/images/view/1?height=400&width=500">View image</a>
+----------------------------------------
+
+Code Block 105 ():
+$title
+----------------------------------------
+
+Code Block 106 ():
+false
+----------------------------------------
+
+Code Block 107 ():
+$options
+----------------------------------------
+
+Code Block 108 (shiki):
+echo $this->Html->link(
+    $this->Html->image("recipes/6.jpg", ["alt" => "Brownies"]),
+    "recipes/view/6",
+    ['escape' => false],
+);
+----------------------------------------
+
+Code Block 109 ():
+echo $this->Html->link(
+    $this->Html->image("recipes/6.jpg", ["alt" => "Brownies"]),
+    "recipes/view/6",
+    ['escape' => false],
+);
+----------------------------------------
+
+Code Block 110 (shiki):
+<a href="/recipes/view/6">
+    <img src="/img/recipes/6.jpg" alt="Brownies" />
+</a>
+----------------------------------------
+
+Code Block 111 ():
+<a href="/recipes/view/6">
+    <img src="/img/recipes/6.jpg" alt="Brownies" />
+</a>
+----------------------------------------
+
+Code Block 112 ():
+escape
+----------------------------------------
+
+Code Block 113 ():
+false
+----------------------------------------
+
+Code Block 114 ():
+escapeTitle
+----------------------------------------
+
+Code Block 115 (shiki):
+echo $this->Html->link(
+    $this->Html->image('recipes/6.jpg', ['alt' => 'Brownies']),
+    'recipes/view/6',
+    ['escapeTitle' => false, 'title' => 'hi "howdy"'],
+);
+----------------------------------------
+
+Code Block 116 ():
+echo $this->Html->link(
+    $this->Html->image('recipes/6.jpg', ['alt' => 'Brownies']),
+    'recipes/view/6',
+    ['escapeTitle' => false, 'title' => 'hi "howdy"'],
+);
+----------------------------------------
+
+Code Block 117 (shiki):
+<a href="/recipes/view/6" title="hi &quot;howdy&quot;">
+    <img src="/img/recipes/6.jpg" alt="Brownies" />
+</a>
+----------------------------------------
+
+Code Block 118 ():
+<a href="/recipes/view/6" title="hi &quot;howdy&quot;">
+    <img src="/img/recipes/6.jpg" alt="Brownies" />
+</a>
+----------------------------------------
+
+Code Block 119 ():
+Cake\View\Helper\UrlHelper::build()
+----------------------------------------
+
+Code Block 120 ():
+method
+----------------------------------------
+
+Code Block 121 (shiki):
+echo $this->Html->linkFromPath('Index', 'Articles::index');
+// outputs: <a href="/articles">Index</a>
+
+echo $this->Html->linkFromPath('View', 'MyBackend.Admin/Articles::view', [3]);
+// outputs: <a href="/admin/my-backend/articles/view/3">View</a>
+----------------------------------------
+
+Code Block 122 ():
+echo $this->Html->linkFromPath('Index', 'Articles::index');
+// outputs: <a href="/articles">Index</a>
+
+echo $this->Html->linkFromPath('View', 'MyBackend.Admin/Articles::view', [3]);
+// outputs: <a href="/admin/my-backend/articles/view/3">View</a>
+----------------------------------------
+
+Code Block 123 ():
+method
+----------------------------------------
+
+Code Block 124 ():
+type
+----------------------------------------
+
+Code Block 125 ():
+text
+----------------------------------------
+
+Code Block 126 ():
+pathPrefix
+----------------------------------------
+
+Code Block 127 ():
+fullBase
+----------------------------------------
+
+Code Block 128 (shiki):
+<?= $this->Html->media('audio.mp3') ?>
+
+// Output
+<audio src="/files/audio.mp3"></audio>
+
+<?= $this->Html->media('video.mp4', [
+    'fullBase' => true,
+    'text' => 'Fallback text',
+]) ?>
+
+// Output
+<video src="http://www.somehost.com/files/video.mp4">Fallback text</video>
+
+<?= $this->Html->media(
+    ['video.mp4', ['src' => 'video.ogg', 'type' => "video/ogg; codecs='theora, vorbis'"]],
+    ['autoplay'],
+) ?>
+
+// Output
+<video autoplay="autoplay">
+    <source src="/files/video.mp4" type="video/mp4"/>
+    <source src="/files/video.ogg" type="video/ogg;
+        codecs='theora, vorbis'"/>
+</video>
+----------------------------------------
+
+Code Block 129 ():
+<?= $this->Html->media('audio.mp3') ?>
+
+// Output
+<audio src="/files/audio.mp3"></audio>
+
+<?= $this->Html->media('video.mp4', [
+    'fullBase' => true,
+    'text' => 'Fallback text',
+]) ?>
+
+// Output
+<video src="http://www.somehost.com/files/video.mp4">Fallback text</video>
+
+<?= $this->Html->media(
+    ['video.mp4', ['src' => 'video.ogg', 'type' => "video/ogg; codecs='theora, vorbis'"]],
+    ['autoplay'],
+) ?>
+
+// Output
+<video autoplay="autoplay">
+    <source src="/files/video.mp4" type="video/mp4"/>
+    <source src="/files/video.ogg" type="video/ogg;
+        codecs='theora, vorbis'"/>
+</video>
+----------------------------------------
+
+Code Block 130 ():
+method
+----------------------------------------
+
+Code Block 131 ():
+$options['block']
+----------------------------------------
+
+Code Block 132 ():
+true
+----------------------------------------
+
+Code Block 133 ():
+script
+----------------------------------------
+
+Code Block 134 ():
+$options['block']
+----------------------------------------
+
+Code Block 135 ():
+$options['once']
+----------------------------------------
+
+Code Block 136 ():
+true
+----------------------------------------
+
+Code Block 137 ():
+$options
+----------------------------------------
+
+Code Block 138 (shiki):
+echo $this->Html->script('scripts');
+----------------------------------------
+
+Code Block 139 ():
+echo $this->Html->script('scripts');
+----------------------------------------
+
+Code Block 140 (shiki):
+<script src="/js/scripts.js"></script>
+----------------------------------------
+
+Code Block 141 ():
+<script src="/js/scripts.js"></script>
+----------------------------------------
+
+Code Block 142 (shiki):
+echo $this->Html->script('/otherdir/script_file');
+----------------------------------------
+
+Code Block 143 ():
+echo $this->Html->script('/otherdir/script_file');
+----------------------------------------
+
+Code Block 144 (shiki):
+echo $this->Html->script('https://code.jquery.com/jquery.min.js');
+----------------------------------------
+
+Code Block 145 ():
+echo $this->Html->script('https://code.jquery.com/jquery.min.js');
+----------------------------------------
+
+Code Block 146 (shiki):
+<script src="https://code.jquery.com/jquery.min.js"></script>
+----------------------------------------
+
+Code Block 147 ():
+<script src="https://code.jquery.com/jquery.min.js"></script>
+----------------------------------------
+
+Code Block 148 (shiki):
+echo $this->Html->script(['jquery', 'wysiwyg', 'scripts']);
+----------------------------------------
+
+Code Block 149 ():
+echo $this->Html->script(['jquery', 'wysiwyg', 'scripts']);
+----------------------------------------
+
+Code Block 150 (shiki):
+<script src="/js/jquery.js"></script>
+<script src="/js/wysiwyg.js"></script>
+<script src="/js/scripts.js"></script>
+----------------------------------------
+
+Code Block 151 ():
+<script src="/js/jquery.js"></script>
+<script src="/js/wysiwyg.js"></script>
+<script src="/js/scripts.js"></script>
+----------------------------------------
+
+Code Block 152 ():
+block
+----------------------------------------
+
+Code Block 153 (shiki):
+$this->Html->script('wysiwyg', ['block' => 'scriptBottom']);
+----------------------------------------
+
+Code Block 154 ():
+$this->Html->script('wysiwyg', ['block' => 'scriptBottom']);
+----------------------------------------
+
+Code Block 155 (shiki):
+echo $this->fetch('scriptBottom');
+----------------------------------------
+
+Code Block 156 ():
+echo $this->fetch('scriptBottom');
+----------------------------------------
+
+Code Block 157 ():
+plugin syntax
+----------------------------------------
+
+Code Block 158 (shiki):
+echo $this->Html->script('DebugKit.toolbar.js');
+----------------------------------------
+
+Code Block 159 ():
+echo $this->Html->script('DebugKit.toolbar.js');
+----------------------------------------
+
+Code Block 160 ():
+Blog
+----------------------------------------
+
+Code Block 161 (shiki):
+echo $this->Html->script('Blog.plugins.js', ['plugin' => false]);
+----------------------------------------
+
+Code Block 162 ():
+echo $this->Html->script('Blog.plugins.js', ['plugin' => false]);
+----------------------------------------
+
+Code Block 163 ():
+method
+----------------------------------------
+
+Code Block 164 (shiki):
+// Define a script block all at once, with the defer attribute.
+$this->Html->scriptBlock('alert("hi")', ['defer' => true]);
+
+// Buffer a script block to be output later.
+$this->Html->scriptBlock('alert("hi")', ['block' => true]);
+----------------------------------------
+
+Code Block 165 ():
+// Define a script block all at once, with the defer attribute.
+$this->Html->scriptBlock('alert("hi")', ['defer' => true]);
+
+// Buffer a script block to be output later.
+$this->Html->scriptBlock('alert("hi")', ['block' => true]);
+----------------------------------------
+
+Code Block 166 ():
+method
+----------------------------------------
+
+Code Block 167 ():
+method
+----------------------------------------
+
+Code Block 168 ():
+scriptStart()
+----------------------------------------
+
+Code Block 169 ():
+<script>
+----------------------------------------
+
+Code Block 170 (shiki):
+// Append into the 'script' block.
+$this->Html->scriptStart(['block' => true]);
+echo "alert('I am in the JavaScript');";
+$this->Html->scriptEnd();
+----------------------------------------
+
+Code Block 171 ():
+// Append into the 'script' block.
+$this->Html->scriptStart(['block' => true]);
+echo "alert('I am in the JavaScript');";
+$this->Html->scriptEnd();
+----------------------------------------
+
+Code Block 172 ():
+<script>...</script>
+----------------------------------------
+
+Code Block 173 (shiki):
+<?php $this->Html->scriptStart(['block' => true]) ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        alert('I am in the JavaScript');
+    });
+</script>
+<?php $this->Html->scriptEnd() ?>
+----------------------------------------
+
+Code Block 174 ():
+<?php $this->Html->scriptStart(['block' => true]) ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        alert('I am in the JavaScript');
+    });
+</script>
+<?php $this->Html->scriptEnd() ?>
+----------------------------------------
+
+Code Block 175 ():
+script
+----------------------------------------
+
+Code Block 176 (shiki):
+// In your layout
+echo $this->fetch('script');
+----------------------------------------
+
+Code Block 177 ():
+// In your layout
+echo $this->fetch('script');
+----------------------------------------
+
+Code Block 178 ():
+script
+----------------------------------------
+
+Code Block 179 ():
+scriptStart()
+----------------------------------------
+
+Code Block 180 ():
+scriptEnd()
+----------------------------------------
+
+Code Block 181 ():
+method
+----------------------------------------
+
+Code Block 182 ():
+importmap
+----------------------------------------
+
+Code Block 183 (shiki):
+// In the head tag of your layout
+echo $this->Html->importmap([
+    'jquery' => 'jquery.js',
+    'wysiwyg' => '/editor/wysiwyg.js',
+]);
+----------------------------------------
+
+Code Block 184 ():
+// In the head tag of your layout
+echo $this->Html->importmap([
+    'jquery' => 'jquery.js',
+    'wysiwyg' => '/editor/wysiwyg.js',
+]);
+----------------------------------------
+
+Code Block 185 (shiki):
+<script type="importmap">{
+    "imports": {
+        "jquery": "/js/jquery.js",
+        "wysiwyg": "/editor/wysiwyg.js"
+    }
+}</script>
+----------------------------------------
+
+Code Block 186 ():
+<script type="importmap">{
+    "imports": {
+        "jquery": "/js/jquery.js",
+        "wysiwyg": "/editor/wysiwyg.js"
+    }
+}</script>
+----------------------------------------
+
+Code Block 187 (shiki):
+echo $this->Html->importmap([
+    'imports' => [
+        'jquery' => 'jquery-3.7.1.min.js',
+        'wysiwyg' => '/editor/wysiwyg.js',
+    ],
+    'scopes' => [
+        'scoped/' => [
+            'foo' => 'inner/foo',
+        ],
+    ],
+    'integrity' => [
+        'jquery' => 'sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=',
+    ],
+]);
+----------------------------------------
+
+Code Block 188 ():
+echo $this->Html->importmap([
+    'imports' => [
+        'jquery' => 'jquery-3.7.1.min.js',
+        'wysiwyg' => '/editor/wysiwyg.js',
+    ],
+    'scopes' => [
+        'scoped/' => [
+            'foo' => 'inner/foo',
+        ],
+    ],
+    'integrity' => [
+        'jquery' => 'sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=',
+    ],
+]);
+----------------------------------------
+
+Code Block 189 (shiki):
+<script type="importmap">{
+    "imports": {
+        "jquery": "/js/jquery-3.7.1.min.js",
+        "wysiwyg": "/editor/wysiwyg.js"
+    },
+    "scopes": {
+        "scoped/": {
+            "foo": "/js/inner/foo.js"
+        }
+    },
+    "integrity": {
+        "/js/jquery-3.7.1.min.js": "sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    }
+}</script>
+----------------------------------------
+
+Code Block 190 ():
+<script type="importmap">{
+    "imports": {
+        "jquery": "/js/jquery-3.7.1.min.js",
+        "wysiwyg": "/editor/wysiwyg.js"
+    },
+    "scopes": {
+        "scoped/": {
+            "foo": "/js/inner/foo.js"
+        }
+    },
+    "integrity": {
+        "/js/jquery-3.7.1.min.js": "sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    }
+}</script>
+----------------------------------------
+
+Code Block 191 ():
+method
+----------------------------------------
+
+Code Block 192 (shiki):
+$list = [
+    'Languages' => [
+        'English' => [
+            'American',
+            'Canadian',
+            'British',
+        ],
+        'Spanish',
+        'German',
+    ]
+];
+echo $this->Html->nestedList($list);
+----------------------------------------
+
+Code Block 193 ():
+$list = [
+    'Languages' => [
+        'English' => [
+            'American',
+            'Canadian',
+            'British',
+        ],
+        'Spanish',
+        'German',
+    ]
+];
+echo $this->Html->nestedList($list);
+----------------------------------------
+
+Code Block 194 (shiki):
+// Output (minus the whitespace)
+<ul>
+    <li>Languages
+        <ul>
+            <li>English
+                <ul>
+                    <li>American</li>
+                    <li>Canadian</li>
+                    <li>British</li>
+                </ul>
+            </li>
+            <li>Spanish</li>
+            <li>German</li>
+        </ul>
+    </li>
+</ul>
+----------------------------------------
+
+Code Block 195 ():
+// Output (minus the whitespace)
+<ul>
+    <li>Languages
+        <ul>
+            <li>English
+                <ul>
+                    <li>American</li>
+                    <li>Canadian</li>
+                    <li>British</li>
+                </ul>
+            </li>
+            <li>Spanish</li>
+            <li>German</li>
+        </ul>
+    </li>
+</ul>
+----------------------------------------
+
+Code Block 196 ():
+method
+----------------------------------------
+
+Code Block 197 ():
+<table>
+----------------------------------------
+
+Code Block 198 (shiki):
+echo $this->Html->tableHeaders(['Date', 'Title', 'Active']);
+----------------------------------------
+
+Code Block 199 ():
+echo $this->Html->tableHeaders(['Date', 'Title', 'Active']);
+----------------------------------------
+
+Code Block 200 (shiki):
+<tr>
+    <th>Date</th>
+    <th>Title</th>
+    <th>Active</th>
+</tr>
+----------------------------------------
+
+Code Block 201 ():
+<tr>
+    <th>Date</th>
+    <th>Title</th>
+    <th>Active</th>
+</tr>
+----------------------------------------
+
+Code Block 202 (shiki):
+echo $this->Html->tableHeaders(
+    ['Date', 'Title','Active'],
+    ['class' => 'status'],
+    ['class' => 'product_table'],
+);
+----------------------------------------
+
+Code Block 203 ():
+echo $this->Html->tableHeaders(
+    ['Date', 'Title','Active'],
+    ['class' => 'status'],
+    ['class' => 'product_table'],
+);
+----------------------------------------
+
+Code Block 204 (shiki):
+<tr class="status">
+     <th class="product_table">Date</th>
+     <th class="product_table">Title</th>
+     <th class="product_table">Active</th>
+</tr>
+----------------------------------------
+
+Code Block 205 ():
+<tr class="status">
+     <th class="product_table">Date</th>
+     <th class="product_table">Title</th>
+     <th class="product_table">Active</th>
+</tr>
+----------------------------------------
+
+Code Block 206 ():
+$thOptions
+----------------------------------------
+
+Code Block 207 (shiki):
+echo $this->Html->tableHeaders([
+    'id',
+    ['Name' => ['class' => 'highlight']],
+    ['Date' => ['class' => 'sortable']],
+]);
+----------------------------------------
+
+Code Block 208 ():
+echo $this->Html->tableHeaders([
+    'id',
+    ['Name' => ['class' => 'highlight']],
+    ['Date' => ['class' => 'sortable']],
+]);
+----------------------------------------
+
+Code Block 209 (shiki):
+<tr>
+    <th>id</th>
+    <th class="highlight">Name</th>
+    <th class="sortable">Date</th>
+</tr>
+----------------------------------------
+
+Code Block 210 ():
+<tr>
+    <th>id</th>
+    <th class="highlight">Name</th>
+    <th class="sortable">Date</th>
+</tr>
+----------------------------------------
+
+Code Block 211 ():
+method
+----------------------------------------
+
+Code Block 212 ():
+<tr>
+----------------------------------------
+
+Code Block 213 ():
+[]
+----------------------------------------
+
+Code Block 214 ():
+<td>
+----------------------------------------
+
+Code Block 215 (shiki):
+echo $this->Html->tableCells([
+    ['Jul 7th, 2007', 'Best Brownies', 'Yes'],
+    ['Jun 21st, 2007', 'Smart Cookies', 'Yes'],
+    ['Aug 1st, 2006', 'Anti-Java Cake', 'No'],
+]);
+----------------------------------------
+
+Code Block 216 ():
+echo $this->Html->tableCells([
+    ['Jul 7th, 2007', 'Best Brownies', 'Yes'],
+    ['Jun 21st, 2007', 'Smart Cookies', 'Yes'],
+    ['Aug 1st, 2006', 'Anti-Java Cake', 'No'],
+]);
+----------------------------------------
+
+Code Block 217 (shiki):
+<tr><td>Jul 7th, 2007</td><td>Best Brownies</td><td>Yes</td></tr>
+<tr><td>Jun 21st, 2007</td><td>Smart Cookies</td><td>Yes</td></tr>
+<tr><td>Aug 1st, 2006</td><td>Anti-Java Cake</td><td>No</td></tr>
+----------------------------------------
+
+Code Block 218 ():
+<tr><td>Jul 7th, 2007</td><td>Best Brownies</td><td>Yes</td></tr>
+<tr><td>Jun 21st, 2007</td><td>Smart Cookies</td><td>Yes</td></tr>
+<tr><td>Aug 1st, 2006</td><td>Anti-Java Cake</td><td>No</td></tr>
+----------------------------------------
+
+Code Block 219 (shiki):
+echo $this->Html->tableCells([
+    ['Jul 7th, 2007', ['Best Brownies', ['class' => 'highlight']] , 'Yes'],
+    ['Jun 21st, 2007', 'Smart Cookies', 'Yes'],
+    ['Aug 1st, 2006', 'Anti-Java Cake', ['No', ['id' => 'special']]],
+]);
+----------------------------------------
+
+Code Block 220 ():
+echo $this->Html->tableCells([
+    ['Jul 7th, 2007', ['Best Brownies', ['class' => 'highlight']] , 'Yes'],
+    ['Jun 21st, 2007', 'Smart Cookies', 'Yes'],
+    ['Aug 1st, 2006', 'Anti-Java Cake', ['No', ['id' => 'special']]],
+]);
+----------------------------------------
+
+Code Block 221 (shiki):
+<tr>
+    <td>
+        Jul 7th, 2007
+    </td>
+    <td class="highlight">
+        Best Brownies
+    </td>
+    <td>
+        Yes
+    </td>
+</tr>
+<tr>
+    <td>
+        Jun 21st, 2007
+    </td>
+    <td>
+        Smart Cookies
+    </td>
+    <td>
+        Yes
+    </td>
+</tr>
+<tr>
+    <td>
+        Aug 1st, 2006
+    </td>
+    <td>
+        Anti-Java Cake
+    </td>
+    <td id="special">
+        No
+    </td>
+</tr>
+----------------------------------------
+
+Code Block 222 ():
+<tr>
+    <td>
+        Jul 7th, 2007
+    </td>
+    <td class="highlight">
+        Best Brownies
+    </td>
+    <td>
+        Yes
+    </td>
+</tr>
+<tr>
+    <td>
+        Jun 21st, 2007
+    </td>
+    <td>
+        Smart Cookies
+    </td>
+    <td>
+        Yes
+    </td>
+</tr>
+<tr>
+    <td>
+        Aug 1st, 2006
+    </td>
+    <td>
+        Anti-Java Cake
+    </td>
+    <td id="special">
+        No
+    </td>
+</tr>
+----------------------------------------
+
+Code Block 223 (shiki):
+echo $this->Html->tableCells(
+    [
+        ['Red', 'Apple'],
+        ['Orange', 'Orange'],
+        ['Yellow', 'Banana'],
+    ],
+    ['class' => 'darker'],
+);
+----------------------------------------
+
+Code Block 224 ():
+echo $this->Html->tableCells(
+    [
+        ['Red', 'Apple'],
+        ['Orange', 'Orange'],
+        ['Yellow', 'Banana'],
+    ],
+    ['class' => 'darker'],
+);
+----------------------------------------
+
+Code Block 225 (shiki):
+<tr class="darker"><td>Red</td><td>Apple</td></tr>
+<tr><td>Orange</td><td>Orange</td></tr>
+<tr class="darker"><td>Yellow</td><td>Banana</td></tr>
+----------------------------------------
+
+Code Block 226 ():
+<tr class="darker"><td>Red</td><td>Apple</td></tr>
+<tr><td>Orange</td><td>Orange</td></tr>
+<tr class="darker"><td>Yellow</td><td>Banana</td></tr>
+----------------------------------------
+
+Code Block 227 ():
+method
+----------------------------------------
+
+Code Block 228 (shiki):
+// Load specific templates.
+$this->Html->setTemplates([
+    'javascriptlink' => '<script src="{{url}}" type="text/javascript"{{attrs}}></script>',
+]);
+----------------------------------------
+
+Code Block 229 ():
+// Load specific templates.
+$this->Html->setTemplates([
+    'javascriptlink' => '<script src="{{url}}" type="text/javascript"{{attrs}}></script>',
+]);
+----------------------------------------
+
+Code Block 230 (shiki):
+// Load a configuration file with templates.
+$this->Html->templater()->load('my_tags');
+----------------------------------------
+
+Code Block 231 ():
+// Load a configuration file with templates.
+$this->Html->templater()->load('my_tags');
+----------------------------------------
+
+Code Block 232 (shiki):
+<?php
+return [
+    'javascriptlink' => '<script src="{{url}}" type="text/javascript"{{attrs}}></script>',
+];
+----------------------------------------
+
+Code Block 233 ():
+<?php
+return [
+    'javascriptlink' => '<script src="{{url}}" type="text/javascript"{{attrs}}></script>',
+];
+----------------------------------------
+
+Code Block 234 ():
+%
+----------------------------------------
+
+Code Block 235 ():
+%%
+----------------------------------------
+
+Code Block 236 ():
+sprintf()
+----------------------------------------
+
+Code Block 237 ():
+<div style="width:%%"></div>
+----------------------------------------
+

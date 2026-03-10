@@ -1,0 +1,536 @@
+URL: https://book.cakephp.org/5.x/controllers/components/flash.html
+Title: Flash | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Flash ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Setting Flash Messages ​
+  - HTML in Flash Messages ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Controller\Component\FlashComponent(ComponentCollection $collection, array $config = [])
+
+FlashComponent provides a way to set one-time notification messages to be displayed after processing a form or acknowledging data. CakePHP refers to these messages as "flash messages". FlashComponent writes flash messages to $_SESSION, to be rendered in a View using FlashHelper.
+
+FlashComponent provides two ways to set flash messages: its __call() magic method and its set() method. To furnish your application with verbosity, FlashComponent's __call() magic method allows you use a method name that maps to an element located under the templates/element/flash directory. By convention, camelcased methods will map to the lowercased and underscored element name:
+
+Alternatively, to set a plain-text message without rendering an element, you can use the set() method:
+
+Flash messages are appended to an array internally. Successive calls to set() or __call() with the same key will append the messages in the $_SESSION. If you want to overwrite existing messages when setting a flash message, set the clear option to true when configuring the Component.
+
+FlashComponent's __call() and set() methods optionally take a second parameter, an array of options:
+
+An example of using these options:
+
+Note that the parameter element will be always overridden while using __call(). In order to retrieve a specific element from a plugin, you should set the plugin parameter. For example:
+
+The code above will use the warning.php element under plugins/PluginName/templates/element/flash for rendering the flash message.
+
+NOTE
+
+By default, CakePHP escapes the content in flash messages to prevent cross site scripting. User data in your flash messages will be HTML encoded and safe to be printed. If you want to include HTML in your flash messages, you need to pass the escape option and adjust your flash message templates to allow disabling escaping when the escape option is passed.
+
+It is possible to output HTML in flash messages by using the 'escape' option key:
+
+Make sure that you escape the input manually, then. In the above example $highlight and $message are non-HTML input and therefore escaped.
+
+For more information about rendering your flash messages, please refer to the FlashHelper section.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+$_SESSION
+----------------------------------------
+
+Code Block 3 ():
+__call()
+----------------------------------------
+
+Code Block 4 ():
+set()
+----------------------------------------
+
+Code Block 5 ():
+__call()
+----------------------------------------
+
+Code Block 6 (shiki):
+// Uses templates/element/flash/success.php
+$this->Flash->success('This was successful');
+
+// Uses templates/element/flash/great_success.php
+$this->Flash->greatSuccess('This was greatly successful');
+----------------------------------------
+
+Code Block 7 ():
+// Uses templates/element/flash/success.php
+$this->Flash->success('This was successful');
+
+// Uses templates/element/flash/great_success.php
+$this->Flash->greatSuccess('This was greatly successful');
+----------------------------------------
+
+Code Block 8 ():
+set()
+----------------------------------------
+
+Code Block 9 (shiki):
+$this->Flash->set('This is a message');
+----------------------------------------
+
+Code Block 10 ():
+$this->Flash->set('This is a message');
+----------------------------------------
+
+Code Block 11 ():
+set()
+----------------------------------------
+
+Code Block 12 ():
+__call()
+----------------------------------------
+
+Code Block 13 ():
+$_SESSION
+----------------------------------------
+
+Code Block 14 ():
+clear
+----------------------------------------
+
+Code Block 15 ():
+true
+----------------------------------------
+
+Code Block 16 ():
+__call()
+----------------------------------------
+
+Code Block 17 ():
+set()
+----------------------------------------
+
+Code Block 18 ():
+key
+----------------------------------------
+
+Code Block 19 ():
+Flash
+----------------------------------------
+
+Code Block 20 ():
+element
+----------------------------------------
+
+Code Block 21 ():
+null
+----------------------------------------
+
+Code Block 22 ():
+__call()
+----------------------------------------
+
+Code Block 23 ():
+params
+----------------------------------------
+
+Code Block 24 ():
+clear
+----------------------------------------
+
+Code Block 25 ():
+bool
+----------------------------------------
+
+Code Block 26 (shiki):
+// In your Controller
+$this->Flash->success('The user has been saved', [
+    'key' => 'positive',
+    'clear' => true,
+    'params' => [
+        'name' => $user->name,
+        'email' => $user->email,
+    ],
+]);
+
+// In your View
+<?= $this->Flash->render('positive') ?>
+
+<!-- In templates/element/flash/success.php -->
+<div id="flash-<?= h($key) ?>" class="message-info success">
+    <?= h($message) ?>: <?= h($params['name']) ?>, <?= h($params['email']) ?>.
+</div>
+----------------------------------------
+
+Code Block 27 ():
+// In your Controller
+$this->Flash->success('The user has been saved', [
+    'key' => 'positive',
+    'clear' => true,
+    'params' => [
+        'name' => $user->name,
+        'email' => $user->email,
+    ],
+]);
+
+// In your View
+<?= $this->Flash->render('positive') ?>
+
+<!-- In templates/element/flash/success.php -->
+<div id="flash-<?= h($key) ?>" class="message-info success">
+    <?= h($message) ?>: <?= h($params['name']) ?>, <?= h($params['email']) ?>.
+</div>
+----------------------------------------
+
+Code Block 28 ():
+element
+----------------------------------------
+
+Code Block 29 ():
+__call()
+----------------------------------------
+
+Code Block 30 ():
+plugin
+----------------------------------------
+
+Code Block 31 (shiki):
+// In your Controller
+$this->Flash->warning('My message', ['plugin' => 'PluginName']);
+----------------------------------------
+
+Code Block 32 ():
+// In your Controller
+$this->Flash->warning('My message', ['plugin' => 'PluginName']);
+----------------------------------------
+
+Code Block 33 ():
+escape
+----------------------------------------
+
+Code Block 34 ():
+'escape'
+----------------------------------------
+
+Code Block 35 (shiki):
+$this->Flash->info(sprintf('<b>%s</b> %s', h($highlight), h($message)), ['escape' => false]);
+----------------------------------------
+
+Code Block 36 ():
+$this->Flash->info(sprintf('<b>%s</b> %s', h($highlight), h($message)), ['escape' => false]);
+----------------------------------------
+
+Code Block 37 ():
+$highlight
+----------------------------------------
+
+Code Block 38 ():
+$message
+----------------------------------------
+

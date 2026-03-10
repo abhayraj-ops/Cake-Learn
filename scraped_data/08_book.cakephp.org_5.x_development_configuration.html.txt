@@ -1,0 +1,1237 @@
+URL: https://book.cakephp.org/5.x/development/configuration.html
+Title: Configuration | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Configuration ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Configuring your Application ​
+  - Environment Variables ​
+  - Additional Class Paths ​
+  - Inflection Configuration ​
+  - Configure Class ​
+  - Reading and writing configuration files ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Loading Additional Configuration Files ​
+  - General Configuration ​
+  - Using a CDN ​
+  - Database Configuration ​
+  - Caching Configuration ​
+  - Error and Exception Handling Configuration ​
+  - Logging Configuration ​
+  - Email Configuration ​
+  - Session Configuration ​
+  - Routing configuration ​
+  - Plugin, View Template and Locale Paths ​
+  - Writing Configuration data ​
+  - Reading Configuration Data ​
+  - Checking to see if Configuration Data is Defined ​
+  - Deleting Configuration Data ​
+  - Reading & Deleting Configuration Data ​
+  - Loading Configuration Files ​
+  - Creating or Modifying Configuration Files ​
+  - Storing Runtime Configuration ​
+  - Restoring Runtime Configuration ​
+  - Configuration Engines ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+While conventions remove the need to configure all of CakePHP, you'll still need to configure a few things like your database credentials.
+
+Additionally, there are optional configuration options that allow you to swap out default values & implementations with ones tailored to your application.
+
+Configuration is generally stored in either PHP or INI files, and loaded during the application bootstrap. CakePHP comes with one configuration file by default, but if required you can add additional configuration files and load them in your application's bootstrap code. Cake\Core\Configure is used for global configuration, and classes like Cache provide setConfig() methods to make configuration simple and transparent.
+
+The application skeleton features a config/app.php file which should contain configuration that doesn't vary across the various environments your application is deployed in. The config/app_local.php file should contain the configuration data that varies between environments and should be managed by configuration management, or your deployment tooling. Both of these files reference environment variables through the env() function that enables configuration values to set through the server environment.
+
+If your application has many configuration options it can be helpful to split configuration into multiple files. After creating each of the files in your config/ directory you can load them in bootstrap.php:
+
+Many modern cloud providers, like Heroku, let you define environment variables for configuration data. You can configure your CakePHP through environment variables in the 12factor app style. Environment variables allow your application to require less state making your application easier to manage when it is deployed across a number of environments.
+
+As you can see in your app.php, the env() function is used to read configuration from the environment, and build the application configuration. CakePHP uses DSN strings for databases, logs, email transports and cache configurations allowing you to easily vary these libraries in each environment.
+
+For local development, CakePHP leverages dotenv to make local development automatically reload environment variables. Use composer to require this library and then there is a block of code in bootstrap.php that needs to be uncommented to harness it.
+
+You will see a config/.env.example in your application. By copying this file into config/.env and customizing the values you can configure your application.
+
+You should avoid committing the config/.env file to your repository and instead use the config/.env.example as a template with placeholder values so everyone on your team knows what environment variables are in use and what should go in each one.
+
+Once your environment variables have been set, you can use env() to read data from the environment:
+
+The second value passed to the env function is the default value. This value will be used if no environment variable exists for the given key.
+
+Below is a description of the variables and how they affect your CakePHP application.
+
+debug : Changes CakePHP debugging output. false = Production mode. No error messages, errors, or warnings shown. true = Errors and warnings shown.
+
+App.namespace : The namespace to find app classes under.
+
+NOTE
+
+When changing the namespace in your configuration, you will also need to update your composer.json file to use this namespace as well. Additionally, create a new autoloader by running php composer.phar dumpautoload.
+
+App.baseUrl : Un-comment this definition if you don't plan to use Apache's mod_rewrite with CakePHP. Don't forget to remove your .htaccess files too.
+
+App.base : The base directory the app resides in. If false this will be auto detected. If not false, ensure your string starts with a / and does NOT end with a /. For example, /basedir is a valid App.base.
+
+App.encoding : Define what encoding your application uses. This encoding is used to generate the charset in the layout, and encode entities. It should match the encoding values specified for your database.
+
+App.webroot : The webroot directory.
+
+App.wwwRoot : The file path to webroot.
+
+App.fullBaseUrl : The fully qualified domain name (including protocol) to your application's root. This is used when generating absolute URLs. By default, this value is generated using the $_SERVER environment. However, you should define it manually to optimize performance or if you are concerned about people manipulating the Host header. In a CLI context (from command) the fullBaseUrl cannot be read from $_SERVER, as there is no webserver involved. You do need to specify it yourself if you do need to generate URLs from a shell (for example, when sending emails).
+
+App.imageBaseUrl : Web path to the public images directory under webroot. If you are using a CDN you should set this value to the CDN's location.
+
+App.cssBaseUrl : Web path to the public css directory under webroot. If you are using a CDN you should set this value to the CDN's location.
+
+App.jsBaseUrl : Web path to the public js directory under webroot. If you are using a CDN you should set this value to the CDN's location.
+
+App.paths : Configure paths for non class based resources. Supports the plugins, templates, locales subkeys, which allow the definition of paths for plugins, view templates and locale files respectively.
+
+App.uploadedFilesAsObjects : Defines whether uploaded files are being represented as objects (true), or arrays (false). This option is being treated as enabled by default. See the File Uploads section in the Request & Response Objects chapter for more information.
+
+Security.salt : A random string used in hashing. This value is also used as the HMAC salt when doing symmetric encryption.
+
+Asset.timestamp : Appends a timestamp which is last modified time of the particular file at the end of asset files URLs (CSS, JavaScript, Image) when using proper helpers. Valid values: (bool) false - Doesn't do anything (default), (bool) true - Appends the timestamp when debug is true, (string) 'force' - Always appends the timestamp.
+
+Asset.cacheTime : Sets the asset cache time. This determines the http header Cache-Control's max-age, and the http header's Expire's time for assets. This can take anything that you version of PHP's strtotime function can take. The default is +1 day.
+
+To use a CDN for loading your static assets, change App.imageBaseUrl, App.cssBaseUrl, App.jsBaseUrl to point the CDN URI, for example: https://mycdn.example.com/ (note the trailing /).
+
+All images, scripts and styles loaded via HtmlHelper will prepend the absolute CDN path, matching the same relative path used in the application. Please note there is a specific use case when using plugin based assets: plugins will not use the plugin's prefix when absolute ...BaseUrl URI is used, for example By default:
+
+If you set App.imageBaseUrl to https://mycdn.example.com/:
+
+See the Database Configuration for information on configuring your database connections.
+
+See the Caching Configuration for information on configuring caching in CakePHP.
+
+See the Error and Exception Configuration for information on configuring error and exception handlers.
+
+See the Log Configuration for information on configuring logging in CakePHP.
+
+See the Email Configuration for information on configuring email presets in CakePHP.
+
+See the Session Configuration for information on configuring session handling in CakePHP.
+
+See the Routes Configuration for more information on configuring routing and creating routes for your application.
+
+Additional class paths are setup through the autoloaders your application uses. When using composer to generate your autoloader, you could do the following, to provide fallback paths for controllers in your application:
+
+The above would setup paths for both the App and App\Controller namespace. The first key will be searched, and if that path does not contain the class/file the second key will be searched. You can also map a single namespace to multiple directories with the following:
+
+Since plugins, view templates and locales are not classes, they cannot have an autoloader configured. CakePHP provides three Configure variables to setup additional paths for these resources. In your config/app.php you can set these variables:
+
+Paths should end with a directory separator, or they will not work properly.
+
+See the Inflection Configuration docs for more information.
+
+class Cake\Core\Configure
+
+CakePHP's Configure class can be used to store and retrieve application or runtime specific values. Be careful, this class allows you to store anything in it, then use it in any other part of your code: a sure temptation to break the MVC pattern CakePHP was designed for. The main goal of Configure class is to keep centralized variables that can be shared between many objects. Remember to try to live by "convention over configuration" and you won't end up breaking the MVC structure CakePHP provides.
+
+static Cake\Core\Configure::write(array|string $config, mixed $value = null): void
+
+Use write() to store data in the application's configuration:
+
+NOTE
+
+The dot notation used in the $key parameter can be used to organize your configuration settings into logical groups.
+
+The above example could also be written in a single call:
+
+You can use Configure::write('debug', $bool) to switch between debug and production modes on the fly.
+
+NOTE
+
+Any configuration changes done using Configure::write() are in memory and will not persist across requests.
+
+static Cake\Core\Configure::read(?string $var = null, mixed $default = null): mixed
+
+Used to read configuration data from the application. If a key is supplied, the data is returned. Using our examples from write() above, we can read that data back:
+
+If $key is left null, all values in Configure will be returned.
+
+static Cake\Core\Configure::readOrFail(string $var): mixed
+
+Reads configuration data just like Cake\Core\Configure::read() but expects to find a key/value pair. In case the requested pair does not exist, a RuntimeException will be thrown:
+
+static Cake\Core\Configure::check(string $var): bool
+
+Used to check if a key/path exists and has non-null value:
+
+static Cake\Core\Configure::delete(string $var): void
+
+Used to delete information from the application's configuration:
+
+static Cake\Core\Configure::consume(string $var): mixed
+
+Read and delete a key from Configure. This is useful when you want to combine reading and deleting values in a single operation.
+
+static Cake\Core\Configure::consumeOrFail(string $var): mixed
+
+Consumes configuration data just like Cake\Core\Configure::consume() but expects to find a key/value pair. In case the requested pair does not exist, a RuntimeException will be thrown:
+
+static Cake\Core\Configure::config(string $name, ConfigEngineInterface $engine): void
+
+CakePHP comes with two built-in configuration file engines. Cake\Core\Configure\Engine\PhpConfig is able to read PHP config files, in the same format that Configure has historically read. Cake\Core\Configure\Engine\IniConfig is able to read ini config files. See the PHP documentation for more information on the specifics of ini files. To use a core config engine, you'll need to attach it to Configure using Configure::config():
+
+You can have multiple engines attached to Configure, each reading different kinds or sources of configuration files. You can interact with attached engines using a few other methods on Configure. To check which engine aliases are attached you can use Configure::configured():
+
+static Cake\Core\Configure::drop(string $name): bool
+
+You can also remove attached engines. Configure::drop('default') would remove the default engine alias. Any future attempts to load configuration files with that engine would fail:
+
+static Cake\Core\Configure::load(string $key, string $config = 'default', bool $merge = true): bool
+
+Once you've attached a config engine to Configure you can load configuration files:
+
+Loaded configuration files merge their data with the existing runtime configuration in Configure. This allows you to overwrite and add new values into the existing runtime configuration. By setting $merge to true, values will not ever overwrite the existing configuration.
+
+WARNING
+
+When merging configuration files with $merge = true, dot notation in keys is not expanded:
+
+static Cake\Core\Configure::dump(string $key, string $config = 'default', array $keys = []): bool
+
+Dumps all or some of the data in Configure into a file or storage system supported by a config engine. The serialization format is decided by the config engine attached as $config. For example, if the 'default' engine is a Cake\Core\Configure\Engine\PhpConfig, the generated file will be a PHP configuration file loadable by the Cake\Core\Configure\Engine\PhpConfig
+
+Given that the 'default' engine is an instance of PhpConfig. Save all data in Configure to the file my_config.php:
+
+Save only the error handling configuration:
+
+Configure::dump() can be used to either modify or overwrite configuration files that are readable with Configure::load()
+
+static Cake\Core\Configure::store(string $name, string $cacheConfig = 'default', ?array $data = null): bool
+
+You can also store runtime configuration values for use in a future request. Since configure only remembers values for the current request, you will need to store any modified configuration information if you want to use it in subsequent requests:
+
+Stored configuration data is persisted in the named cache configuration. See the Caching documentation for more information on caching.
+
+static Cake\Core\Configure::restore(string $name, string $cacheConfig = 'default'): bool
+
+Once you've stored runtime configuration, you'll probably need to restore it so you can access it again. Configure::restore() does exactly that:
+
+When restoring configuration information it's important to restore it with the same key, and cache configuration as was used to store it. Restored information is merged on top of the existing runtime configuration.
+
+CakePHP provides the ability to load configuration files from a number of different sources, and features a pluggable system for creating your own configuration engines. The built in configuration engines are:
+
+By default, your application will use PhpConfig.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+Cake\Core\Configure
+----------------------------------------
+
+Code Block 2 ():
+Cache
+----------------------------------------
+
+Code Block 3 ():
+setConfig()
+----------------------------------------
+
+Code Block 4 ():
+env()
+----------------------------------------
+
+Code Block 5 (shiki):
+use Cake\Core\Configure;
+use Cake\Core\Configure\Engine\PhpConfig;
+
+Configure::setConfig('default', new PhpConfig());
+Configure::load('app', 'default', false);
+Configure::load('other_config', 'default');
+----------------------------------------
+
+Code Block 6 ():
+use Cake\Core\Configure;
+use Cake\Core\Configure\Engine\PhpConfig;
+
+Configure::setConfig('default', new PhpConfig());
+Configure::load('app', 'default', false);
+Configure::load('other_config', 'default');
+----------------------------------------
+
+Code Block 7 ():
+env()
+----------------------------------------
+
+Code Block 8 ():
+DSN
+----------------------------------------
+
+Code Block 9 ():
+bootstrap.php
+----------------------------------------
+
+Code Block 10 ():
+config/.env.example
+----------------------------------------
+
+Code Block 11 ():
+config/.env
+----------------------------------------
+
+Code Block 12 ():
+config/.env
+----------------------------------------
+
+Code Block 13 ():
+config/.env.example
+----------------------------------------
+
+Code Block 14 ():
+env()
+----------------------------------------
+
+Code Block 15 (shiki):
+$debug = env('APP_DEBUG', false);
+----------------------------------------
+
+Code Block 16 ():
+$debug = env('APP_DEBUG', false);
+----------------------------------------
+
+Code Block 17 ():
+false
+----------------------------------------
+
+Code Block 18 ():
+true
+----------------------------------------
+
+Code Block 19 ():
+php composer.phar dumpautoload
+----------------------------------------
+
+Code Block 20 ():
+false
+----------------------------------------
+
+Code Block 21 ():
+false
+----------------------------------------
+
+Code Block 22 ():
+/
+----------------------------------------
+
+Code Block 23 ():
+/
+----------------------------------------
+
+Code Block 24 ():
+/basedir
+----------------------------------------
+
+Code Block 25 ():
+$_SERVER
+----------------------------------------
+
+Code Block 26 ():
+Host
+----------------------------------------
+
+Code Block 27 ():
+fullBaseUrl
+----------------------------------------
+
+Code Block 28 ():
+CDN
+----------------------------------------
+
+Code Block 29 ():
+CDN
+----------------------------------------
+
+Code Block 30 ():
+CDN
+----------------------------------------
+
+Code Block 31 ():
+plugins
+----------------------------------------
+
+Code Block 32 ():
+templates
+----------------------------------------
+
+Code Block 33 ():
+locales
+----------------------------------------
+
+Code Block 34 ():
+true
+----------------------------------------
+
+Code Block 35 ():
+false
+----------------------------------------
+
+Code Block 36 ():
+false
+----------------------------------------
+
+Code Block 37 ():
+true
+----------------------------------------
+
+Code Block 38 ():
+true
+----------------------------------------
+
+Code Block 39 ():
+Cache-Control
+----------------------------------------
+
+Code Block 40 ():
+max-age
+----------------------------------------
+
+Code Block 41 ():
+Expire
+----------------------------------------
+
+Code Block 42 ():
++1 day
+----------------------------------------
+
+Code Block 43 ():
+App.imageBaseUrl
+----------------------------------------
+
+Code Block 44 ():
+App.cssBaseUrl
+----------------------------------------
+
+Code Block 45 ():
+App.jsBaseUrl
+----------------------------------------
+
+Code Block 46 ():
+https://mycdn.example.com/
+----------------------------------------
+
+Code Block 47 ():
+/
+----------------------------------------
+
+Code Block 48 ():
+...BaseUrl
+----------------------------------------
+
+Code Block 49 ():
+$this->Helper->assetUrl('TestPlugin.logo.png')
+----------------------------------------
+
+Code Block 50 ():
+test_plugin/logo.png
+----------------------------------------
+
+Code Block 51 ():
+App.imageBaseUrl
+----------------------------------------
+
+Code Block 52 ():
+https://mycdn.example.com/
+----------------------------------------
+
+Code Block 53 ():
+$this->Helper->assetUrl('TestPlugin.logo.png')
+----------------------------------------
+
+Code Block 54 ():
+https://mycdn.example.com/logo.png
+----------------------------------------
+
+Code Block 55 ():
+composer
+----------------------------------------
+
+Code Block 56 (shiki):
+"autoload": {
+    "psr-4": {
+        "App\\Controller\\": "/path/to/directory/with/controller/folders/",
+        "App\\": "src/"
+    }
+}
+----------------------------------------
+
+Code Block 57 ():
+"autoload": {
+    "psr-4": {
+        "App\\Controller\\": "/path/to/directory/with/controller/folders/",
+        "App\\": "src/"
+    }
+}
+----------------------------------------
+
+Code Block 58 ():
+App
+----------------------------------------
+
+Code Block 59 ():
+App\Controller
+----------------------------------------
+
+Code Block 60 (shiki):
+"autoload": {
+    "psr-4": {
+        "App\\": ["src/", "/path/to/directory/"]
+    }
+}
+----------------------------------------
+
+Code Block 61 ():
+"autoload": {
+    "psr-4": {
+        "App\\": ["src/", "/path/to/directory/"]
+    }
+}
+----------------------------------------
+
+Code Block 62 (shiki):
+return [
+    // More configuration
+    'App' => [
+        'paths' => [
+            'plugins' => [
+                ROOT . DS . 'plugins' . DS,
+                '/path/to/other/plugins/',
+            ],
+            'templates' => [
+                ROOT . DS . 'templates' . DS,
+                ROOT . DS . 'templates2' . DS,
+            ],
+            'locales' => [
+                ROOT . DS . 'resources' . DS . 'locales' . DS,
+            ],
+        ],
+    ],
+];
+----------------------------------------
+
+Code Block 63 ():
+return [
+    // More configuration
+    'App' => [
+        'paths' => [
+            'plugins' => [
+                ROOT . DS . 'plugins' . DS,
+                '/path/to/other/plugins/',
+            ],
+            'templates' => [
+                ROOT . DS . 'templates' . DS,
+                ROOT . DS . 'templates2' . DS,
+            ],
+            'locales' => [
+                ROOT . DS . 'resources' . DS . 'locales' . DS,
+            ],
+        ],
+    ],
+];
+----------------------------------------
+
+Code Block 64 ():
+class
+----------------------------------------
+
+Code Block 65 ():
+static
+----------------------------------------
+
+Code Block 66 ():
+write()
+----------------------------------------
+
+Code Block 67 (shiki):
+Configure::write('Company.name', 'Pizza, Inc.');
+Configure::write('Company.slogan', 'Pizza for your body and soul');
+----------------------------------------
+
+Code Block 68 ():
+Configure::write('Company.name', 'Pizza, Inc.');
+Configure::write('Company.slogan', 'Pizza for your body and soul');
+----------------------------------------
+
+Code Block 69 ():
+dot notation
+----------------------------------------
+
+Code Block 70 ():
+$key
+----------------------------------------
+
+Code Block 71 (shiki):
+Configure::write('Company', [
+    'name' => 'Pizza, Inc.',
+    'slogan' => 'Pizza for your body and soul',
+]);
+----------------------------------------
+
+Code Block 72 ():
+Configure::write('Company', [
+    'name' => 'Pizza, Inc.',
+    'slogan' => 'Pizza for your body and soul',
+]);
+----------------------------------------
+
+Code Block 73 ():
+Configure::write('debug', $bool)
+----------------------------------------
+
+Code Block 74 ():
+Configure::write()
+----------------------------------------
+
+Code Block 75 ():
+static
+----------------------------------------
+
+Code Block 76 (shiki):
+// Returns 'Pizza Inc.'
+Configure::read('Company.name');
+
+// Returns 'Pizza for your body and soul'
+Configure::read('Company.slogan');
+
+Configure::read('Company');
+// Returns:
+['name' => 'Pizza, Inc.', 'slogan' => 'Pizza for your body and soul'];
+
+// Returns 'fallback' as Company.nope is undefined.
+Configure::read('Company.nope', 'fallback');
+----------------------------------------
+
+Code Block 77 ():
+// Returns 'Pizza Inc.'
+Configure::read('Company.name');
+
+// Returns 'Pizza for your body and soul'
+Configure::read('Company.slogan');
+
+Configure::read('Company');
+// Returns:
+['name' => 'Pizza, Inc.', 'slogan' => 'Pizza for your body and soul'];
+
+// Returns 'fallback' as Company.nope is undefined.
+Configure::read('Company.nope', 'fallback');
+----------------------------------------
+
+Code Block 78 ():
+$key
+----------------------------------------
+
+Code Block 79 ():
+static
+----------------------------------------
+
+Code Block 80 ():
+Cake\Core\Configure::read()
+----------------------------------------
+
+Code Block 81 ():
+RuntimeException
+----------------------------------------
+
+Code Block 82 (shiki):
+Configure::readOrFail('Company.name');    // Yields: 'Pizza, Inc.'
+Configure::readOrFail('Company.geolocation');  // Will throw an exception
+
+Configure::readOrFail('Company');
+
+// Yields:
+['name' => 'Pizza, Inc.', 'slogan' => 'Pizza for your body and soul'];
+----------------------------------------
+
+Code Block 83 ():
+Configure::readOrFail('Company.name');    // Yields: 'Pizza, Inc.'
+Configure::readOrFail('Company.geolocation');  // Will throw an exception
+
+Configure::readOrFail('Company');
+
+// Yields:
+['name' => 'Pizza, Inc.', 'slogan' => 'Pizza for your body and soul'];
+----------------------------------------
+
+Code Block 84 ():
+static
+----------------------------------------
+
+Code Block 85 (shiki):
+$exists = Configure::check('Company.name');
+----------------------------------------
+
+Code Block 86 ():
+$exists = Configure::check('Company.name');
+----------------------------------------
+
+Code Block 87 ():
+static
+----------------------------------------
+
+Code Block 88 (shiki):
+Configure::delete('Company.name');
+----------------------------------------
+
+Code Block 89 ():
+Configure::delete('Company.name');
+----------------------------------------
+
+Code Block 90 ():
+static
+----------------------------------------
+
+Code Block 91 ():
+static
+----------------------------------------
+
+Code Block 92 ():
+Cake\Core\Configure::consume()
+----------------------------------------
+
+Code Block 93 ():
+RuntimeException
+----------------------------------------
+
+Code Block 94 (shiki):
+Configure::consumeOrFail('Company.name');    // Yields: 'Pizza, Inc.'
+Configure::consumeOrFail('Company.geolocation');  // Will throw an exception
+
+Configure::consumeOrFail('Company');
+
+// Yields:
+['name' => 'Pizza, Inc.', 'slogan' => 'Pizza for your body and soul'];
+----------------------------------------
+
+Code Block 95 ():
+Configure::consumeOrFail('Company.name');    // Yields: 'Pizza, Inc.'
+Configure::consumeOrFail('Company.geolocation');  // Will throw an exception
+
+Configure::consumeOrFail('Company');
+
+// Yields:
+['name' => 'Pizza, Inc.', 'slogan' => 'Pizza for your body and soul'];
+----------------------------------------
+
+Code Block 96 ():
+static
+----------------------------------------
+
+Code Block 97 ():
+Cake\Core\Configure\Engine\PhpConfig
+----------------------------------------
+
+Code Block 98 ():
+Cake\Core\Configure\Engine\IniConfig
+----------------------------------------
+
+Code Block 99 ():
+Configure::config()
+----------------------------------------
+
+Code Block 100 (shiki):
+use Cake\Core\Configure\Engine\PhpConfig;
+
+// Read config files from config
+Configure::config('default', new PhpConfig());
+
+// Read config files from another path.
+Configure::config('default', new PhpConfig('/path/to/your/config/files/'));
+----------------------------------------
+
+Code Block 101 ():
+use Cake\Core\Configure\Engine\PhpConfig;
+
+// Read config files from config
+Configure::config('default', new PhpConfig());
+
+// Read config files from another path.
+Configure::config('default', new PhpConfig('/path/to/your/config/files/'));
+----------------------------------------
+
+Code Block 102 ():
+Configure::configured()
+----------------------------------------
+
+Code Block 103 (shiki):
+// Get the array of aliases for attached engines.
+Configure::configured();
+
+// Check if a specific engine is attached
+Configure::configured('default');
+----------------------------------------
+
+Code Block 104 ():
+// Get the array of aliases for attached engines.
+Configure::configured();
+
+// Check if a specific engine is attached
+Configure::configured('default');
+----------------------------------------
+
+Code Block 105 ():
+static
+----------------------------------------
+
+Code Block 106 ():
+Configure::drop('default')
+----------------------------------------
+
+Code Block 107 (shiki):
+Configure::drop('default');
+----------------------------------------
+
+Code Block 108 ():
+Configure::drop('default');
+----------------------------------------
+
+Code Block 109 ():
+static
+----------------------------------------
+
+Code Block 110 (shiki):
+// Load my_file.php using the 'default' engine object.
+Configure::load('my_file', 'default');
+----------------------------------------
+
+Code Block 111 ():
+// Load my_file.php using the 'default' engine object.
+Configure::load('my_file', 'default');
+----------------------------------------
+
+Code Block 112 ():
+$merge
+----------------------------------------
+
+Code Block 113 ():
+true
+----------------------------------------
+
+Code Block 114 ():
+$merge = true
+----------------------------------------
+
+Code Block 115 (shiki):
+// config1.php
+'Key1' => [
+    'Key2' => [
+        'Key3' => ['NestedKey1' => 'Value'],
+    ],
+],
+
+// config2.php
+'Key1.Key2' => [
+    'Key3' => ['NestedKey2' => 'Value2'],
+]
+
+Configure::load('config1', 'default');
+Configure::load('config2', 'default', true);
+
+// Now Key1.Key2.Key3 has the value ['NestedKey2' => 'Value2']
+// instead of ['NestedKey1' => 'Value', 'NestedKey2' => 'Value2']
+----------------------------------------
+
+Code Block 116 ():
+// config1.php
+'Key1' => [
+    'Key2' => [
+        'Key3' => ['NestedKey1' => 'Value'],
+    ],
+],
+
+// config2.php
+'Key1.Key2' => [
+    'Key3' => ['NestedKey2' => 'Value2'],
+]
+
+Configure::load('config1', 'default');
+Configure::load('config2', 'default', true);
+
+// Now Key1.Key2.Key3 has the value ['NestedKey2' => 'Value2']
+// instead of ['NestedKey1' => 'Value', 'NestedKey2' => 'Value2']
+----------------------------------------
+
+Code Block 117 ():
+static
+----------------------------------------
+
+Code Block 118 ():
+$config
+----------------------------------------
+
+Code Block 119 ():
+Cake\Core\Configure\Engine\PhpConfig
+----------------------------------------
+
+Code Block 120 ():
+Cake\Core\Configure\Engine\PhpConfig
+----------------------------------------
+
+Code Block 121 ():
+my_config.php
+----------------------------------------
+
+Code Block 122 (shiki):
+Configure::dump('my_config', 'default');
+----------------------------------------
+
+Code Block 123 ():
+Configure::dump('my_config', 'default');
+----------------------------------------
+
+Code Block 124 (shiki):
+Configure::dump('error', 'default', ['Error', 'Exception']);
+----------------------------------------
+
+Code Block 125 ():
+Configure::dump('error', 'default', ['Error', 'Exception']);
+----------------------------------------
+
+Code Block 126 ():
+Configure::dump()
+----------------------------------------
+
+Code Block 127 ():
+Configure::load()
+----------------------------------------
+
+Code Block 128 ():
+static
+----------------------------------------
+
+Code Block 129 (shiki):
+// Store the current configuration in the 'user_1234' key in the 'default' cache.
+Configure::store('user_1234', 'default');
+----------------------------------------
+
+Code Block 130 ():
+// Store the current configuration in the 'user_1234' key in the 'default' cache.
+Configure::store('user_1234', 'default');
+----------------------------------------
+
+Code Block 131 ():
+static
+----------------------------------------
+
+Code Block 132 ():
+Configure::restore()
+----------------------------------------
+
+Code Block 133 (shiki):
+// Restore runtime configuration from the cache.
+Configure::restore('user_1234', 'default');
+----------------------------------------
+
+Code Block 134 ():
+// Restore runtime configuration from the cache.
+Configure::restore('user_1234', 'default');
+----------------------------------------
+
+Code Block 135 ():
+PhpConfig
+----------------------------------------
+

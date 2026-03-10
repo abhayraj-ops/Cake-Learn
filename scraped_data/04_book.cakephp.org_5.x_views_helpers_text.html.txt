@@ -1,0 +1,920 @@
+URL: https://book.cakephp.org/5.x/views/helpers/text.html
+Title: Text | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Text ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Linking Email addresses ​
+  - Linking URLs ​
+  - Linking Both URLs and Email Addresses ​
+  - Converting Text into Paragraphs ​
+  - Highlighting Substrings ​
+  - Truncating Text ​
+  - Truncating the Tail of a String ​
+  - Extracting an Excerpt ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Text::highlight() ​
+  - Text::truncate() ​
+  - Text::tail() ​
+  - Text::excerpt() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\View\Helper\TextHelper(View $view, array $config = [])
+
+The TextHelper contains methods to make text more usable and friendly in your views. It aids in enabling links, formatting URLs, creating excerpts of text around chosen words or phrases, highlighting key words in blocks of text, and gracefully truncating long stretches of text.
+
+method Cake\View\Helper\TextHelper::autoLinkEmails(string $text, array $options = []): string
+
+Adds links to the well-formed email addresses in $text, according to any options defined in $options (see HtmlHelper::link()).
+
+Output:
+
+This method automatically escapes its input. Use the escape option to disable this if necessary.
+
+method Cake\View\Helper\TextHelper::autoLinkUrls(string $text, array $options = []): string
+
+Same as autoLinkEmails(), only this method searches for strings that start with https, http, ftp, or nntp and links them appropriately.
+
+This method automatically escapes its input. Use the escape option to disable this if necessary.
+
+method Cake\View\Helper\TextHelper::autoLink(string $text, array $options = []): string
+
+Performs the functionality in both autoLinkUrls() and autoLinkEmails() on the supplied $text. All URLs and emails are linked appropriately given the supplied $options.
+
+This method automatically escapes its input. Use the escape option to disable this if necessary.
+
+Further options:
+
+method Cake\View\Helper\TextHelper::autoParagraph(string $text): string
+
+Adds proper <p> around text where double-line returns are found, and <br> where single-line returns are found.
+
+Output:
+
+static Cake\Utility\Text::wrapBlock(string $text, array|int $options = []): string
+
+If you need to ensure that the total width of the generated block won't exceed a certain length even with internal indentation, you need to use wrapBlock() instead of wrap(). This is particularly useful to generate text for the console for example. It accepts the same options as wrap():
+
+method Cake\Utility\Text::highlight(string $text, array|string $phrase, array $options = []): string
+
+Highlights $phrase in $text using the $options['format'] string specified or a default string.
+
+Options:
+
+Example:
+
+Output:
+
+Highlights $phrase in $text <span class="highlight">using</span> the $options['format'] string specified or a default string.
+
+method Cake\Utility\Text::truncate(string $text, int $length = 100, array $options = []): string
+
+If $text is longer than $length, this method truncates it at $length and adds a suffix consisting of 'ellipsis', if defined. If 'exact' is passed as false, the truncation will occur at the first whitespace after the point at which $length is exceeded. If 'html' is passed as true, HTML tags will be respected and will not be cut off.
+
+$options is used to pass all extra parameters, and has the following possible keys by default, all of which are optional:
+
+Example:
+
+Output:
+
+method Cake\Utility\Text::tail(string $text, int $length = 100, array $options = []): string
+
+If $text is longer than $length, this method removes an initial substring with length consisting of the difference and prepends a prefix consisting of 'ellipsis', if defined. If 'exact' is passed as false, the truncation will occur at the first whitespace prior to the point at which truncation would otherwise take place.
+
+$options is used to pass all extra parameters, and has the following possible keys by default, all of which are optional:
+
+Example:
+
+Output:
+
+method Cake\Utility\Text::excerpt(string $text, string $phrase, int $radius = 100, string $ellipsis = '…'): string
+
+Extracts an excerpt from $text surrounding the $phrase with a number of characters on each side determined by $radius, and prefix/suffix with $ellipsis. This method is especially handy for search results. The query string or keywords can be shown within the resulting document.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+method
+----------------------------------------
+
+Code Block 3 ():
+$text
+----------------------------------------
+
+Code Block 4 ():
+$options
+----------------------------------------
+
+Code Block 5 ():
+HtmlHelper::link()
+----------------------------------------
+
+Code Block 6 (shiki):
+$myText = 'For more information regarding our world-famous ' .
+    'pastries and desserts, contact [email protected]';
+$linkedText = $this->Text->autoLinkEmails($myText);
+----------------------------------------
+
+Code Block 7 ():
+$myText = 'For more information regarding our world-famous ' .
+    'pastries and desserts, contact [email protected]';
+$linkedText = $this->Text->autoLinkEmails($myText);
+----------------------------------------
+
+Code Block 8 (shiki):
+For more information regarding our world-famous pastries and desserts,
+contact <a href="mailto:[email protected]">[email protected]</a>
+----------------------------------------
+
+Code Block 9 ():
+For more information regarding our world-famous pastries and desserts,
+contact <a href="mailto:[email protected]">[email protected]</a>
+----------------------------------------
+
+Code Block 10 ():
+escape
+----------------------------------------
+
+Code Block 11 ():
+method
+----------------------------------------
+
+Code Block 12 ():
+autoLinkEmails()
+----------------------------------------
+
+Code Block 13 ():
+escape
+----------------------------------------
+
+Code Block 14 ():
+method
+----------------------------------------
+
+Code Block 15 ():
+autoLinkUrls()
+----------------------------------------
+
+Code Block 16 ():
+autoLinkEmails()
+----------------------------------------
+
+Code Block 17 ():
+$text
+----------------------------------------
+
+Code Block 18 ():
+$options
+----------------------------------------
+
+Code Block 19 ():
+escape
+----------------------------------------
+
+Code Block 20 ():
+stripProtocol
+----------------------------------------
+
+Code Block 21 ():
+http://
+----------------------------------------
+
+Code Block 22 ():
+https://
+----------------------------------------
+
+Code Block 23 ():
+maxLength
+----------------------------------------
+
+Code Block 24 ():
+ellipsis
+----------------------------------------
+
+Code Block 25 ():
+method
+----------------------------------------
+
+Code Block 26 ():
+<p>
+----------------------------------------
+
+Code Block 27 ():
+<br>
+----------------------------------------
+
+Code Block 28 (shiki):
+$myText = 'For more information
+regarding our world-famous pastries and desserts.
+
+contact [email protected]';
+$formattedText = $this->Text->autoParagraph($myText);
+----------------------------------------
+
+Code Block 29 ():
+$myText = 'For more information
+regarding our world-famous pastries and desserts.
+
+contact [email protected]';
+$formattedText = $this->Text->autoParagraph($myText);
+----------------------------------------
+
+Code Block 30 (shiki):
+<p>For more information<br />
+regarding our world-famous pastries and desserts.</p>
+<p>contact [email protected]</p>
+----------------------------------------
+
+Code Block 31 ():
+<p>For more information<br />
+regarding our world-famous pastries and desserts.</p>
+<p>contact [email protected]</p>
+----------------------------------------
+
+Code Block 32 ():
+static
+----------------------------------------
+
+Code Block 33 ():
+wrapBlock()
+----------------------------------------
+
+Code Block 34 ():
+wrap()
+----------------------------------------
+
+Code Block 35 ():
+wrap()
+----------------------------------------
+
+Code Block 36 (shiki):
+$text = 'This is the song that never ends. This is the song that never ends.';
+$result = Text::wrapBlock($text, [
+    'width' => 22,
+    'indent' => ' → ',
+    'indentAt' => 1,
+]);
+
+// Returns
+This is the song that
+ → never ends. This
+ → is the song that
+ → never ends.
+----------------------------------------
+
+Code Block 37 ():
+$text = 'This is the song that never ends. This is the song that never ends.';
+$result = Text::wrapBlock($text, [
+    'width' => 22,
+    'indent' => ' → ',
+    'indentAt' => 1,
+]);
+
+// Returns
+This is the song that
+ → never ends. This
+ → is the song that
+ → never ends.
+----------------------------------------
+
+Code Block 38 ():
+method
+----------------------------------------
+
+Code Block 39 ():
+$phrase
+----------------------------------------
+
+Code Block 40 ():
+$text
+----------------------------------------
+
+Code Block 41 ():
+$options['format']
+----------------------------------------
+
+Code Block 42 ():
+format
+----------------------------------------
+
+Code Block 43 ():
+html
+----------------------------------------
+
+Code Block 44 ():
+true
+----------------------------------------
+
+Code Block 45 (shiki):
+// Called as TextHelper
+echo $this->Text->highlight(
+    $lastSentence,
+    'using',
+    ['format' => '<span class="highlight">\1</span>'],
+);
+
+// Called as Text
+use Cake\Utility\Text;
+
+echo Text::highlight(
+    $lastSentence,
+    'using',
+    ['format' => '<span class="highlight">\1</span>'],
+);
+----------------------------------------
+
+Code Block 46 ():
+// Called as TextHelper
+echo $this->Text->highlight(
+    $lastSentence,
+    'using',
+    ['format' => '<span class="highlight">\1</span>'],
+);
+
+// Called as Text
+use Cake\Utility\Text;
+
+echo Text::highlight(
+    $lastSentence,
+    'using',
+    ['format' => '<span class="highlight">\1</span>'],
+);
+----------------------------------------
+
+Code Block 47 ():
+$phrase
+----------------------------------------
+
+Code Block 48 ():
+$text
+----------------------------------------
+
+Code Block 49 ():
+<span class="highlight">using</span>
+----------------------------------------
+
+Code Block 50 ():
+$options['format']
+----------------------------------------
+
+Code Block 51 ():
+method
+----------------------------------------
+
+Code Block 52 ():
+$text
+----------------------------------------
+
+Code Block 53 ():
+$length
+----------------------------------------
+
+Code Block 54 ():
+$length
+----------------------------------------
+
+Code Block 55 ():
+'ellipsis'
+----------------------------------------
+
+Code Block 56 ():
+'exact'
+----------------------------------------
+
+Code Block 57 ():
+false
+----------------------------------------
+
+Code Block 58 ():
+$length
+----------------------------------------
+
+Code Block 59 ():
+'html'
+----------------------------------------
+
+Code Block 60 ():
+true
+----------------------------------------
+
+Code Block 61 ():
+$options
+----------------------------------------
+
+Code Block 62 (shiki):
+[
+    'ellipsis' => '...',
+    'exact' => true,
+    'html' => false,
+]
+----------------------------------------
+
+Code Block 63 ():
+[
+    'ellipsis' => '...',
+    'exact' => true,
+    'html' => false,
+]
+----------------------------------------
+
+Code Block 64 (shiki):
+// Called as TextHelper
+echo $this->Text->truncate(
+    'The killer crept forward and tripped on the rug.',
+    22,
+    [
+        'ellipsis' => '...',
+        'exact' => false,
+    ]
+);
+
+// Called as Text
+use Cake\Utility\Text;
+
+echo Text::truncate(
+    'The killer crept forward and tripped on the rug.',
+    22,
+    [
+        'ellipsis' => '...',
+        'exact' => false,
+    ]
+);
+----------------------------------------
+
+Code Block 65 ():
+// Called as TextHelper
+echo $this->Text->truncate(
+    'The killer crept forward and tripped on the rug.',
+    22,
+    [
+        'ellipsis' => '...',
+        'exact' => false,
+    ]
+);
+
+// Called as Text
+use Cake\Utility\Text;
+
+echo Text::truncate(
+    'The killer crept forward and tripped on the rug.',
+    22,
+    [
+        'ellipsis' => '...',
+        'exact' => false,
+    ]
+);
+----------------------------------------
+
+Code Block 66 ():
+The killer crept...
+----------------------------------------
+
+Code Block 67 ():
+The killer crept...
+----------------------------------------
+
+Code Block 68 ():
+method
+----------------------------------------
+
+Code Block 69 ():
+$text
+----------------------------------------
+
+Code Block 70 ():
+$length
+----------------------------------------
+
+Code Block 71 ():
+'ellipsis'
+----------------------------------------
+
+Code Block 72 ():
+'exact'
+----------------------------------------
+
+Code Block 73 ():
+false
+----------------------------------------
+
+Code Block 74 ():
+$options
+----------------------------------------
+
+Code Block 75 (shiki):
+[
+    'ellipsis' => '...',
+    'exact' => true,
+]
+----------------------------------------
+
+Code Block 76 ():
+[
+    'ellipsis' => '...',
+    'exact' => true,
+]
+----------------------------------------
+
+Code Block 77 (shiki):
+$sampleText = 'I packed my bag and in it I put a PSP, a PS3, a TV, ' .
+    'a C# program that can divide by zero, death metal t-shirts'
+
+// Called as TextHelper
+echo $this->Text->tail(
+    $sampleText,
+    70,
+    [
+        'ellipsis' => '...',
+        'exact' => false,
+    ]
+);
+
+// Called as Text
+use Cake\Utility\Text;
+
+echo Text::tail(
+    $sampleText,
+    70,
+    [
+        'ellipsis' => '...',
+        'exact' => false,
+    ]
+);
+----------------------------------------
+
+Code Block 78 ():
+$sampleText = 'I packed my bag and in it I put a PSP, a PS3, a TV, ' .
+    'a C# program that can divide by zero, death metal t-shirts'
+
+// Called as TextHelper
+echo $this->Text->tail(
+    $sampleText,
+    70,
+    [
+        'ellipsis' => '...',
+        'exact' => false,
+    ]
+);
+
+// Called as Text
+use Cake\Utility\Text;
+
+echo Text::tail(
+    $sampleText,
+    70,
+    [
+        'ellipsis' => '...',
+        'exact' => false,
+    ]
+);
+----------------------------------------
+
+Code Block 79 ():
+...a TV, a C# program that can divide by zero, death metal t-shirts
+----------------------------------------
+
+Code Block 80 ():
+...a TV, a C# program that can divide by zero, death metal t-shirts
+----------------------------------------
+
+Code Block 81 ():
+method
+----------------------------------------
+
+Code Block 82 ():
+$text
+----------------------------------------
+
+Code Block 83 ():
+$phrase
+----------------------------------------
+
+Code Block 84 ():
+$radius
+----------------------------------------
+
+Code Block 85 ():
+$ellipsis
+----------------------------------------
+
+Code Block 86 (shiki):
+// Called as TextHelper
+echo $this->Text->excerpt($lastParagraph, 'method', 50, '...');
+
+// Called as Text
+use Cake\Utility\Text;
+----------------------------------------
+
+Code Block 87 ():
+// Called as TextHelper
+echo $this->Text->excerpt($lastParagraph, 'method', 50, '...');
+
+// Called as Text
+use Cake\Utility\Text;
+----------------------------------------
+

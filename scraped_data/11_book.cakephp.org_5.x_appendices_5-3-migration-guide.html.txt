@@ -1,0 +1,875 @@
+URL: https://book.cakephp.org/5.x/appendices/5-3-migration-guide.html
+Title: 5.3 Migration Guide | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - 5.3 Migration Guide ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Upgrade Tool ​
+  - Upgrade to PHP 8.2 ​
+  - Behavior Changes ​
+  - Deprecations ​
+  - New Features ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Core ​
+  - Database ​
+  - ORM ​
+  - Validation ​
+  - View ​
+  - Database ​
+  - Form ​
+  - Http ​
+  - ORM ​
+  - Plugin ​
+  - View ​
+  - Cache ​
+  - Collection ​
+  - Command ​
+  - Console ​
+  - Core ​
+  - Database ​
+  - Error ​
+  - Http ​
+  - I18n ​
+  - Mailer ​
+  - ORM ​
+  - Pagination ​
+  - Routing ​
+  - TestSuite ​
+  - Utility ​
+  - Validation ​
+  - View ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The 5.3.0 release is backwards compatible with 5.0. It adds new functionality and introduces new deprecations. Any functionality deprecated in 5.x will be removed in 6.0.0.
+
+The upgrade tool provides rector rules for automating some of the migration work. Run rector before updating your composer.json dependencies:
+
+If you are not running on PHP 8.2 or higher, you will need to upgrade PHP before updating CakePHP.
+
+NOTE
+
+CakePHP 5.3 requires a minimum of PHP 8.2.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+composer.json
+----------------------------------------
+
+Code Block 2 (shiki):
+bin/cake upgrade rector --rules cakephp53 <path/to/app/src>
+----------------------------------------
+
+Code Block 3 ():
+bin/cake upgrade rector --rules cakephp53 <path/to/app/src>
+----------------------------------------
+
+Code Block 4 ():
+InstanceConfigTrait::deleteConfig()
+----------------------------------------
+
+Code Block 5 ():
+$this->deleteConfig('key')
+----------------------------------------
+
+Code Block 6 ():
+$this->setConfig('key', null)
+----------------------------------------
+
+Code Block 7 ():
+Query::with()
+----------------------------------------
+
+Code Block 8 ():
+joinWith()
+----------------------------------------
+
+Code Block 9 ():
+Validator::validate(array $data, bool $newRecord = true, array $context = [])
+----------------------------------------
+
+Code Block 10 ():
+$context
+----------------------------------------
+
+Code Block 11 ():
+format()
+----------------------------------------
+
+Code Block 12 ():
+currency()
+----------------------------------------
+
+Code Block 13 ():
+NumberHelper
+----------------------------------------
+
+Code Block 14 ():
+Query::newExpr()
+----------------------------------------
+
+Code Block 15 ():
+Query::expr()
+----------------------------------------
+
+Code Block 16 ():
+Form::_execute()
+----------------------------------------
+
+Code Block 17 ():
+_execute
+----------------------------------------
+
+Code Block 18 ():
+process()
+----------------------------------------
+
+Code Block 19 ():
+$request->getParam('?')
+----------------------------------------
+
+Code Block 20 ():
+$request->getQueryParams()
+----------------------------------------
+
+Code Block 21 ():
+$table->getBehavior('Sluggable')->slugify()
+----------------------------------------
+
+Code Block 22 ():
+$table->slugify()
+----------------------------------------
+
+Code Block 23 ():
+EntityTrait::isEmpty()
+----------------------------------------
+
+Code Block 24 ():
+hasValue()
+----------------------------------------
+
+Code Block 25 ():
+bin/cake bake plugin MyPlugin --class-only
+----------------------------------------
+
+Code Block 26 ():
+plugins/MyPlugin/src/MyPlugin.php
+----------------------------------------
+
+Code Block 27 ():
+BreadcrumbsHelper::add()
+----------------------------------------
+
+Code Block 28 ():
+BreadcrumbsHelper::prepend()
+----------------------------------------
+
+Code Block 29 ():
+addMany()
+----------------------------------------
+
+Code Block 30 ():
+prependMany()
+----------------------------------------
+
+Code Block 31 ():
+RedisEngine
+----------------------------------------
+
+Code Block 32 ():
+cluster
+----------------------------------------
+
+Code Block 33 ():
+Collection::any()
+----------------------------------------
+
+Code Block 34 ():
+Collection::some()
+----------------------------------------
+
+Code Block 35 ():
+cake plugin assets symlink
+----------------------------------------
+
+Code Block 36 ():
+--relative
+----------------------------------------
+
+Code Block 37 ():
+cake server
+----------------------------------------
+
+Code Block 38 ():
+--frankenphp
+----------------------------------------
+
+Code Block 39 ():
+TreeHelper
+----------------------------------------
+
+Code Block 40 ():
+getGroup()
+----------------------------------------
+
+Code Block 41 ():
+bin/cake -h
+----------------------------------------
+
+Code Block 42 ():
+CommandCollection::replace()
+----------------------------------------
+
+Code Block 43 ():
+autoDiscover
+----------------------------------------
+
+Code Block 44 ():
+Configure
+----------------------------------------
+
+Code Block 45 ():
+Configure
+----------------------------------------
+
+Code Block 46 ():
+Query::optimizerHint()
+----------------------------------------
+
+Code Block 47 ():
+Query::getDriver()
+----------------------------------------
+
+Code Block 48 ():
+Driver
+----------------------------------------
+
+Code Block 49 ():
+year
+----------------------------------------
+
+Code Block 50 ():
+inet
+----------------------------------------
+
+Code Block 51 ():
+cidr
+----------------------------------------
+
+Code Block 52 ():
+macaddr
+----------------------------------------
+
+Code Block 53 ():
+TypeFactory::getMapped()
+----------------------------------------
+
+Code Block 54 ():
+TypeFactory::getMap()
+----------------------------------------
+
+Code Block 55 ():
+Debugger
+----------------------------------------
+
+Code Block 56 ():
+ROOT
+----------------------------------------
+
+Code Block 57 ():
+Debugger.editorBasePath
+----------------------------------------
+
+Code Block 58 ():
+RateLimitMiddleware
+----------------------------------------
+
+Code Block 59 ():
+UnprocessableContentException
+----------------------------------------
+
+Code Block 60 ():
+DateTimePeriod
+----------------------------------------
+
+Code Block 61 ():
+DatePeriod
+----------------------------------------
+
+Code Block 62 ():
+DateTime
+----------------------------------------
+
+Code Block 63 ():
+DatePeriod
+----------------------------------------
+
+Code Block 64 ():
+DatePeriod
+----------------------------------------
+
+Code Block 65 ():
+Date
+----------------------------------------
+
+Code Block 66 ():
+toQuarterRange()
+----------------------------------------
+
+Code Block 67 ():
+DateTime
+----------------------------------------
+
+Code Block 68 ():
+FrozenTime
+----------------------------------------
+
+Code Block 69 ():
+Date::getTimestamp()
+----------------------------------------
+
+Code Block 70 ():
+Message::addAttachment()
+----------------------------------------
+
+Code Block 71 ():
+Mailer
+----------------------------------------
+
+Code Block 72 ():
+$mailer->addAttachment()
+----------------------------------------
+
+Code Block 73 ():
+Table::patchEntity()
+----------------------------------------
+
+Code Block 74 ():
+Table::newEntity()
+----------------------------------------
+
+Code Block 75 ():
+Marshaller::one()
+----------------------------------------
+
+Code Block 76 ():
+Marshaller::many()
+----------------------------------------
+
+Code Block 77 ():
+strictFields
+----------------------------------------
+
+Code Block 78 ():
+fields
+----------------------------------------
+
+Code Block 79 ():
+TableContainer
+----------------------------------------
+
+Code Block 80 ():
+Application::services()
+----------------------------------------
+
+Code Block 81 ():
+SelectQuery::projectAs()
+----------------------------------------
+
+Code Block 82 ():
+#[CollectionOf]
+----------------------------------------
+
+Code Block 83 ():
+SortableFieldsBuilder
+----------------------------------------
+
+Code Block 84 ():
+sortableFields
+----------------------------------------
+
+Code Block 85 ():
+SortableFieldsBuilder
+----------------------------------------
+
+Code Block 86 ():
+SortField
+----------------------------------------
+
+Code Block 87 ():
+SortField::asc('price')
+----------------------------------------
+
+Code Block 88 ():
+SortField::desc('created', locked: true)
+----------------------------------------
+
+Code Block 89 ():
+?sort=title-asc
+----------------------------------------
+
+Code Block 90 ():
+?sort=price-desc
+----------------------------------------
+
+Code Block 91 ():
+?sort=field&direction=asc
+----------------------------------------
+
+Code Block 92 ():
+RouteBuilder::setOptions()
+----------------------------------------
+
+Code Block 93 ():
+_host
+----------------------------------------
+
+Code Block 94 ():
+_https
+----------------------------------------
+
+Code Block 95 ():
+_port
+----------------------------------------
+
+Code Block 96 ():
+EntityRoute
+----------------------------------------
+
+Code Block 97 ():
+value
+----------------------------------------
+
+Code Block 98 ():
+name
+----------------------------------------
+
+Code Block 99 ():
+RedirectTrait
+----------------------------------------
+
+Code Block 100 ():
+assertRedirectBack()
+----------------------------------------
+
+Code Block 101 ():
+assertRedirectBackToReferer()
+----------------------------------------
+
+Code Block 102 ():
+assertFlashMessageContains()
+----------------------------------------
+
+Code Block 103 ():
+assertFlashMessageContainsAt()
+----------------------------------------
+
+Code Block 104 ():
+TestFixture::$tableAlias
+----------------------------------------
+
+Code Block 105 ():
+ORM\Table
+----------------------------------------
+
+Code Block 106 ():
+Text::uuid()
+----------------------------------------
+
+Code Block 107 ():
+Configure::write('Text.uuidGenerator', $closure)
+----------------------------------------
+
+Code Block 108 ():
+ipOrRange()
+----------------------------------------
+
+Code Block 109 ():
+context
+----------------------------------------
+
+Code Block 110 ():
+existsInNullable()
+----------------------------------------
+
+Code Block 111 ():
+null
+----------------------------------------
+
+Code Block 112 ():
+$rules->existsInNullable(['author_id', 'site_id'], 'SiteAuthors')
+----------------------------------------
+
+Code Block 113 ():
+existsIn()
+----------------------------------------
+
+Code Block 114 ():
+HtmlHelper::scriptStart()
+----------------------------------------
+
+Code Block 115 ():
+scriptEnd()
+----------------------------------------
+
+Code Block 116 ():
+<script>...</script>
+----------------------------------------
+
+Code Block 117 ():
+FormHelper
+----------------------------------------
+
+Code Block 118 ():
+nestedCheckboxAndRadio
+----------------------------------------
+
+Code Block 119 ():
+nestedCheckboxAndRadio
+----------------------------------------
+
+Code Block 120 ():
+false
+----------------------------------------
+
+Code Block 121 ():
+ViewBuilder::setConfigMergeStrategy()
+----------------------------------------
+
+Code Block 122 ():
+ViewBuilder::MERGE_DEEP
+----------------------------------------
+
+Code Block 123 ():
+ViewBuilder::MERGE_SHALLOW
+----------------------------------------
+
+Code Block 124 ():
+ViewBuilder::getConfigMergeStrategy()
+----------------------------------------
+
+Code Block 125 ():
+PaginatorHelper::limitControl()
+----------------------------------------
+
+Code Block 126 ():
+maxLimit
+----------------------------------------
+
+Code Block 127 ():
+steps
+----------------------------------------
+
+Code Block 128 ():
+['steps' => 10]
+----------------------------------------
+
+Code Block 129 ():
+BreadcrumbsHelper::addMany()
+----------------------------------------
+
+Code Block 130 ():
+BreadcrumbsHelper::prependMany()
+----------------------------------------
+

@@ -1,0 +1,1263 @@
+URL: https://book.cakephp.org/5.x/intro/conventions.html#model-and-database-conventions
+Title: Structure & Conventions | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Structure & Conventions ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Application Folder Structure ​
+  - The src/ Directory ​
+  - Naming Conventions ​
+  - File and Class Name Conventions ​
+  - Complete Example: Articles Feature ​
+  - Next Steps ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Controllers ​
+  - Models (Tables & Entities) ​
+  - Views & Templates ​
+  - Database Tables ​
+  - Plugins ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+CakePHP embraces convention over configuration. By following conventions, you get free functionality without tracking config files, and create a uniform codebase that other developers can quickly understand. This guide covers both where files go and how to name them.
+
+TIP
+
+Following these conventions means CakePHP automatically wires up your application - controllers find their models, views find their templates, and URLs map to actions without any configuration.
+
+After downloading the CakePHP application skeleton, you'll see these top-level folders:
+
+Essential Folders:
+
+Development & Testing:
+
+Runtime & Dependencies:
+
+Extensions & Localization:
+
+WARNING
+
+Make sure tmp/ and logs/ folders are writable! Poor performance or errors will occur otherwise. CakePHP warns you in debug mode if they're not writable.
+
+The src/ folder is where you'll do most development. Here's what goes in each subfolder:
+
+NOTE
+
+The Command/ folder isn't present by default - it's auto-generated when you create your first command using bake.
+
+Rules:
+
+WARNING
+
+Only public methods are accessible through routing. Protected and private methods cannot be accessed via URLs, providing automatic security for internal helper methods.
+
+TIP
+
+Acronyms: Treat them as words. CMS becomes CmsController, not CMSController
+
+NOTE
+
+CakePHP uses the DashedRoute class by convention to automatically convert camelCase action names to dashed URLs. See Routes Configuration for details.
+
+URL Arrays:
+
+Rules:
+
+Rules:
+
+NOTE
+
+CakePHP uses English inflections by default. For other languages, use Cake\Utility\Inflector to define custom rules. See Inflector documentation.
+
+Rules:
+
+WARNING
+
+The bake command requires junction tables to be alphabetically sorted! Use articles_tags, not tags_articles.
+
+Primary Keys:
+
+TIP
+
+If your junction table has extra columns beyond the foreign keys, create a dedicated Table and Entity class for it.
+
+Rules:
+
+See awesome list recommendations for details.
+
+All files follow PSR-4 autoloading - filenames must match class names exactly:
+
+Here's how all the conventions work together for a complete feature:
+
+Database:
+
+File Structure:
+
+How It Works:
+
+URL: https://example.com/articles/view/5
+
+No configuration required! CakePHP wires everything automatically through conventions.
+
+WARNING
+
+If junction tables have additional data columns, create a dedicated Table and Entity class for them.
+
+Now that you understand CakePHP's structure and conventions, try the Content Management Tutorial to see how everything fits together in a real application.
+
+For routing and URL handling, see Routes Configuration.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+src/
+----------------------------------------
+
+Code Block 2 ():
+templates/
+----------------------------------------
+
+Code Block 3 ():
+config/
+----------------------------------------
+
+Code Block 4 ():
+webroot/
+----------------------------------------
+
+Code Block 5 ():
+tests/
+----------------------------------------
+
+Code Block 6 ():
+bin/
+----------------------------------------
+
+Code Block 7 ():
+bin/cake bake all
+----------------------------------------
+
+Code Block 8 ():
+tmp/
+----------------------------------------
+
+Code Block 9 ():
+logs/
+----------------------------------------
+
+Code Block 10 ():
+vendor/
+----------------------------------------
+
+Code Block 11 ():
+plugins/
+----------------------------------------
+
+Code Block 12 ():
+resources/
+----------------------------------------
+
+Code Block 13 ():
+locales/
+----------------------------------------
+
+Code Block 14 ():
+tmp/
+----------------------------------------
+
+Code Block 15 ():
+logs/
+----------------------------------------
+
+Code Block 16 ():
+src/
+----------------------------------------
+
+Code Block 17 ():
+*Command.php
+----------------------------------------
+
+Code Block 18 ():
+*Middleware.php
+----------------------------------------
+
+Code Block 19 ():
+Command/
+----------------------------------------
+
+Code Block 20 (shiki):
+// File: src/Controller/UsersController.php
+namespace App\Controller;
+
+class UsersController extends AppController
+{
+    // URL: /users/view-me
+    public function viewMe()
+    {
+        // camelBacked method names
+    }
+}
+----------------------------------------
+
+Code Block 21 ():
+// File: src/Controller/UsersController.php
+namespace App\Controller;
+
+class UsersController extends AppController
+{
+    // URL: /users/view-me
+    public function viewMe()
+    {
+        // camelBacked method names
+    }
+}
+----------------------------------------
+
+Code Block 22 (shiki):
+// Wrong: singular, lowercase, no suffix
+class user extends AppController
+{
+    // Wrong: underscores instead of camelCase
+    public function view_me()
+    {
+    }
+}
+----------------------------------------
+
+Code Block 23 ():
+// Wrong: singular, lowercase, no suffix
+class user extends AppController
+{
+    // Wrong: underscores instead of camelCase
+    public function view_me()
+    {
+    }
+}
+----------------------------------------
+
+Code Block 24 ():
+Controller
+----------------------------------------
+
+Code Block 25 ():
+UsersController
+----------------------------------------
+
+Code Block 26 ():
+MenuLinksController
+----------------------------------------
+
+Code Block 27 ():
+UsersController.php
+----------------------------------------
+
+Code Block 28 ():
+src/Controller/UsersController.php
+----------------------------------------
+
+Code Block 29 ():
+viewMe()
+----------------------------------------
+
+Code Block 30 ():
+editProfile()
+----------------------------------------
+
+Code Block 31 ():
+/users/view-me
+----------------------------------------
+
+Code Block 32 ():
+viewMe()
+----------------------------------------
+
+Code Block 33 ():
+CMS
+----------------------------------------
+
+Code Block 34 ():
+CmsController
+----------------------------------------
+
+Code Block 35 ():
+CMSController
+----------------------------------------
+
+Code Block 36 ():
+DashedRoute
+----------------------------------------
+
+Code Block 37 (shiki):
+$this->Html->link('title', [
+    'prefix' => 'MyPrefix',      // CamelCased
+    'plugin' => 'MyPlugin',      // CamelCased
+    'controller' => 'Users',     // CamelCased
+    'action' => 'viewProfile'    // camelBacked
+]);
+----------------------------------------
+
+Code Block 38 ():
+$this->Html->link('title', [
+    'prefix' => 'MyPrefix',      // CamelCased
+    'plugin' => 'MyPlugin',      // CamelCased
+    'controller' => 'Users',     // CamelCased
+    'action' => 'viewProfile'    // camelBacked
+]);
+----------------------------------------
+
+Code Block 39 (shiki):
+// File: src/Model/Table/UsersTable.php
+namespace App\Model\Table;
+
+class UsersTable extends Table
+{
+    // Plural, CamelCased, ends in "Table"
+}
+----------------------------------------
+
+Code Block 40 ():
+// File: src/Model/Table/UsersTable.php
+namespace App\Model\Table;
+
+class UsersTable extends Table
+{
+    // Plural, CamelCased, ends in "Table"
+}
+----------------------------------------
+
+Code Block 41 (shiki):
+// File: src/Model/Entity/User.php
+namespace App\Model\Entity;
+
+class User extends Entity
+{
+    // Singular, CamelCased, no suffix
+}
+----------------------------------------
+
+Code Block 42 ():
+// File: src/Model/Entity/User.php
+namespace App\Model\Entity;
+
+class User extends Entity
+{
+    // Singular, CamelCased, no suffix
+}
+----------------------------------------
+
+Code Block 43 ():
+Table
+----------------------------------------
+
+Code Block 44 ():
+UsersTable
+----------------------------------------
+
+Code Block 45 ():
+MenuLinksTable
+----------------------------------------
+
+Code Block 46 ():
+UserFavoritePagesTable
+----------------------------------------
+
+Code Block 47 ():
+User
+----------------------------------------
+
+Code Block 48 ():
+MenuLink
+----------------------------------------
+
+Code Block 49 ():
+UserFavoritePage
+----------------------------------------
+
+Code Block 50 ():
+{Entity}{Column}
+----------------------------------------
+
+Code Block 51 ():
+UserStatus
+----------------------------------------
+
+Code Block 52 ():
+OrderState
+----------------------------------------
+
+Code Block 53 ():
+Behavior
+----------------------------------------
+
+Code Block 54 ():
+TimestampBehavior
+----------------------------------------
+
+Code Block 55 (shiki):
+// Controller method: ArticlesController::viewAll()
+templates/Articles/view_all.php
+
+// Controller method: MenuLinksController::editItem()
+templates/MenuLinks/edit_item.php
+----------------------------------------
+
+Code Block 56 ():
+// Controller method: ArticlesController::viewAll()
+templates/Articles/view_all.php
+
+// Controller method: MenuLinksController::editItem()
+templates/MenuLinks/edit_item.php
+----------------------------------------
+
+Code Block 57 (shiki):
+// File: src/View/ArticlesView.php
+class ArticlesView extends View
+{
+}
+----------------------------------------
+
+Code Block 58 ():
+// File: src/View/ArticlesView.php
+class ArticlesView extends View
+{
+}
+----------------------------------------
+
+Code Block 59 ():
+templates/{Controller}/{underscored_action}.php
+----------------------------------------
+
+Code Block 60 ():
+viewAll()
+----------------------------------------
+
+Code Block 61 ():
+templates/Articles/view_all.php
+----------------------------------------
+
+Code Block 62 ():
+View
+----------------------------------------
+
+Code Block 63 ():
+ArticlesView.php
+----------------------------------------
+
+Code Block 64 ():
+Helper
+----------------------------------------
+
+Code Block 65 ():
+BestEverHelper.php
+----------------------------------------
+
+Code Block 66 ():
+Cell
+----------------------------------------
+
+Code Block 67 ():
+InboxCell.php
+----------------------------------------
+
+Code Block 68 ():
+Cake\Utility\Inflector
+----------------------------------------
+
+Code Block 69 (shiki):
+-- Plural, underscored
+CREATE TABLE users;
+CREATE TABLE menu_links;
+CREATE TABLE user_favorite_pages;
+
+-- Foreign keys: {singular_table}_id
+ALTER TABLE articles ADD user_id INT;
+ALTER TABLE photos ADD menu_link_id INT;
+
+-- Junction tables: alphabetically sorted plurals
+CREATE TABLE articles_tags;
+----------------------------------------
+
+Code Block 70 ():
+-- Plural, underscored
+CREATE TABLE users;
+CREATE TABLE menu_links;
+CREATE TABLE user_favorite_pages;
+
+-- Foreign keys: {singular_table}_id
+ALTER TABLE articles ADD user_id INT;
+ALTER TABLE photos ADD menu_link_id INT;
+
+-- Junction tables: alphabetically sorted plurals
+CREATE TABLE articles_tags;
+----------------------------------------
+
+Code Block 71 (shiki):
+-- Wrong: singular
+CREATE TABLE user;
+
+-- Wrong: not underscored
+CREATE TABLE MenuLinks;
+
+-- Wrong: plural both words
+CREATE TABLE users_favorites_pages;
+
+-- Wrong: not alphabetical
+CREATE TABLE tags_articles;
+----------------------------------------
+
+Code Block 72 ():
+-- Wrong: singular
+CREATE TABLE user;
+
+-- Wrong: not underscored
+CREATE TABLE MenuLinks;
+
+-- Wrong: plural both words
+CREATE TABLE users_favorites_pages;
+
+-- Wrong: not alphabetical
+CREATE TABLE tags_articles;
+----------------------------------------
+
+Code Block 73 ():
+users
+----------------------------------------
+
+Code Block 74 ():
+menu_links
+----------------------------------------
+
+Code Block 75 ():
+user_favorite_pages
+----------------------------------------
+
+Code Block 76 ():
+users_favorites_pages
+----------------------------------------
+
+Code Block 77 ():
+first_name
+----------------------------------------
+
+Code Block 78 ():
+created_at
+----------------------------------------
+
+Code Block 79 ():
+{singular_table}_id
+----------------------------------------
+
+Code Block 80 ():
+user_id
+----------------------------------------
+
+Code Block 81 ():
+menu_link_id
+----------------------------------------
+
+Code Block 82 ():
+articles_tags
+----------------------------------------
+
+Code Block 83 ():
+tags_articles
+----------------------------------------
+
+Code Block 84 ():
+articles_tags
+----------------------------------------
+
+Code Block 85 ():
+tags_articles
+----------------------------------------
+
+Code Block 86 ():
+Cake\Utility\Text::uuid()
+----------------------------------------
+
+Code Block 87 ():
+Table::save()
+----------------------------------------
+
+Code Block 88 (shiki):
+your-name/cakephp-blog
+awesome-dev/cakephp-payment
+company/cakephp-api-client
+----------------------------------------
+
+Code Block 89 ():
+your-name/cakephp-blog
+awesome-dev/cakephp-payment
+company/cakephp-api-client
+----------------------------------------
+
+Code Block 90 (shiki):
+cakephp/blog          // Reserved namespace!
+YourName/CakePHP-Blog // Use lowercase & dashes
+your-name/blog        // Missing cakephp- prefix
+----------------------------------------
+
+Code Block 91 ():
+cakephp/blog          // Reserved namespace!
+YourName/CakePHP-Blog // Use lowercase & dashes
+your-name/blog        // Missing cakephp- prefix
+----------------------------------------
+
+Code Block 92 ():
+cakephp-
+----------------------------------------
+
+Code Block 93 ():
+cakephp/
+----------------------------------------
+
+Code Block 94 ():
+your-vendor/cakephp-plugin-name
+----------------------------------------
+
+Code Block 95 ():
+LatestArticlesController
+----------------------------------------
+
+Code Block 96 ():
+LatestArticlesController.php
+----------------------------------------
+
+Code Block 97 ():
+src/Controller/
+----------------------------------------
+
+Code Block 98 ():
+MyHandyComponent
+----------------------------------------
+
+Code Block 99 ():
+MyHandyComponent.php
+----------------------------------------
+
+Code Block 100 ():
+src/Controller/Component/
+----------------------------------------
+
+Code Block 101 ():
+OptionValuesTable
+----------------------------------------
+
+Code Block 102 ():
+OptionValuesTable.php
+----------------------------------------
+
+Code Block 103 ():
+src/Model/Table/
+----------------------------------------
+
+Code Block 104 ():
+OptionValue
+----------------------------------------
+
+Code Block 105 ():
+OptionValue.php
+----------------------------------------
+
+Code Block 106 ():
+src/Model/Entity/
+----------------------------------------
+
+Code Block 107 ():
+EspeciallyFunkableBehavior
+----------------------------------------
+
+Code Block 108 ():
+EspeciallyFunkableBehavior.php
+----------------------------------------
+
+Code Block 109 ():
+src/Model/Behavior/
+----------------------------------------
+
+Code Block 110 ():
+SuperSimpleView
+----------------------------------------
+
+Code Block 111 ():
+SuperSimpleView.php
+----------------------------------------
+
+Code Block 112 ():
+src/View/
+----------------------------------------
+
+Code Block 113 ():
+BestEverHelper
+----------------------------------------
+
+Code Block 114 ():
+BestEverHelper.php
+----------------------------------------
+
+Code Block 115 ():
+src/View/Helper/
+----------------------------------------
+
+Code Block 116 ():
+UpdateCacheCommand
+----------------------------------------
+
+Code Block 117 ():
+UpdateCacheCommand.php
+----------------------------------------
+
+Code Block 118 ():
+src/Command/
+----------------------------------------
+
+Code Block 119 (shiki):
+CREATE TABLE articles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    title VARCHAR(255),
+    body TEXT,
+    created DATETIME,
+    modified DATETIME
+);
+
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50),
+    email VARCHAR(255)
+);
+----------------------------------------
+
+Code Block 120 ():
+CREATE TABLE articles (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    title VARCHAR(255),
+    body TEXT,
+    created DATETIME,
+    modified DATETIME
+);
+
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50),
+    email VARCHAR(255)
+);
+----------------------------------------
+
+Code Block 121 (shiki):
+src/
+├── Controller/
+│   └── ArticlesController.php    → class ArticlesController
+├── Model/
+│   ├── Table/
+│   │   └── ArticlesTable.php     → class ArticlesTable
+│   └── Entity/
+│       └── Article.php           → class Article
+templates/
+└── Articles/
+    ├── index.php                 → ArticlesController::index()
+    ├── view.php                  → ArticlesController::view()
+    └── add.php                   → ArticlesController::add()
+----------------------------------------
+
+Code Block 122 ():
+src/
+├── Controller/
+│   └── ArticlesController.php    → class ArticlesController
+├── Model/
+│   ├── Table/
+│   │   └── ArticlesTable.php     → class ArticlesTable
+│   └── Entity/
+│       └── Article.php           → class Article
+templates/
+└── Articles/
+    ├── index.php                 → ArticlesController::index()
+    ├── view.php                  → ArticlesController::view()
+    └── add.php                   → ArticlesController::add()
+----------------------------------------
+
+Code Block 123 ():
+https://example.com/articles/view/5
+----------------------------------------
+
+Code Block 124 ():
+ArticlesController::view()
+----------------------------------------
+
+Code Block 125 ():
+ArticlesTable
+----------------------------------------
+
+Code Block 126 ():
+Article
+----------------------------------------
+
+Code Block 127 ():
+templates/Articles/view.php
+----------------------------------------
+
+Code Block 128 ():
+articles
+----------------------------------------
+
+Code Block 129 ():
+menu_links
+----------------------------------------
+
+Code Block 130 ():
+articles
+----------------------------------------
+
+Code Block 131 ():
+menu_links
+----------------------------------------
+
+Code Block 132 ():
+ArticlesTable
+----------------------------------------
+
+Code Block 133 ():
+MenuLinksTable
+----------------------------------------
+
+Code Block 134 ():
+Table
+----------------------------------------
+
+Code Block 135 ():
+Article
+----------------------------------------
+
+Code Block 136 ():
+MenuLink
+----------------------------------------
+
+Code Block 137 ():
+ArticlesController
+----------------------------------------
+
+Code Block 138 ():
+MenuLinksController
+----------------------------------------
+
+Code Block 139 ():
+Controller
+----------------------------------------
+
+Code Block 140 ():
+templates/Articles/
+----------------------------------------
+
+Code Block 141 ():
+templates/MenuLinks/
+----------------------------------------
+
+Code Block 142 ():
+index.php
+----------------------------------------
+
+Code Block 143 ():
+add.php
+----------------------------------------
+
+Code Block 144 ():
+index.php
+----------------------------------------
+
+Code Block 145 ():
+add.php
+----------------------------------------
+
+Code Block 146 ():
+ArticlesBehavior
+----------------------------------------
+
+Code Block 147 ():
+MenuLinksBehavior
+----------------------------------------
+
+Code Block 148 ():
+Behavior
+----------------------------------------
+
+Code Block 149 ():
+ArticlesHelper
+----------------------------------------
+
+Code Block 150 ():
+MenuLinksHelper
+----------------------------------------
+
+Code Block 151 ():
+Helper
+----------------------------------------
+
+Code Block 152 ():
+ArticlesComponent
+----------------------------------------
+
+Code Block 153 ():
+MenuLinksComponent
+----------------------------------------
+
+Code Block 154 ():
+Component
+----------------------------------------
+
+Code Block 155 ():
+ArticlesView
+----------------------------------------
+
+Code Block 156 ():
+MenuLinksView
+----------------------------------------
+
+Code Block 157 ():
+View
+----------------------------------------
+
+Code Block 158 ():
+you/cakephp-articles
+----------------------------------------
+
+Code Block 159 ():
+you/cakephp-menu-links
+----------------------------------------
+
+Code Block 160 ():
+{singular_table}_id
+----------------------------------------
+
+Code Block 161 ():
+articles.user_id
+----------------------------------------
+
+Code Block 162 ():
+menu_links
+----------------------------------------
+
+Code Block 163 ():
+menu_link_id
+----------------------------------------
+
+Code Block 164 ():
+articles_tags
+----------------------------------------
+
+Code Block 165 ():
+tags_articles
+----------------------------------------
+
+Code Block 166 ():
+Text::uuid()
+----------------------------------------
+
+Code Block 167 ():
+first_name
+----------------------------------------
+
+Code Block 168 ():
+created_at
+----------------------------------------
+

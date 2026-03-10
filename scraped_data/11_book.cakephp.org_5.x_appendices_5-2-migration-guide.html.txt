@@ -1,0 +1,587 @@
+URL: https://book.cakephp.org/5.x/appendices/5-2-migration-guide.html
+Title: 5.2 Migration Guide | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - 5.2 Migration Guide ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Upgrade Tool ​
+  - Behavior Changes ​
+  - Deprecations ​
+  - New Features ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Console ​
+  - Datasource ​
+  - Event ​
+  - View ​
+  - Console ​
+  - Database ​
+  - Datasource ​
+  - Error ​
+  - ORM ​
+  - TestSuite ​
+  - View ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The 5.2.0 release is backwards compatible with 5.0. It adds new functionality and introduces new deprecations. Any functionality deprecated in 5.x will be removed in 6.0.0.
+
+The upgrade tool provides rector rules for automating some of the migration work. Run rector before updating your composer.json dependencies:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+composer.json
+----------------------------------------
+
+Code Block 2 (shiki):
+bin/cake upgrade rector --rules cakephp52 <path/to/app/src>
+----------------------------------------
+
+Code Block 3 ():
+bin/cake upgrade rector --rules cakephp52 <path/to/app/src>
+----------------------------------------
+
+Code Block 4 ():
+ValidationSet::add()
+----------------------------------------
+
+Code Block 5 ():
+Http\Session
+----------------------------------------
+
+Code Block 6 ():
+FormProtectionComponent
+----------------------------------------
+
+Code Block 7 ():
+Cake\Controller\Exception\FormProtectionException
+----------------------------------------
+
+Code Block 8 ():
+BadRequestException
+----------------------------------------
+
+Code Block 9 ():
+NumericPaginator::paginate()
+----------------------------------------
+
+Code Block 10 ():
+finder
+----------------------------------------
+
+Code Block 11 ():
+SelectQuery
+----------------------------------------
+
+Code Block 12 ():
+Arguments::getMultipleOption()
+----------------------------------------
+
+Code Block 13 ():
+getArrayOption()
+----------------------------------------
+
+Code Block 14 ():
+EntityInterface
+----------------------------------------
+
+Code Block 15 ():
+json_encode()
+----------------------------------------
+
+Code Block 16 ():
+EntityInterface::set()
+----------------------------------------
+
+Code Block 17 ():
+EntityInterface::patch()
+----------------------------------------
+
+Code Block 18 ():
+$entity->set(['field1' => 'value1', 'field2' => 'value2'])
+----------------------------------------
+
+Code Block 19 ():
+$entity->patch(['field1' => 'value1', 'field2' => 'value2'])
+----------------------------------------
+
+Code Block 20 ():
+$event->setResult()
+----------------------------------------
+
+Code Block 21 ():
+$event->stopPropagation()
+----------------------------------------
+
+Code Block 22 ():
+errorClass
+----------------------------------------
+
+Code Block 23 ():
+FormHelper
+----------------------------------------
+
+Code Block 24 ():
+errorClass
+----------------------------------------
+
+Code Block 25 ():
+cake counter_cache
+----------------------------------------
+
+Code Block 26 ():
+CounterCacheBehavior
+----------------------------------------
+
+Code Block 27 ():
+ConsoleIntegrationTestTrait::debugOutput()
+----------------------------------------
+
+Code Block 28 ():
+ConsoleInputArgument
+----------------------------------------
+
+Code Block 29 ():
+separator
+----------------------------------------
+
+Code Block 30 ():
+,
+----------------------------------------
+
+Code Block 31 ():
+Arguments::getArrayArgumentAt()
+----------------------------------------
+
+Code Block 32 ():
+Arguments::getArrayArgument()
+----------------------------------------
+
+Code Block 33 ():
+separator
+----------------------------------------
+
+Code Block 34 ():
+ConsoleInputOption
+----------------------------------------
+
+Code Block 35 ():
+separator
+----------------------------------------
+
+Code Block 36 ():
+,
+----------------------------------------
+
+Code Block 37 ():
+Arguments::getArrayArgumentAt()
+----------------------------------------
+
+Code Block 38 ():
+Arguments::getArrayArgument()
+----------------------------------------
+
+Code Block 39 ():
+Arguments::getArrayOption()
+----------------------------------------
+
+Code Block 40 ():
+separator
+----------------------------------------
+
+Code Block 41 ():
+nativeuuid
+----------------------------------------
+
+Code Block 42 ():
+uuid
+----------------------------------------
+
+Code Block 43 ():
+nativeuuid
+----------------------------------------
+
+Code Block 44 ():
+uuid
+----------------------------------------
+
+Code Block 45 ():
+Cake\Database\Type\JsonType::setDecodingOptions()
+----------------------------------------
+
+Code Block 46 ():
+$flags
+----------------------------------------
+
+Code Block 47 ():
+json_decode()
+----------------------------------------
+
+Code Block 48 ():
+CounterCacheBehavior::updateCounterCache()
+----------------------------------------
+
+Code Block 49 ():
+CounterCacheCommand
+----------------------------------------
+
+Code Block 50 ():
+Cake\Database\Driver::quote()
+----------------------------------------
+
+Code Block 51 ():
+Closure
+----------------------------------------
+
+Code Block 52 ():
+ErrorController
+----------------------------------------
+
+Code Block 53 ():
+CounterCacheBehavior::updateCounterCache()
+----------------------------------------
+
+Code Block 54 ():
+BelongsToMany::setJunctionProperty()
+----------------------------------------
+
+Code Block 55 ():
+getJunctionProperty()
+----------------------------------------
+
+Code Block 56 ():
+_joinData
+----------------------------------------
+
+Code Block 57 ():
+Table::findOrCreate()
+----------------------------------------
+
+Code Block 58 ():
+TestFixture::$strictFields
+----------------------------------------
+
+Code Block 59 ():
+FormHelper::deleteLink()
+----------------------------------------
+
+Code Block 60 ():
+DELETE
+----------------------------------------
+
+Code Block 61 ():
+HtmlHelper::importmap()
+----------------------------------------
+
+Code Block 62 ():
+FormHelper
+----------------------------------------
+
+Code Block 63 ():
+containerClass
+----------------------------------------
+
+Code Block 64 ():
+input
+----------------------------------------
+

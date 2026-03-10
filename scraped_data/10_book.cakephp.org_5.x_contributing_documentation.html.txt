@@ -1,0 +1,1277 @@
+URL: https://book.cakephp.org/5.x/contributing/documentation.html
+Title: Documentation | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Documentation ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Translations ​
+  - Documentation Formatting Guide ​
+  - Validating Your Changes ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - New Translation Language ​
+  - Reminder for Docs Administrators ​
+  - Translator tips ​
+  - Line Length ​
+  - Headings and Sections ​
+  - Paragraphs ​
+  - Inline Markup ​
+  - Lists ​
+  - Links ​
+  - Frontmatter ​
+  - Code Blocks ​
+  - Admonitions ​
+  - Installing Validation Tools ​
+  - Running Spell Check ​
+  - Running Markdown Lint ​
+  - Running Link Checker ​
+  - GitHub Actions Validation ​
+H4:
+  - CMS Tutorial
+  - External Links ​
+  - Internal Links ​
+  - Anchor Links ​
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Contributing to the documentation is simple. The files are hosted on https://github.com/cakephp/docs. Feel free to fork the repo, add your changes/improvements/translations and give back by issuing a pull request. You can even edit the docs online with GitHub, without ever downloading the files -- the "Edit this page" link on any given page will direct you to GitHub's online editor for that page.
+
+The CakePHP documentation is built with VitePress, a static site generator powered by Vue and Vite. The documentation is continuously integrated and deployed after each pull request is merged.
+
+Email the docs team (docs at cakephp dot org) or hop on IRC (#cakephp on freenode) to discuss any translation efforts you would like to participate in.
+
+We want to provide translations that are as complete as possible. However, there may be times where a translation file is not up-to-date. You should always consider the English version as the authoritative version.
+
+If your language is not in the current languages, please contact us through Github and we will consider creating a skeleton folder for it. The following sections are the first one you should consider translating as these files don't change often:
+
+The structure of all language folders should mirror the English folder structure. If the structure changes for the English version, we should apply those changes in the other languages.
+
+For example, if a new English file is created in en/file.md, we should:
+
+Add the file in all other languages : fr/file.md, zh/file.md, ...
+
+Delete the content, but keep the frontmatter and add a translation notice. The following note will be added while nobody has translated the file:
+
+The CakePHP documentation is written in Markdown and built with VitePress. Markdown is a lightweight markup language that's easy to read and write. To maintain consistency, please follow these guidelines when contributing to the CakePHP documentation.
+
+For comprehensive information about VitePress features and configuration, refer to the VitePress Guide. For detailed information about Markdown features and VitePress-specific extensions, see the VitePress Markdown Guide.
+
+Lines of text should be wrapped at 80 columns. The only exception should be long URLs, and code snippets.
+
+Headings are created using hash symbols (#) at the start of a line:
+
+Headings should not be nested more than 4 levels deep for readability. Always add a blank line before and after headings.
+
+Example:
+
+Paragraphs are simply blocks of text, with all the lines at the same level of indentation. Paragraphs should be separated by one blank line.
+
+Italics: Use single asterisks or underscores: *text* or _text_
+
+Bold: Use double asterisks or underscores: **text** or __text__
+
+Inline Code: Use single backticks: `text`
+
+Tips:
+
+Unordered Lists: Start lines with -, *, or + followed by a space:
+
+Ordered Lists: Use numbers followed by a period:
+
+Nested Lists: Indent with 2 or 4 spaces:
+
+Mixed Lists:
+
+Use standard Markdown link syntax:
+
+Example: CakePHP Website
+
+Link to other pages in the documentation using relative paths:
+
+Examples:
+
+Note: VitePress automatically converts .md extensions in links to appropriate URL paths in the built site.
+
+Link to specific sections within a page using heading anchors:
+
+VitePress automatically generates anchor IDs from headings in kebab-case. For example, ## My Section Title becomes #my-section-title.
+
+Link to a section in another page:
+
+Each documentation page should start with YAML frontmatter containing metadata:
+
+Optional frontmatter fields:
+
+Example:
+
+Code blocks are created using triple backticks with an optional language identifier:
+
+Common language identifiers:
+
+Line Highlighting: Highlight specific lines in code blocks:
+
+Line Numbers: Add line numbers to code blocks:
+
+Code Groups: Display multiple code examples with tabs:
+
+VitePress provides custom containers for tips, warnings, and other callouts.
+
+Available Container Types:
+
+Custom Titles:
+
+Version Notices:
+
+For version-specific information:
+
+Examples:
+
+Performance Tip
+
+Caching query results can significantly improve performance.
+
+Security Warning
+
+Never store passwords in plain text. Always use proper hashing.
+
+New in 5.0.0
+
+The new ORM improvements provide better type safety.
+
+Before submitting a pull request, you should validate your documentation changes to ensure they meet quality standards.
+
+You can use npx to run the tools without installing them globally, or install them for faster repeated use:
+
+We use cspell to check spelling in documentation. To check your changes:
+
+Adding Technical Terms
+
+If cspell flags legitimate technical terms (class names, CakePHP-specific terms), add them to the words array in .github/cspell.json.
+
+We use markdownlint via markdownlint-cli2 to maintain consistent markdown formatting:
+
+Auto-fix Limitations
+
+The --fix flag can automatically correct many formatting issues, but not all. Review changes before committing.
+
+We use a custom link checker to validate internal markdown links in the documentation:
+
+The link checker validates:
+
+External Links
+
+The link checker only validates internal markdown links. External URLs (http://, https://) are not checked.
+
+Known Issues Baseline
+
+The repository maintains a baseline of known broken links in .github/linkchecker-baseline.json. When you run the checker with --baseline, it filters out these known issues and only reports new problems. This is useful when working on specific changes without being overwhelmed by pre-existing issues.
+
+When you submit a pull request, our CI pipeline automatically runs:
+
+Pre-flight Check
+
+:::
+
+If the CI checks fail, review the error messages and fix the issues before requesting a review.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+- index.md
+- intro.md
+- quickstart.md
+- installation.md
+- /intro folder
+- /tutorials-and-examples folder
+----------------------------------------
+
+Code Block 2 ():
+- index.md
+- intro.md
+- quickstart.md
+- installation.md
+- /intro folder
+- /tutorials-and-examples folder
+----------------------------------------
+
+Code Block 3 (shiki):
+---
+title: File Title
+description: Brief description of the page
+---
+
+# File Title
+
+::: warning Translation Needed
+The documentation is not currently supported in XX language for this page.
+
+Please feel free to send us a pull request on
+[GitHub](https://github.com/cakephp/docs) or use the **Edit this page**
+link to directly propose your changes.
+
+You can refer to the English version in the language selector to have
+information about this page's topic.
+:::
+----------------------------------------
+
+Code Block 4 ():
+---
+title: File Title
+description: Brief description of the page
+---
+
+# File Title
+
+::: warning Translation Needed
+The documentation is not currently supported in XX language for this page.
+
+Please feel free to send us a pull request on
+[GitHub](https://github.com/cakephp/docs) or use the **Edit this page**
+link to directly propose your changes.
+
+You can refer to the English version in the language selector to have
+information about this page's topic.
+:::
+----------------------------------------
+
+Code Block 5 ():
+*asterisks*
+----------------------------------------
+
+Code Block 6 ():
+#
+----------------------------------------
+
+Code Block 7 ():
+#
+----------------------------------------
+
+Code Block 8 ():
+##
+----------------------------------------
+
+Code Block 9 ():
+###
+----------------------------------------
+
+Code Block 10 ():
+####
+----------------------------------------
+
+Code Block 11 ():
+#####
+----------------------------------------
+
+Code Block 12 ():
+######
+----------------------------------------
+
+Code Block 13 (shiki):
+## Major Section
+
+Paragraph text here.
+
+### Subsection
+
+More content.
+----------------------------------------
+
+Code Block 14 ():
+## Major Section
+
+Paragraph text here.
+
+### Subsection
+
+More content.
+----------------------------------------
+
+Code Block 15 ():
+*text*
+----------------------------------------
+
+Code Block 16 ():
+_text_
+----------------------------------------
+
+Code Block 17 ():
+**text**
+----------------------------------------
+
+Code Block 18 ():
+__text__
+----------------------------------------
+
+Code Block 19 ():
+Inline Code
+----------------------------------------
+
+Code Block 20 ():
+`text`
+----------------------------------------
+
+Code Block 21 ():
+cascadeCallbacks
+----------------------------------------
+
+Code Block 22 ():
+PagesController
+----------------------------------------
+
+Code Block 23 ():
+config()
+----------------------------------------
+
+Code Block 24 ():
+true
+----------------------------------------
+
+Code Block 25 ():
+\*not italic\*
+----------------------------------------
+
+Code Block 26 ():
+-
+----------------------------------------
+
+Code Block 27 ():
+*
+----------------------------------------
+
+Code Block 28 ():
++
+----------------------------------------
+
+Code Block 29 (shiki):
+- First item
+- Second item
+- Third item with
+  multiple lines
+----------------------------------------
+
+Code Block 30 ():
+- First item
+- Second item
+- Third item with
+  multiple lines
+----------------------------------------
+
+Code Block 31 (shiki):
+1. First item
+2. Second item
+3. Third item
+----------------------------------------
+
+Code Block 32 ():
+1. First item
+2. Second item
+3. Third item
+----------------------------------------
+
+Code Block 33 (shiki):
+- First level
+  - Second level
+    - Third level
+  - Back to second level
+- Back to first level
+----------------------------------------
+
+Code Block 34 ():
+- First level
+  - Second level
+    - Third level
+  - Back to second level
+- Back to first level
+----------------------------------------
+
+Code Block 35 (shiki):
+1. Ordered item
+   - Unordered sub-item
+   - Another sub-item
+2. Another ordered item
+----------------------------------------
+
+Code Block 36 ():
+1. Ordered item
+   - Unordered sub-item
+   - Another sub-item
+2. Another ordered item
+----------------------------------------
+
+Code Block 37 (shiki):
+[Link Text](https://example.com)
+----------------------------------------
+
+Code Block 38 ():
+[Link Text](https://example.com)
+----------------------------------------
+
+Code Block 39 (shiki):
+[Link Text](../path/to/page.md)
+----------------------------------------
+
+Code Block 40 ():
+[Link Text](../path/to/page.md)
+----------------------------------------
+
+Code Block 41 ():
+[Installation](./installation.md)
+----------------------------------------
+
+Code Block 42 ():
+[Controllers](../controllers.md)
+----------------------------------------
+
+Code Block 43 ():
+[Components](./controllers/components.md)
+----------------------------------------
+
+Code Block 44 ():
+.md
+----------------------------------------
+
+Code Block 45 (shiki):
+[Link to section](#heading-text)
+----------------------------------------
+
+Code Block 46 ():
+[Link to section](#heading-text)
+----------------------------------------
+
+Code Block 47 ():
+## My Section Title
+----------------------------------------
+
+Code Block 48 ():
+#my-section-title
+----------------------------------------
+
+Code Block 49 (shiki):
+[Link text](./other-page.md#section-anchor)
+----------------------------------------
+
+Code Block 50 ():
+[Link text](./other-page.md#section-anchor)
+----------------------------------------
+
+Code Block 51 (shiki):
+---
+title: Page Title
+description: A brief description of the page content
+---
+----------------------------------------
+
+Code Block 52 ():
+---
+title: Page Title
+description: A brief description of the page content
+---
+----------------------------------------
+
+Code Block 53 ():
+title
+----------------------------------------
+
+Code Block 54 ():
+description
+----------------------------------------
+
+Code Block 55 ():
+head
+----------------------------------------
+
+Code Block 56 ():
+layout
+----------------------------------------
+
+Code Block 57 (shiki):
+---
+title: Controllers
+description: Learn about CakePHP controllers and request handling
+---
+
+# Controllers
+
+Your content here...
+----------------------------------------
+
+Code Block 58 ():
+---
+title: Controllers
+description: Learn about CakePHP controllers and request handling
+---
+
+# Controllers
+
+Your content here...
+----------------------------------------
+
+Code Block 59 (shiki):
+```php
+class MyController extends Controller
+{
+    public function index()
+    {
+        // Your code here
+    }
+}
+```
+----------------------------------------
+
+Code Block 60 ():
+```php
+class MyController extends Controller
+{
+    public function index()
+    {
+        // Your code here
+    }
+}
+```
+----------------------------------------
+
+Code Block 61 ():
+php
+----------------------------------------
+
+Code Block 62 ():
+bash
+----------------------------------------
+
+Code Block 63 ():
+shell
+----------------------------------------
+
+Code Block 64 ():
+javascript
+----------------------------------------
+
+Code Block 65 ():
+js
+----------------------------------------
+
+Code Block 66 ():
+json
+----------------------------------------
+
+Code Block 67 ():
+yaml
+----------------------------------------
+
+Code Block 68 ():
+html
+----------------------------------------
+
+Code Block 69 ():
+css
+----------------------------------------
+
+Code Block 70 (shiki):
+```php{3-6}
+class Example
+{
+    public function highlighted() // This line is highlighted
+    {
+        // These lines are
+        // also highlighted
+    }
+}
+```
+----------------------------------------
+
+Code Block 71 ():
+```php{3-6}
+class Example
+{
+    public function highlighted() // This line is highlighted
+    {
+        // These lines are
+        // also highlighted
+    }
+}
+```
+----------------------------------------
+
+Code Block 72 (shiki):
+```php:line-numbers
+class Example
+{
+    public function withLineNumbers()
+    {
+        return true;
+    }
+}
+```
+----------------------------------------
+
+Code Block 73 ():
+```php:line-numbers
+class Example
+{
+    public function withLineNumbers()
+    {
+        return true;
+    }
+}
+```
+----------------------------------------
+
+Code Block 74 (shiki):
+::: code-group
+
+```php [Controller]
+class ArticlesController extends Controller
+{
+    public function index()
+    {
+        $articles = $this->Articles->find('all');
+    }
+}
+```
+
+```php [Model]
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Timestamp');
+    }
+}
+```
+
+```php [Template]
+<?php foreach ($articles as $article): ?>
+    <h2><?= h($article->title) ?></h2>
+<?php endforeach; ?>
+```
+
+:::
+----------------------------------------
+
+Code Block 75 ():
+::: code-group
+
+```php [Controller]
+class ArticlesController extends Controller
+{
+    public function index()
+    {
+        $articles = $this->Articles->find('all');
+    }
+}
+```
+
+```php [Model]
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addBehavior('Timestamp');
+    }
+}
+```
+
+```php [Template]
+<?php foreach ($articles as $article): ?>
+    <h2><?= h($article->title) ?></h2>
+<?php endforeach; ?>
+```
+
+:::
+----------------------------------------
+
+Code Block 76 (shiki):
+::: tip
+This is a tip. Use for helpful information or best practices.
+:::
+
+::: info
+This is an info box. Use for additional context or explanations.
+:::
+
+::: warning
+This is a warning. Use for important caveats or potential issues.
+:::
+
+::: danger
+This is a danger notice. Use for critical information or security concerns.
+:::
+
+::: details Click to expand
+This is a collapsible details block. Content is hidden by default.
+:::
+----------------------------------------
+
+Code Block 77 ():
+::: tip
+This is a tip. Use for helpful information or best practices.
+:::
+
+::: info
+This is an info box. Use for additional context or explanations.
+:::
+
+::: warning
+This is a warning. Use for important caveats or potential issues.
+:::
+
+::: danger
+This is a danger notice. Use for critical information or security concerns.
+:::
+
+::: details Click to expand
+This is a collapsible details block. Content is hidden by default.
+:::
+----------------------------------------
+
+Code Block 78 (shiki):
+::: tip Custom Tip Title
+You can customize the title of any container.
+:::
+
+::: warning Important Security Note
+Always validate user input before processing.
+:::
+----------------------------------------
+
+Code Block 79 ():
+::: tip Custom Tip Title
+You can customize the title of any container.
+:::
+
+::: warning Important Security Note
+Always validate user input before processing.
+:::
+----------------------------------------
+
+Code Block 80 (shiki):
+::: info New in 5.0.0
+This feature was added in CakePHP 5.0.0.
+:::
+
+::: warning Deprecated in 5.1.0
+This method is deprecated as of CakePHP 5.1.0. Use `newMethod()` instead.
+:::
+----------------------------------------
+
+Code Block 81 ():
+::: info New in 5.0.0
+This feature was added in CakePHP 5.0.0.
+:::
+
+::: warning Deprecated in 5.1.0
+This method is deprecated as of CakePHP 5.1.0. Use `newMethod()` instead.
+:::
+----------------------------------------
+
+Code Block 82 ():
+npx
+----------------------------------------
+
+Code Block 83 (shiki):
+# No installation needed - npx downloads and runs the tools
+npx cspell --config .github/cspell.json "docs/en/**/*.md"
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/en/**/*.md"
+----------------------------------------
+
+Code Block 84 ():
+# No installation needed - npx downloads and runs the tools
+npx cspell --config .github/cspell.json "docs/en/**/*.md"
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/en/**/*.md"
+----------------------------------------
+
+Code Block 85 (shiki):
+# Install globally for faster execution
+npm install -g cspell markdownlint-cli2
+
+# Then run without npx
+cspell --config .github/cspell.json "docs/en/**/*.md"
+markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/en/**/*.md"
+----------------------------------------
+
+Code Block 86 ():
+# Install globally for faster execution
+npm install -g cspell markdownlint-cli2
+
+# Then run without npx
+cspell --config .github/cspell.json "docs/en/**/*.md"
+markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/en/**/*.md"
+----------------------------------------
+
+Code Block 87 (shiki):
+# Check a single file
+npx cspell --config .github/cspell.json docs/en/your-file.md
+----------------------------------------
+
+Code Block 88 ():
+# Check a single file
+npx cspell --config .github/cspell.json docs/en/your-file.md
+----------------------------------------
+
+Code Block 89 (shiki):
+# Check all files in a directory
+npx cspell --config .github/cspell.json "docs/en/controllers/*.md"
+----------------------------------------
+
+Code Block 90 ():
+# Check all files in a directory
+npx cspell --config .github/cspell.json "docs/en/controllers/*.md"
+----------------------------------------
+
+Code Block 91 (shiki):
+# Check all documentation recursively
+npx cspell --config .github/cspell.json "docs/**/*.md"
+----------------------------------------
+
+Code Block 92 ():
+# Check all documentation recursively
+npx cspell --config .github/cspell.json "docs/**/*.md"
+----------------------------------------
+
+Code Block 93 ():
+words
+----------------------------------------
+
+Code Block 94 (shiki):
+# Check a single file
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc docs/en/your-file.md
+----------------------------------------
+
+Code Block 95 ():
+# Check a single file
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc docs/en/your-file.md
+----------------------------------------
+
+Code Block 96 (shiki):
+# Check all files in a directory
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/en/controllers/*.md"
+----------------------------------------
+
+Code Block 97 ():
+# Check all files in a directory
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/en/controllers/*.md"
+----------------------------------------
+
+Code Block 98 (shiki):
+# Check all English documentation
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/en/**/*.md"
+----------------------------------------
+
+Code Block 99 ():
+# Check all English documentation
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/en/**/*.md"
+----------------------------------------
+
+Code Block 100 (shiki):
+# Automatically fix formatting issues
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc --fix "docs/en/**/*.md"
+----------------------------------------
+
+Code Block 101 ():
+# Automatically fix formatting issues
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc --fix "docs/en/**/*.md"
+----------------------------------------
+
+Code Block 102 ():
+--fix
+----------------------------------------
+
+Code Block 103 (shiki):
+# Check a single file
+node bin/check-links.js docs/en/your-file.md
+----------------------------------------
+
+Code Block 104 ():
+# Check a single file
+node bin/check-links.js docs/en/your-file.md
+----------------------------------------
+
+Code Block 105 (shiki):
+# Check all files in a directory
+node bin/check-links.js "docs/en/controllers/*.md"
+----------------------------------------
+
+Code Block 106 ():
+# Check all files in a directory
+node bin/check-links.js "docs/en/controllers/*.md"
+----------------------------------------
+
+Code Block 107 (shiki):
+# Check all documentation recursively
+node bin/check-links.js "docs/**/*.md"
+----------------------------------------
+
+Code Block 108 ():
+# Check all documentation recursively
+node bin/check-links.js "docs/**/*.md"
+----------------------------------------
+
+Code Block 109 (shiki):
+# Check while ignoring known issues in baseline
+node bin/check-links.js --baseline .github/linkchecker-baseline.json "docs/**/*.md"
+----------------------------------------
+
+Code Block 110 ():
+# Check while ignoring known issues in baseline
+node bin/check-links.js --baseline .github/linkchecker-baseline.json "docs/**/*.md"
+----------------------------------------
+
+Code Block 111 ():
+.github/linkchecker-baseline.json
+----------------------------------------
+
+Code Block 112 ():
+--baseline
+----------------------------------------
+
+Code Block 113 ():
+config.js
+----------------------------------------
+
+Code Block 114 ():
+toc_*.json
+----------------------------------------
+
+Code Block 115 (shiki):
+# Validate markdown and spelling
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/**/*.md"
+npx cspell --config .github/cspell.json "docs/**/*.md"
+node bin/check-links.js "docs/**/*.md"
+----------------------------------------
+
+Code Block 116 ():
+# Validate markdown and spelling
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/**/*.md"
+npx cspell --config .github/cspell.json "docs/**/*.md"
+node bin/check-links.js "docs/**/*.md"
+----------------------------------------
+
+Code Block 117 (shiki):
+# Run all CI checks locally
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/**/*.md"
+npx cspell --config .github/cspell.json "docs/**/*.md"
+node bin/check-links.js "docs/**/*.md"
+node --check config.js
+jq empty toc_en.json
+----------------------------------------
+
+Code Block 118 ():
+# Run all CI checks locally
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc "docs/**/*.md"
+npx cspell --config .github/cspell.json "docs/**/*.md"
+node bin/check-links.js "docs/**/*.md"
+node --check config.js
+jq empty toc_en.json
+----------------------------------------
+
+Code Block 119 (shiki):
+# Check your current file before committing
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc docs/en/your-file.md
+npx cspell --config .github/cspell.json docs/en/your-file.md
+node bin/check-links.js docs/en/your-file.md
+----------------------------------------
+
+Code Block 120 ():
+# Check your current file before committing
+npx markdownlint-cli2 --config .github/.markdownlint-cli2.jsonc docs/en/your-file.md
+npx cspell --config .github/cspell.json docs/en/your-file.md
+node bin/check-links.js docs/en/your-file.md
+----------------------------------------
+

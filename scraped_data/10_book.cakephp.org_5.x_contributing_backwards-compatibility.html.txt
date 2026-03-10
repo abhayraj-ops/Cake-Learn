@@ -1,0 +1,403 @@
+URL: https://book.cakephp.org/5.x/contributing/backwards-compatibility.html
+Title: Backwards Compatibility Guide | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Backwards Compatibility Guide ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Migration Guides ​
+  - Using CakePHP ​
+  - Working on CakePHP ​
+  - Deprecations ​
+  - Experimental Features ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Interfaces ​
+  - Classes ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Ensuring that you can upgrade your applications easily and smoothly is important to us. That's why we only break compatibility at major release milestones. You might be familiar with semantic versioning, which is the general guideline we use on all CakePHP projects. In short, semantic versioning means that only major releases (such as 2.0, 3.0, 4.0) can break backwards compatibility. Minor releases (such as 2.1, 3.1, 3.2) may introduce new features, but are not allowed to break compatibility. Bug fix releases (such as 2.1.2, 3.0.1) do not add new features, but fix bugs or enhance performance only.
+
+NOTE
+
+Deprecations are removed with the next major version of the framework. It is advised that you adapt to deprecations as they are introduced to ensure future upgrades are easier.
+
+To clarify what changes you can expect in each release tier we have more detailed information for developers using CakePHP, and for developers working on CakePHP that helps set expectations of what can be done in minor releases. Major releases can have as many breaking changes as required.
+
+For each major and minor release, the CakePHP team will provide a migration guide. These guides explain the new features and any breaking changes that are in each release. They can be found in the Appendices section of the cookbook.
+
+If you are building your application with CakePHP, the following guidelines explain the stability you can expect.
+
+Outside of major releases, interfaces provided by CakePHP will not have any existing methods changed. New methods may be added, but no existing methods will be changed.
+
+Classes provided by CakePHP can be constructed and have their public methods and properties used by application code and outside of major releases backwards compatibility is ensured.
+
+NOTE
+
+Some classes in CakePHP are marked with the @internal API doc tag. These classes are not stable and do not have any backwards compatibility promises.
+
+In minor releases, new methods may be added to classes, and existing methods may have new arguments added. Any new arguments will have default values, but if you've overridden methods with a differing signature you may see fatal errors. Methods that have new arguments added will be documented in the migration guide for that release.
+
+The following table outlines several use cases and what compatibility you can expect from CakePHP:
+
+Your code may be broken by minor releases. Check the migration guide for details.↩︎
+
+Your code may be broken by minor releases. Check the migration guide for details.↩︎
+
+Your code may be broken by minor releases. Check the migration guide for details.↩︎
+
+Your code may be broken by minor releases. Check the migration guide for details.↩︎
+
+Your code may be broken by minor releases. Check the migration guide for details.↩︎
+
+If you are helping make CakePHP even better please keep the following guidelines in mind when adding/changing functionality:
+
+In a minor release you can:
+
+You can change a class/method name as long as the old name remains available. This is generally avoided unless renaming has significant benefit.↩︎
+
+Avoid whenever possible. Any removals need to be documented in the migration guide.↩︎
+
+Avoid whenever possible. Any removals need to be documented in the migration guide.↩︎
+
+You can change a class/method name as long as the old name remains available. This is generally avoided unless renaming has significant benefit.↩︎
+
+In each minor release, features may be deprecated. If features are deprecated, API documentation and runtime warnings will be added. Runtime errors help you locate code that needs to be updated before it breaks. If you wish to disable runtime warnings you can do so using the Error.errorLevel configuration value:
+
+Will disable runtime deprecation warnings.
+
+Experimental features are not included in the above backwards compatibility promises. Experimental features can have breaking changes made in minor releases as long as they remain experimental. Experimental features can be identified by the warning in the book and the usage of @experimental in the API documentation.
+
+Experimental features are intended to help gather feedback on how a feature works before it becomes stable. Once the interfaces and behavior has been vetted with the community the experimental flags will be removed.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+@internal
+----------------------------------------
+
+Code Block 2 ():
+Error.errorLevel
+----------------------------------------
+
+Code Block 3 (shiki):
+// in config/app.php
+// ...
+'Error' => [
+    'errorLevel' => E_ALL ^ E_USER_DEPRECATED,
+],
+// ...
+----------------------------------------
+
+Code Block 4 ():
+// in config/app.php
+// ...
+'Error' => [
+    'errorLevel' => E_ALL ^ E_USER_DEPRECATED,
+],
+// ...
+----------------------------------------
+
+Code Block 5 ():
+@experimental
+----------------------------------------
+

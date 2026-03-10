@@ -1,0 +1,1526 @@
+URL: https://book.cakephp.org/5.x/orm/associations.html
+Title: Associations - Linking Tables Together | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Associations - Linking Tables Together ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - HasOne Associations ​
+  - BelongsTo Associations ​
+  - HasMany Associations ​
+  - BelongsToMany Associations ​
+  - Association Conventions ​
+  - Loading Associations ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Using the 'through' Option ​
+  - Using Association Finders ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Defining relations between different objects in your application should be a natural process. For example, an article may have many comments, and belong to an author. Authors may have many articles and comments. The four association types in CakePHP are: hasOne, hasMany, belongsTo, and belongsToMany.
+
+Associations are defined during the initialize() method of your table object. Methods matching the association type allow you to define the associations in your application. For example if we wanted to define a belongsTo association in our ArticlesTable:
+
+The simplest form of any association setup takes the table alias you want to associate with. By default, all the details of an association will use the CakePHP conventions. If you want to customize how your associations are handled you can modify them with setters:
+
+The property name will be the property key (of the associated entity) on the entity object, in this case:
+
+You can also use arrays to customize your associations:
+
+However, arrays do not offer the typehinting and autocomplete benefits that the fluent interface does.
+
+The same table can be used multiple times to define different types of associations. For example consider a case where you want to separate approved comments and those that have not been moderated yet:
+
+As you can see, by specifying the className key, it is possible to use the same table as different associations for the same table. You can even create self-associated tables to create parent-child relationships:
+
+You can also setup associations in mass by making a single call to Table::addAssociations() which accepts an array containing a set of table names indexed by association type as an argument:
+
+Each association type accepts multiple associations where the keys are the aliases, and the values are association config data. If numeric keys are used the values will be treated as association aliases.
+
+Let's set up a Users table with a hasOne relationship to the Addresses table.
+
+First, your database tables need to be keyed correctly. For a hasOne relationship to work, one table has to contain a foreign key that points to a record in the other table. In this case, the Addresses table will contain a field called 'user_id'. The basic pattern is:
+
+hasOne: the other model contains the foreign key.
+
+NOTE
+
+It is not mandatory to follow CakePHP conventions, you can override the name of any foreignKey in your associations definitions. Nevertheless, sticking to conventions will make your code less repetitive, easier to read and to maintain.
+
+Once you create the UsersTable and AddressesTable classes, you can make the association with the following code:
+
+If you need more control, you can define your associations using the setters. For example, you might want to limit the association to include only certain records:
+
+If you want to break different addresses into multiple associations, you can do something like:
+
+NOTE
+
+If a column is shared by multiple hasOne associations, you must qualify it with the association alias. In the above example, the 'label' column is qualified with the 'HomeAddresses' and 'WorkAddresses' aliases.
+
+Possible keys for hasOne association arrays include:
+
+Once this association has been defined, find operations on the Users table can contain the Address record if it exists:
+
+The above would emit SQL that is similar to:
+
+Now that we have Address data access from the User table, let's define a belongsTo association in the Addresses table in order to get access to related User data. The belongsTo association is a natural complement to the hasOne and hasMany associations - it allows us to see related data from the other direction.
+
+When keying your database tables for a belongsTo relationship, follow this convention:
+
+belongsTo: the current model contains the foreign key.
+
+TIP
+
+If a table contains a foreign key, it belongs to the other table.
+
+We can define the belongsTo association in our Addresses table as follows:
+
+We can also define a more specific relationship using the setters:
+
+Possible keys for belongsTo association arrays include:
+
+Once this association has been defined, find operations on the Addresses table can contain the User record if it exists:
+
+The above would output SQL similar to:
+
+An example of a hasMany association is "Articles hasMany Comments". Defining this association will allow us to fetch an article's comments when the article is loaded.
+
+When creating your database tables for a hasMany relationship, follow this convention:
+
+hasMany: the other model contains the foreign key.
+
+We can define the hasMany association in our Articles model as follows:
+
+We can also define a more specific relationship using the setters:
+
+Sometimes you may want to configure composite keys in your associations:
+
+Relying on the example above, we have passed an array containing the desired composite keys to setForeignKey(). By default, the bindingKey would be automatically defined as id and hash respectively, but let's assume that you need to specify different binding fields than the defaults. You can setup it manually with setBindingKey():
+
+Like hasOne associations, foreignKey is in the other (Comments) table and bindingKey is in the current (Articles) table.
+
+Possible keys for hasMany association arrays include:
+
+Once this association has been defined, find operations on the Articles table can contain the Comment records if they exist:
+
+The above would output SQL similar to:
+
+When the subquery strategy is used, SQL similar to the following will be generated:
+
+You may want to cache the counts for your hasMany associations. This is useful when you often need to show the number of associated records, but don't want to load all the records just to count them. For example, the comment count on any given article is often cached to make generating lists of articles more efficient. You can use the CounterCacheBehavior to cache counts of associated records.
+
+You should make sure that your database tables do not contain columns that match association property names. If for example you have counter fields that conflict with association properties, you must either rename the association property, or the column name.
+
+An example of a BelongsToMany association is "Article BelongsToMany Tags", where the tags from one article are shared with other articles. BelongsToMany is often referred to as "has and belongs to many", and is a classic "many to many" association.
+
+The main difference between hasMany and BelongsToMany is that the link between the models in a BelongsToMany association is not exclusive. For example, we are joining our Articles table with a Tags table. Using 'funny' as a Tag for my Article, doesn't "use up" the tag. I can also use it on the next article I write.
+
+Three database tables are required for a BelongsToMany association. In the example above we would need tables for articles, tags and articles_tags. The articles_tags table contains the data that links tags and articles together. The joining table is named after the two tables involved, separated with an underscore by convention. In its simplest form, this table consists of article_id and tag_id and a multi-column PRIMARY KEY index spanning both columns.
+
+belongsToMany requires a separate join table that includes both model names.
+
+We can define the belongsToMany association in both our models as follows:
+
+We can also define a more specific relationship using configuration:
+
+Possible keys for belongsToMany association arrays include:
+
+Once this association has been defined, find operations on the Articles table can contain the Tag records if they exist:
+
+The above would output SQL similar to:
+
+When the subquery strategy is used, SQL similar to the following will be generated:
+
+If you plan on adding extra information to the join/pivot table, or if you need to use join columns outside of the conventions, you will need to define the through option. The through option provides you full control over how the belongsToMany association will be created.
+
+It is sometimes desirable to store additional data with a many to many association. Consider the following:
+
+A Student can take many Courses and a Course can be taken by many Students. This is a simple many to many association. The following table would suffice:
+
+Now what if we want to store the number of days that were attended by the student on the course and their final grade? The table we'd want would be:
+
+The way to implement our requirement is to use a join model, otherwise known as a hasMany through association. That is, the association is a model itself. So, we can create a new model CoursesMemberships. Take a look at the following models:
+
+The CoursesMemberships join table uniquely identifies a given Student's participation on a Course in addition to extra meta-information.
+
+When using a query object with a BelongsToMany relationship with a through model, add contain and matching conditions for the association target table into your query object. The through table can then be referenced in other conditions such as a where condition by designating the through table name before the field you are filtering on:
+
+By default, associations will load records based on the foreign key columns. If you want to define additional conditions for associations, you can use a finder. When an association is loaded the ORM will use your custom finder to load, update, or delete associated records. Using finders lets you encapsulate your queries and make them more reusable. There are some limitations when using finders to load data in associations that are loaded using joins (belongsTo/hasOne). Only the following aspects of the query will be applied to the root query:
+
+Other aspects of the query, such as selected columns, order, group by, having and other sub-statements, will not be applied to the root query. Associations that are not loaded through joins (hasMany/belongsToMany), do not have the above restrictions and can also use result formatters or map/reduce functions.
+
+By default, associations should be configured and referenced using the CamelCase style. This enables property chains to related tables in the following way:
+
+Association properties on entities do not use CamelCase conventions though. Instead for a hasOne/belongsTo relation like "User belongsTo Roles", you would get a role property instead of Role or Roles:
+
+Whereas for the other direction "Roles hasMany Users" it would be:
+
+Once you've defined your associations you can eager load associations when fetching results.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+initialize()
+----------------------------------------
+
+Code Block 2 (shiki):
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Authors');
+    }
+}
+----------------------------------------
+
+Code Block 3 ():
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Authors');
+    }
+}
+----------------------------------------
+
+Code Block 4 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Authors', [
+            'className' => 'Publishing.Authors',
+        ])
+            ->setForeignKey('author_id')
+            ->setProperty('author');
+    }
+}
+----------------------------------------
+
+Code Block 5 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Authors', [
+            'className' => 'Publishing.Authors',
+        ])
+            ->setForeignKey('author_id')
+            ->setProperty('author');
+    }
+}
+----------------------------------------
+
+Code Block 6 (shiki):
+$authorEntity = $articleEntity->author;
+----------------------------------------
+
+Code Block 7 ():
+$authorEntity = $articleEntity->author;
+----------------------------------------
+
+Code Block 8 (shiki):
+$this->belongsTo('Authors', [
+    'className' => 'Publishing.Authors',
+    'foreignKey' => 'author_id',
+    'propertyName' => 'author',
+]);
+----------------------------------------
+
+Code Block 9 ():
+$this->belongsTo('Authors', [
+    'className' => 'Publishing.Authors',
+    'foreignKey' => 'author_id',
+    'propertyName' => 'author',
+]);
+----------------------------------------
+
+Code Block 10 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('Comments')
+            ->setFinder('approved');
+
+        $this->hasMany('UnapprovedComments', [
+            'className' => 'Comments',
+        ])
+            ->setFinder('unapproved')
+            ->setProperty('unapproved_comments');
+    }
+}
+----------------------------------------
+
+Code Block 11 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('Comments')
+            ->setFinder('approved');
+
+        $this->hasMany('UnapprovedComments', [
+            'className' => 'Comments',
+        ])
+            ->setFinder('unapproved')
+            ->setProperty('unapproved_comments');
+    }
+}
+----------------------------------------
+
+Code Block 12 ():
+className
+----------------------------------------
+
+Code Block 13 (shiki):
+class CategoriesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('SubCategories', [
+            'className' => 'Categories',
+        ]);
+
+        $this->belongsTo('ParentCategories', [
+            'className' => 'Categories',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 14 ():
+class CategoriesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('SubCategories', [
+            'className' => 'Categories',
+        ]);
+
+        $this->belongsTo('ParentCategories', [
+            'className' => 'Categories',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 15 ():
+Table::addAssociations()
+----------------------------------------
+
+Code Block 16 (shiki):
+class PostsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addAssociations([
+            'belongsTo' => [
+                'Users' => ['className' => 'App\Model\Table\UsersTable'],
+            ],
+            'hasMany' => ['Comments'],
+            'belongsToMany' => ['Tags'],
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 17 ():
+class PostsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->addAssociations([
+            'belongsTo' => [
+                'Users' => ['className' => 'App\Model\Table\UsersTable'],
+            ],
+            'hasMany' => ['Comments'],
+            'belongsToMany' => ['Tags'],
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 18 ():
+foreignKey
+----------------------------------------
+
+Code Block 19 ():
+UsersTable
+----------------------------------------
+
+Code Block 20 ():
+AddressesTable
+----------------------------------------
+
+Code Block 21 (shiki):
+class UsersTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasOne('Addresses');
+    }
+}
+----------------------------------------
+
+Code Block 22 ():
+class UsersTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasOne('Addresses');
+    }
+}
+----------------------------------------
+
+Code Block 23 (shiki):
+class UsersTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasOne('Addresses')
+            ->setName('Addresses')
+            ->setFinder('primary')
+            ->setDependent(true);
+    }
+}
+----------------------------------------
+
+Code Block 24 ():
+class UsersTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasOne('Addresses')
+            ->setName('Addresses')
+            ->setFinder('primary')
+            ->setDependent(true);
+    }
+}
+----------------------------------------
+
+Code Block 25 (shiki):
+class UsersTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasOne('HomeAddresses', [
+            'className' => 'Addresses',
+        ])
+            ->setProperty('home_address')
+            ->setConditions(['HomeAddresses.label' => 'Home'])
+            ->setDependent(true);
+
+        $this->hasOne('WorkAddresses', [
+            'className' => 'Addresses',
+        ])
+            ->setProperty('work_address')
+            ->setConditions(['WorkAddresses.label' => 'Work'])
+            ->setDependent(true);
+    }
+}
+----------------------------------------
+
+Code Block 26 ():
+class UsersTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasOne('HomeAddresses', [
+            'className' => 'Addresses',
+        ])
+            ->setProperty('home_address')
+            ->setConditions(['HomeAddresses.label' => 'Home'])
+            ->setDependent(true);
+
+        $this->hasOne('WorkAddresses', [
+            'className' => 'Addresses',
+        ])
+            ->setProperty('work_address')
+            ->setConditions(['WorkAddresses.label' => 'Work'])
+            ->setDependent(true);
+    }
+}
+----------------------------------------
+
+Code Block 27 ():
+_id
+----------------------------------------
+
+Code Block 28 ():
+foreignKey
+----------------------------------------
+
+Code Block 29 ():
+['Addresses.primary' => true]
+----------------------------------------
+
+Code Block 30 ():
+true
+----------------------------------------
+
+Code Block 31 ():
+true
+----------------------------------------
+
+Code Block 32 ():
+true
+----------------------------------------
+
+Code Block 33 ():
+false
+----------------------------------------
+
+Code Block 34 ():
+deleteAll()
+----------------------------------------
+
+Code Block 35 ():
+address
+----------------------------------------
+
+Code Block 36 ():
+'join'
+----------------------------------------
+
+Code Block 37 ():
+'select'
+----------------------------------------
+
+Code Block 38 ():
+'select'
+----------------------------------------
+
+Code Block 39 ():
+'join'
+----------------------------------------
+
+Code Block 40 (shiki):
+// In a controller or table method.
+$query = $users->find('all')->contain(['Addresses'])->all();
+foreach ($query as $user) {
+    echo $user->address->street;
+}
+----------------------------------------
+
+Code Block 41 ():
+// In a controller or table method.
+$query = $users->find('all')->contain(['Addresses'])->all();
+foreach ($query as $user) {
+    echo $user->address->street;
+}
+----------------------------------------
+
+Code Block 42 (shiki):
+SELECT * FROM users INNER JOIN addresses ON addresses.user_id = users.id;
+----------------------------------------
+
+Code Block 43 ():
+SELECT * FROM users INNER JOIN addresses ON addresses.user_id = users.id;
+----------------------------------------
+
+Code Block 44 (shiki):
+class AddressesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Users');
+    }
+}
+----------------------------------------
+
+Code Block 45 ():
+class AddressesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Users');
+    }
+}
+----------------------------------------
+
+Code Block 46 (shiki):
+class AddressesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Users')
+            ->setForeignKey('user_id')
+            ->setJoinType('INNER');
+    }
+}
+----------------------------------------
+
+Code Block 47 ():
+class AddressesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Users')
+            ->setForeignKey('user_id')
+            ->setJoinType('INNER');
+    }
+}
+----------------------------------------
+
+Code Block 48 ():
+_id
+----------------------------------------
+
+Code Block 49 ():
+foreignKey
+----------------------------------------
+
+Code Block 50 ():
+['Users.active' => true]
+----------------------------------------
+
+Code Block 51 ():
+user
+----------------------------------------
+
+Code Block 52 ():
+'join'
+----------------------------------------
+
+Code Block 53 ():
+'select'
+----------------------------------------
+
+Code Block 54 ():
+'select'
+----------------------------------------
+
+Code Block 55 ():
+'join'
+----------------------------------------
+
+Code Block 56 (shiki):
+// In a controller or table method.
+$query = $addresses->find('all')->contain(['Users'])->all();
+foreach ($query as $address) {
+    echo $address->user->username;
+}
+----------------------------------------
+
+Code Block 57 ():
+// In a controller or table method.
+$query = $addresses->find('all')->contain(['Users'])->all();
+foreach ($query as $address) {
+    echo $address->user->username;
+}
+----------------------------------------
+
+Code Block 58 (shiki):
+SELECT * FROM addresses LEFT JOIN users ON addresses.user_id = users.id;
+----------------------------------------
+
+Code Block 59 ():
+SELECT * FROM addresses LEFT JOIN users ON addresses.user_id = users.id;
+----------------------------------------
+
+Code Block 60 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('Comments');
+    }
+}
+----------------------------------------
+
+Code Block 61 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('Comments');
+    }
+}
+----------------------------------------
+
+Code Block 62 (shiki):
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('Comments')
+            ->setForeignKey('article_id')
+            ->setDependent(true);
+    }
+}
+----------------------------------------
+
+Code Block 63 ():
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->hasMany('Comments')
+            ->setForeignKey('article_id')
+            ->setDependent(true);
+    }
+}
+----------------------------------------
+
+Code Block 64 (shiki):
+// Within ArticlesTable::initialize() call
+$this->hasMany('Comments')
+    ->setForeignKey([
+        'article_id',
+        'article_hash',
+    ]);
+----------------------------------------
+
+Code Block 65 ():
+// Within ArticlesTable::initialize() call
+$this->hasMany('Comments')
+    ->setForeignKey([
+        'article_id',
+        'article_hash',
+    ]);
+----------------------------------------
+
+Code Block 66 ():
+setForeignKey()
+----------------------------------------
+
+Code Block 67 ():
+bindingKey
+----------------------------------------
+
+Code Block 68 ():
+id
+----------------------------------------
+
+Code Block 69 ():
+hash
+----------------------------------------
+
+Code Block 70 ():
+setBindingKey()
+----------------------------------------
+
+Code Block 71 (shiki):
+// Within ArticlesTable::initialize() call
+$this->hasMany('Comments')
+    ->setForeignKey([
+        'article_id',
+        'article_hash',
+    ])
+    ->setBindingKey([
+        'whatever_id',
+        'whatever_hash',
+    ]);
+----------------------------------------
+
+Code Block 72 ():
+// Within ArticlesTable::initialize() call
+$this->hasMany('Comments')
+    ->setForeignKey([
+        'article_id',
+        'article_hash',
+    ])
+    ->setBindingKey([
+        'whatever_id',
+        'whatever_hash',
+    ]);
+----------------------------------------
+
+Code Block 73 ():
+foreignKey
+----------------------------------------
+
+Code Block 74 ():
+bindingKey
+----------------------------------------
+
+Code Block 75 ():
+_id
+----------------------------------------
+
+Code Block 76 ():
+foreignKey
+----------------------------------------
+
+Code Block 77 ():
+['Comments.visible' => true]
+----------------------------------------
+
+Code Block 78 ():
+finder
+----------------------------------------
+
+Code Block 79 ():
+['Comments.created' => 'ASC']
+----------------------------------------
+
+Code Block 80 ():
+true
+----------------------------------------
+
+Code Block 81 ():
+true
+----------------------------------------
+
+Code Block 82 ():
+false
+----------------------------------------
+
+Code Block 83 ():
+deleteAll()
+----------------------------------------
+
+Code Block 84 ():
+comments
+----------------------------------------
+
+Code Block 85 ():
+IN
+----------------------------------------
+
+Code Block 86 ():
+append
+----------------------------------------
+
+Code Block 87 ():
+replace
+----------------------------------------
+
+Code Block 88 ():
+append
+----------------------------------------
+
+Code Block 89 ():
+append
+----------------------------------------
+
+Code Block 90 ():
+replace
+----------------------------------------
+
+Code Block 91 ():
+dependent
+----------------------------------------
+
+Code Block 92 (shiki):
+// In a controller or table method.
+$query = $articles->find('all')->contain(['Comments'])->all();
+foreach ($query as $article) {
+    echo $article->comments[0]->text;
+}
+----------------------------------------
+
+Code Block 93 ():
+// In a controller or table method.
+$query = $articles->find('all')->contain(['Comments'])->all();
+foreach ($query as $article) {
+    echo $article->comments[0]->text;
+}
+----------------------------------------
+
+Code Block 94 (shiki):
+SELECT * FROM articles;
+SELECT * FROM comments WHERE article_id IN (1, 2, 3, 4, 5);
+----------------------------------------
+
+Code Block 95 ():
+SELECT * FROM articles;
+SELECT * FROM comments WHERE article_id IN (1, 2, 3, 4, 5);
+----------------------------------------
+
+Code Block 96 (shiki):
+SELECT * FROM articles;
+SELECT * FROM comments WHERE article_id IN (SELECT id FROM articles);
+----------------------------------------
+
+Code Block 97 ():
+SELECT * FROM articles;
+SELECT * FROM comments WHERE article_id IN (SELECT id FROM articles);
+----------------------------------------
+
+Code Block 98 ():
+articles
+----------------------------------------
+
+Code Block 99 ():
+tags
+----------------------------------------
+
+Code Block 100 ():
+articles_tags
+----------------------------------------
+
+Code Block 101 ():
+articles_tags
+----------------------------------------
+
+Code Block 102 ():
+article_id
+----------------------------------------
+
+Code Block 103 ():
+tag_id
+----------------------------------------
+
+Code Block 104 ():
+PRIMARY KEY
+----------------------------------------
+
+Code Block 105 (shiki):
+// In src/Model/Table/ArticlesTable.php
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Tags');
+    }
+}
+
+// In src/Model/Table/TagsTable.php
+class TagsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Articles');
+    }
+}
+----------------------------------------
+
+Code Block 106 ():
+// In src/Model/Table/ArticlesTable.php
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Tags');
+    }
+}
+
+// In src/Model/Table/TagsTable.php
+class TagsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Articles');
+    }
+}
+----------------------------------------
+
+Code Block 107 (shiki):
+// In src/Model/Table/TagsTable.php
+class TagsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Articles', [
+            'joinTable' => 'articles_tags',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 108 ():
+// In src/Model/Table/TagsTable.php
+class TagsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Articles', [
+            'joinTable' => 'articles_tags',
+        ]);
+    }
+}
+----------------------------------------
+
+Code Block 109 ():
+_id
+----------------------------------------
+
+Code Block 110 ():
+foreignKey
+----------------------------------------
+
+Code Block 111 ():
+_id
+----------------------------------------
+
+Code Block 112 ():
+find()
+----------------------------------------
+
+Code Block 113 ():
+finder
+----------------------------------------
+
+Code Block 114 ():
+false
+----------------------------------------
+
+Code Block 115 ():
+true
+----------------------------------------
+
+Code Block 116 ():
+false
+----------------------------------------
+
+Code Block 117 ():
+deleteAll()
+----------------------------------------
+
+Code Block 118 ():
+false
+----------------------------------------
+
+Code Block 119 ():
+tags
+----------------------------------------
+
+Code Block 120 ():
+IN
+----------------------------------------
+
+Code Block 121 ():
+append
+----------------------------------------
+
+Code Block 122 ():
+replace
+----------------------------------------
+
+Code Block 123 ():
+replace
+----------------------------------------
+
+Code Block 124 (shiki):
+// In a controller or table method.
+$query = $articles->find('all')->contain(['Tags'])->all();
+foreach ($query as $article) {
+    echo $article->tags[0]->text;
+}
+----------------------------------------
+
+Code Block 125 ():
+// In a controller or table method.
+$query = $articles->find('all')->contain(['Tags'])->all();
+foreach ($query as $article) {
+    echo $article->tags[0]->text;
+}
+----------------------------------------
+
+Code Block 126 (shiki):
+SELECT * FROM articles;
+SELECT * FROM tags
+INNER JOIN articles_tags ON (
+  tags.id = article_tags.tag_id
+  AND article_id IN (1, 2, 3, 4, 5)
+);
+----------------------------------------
+
+Code Block 127 ():
+SELECT * FROM articles;
+SELECT * FROM tags
+INNER JOIN articles_tags ON (
+  tags.id = article_tags.tag_id
+  AND article_id IN (1, 2, 3, 4, 5)
+);
+----------------------------------------
+
+Code Block 128 (shiki):
+SELECT * FROM articles;
+SELECT * FROM tags
+INNER JOIN articles_tags ON (
+  tags.id = article_tags.tag_id
+  AND article_id IN (SELECT id FROM articles)
+);
+----------------------------------------
+
+Code Block 129 ():
+SELECT * FROM articles;
+SELECT * FROM tags
+INNER JOIN articles_tags ON (
+  tags.id = article_tags.tag_id
+  AND article_id IN (SELECT id FROM articles)
+);
+----------------------------------------
+
+Code Block 130 ():
+through
+----------------------------------------
+
+Code Block 131 ():
+through
+----------------------------------------
+
+Code Block 132 ():
+Student BelongsToMany Course
+Course BelongsToMany Student
+----------------------------------------
+
+Code Block 133 ():
+Student BelongsToMany Course
+Course BelongsToMany Student
+----------------------------------------
+
+Code Block 134 ():
+id | student_id | course_id
+----------------------------------------
+
+Code Block 135 ():
+id | student_id | course_id
+----------------------------------------
+
+Code Block 136 ():
+id | student_id | course_id | days_attended | grade
+----------------------------------------
+
+Code Block 137 ():
+id | student_id | course_id | days_attended | grade
+----------------------------------------
+
+Code Block 138 (shiki):
+class StudentsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Courses', [
+            'through' => 'CoursesMemberships',
+        ]);
+    }
+}
+
+class CoursesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Students', [
+            'through' => 'CoursesMemberships',
+        ]);
+    }
+}
+
+class CoursesMembershipsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Students');
+        $this->belongsTo('Courses');
+    }
+}
+----------------------------------------
+
+Code Block 139 ():
+class StudentsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Courses', [
+            'through' => 'CoursesMemberships',
+        ]);
+    }
+}
+
+class CoursesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsToMany('Students', [
+            'through' => 'CoursesMemberships',
+        ]);
+    }
+}
+
+class CoursesMembershipsTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        $this->belongsTo('Students');
+        $this->belongsTo('Courses');
+    }
+}
+----------------------------------------
+
+Code Block 140 ():
+through
+----------------------------------------
+
+Code Block 141 ():
+through
+----------------------------------------
+
+Code Block 142 (shiki):
+// In a StudentsTable method or controller action.
+$query = $this->Students->find(
+    'list',
+    valueField: 'first_name',
+    order: 'Students.id',
+)
+    ->contain(['Courses'])
+    ->matching('Courses')
+    ->where(['CoursesMemberships.grade' => 'B']);
+----------------------------------------
+
+Code Block 143 ():
+// In a StudentsTable method or controller action.
+$query = $this->Students->find(
+    'list',
+    valueField: 'first_name',
+    order: 'Students.id',
+)
+    ->contain(['Courses'])
+    ->matching('Courses')
+    ->where(['CoursesMemberships.grade' => 'B']);
+----------------------------------------
+
+Code Block 144 ():
+finder
+----------------------------------------
+
+Code Block 145 (shiki):
+$this->MyTableOne->MyTableTwo->find()->...;
+----------------------------------------
+
+Code Block 146 ():
+$this->MyTableOne->MyTableTwo->find()->...;
+----------------------------------------
+
+Code Block 147 ():
+role
+----------------------------------------
+
+Code Block 148 ():
+Role
+----------------------------------------
+
+Code Block 149 ():
+Roles
+----------------------------------------
+
+Code Block 150 (shiki):
+// A single entity (or null if not available)
+$role = $user->role;
+----------------------------------------
+
+Code Block 151 ():
+// A single entity (or null if not available)
+$role = $user->role;
+----------------------------------------
+
+Code Block 152 (shiki):
+// Collection of user entities (or null if not available)
+$users = $role->users;
+----------------------------------------
+
+Code Block 153 ():
+// Collection of user entities (or null if not available)
+$users = $role->users;
+----------------------------------------
+

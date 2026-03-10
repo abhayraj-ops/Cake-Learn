@@ -1,0 +1,472 @@
+URL: https://book.cakephp.org/5.x/tutorials-and-examples/cms/articles-model.html
+Title: CMS Tutorial - Creating our First Model | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - CMS Tutorial - Creating our First Model ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Models are the heart of CakePHP applications. They enable us to read and modify our data. They allow us to build relations between our data, validate data, and apply application rules. Models provide the foundation necessary to create our controller actions and templates.
+
+CakePHP's models are composed of Table and Entity objects. Table objects provide access to the collection of entities stored in a specific table. They are stored in src/Model/Table. The file we'll be creating will be saved to src/Model/Table/ArticlesTable.php. The completed file should look like this:
+
+We've attached the Timestamp behavior, which will automatically populate the created and modified columns of our table. By naming our Table object ArticlesTable, CakePHP can use naming conventions to know that our model uses the articles table. CakePHP also uses conventions to know that the id column is our table's primary key.
+
+Automatic Model Creation
+
+CakePHP will dynamically create a model object for you if it cannot find a corresponding file in src/Model/Table. This also means that if you accidentally name your file wrong (i.e. articlestable.php or ArticleTable.php), CakePHP will not recognize any of your settings and will use the generated model instead.
+
+We'll also create an Entity class for our Articles. Entities represent a single record in the database and provide row-level behavior for our data. Our entity will be saved to src/Model/Entity/Article.php. The completed file should look like this:
+
+Right now, our entity is quite slim; we've only set up the _accessible property, which controls how properties can be modified by Entities Mass Assignment.
+
+Use Bake to Generate Models
+
+The ArticlesTable and Article Entity classes can be generated from a terminal:
+
+We can't do much with this model yet. Next, we'll create our first Controller and Template to allow us to interact with our model.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+Table
+----------------------------------------
+
+Code Block 2 ():
+Entity
+----------------------------------------
+
+Code Block 3 ():
+Table
+----------------------------------------
+
+Code Block 4 (shiki):
+<?php
+// src/Model/Table/ArticlesTable.php
+declare(strict_types=1);
+
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        parent::initialize($config);
+        $this->addBehavior('Timestamp');
+    }
+}
+----------------------------------------
+
+Code Block 5 ():
+<?php
+// src/Model/Table/ArticlesTable.php
+declare(strict_types=1);
+
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+
+class ArticlesTable extends Table
+{
+    public function initialize(array $config): void
+    {
+        parent::initialize($config);
+        $this->addBehavior('Timestamp');
+    }
+}
+----------------------------------------
+
+Code Block 6 ():
+created
+----------------------------------------
+
+Code Block 7 ():
+modified
+----------------------------------------
+
+Code Block 8 ():
+ArticlesTable
+----------------------------------------
+
+Code Block 9 ():
+articles
+----------------------------------------
+
+Code Block 10 ():
+id
+----------------------------------------
+
+Code Block 11 (shiki):
+<?php
+// src/Model/Entity/Article.php
+declare(strict_types=1);
+
+namespace App\Model\Entity;
+
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+    protected array $_accessible = [
+        'user_id' => true,
+        'title' => true,
+        'slug' => true,
+        'body' => true,
+        'published' => true,
+        'created' => true,
+        'modified' => true,
+        'user' => true,
+        'tags' => true,
+    ];
+}
+----------------------------------------
+
+Code Block 12 ():
+<?php
+// src/Model/Entity/Article.php
+declare(strict_types=1);
+
+namespace App\Model\Entity;
+
+use Cake\ORM\Entity;
+
+class Article extends Entity
+{
+    protected array $_accessible = [
+        'user_id' => true,
+        'title' => true,
+        'slug' => true,
+        'body' => true,
+        'published' => true,
+        'created' => true,
+        'modified' => true,
+        'user' => true,
+        'tags' => true,
+    ];
+}
+----------------------------------------
+
+Code Block 13 ():
+_accessible
+----------------------------------------
+
+Code Block 14 ():
+ArticlesTable
+----------------------------------------
+
+Code Block 15 ():
+Article
+----------------------------------------
+
+Code Block 16 (shiki):
+bin/cake bake model articles
+----------------------------------------
+
+Code Block 17 ():
+bin/cake bake model articles
+----------------------------------------
+

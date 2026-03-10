@@ -1,0 +1,393 @@
+URL: https://book.cakephp.org/5.x/core-libraries/registry-objects.html
+Title: Registry Objects | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Registry Objects ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Loading Objects ​
+  - Triggering Callbacks ​
+  - Disabling Callbacks ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The registry classes provide a simple way to create and retrieve loaded instances of a given object type. There are registry classes for Components, Helpers, Tasks, and Behaviors.
+
+While the examples below will use Components, the same behavior can be expected for Helpers, Behaviors, and Tasks in addition to Components.
+
+Objects can be loaded on-the-fly using add<registry-object>() Example:
+
+This will result in the Acl property and Flash helper being loaded. Configuration can also be set on-the-fly. Example:
+
+Any keys and values provided will be passed to the Component's constructor. The one exception to this rule is className. Classname is a special key that is used to alias objects in a registry. This allows you to have component names that do not reflect the classnames, which can be helpful when extending core components:
+
+Callbacks are not provided by registry objects. You should use the events system to dispatch any events/callbacks for your application.
+
+In previous versions, collection objects provided a disable() method to disable objects from receiving callbacks. You should use the features in the events system to accomplish this now. For example, you could disable component callbacks in the following way:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+add<registry-object>()
+----------------------------------------
+
+Code Block 2 (shiki):
+$this->loadComponent('Acl.Acl');
+$this->addHelper('Flash')
+----------------------------------------
+
+Code Block 3 ():
+$this->loadComponent('Acl.Acl');
+$this->addHelper('Flash')
+----------------------------------------
+
+Code Block 4 ():
+Acl
+----------------------------------------
+
+Code Block 5 ():
+Flash
+----------------------------------------
+
+Code Block 6 (shiki):
+$this->loadComponent('Cookie', ['name' => 'sweet']);
+----------------------------------------
+
+Code Block 7 ():
+$this->loadComponent('Cookie', ['name' => 'sweet']);
+----------------------------------------
+
+Code Block 8 ():
+className
+----------------------------------------
+
+Code Block 9 (shiki):
+$this->Flash = $this->loadComponent('Flash', ['className' => 'MyCustomFlash']);
+$this->Flash->error(); // Actually using MyCustomFlash::error();
+----------------------------------------
+
+Code Block 10 ():
+$this->Flash = $this->loadComponent('Flash', ['className' => 'MyCustomFlash']);
+$this->Flash->error(); // Actually using MyCustomFlash::error();
+----------------------------------------
+
+Code Block 11 ():
+disable()
+----------------------------------------
+
+Code Block 12 (shiki):
+// Remove MyComponent from callbacks.
+$this->getEventManager()->off($this->MyComponent);
+
+// Re-enable MyComponent for callbacks.
+$this->getEventManager()->on($this->MyComponent);
+----------------------------------------
+
+Code Block 13 ():
+// Remove MyComponent from callbacks.
+$this->getEventManager()->off($this->MyComponent);
+
+// Re-enable MyComponent for callbacks.
+$this->getEventManager()->on($this->MyComponent);
+----------------------------------------
+

@@ -1,0 +1,1136 @@
+URL: https://book.cakephp.org/5.x/installation.html#without-url-rewriting
+Title: Installation Guide | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Installation ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - System Requirements ​
+  - Installation Methods ​
+  - File Permissions ​
+  - Development Server ​
+  - Production Deployment ​
+  - Web Server Configuration ​
+  - Without URL Rewriting ​
+  - Next Steps ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Method 1: Using Composer ​
+  - Method 2: Using DDEV + Composer ​
+  - Method 3: Docker ​
+  - Quick Setup (Unix/Linux/macOS) ​
+  - Make Console Executable ​
+  - Directory Structure ​
+  - Apache ​
+  - nginx ​
+  - Caddy / FrankenPHP ​
+  - IIS (Windows) ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+CakePHP is designed to be easy to install and configure. This guide will walk you through getting CakePHP up and running in just a few minutes.
+
+Quick Check
+
+Verify your PHP version meets the requirements:
+
+Minimum Requirements:
+
+Supported Databases:
+
+Web Server Requirements
+
+Your web server's PHP version must match your CLI PHP version (8.2+). All database drivers require the appropriate PDO extension.
+
+Choose the method that best fits your workflow:
+
+The standard way to install CakePHP:
+
+Now you can create a new CakePHP project:
+
+Version Constraints
+
+Your composer.json version constraint controls updates:
+
+Perfect for local development environments:
+
+Learn More
+
+Check DDEV Documentation for installation and advanced configuration.
+
+For containerized development:
+
+Development Only
+
+The built-in server is for development only. Never use it in production environments.
+
+CakePHP uses the tmp and logs directories for various operations like caching, sessions, and logging.
+
+Permission Setup Required
+
+Ensure logs and tmp (including all subdirectories) are writable by your web server user.
+
+If your web server and CLI users differ, set permissions for the directories:
+
+macOS Note
+
+macOS does not include setfacl by default. Use the chmod method or install ACL tools via Homebrew: brew install acl
+
+The fastest way to get started. CakePHP includes a development server built on PHP's built-in web server:
+
+Success!
+
+Visit http://localhost:8765 and you should see the CakePHP welcome page with green checkmarks.
+
+Production Warning
+
+Never use the development server in production. It's designed only for local development and lacks security hardening, performance optimizations, and proper process management.
+
+For production environments, configure your web server to serve from the webroot directory.
+
+After installation, your structure should look like this:
+
+Configuration Required
+
+Point your web server's DocumentRoot to /path/to/my_app/webroot/
+
+Configuration Examples
+
+The following examples are illustrative starting points. You should fine-tune these configurations to match your application's specific requirements, security policies, and performance needs.
+
+Choose your web server and follow the appropriate configuration:
+
+Apache works out of the box with CakePHP's included .htaccess files.
+
+If rewrites aren't working:
+
+Performance optimization:
+
+nginx requires manual rewrite configuration:
+
+PHP-FPM Socket
+
+Modern PHP-FPM uses Unix sockets instead of TCP. Update fastcgi_pass to match your setup:
+
+Modern web server with automatic HTTPS. FrankenPHP extends Caddy with a built-in PHP runtime:
+
+Local Development
+
+For local development, you can use the built-in CakePHP development server with FrankenPHP support:
+
+This requires the frankenphp binary to be available in your PATH.
+
+Why FrankenPHP?
+
+FrankenPHP combines PHP with Caddy, providing automatic HTTPS, HTTP/3, and modern compression without needing PHP-FPM. Particularly efficient for containerized deployments.
+
+If you cannot enable URL rewriting, you can use CakePHP's built-in non-rewritten index.php URLs.
+
+In config/app.php, uncomment:
+
+Remove these .htaccess files:
+
+Your URLs will include index.php:
+
+Your CakePHP installation is complete! Here's what to do next:
+
+Ready to Build?
+
+Follow the Quick Start Guide to create your first CakePHP application in minutes.
+
+Learn More:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 (shiki):
+php -v
+----------------------------------------
+
+Code Block 2 ():
+php -v
+----------------------------------------
+
+Code Block 3 ():
+mbstring
+----------------------------------------
+
+Code Block 4 ():
+intl
+----------------------------------------
+
+Code Block 5 ():
+pdo
+----------------------------------------
+
+Code Block 6 ():
+simplexml
+----------------------------------------
+
+Code Block 7 (shiki):
+# Linux/macOS
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+
+# Verify installation
+composer --version
+----------------------------------------
+
+Code Block 8 ():
+# Linux/macOS
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+
+# Verify installation
+composer --version
+----------------------------------------
+
+Code Block 9 (shiki):
+# Download and run the Windows installer
+# https://getcomposer.org/Composer-Setup.exe
+
+# Verify installation
+composer --version
+----------------------------------------
+
+Code Block 10 ():
+# Download and run the Windows installer
+# https://getcomposer.org/Composer-Setup.exe
+
+# Verify installation
+composer --version
+----------------------------------------
+
+Code Block 11 (shiki):
+# Create a new CakePHP 5 application
+composer create-project --prefer-dist cakephp/app:5.3 my_app_name
+
+# Navigate to your app
+cd my_app_name
+
+# Start development server
+bin/cake server
+
+# Or if you have frankenphp available
+bin/cake server --frankenphp
+----------------------------------------
+
+Code Block 12 ():
+# Create a new CakePHP 5 application
+composer create-project --prefer-dist cakephp/app:5.3 my_app_name
+
+# Navigate to your app
+cd my_app_name
+
+# Start development server
+bin/cake server
+
+# Or if you have frankenphp available
+bin/cake server --frankenphp
+----------------------------------------
+
+Code Block 13 ():
+composer.json
+----------------------------------------
+
+Code Block 14 ():
+"cakephp/cakephp": "5.3.*"
+----------------------------------------
+
+Code Block 15 ():
+"cakephp/cakephp": "^5.3"
+----------------------------------------
+
+Code Block 16 (shiki):
+# Create and configure project
+mkdir my-cakephp-app && cd my-cakephp-app
+ddev config --project-type=cakephp --docroot=webroot
+ddev composer create --prefer-dist cakephp/app:5.3
+
+# Launch in browser
+ddev launch
+----------------------------------------
+
+Code Block 17 ():
+# Create and configure project
+mkdir my-cakephp-app && cd my-cakephp-app
+ddev config --project-type=cakephp --docroot=webroot
+ddev composer create --prefer-dist cakephp/app:5.3
+
+# Launch in browser
+ddev launch
+----------------------------------------
+
+Code Block 18 (shiki):
+# Clone your repository
+git clone <your-cakephp-repo>
+cd <your-cakephp-project>
+
+# Configure DDEV
+ddev config --project-type=cakephp --docroot=webroot
+ddev composer install
+
+# Launch in browser
+ddev launch
+----------------------------------------
+
+Code Block 19 ():
+# Clone your repository
+git clone <your-cakephp-repo>
+cd <your-cakephp-project>
+
+# Configure DDEV
+ddev config --project-type=cakephp --docroot=webroot
+ddev composer install
+
+# Launch in browser
+ddev launch
+----------------------------------------
+
+Code Block 20 (shiki):
+# Create project using Composer in Docker
+docker run --rm -v $(pwd):/app composer create-project \
+  --prefer-dist cakephp/app:5.3 my_app
+
+# Start PHP development server (install required extensions first)
+cd my_app
+docker run -it --rm -p 8765:8765 -v $(pwd):/app \
+  -w /app php:8.2-cli bash -c "apt-get update && apt-get install -y libicu-dev && docker-php-ext-install intl mbstring && php bin/cake server -H 0.0.0.0"
+----------------------------------------
+
+Code Block 21 ():
+# Create project using Composer in Docker
+docker run --rm -v $(pwd):/app composer create-project \
+  --prefer-dist cakephp/app:5.3 my_app
+
+# Start PHP development server (install required extensions first)
+cd my_app
+docker run -it --rm -p 8765:8765 -v $(pwd):/app \
+  -w /app php:8.2-cli bash -c "apt-get update && apt-get install -y libicu-dev && docker-php-ext-install intl mbstring && php bin/cake server -H 0.0.0.0"
+----------------------------------------
+
+Code Block 22 (shiki):
+# Auto-detect web server user and set permissions using ACL
+HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
+setfacl -R -m u:${HTTPDUSER}:rwx tmp logs
+setfacl -R -d -m u:${HTTPDUSER}:rwx tmp logs
+----------------------------------------
+
+Code Block 23 ():
+# Auto-detect web server user and set permissions using ACL
+HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
+setfacl -R -m u:${HTTPDUSER}:rwx tmp logs
+setfacl -R -d -m u:${HTTPDUSER}:rwx tmp logs
+----------------------------------------
+
+Code Block 24 (shiki):
+# Auto-detect web server user and set permissions using chmod
+HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
+sudo chown -R $(whoami):${HTTPDUSER} tmp logs
+sudo chmod -R 775 tmp logs
+----------------------------------------
+
+Code Block 25 ():
+# Auto-detect web server user and set permissions using chmod
+HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
+sudo chown -R $(whoami):${HTTPDUSER} tmp logs
+sudo chmod -R 775 tmp logs
+----------------------------------------
+
+Code Block 26 (shiki):
+# If auto-detection doesn't work, use broader permissions
+chmod -R 777 tmp logs
+----------------------------------------
+
+Code Block 27 ():
+# If auto-detection doesn't work, use broader permissions
+chmod -R 777 tmp logs
+----------------------------------------
+
+Code Block 28 ():
+setfacl
+----------------------------------------
+
+Code Block 29 ():
+brew install acl
+----------------------------------------
+
+Code Block 30 (shiki):
+chmod +x bin/cake
+----------------------------------------
+
+Code Block 31 ():
+chmod +x bin/cake
+----------------------------------------
+
+Code Block 32 (shiki):
+# .bat file is already executable
+# For WSL or shared directories, ensure execute permissions are shared
+----------------------------------------
+
+Code Block 33 ():
+# .bat file is already executable
+# For WSL or shared directories, ensure execute permissions are shared
+----------------------------------------
+
+Code Block 34 (shiki):
+# If you cannot change permissions
+php bin/cake.php
+----------------------------------------
+
+Code Block 35 ():
+# If you cannot change permissions
+php bin/cake.php
+----------------------------------------
+
+Code Block 36 (shiki):
+# Starts at http://localhost:8765
+bin/cake server
+----------------------------------------
+
+Code Block 37 ():
+# Starts at http://localhost:8765
+bin/cake server
+----------------------------------------
+
+Code Block 38 (shiki):
+# Useful for network access or port conflicts
+bin/cake server -H 192.168.1.100 -p 5000
+----------------------------------------
+
+Code Block 39 ():
+# Useful for network access or port conflicts
+bin/cake server -H 192.168.1.100 -p 5000
+----------------------------------------
+
+Code Block 40 (shiki):
+# Allow access from other devices on your network
+bin/cake server -H 0.0.0.0
+----------------------------------------
+
+Code Block 41 ():
+# Allow access from other devices on your network
+bin/cake server -H 0.0.0.0
+----------------------------------------
+
+Code Block 42 (shiki):
+my_app/
+├── bin/
+├── config/
+├── logs/
+├── plugins/
+├── src/
+├── templates/
+├── tests/
+├── tmp/
+├── vendor/
+├── webroot/          # ← Web server document root
+│   ├── css/
+│   ├── img/
+│   ├── js/
+│   ├── .htaccess
+│   └── index.php
+├── .gitignore
+├── .htaccess
+├── composer.json
+└── README.md
+----------------------------------------
+
+Code Block 43 ():
+my_app/
+├── bin/
+├── config/
+├── logs/
+├── plugins/
+├── src/
+├── templates/
+├── tests/
+├── tmp/
+├── vendor/
+├── webroot/          # ← Web server document root
+│   ├── css/
+│   ├── img/
+│   ├── js/
+│   ├── .htaccess
+│   └── index.php
+├── .gitignore
+├── .htaccess
+├── composer.json
+└── README.md
+----------------------------------------
+
+Code Block 44 ():
+/path/to/my_app/webroot/
+----------------------------------------
+
+Code Block 45 ():
+.htaccess
+----------------------------------------
+
+Code Block 46 (shiki):
+<VirtualHost *:80>
+    ServerName myapp.local
+    DocumentRoot /var/www/myapp/webroot
+
+    <Directory /var/www/myapp/webroot>
+        Options FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/myapp_error.log
+    CustomLog ${APACHE_LOG_DIR}/myapp_access.log combined
+</VirtualHost>
+----------------------------------------
+
+Code Block 47 ():
+<VirtualHost *:80>
+    ServerName myapp.local
+    DocumentRoot /var/www/myapp/webroot
+
+    <Directory /var/www/myapp/webroot>
+        Options FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/myapp_error.log
+    CustomLog ${APACHE_LOG_DIR}/myapp_access.log combined
+</VirtualHost>
+----------------------------------------
+
+Code Block 48 (shiki):
+# Ensure mod_rewrite is enabled
+LoadModule rewrite_module modules/mod_rewrite.so
+
+# Verify with:
+apache2ctl -M | grep rewrite
+----------------------------------------
+
+Code Block 49 ():
+# Ensure mod_rewrite is enabled
+LoadModule rewrite_module modules/mod_rewrite.so
+
+# Verify with:
+apache2ctl -M | grep rewrite
+----------------------------------------
+
+Code Block 50 (shiki):
+# If installing in a subdirectory like /~username/myapp/
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /~username/myapp
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+----------------------------------------
+
+Code Block 51 ():
+# If installing in a subdirectory like /~username/myapp/
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /~username/myapp
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+----------------------------------------
+
+Code Block 52 ():
+AllowOverride All
+----------------------------------------
+
+Code Block 53 ():
+.htaccess
+----------------------------------------
+
+Code Block 54 ():
+mod_rewrite
+----------------------------------------
+
+Code Block 55 (shiki):
+# Add to webroot/.htaccess to prevent CakePHP from handling static assets
+RewriteCond %{REQUEST_URI} !^/(webroot/)?(img|css|js)/(.*)$
+----------------------------------------
+
+Code Block 56 ():
+# Add to webroot/.htaccess to prevent CakePHP from handling static assets
+RewriteCond %{REQUEST_URI} !^/(webroot/)?(img|css|js)/(.*)$
+----------------------------------------
+
+Code Block 57 (shiki):
+server {
+    listen 80;
+    server_name myapp.local;
+
+    root /var/www/myapp/webroot;
+    index index.php;
+
+    access_log /var/log/nginx/myapp_access.log;
+    error_log /var/log/nginx/myapp_error.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        include fastcgi_params;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_intercept_errors on;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
+----------------------------------------
+
+Code Block 58 ():
+server {
+    listen 80;
+    server_name myapp.local;
+
+    root /var/www/myapp/webroot;
+    index index.php;
+
+    access_log /var/log/nginx/myapp_access.log;
+    error_log /var/log/nginx/myapp_error.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        include fastcgi_params;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_intercept_errors on;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
+----------------------------------------
+
+Code Block 59 ():
+fastcgi_pass
+----------------------------------------
+
+Code Block 60 ():
+unix:/var/run/php/php8.2-fpm.sock
+----------------------------------------
+
+Code Block 61 ():
+127.0.0.1:9000
+----------------------------------------
+
+Code Block 62 (shiki):
+myapp.local {
+    root * /var/www/myapp/webroot
+    php_fastcgi unix//var/run/php/php8.2-fpm.sock
+    encode gzip
+    file_server
+
+    try_files {path} {path}/ /index.php?{query}
+}
+----------------------------------------
+
+Code Block 63 ():
+myapp.local {
+    root * /var/www/myapp/webroot
+    php_fastcgi unix//var/run/php/php8.2-fpm.sock
+    encode gzip
+    file_server
+
+    try_files {path} {path}/ /index.php?{query}
+}
+----------------------------------------
+
+Code Block 64 (shiki):
+# Dockerfile in your project root
+FROM dunglas/frankenphp
+
+# Copy your CakePHP application
+COPY . /app
+
+# FrankenPHP defaults to /app/public as document root.
+# CakePHP uses webroot/ instead, so override it:
+ENV SERVER_ROOT=/app/webroot
+
+# Install dependencies (composer.json lives in /app)
+RUN composer install --no-dev --optimize-autoloader
+
+# Build and run:
+# docker build -t myapp .
+# docker run -p 80:80 -p 443:443 myapp
+----------------------------------------
+
+Code Block 65 ():
+# Dockerfile in your project root
+FROM dunglas/frankenphp
+
+# Copy your CakePHP application
+COPY . /app
+
+# FrankenPHP defaults to /app/public as document root.
+# CakePHP uses webroot/ instead, so override it:
+ENV SERVER_ROOT=/app/webroot
+
+# Install dependencies (composer.json lives in /app)
+RUN composer install --no-dev --optimize-autoloader
+
+# Build and run:
+# docker build -t myapp .
+# docker run -p 80:80 -p 443:443 myapp
+----------------------------------------
+
+Code Block 66 (shiki):
+# Download FrankenPHP
+curl -L https://github.com/dunglas/frankenphp/releases/latest/download/frankenphp-linux-x86_64 -o frankenphp
+chmod +x frankenphp
+
+# Run with your CakePHP app
+./frankenphp php-server --root /var/www/myapp/webroot
+----------------------------------------
+
+Code Block 67 ():
+# Download FrankenPHP
+curl -L https://github.com/dunglas/frankenphp/releases/latest/download/frankenphp-linux-x86_64 -o frankenphp
+chmod +x frankenphp
+
+# Run with your CakePHP app
+./frankenphp php-server --root /var/www/myapp/webroot
+----------------------------------------
+
+Code Block 68 (shiki):
+# Caddyfile in your project root
+{
+    frankenphp
+}
+
+myapp.local {
+    root * /var/www/myapp/webroot
+    php_server
+    encode zstd gzip
+    file_server
+}
+----------------------------------------
+
+Code Block 69 ():
+# Caddyfile in your project root
+{
+    frankenphp
+}
+
+myapp.local {
+    root * /var/www/myapp/webroot
+    php_server
+    encode zstd gzip
+    file_server
+}
+----------------------------------------
+
+Code Block 70 (shiki):
+bin/cake server --frankenphp
+----------------------------------------
+
+Code Block 71 ():
+bin/cake server --frankenphp
+----------------------------------------
+
+Code Block 72 ():
+frankenphp
+----------------------------------------
+
+Code Block 73 ():
+PATH
+----------------------------------------
+
+Code Block 74 ():
+web.config
+----------------------------------------
+
+Code Block 75 (shiki):
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system.webServer>
+        <rewrite>
+            <rules>
+                <rule name="Exclude webroot" stopProcessing="true">
+                    <match url="^webroot/(.*)$" ignoreCase="false" />
+                    <action type="None" />
+                </rule>
+                <rule name="Rewrite assets" stopProcessing="true">
+                    <match url="^(font|img|css|files|js|favicon.ico)(.*)$" />
+                    <action type="Rewrite" url="webroot/{R:1}{R:2}" />
+                </rule>
+                <rule name="Rewrite to index.php" stopProcessing="true">
+                    <match url="^(.*)$" ignoreCase="false" />
+                    <action type="Rewrite" url="index.php" />
+                </rule>
+            </rules>
+        </rewrite>
+    </system.webServer>
+</configuration>
+----------------------------------------
+
+Code Block 76 ():
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system.webServer>
+        <rewrite>
+            <rules>
+                <rule name="Exclude webroot" stopProcessing="true">
+                    <match url="^webroot/(.*)$" ignoreCase="false" />
+                    <action type="None" />
+                </rule>
+                <rule name="Rewrite assets" stopProcessing="true">
+                    <match url="^(font|img|css|files|js|favicon.ico)(.*)$" />
+                    <action type="Rewrite" url="webroot/{R:1}{R:2}" />
+                </rule>
+                <rule name="Rewrite to index.php" stopProcessing="true">
+                    <match url="^(.*)$" ignoreCase="false" />
+                    <action type="Rewrite" url="index.php" />
+                </rule>
+            </rules>
+        </rewrite>
+    </system.webServer>
+</configuration>
+----------------------------------------
+
+Code Block 77 ():
+index.php
+----------------------------------------
+
+Code Block 78 (shiki):
+'App' => [
+    // ...
+    'baseUrl' => env('SCRIPT_NAME'),
+]
+----------------------------------------
+
+Code Block 79 ():
+'App' => [
+    // ...
+    'baseUrl' => env('SCRIPT_NAME'),
+]
+----------------------------------------
+
+Code Block 80 ():
+.htaccess
+----------------------------------------
+
+Code Block 81 ():
+/.htaccess
+----------------------------------------
+
+Code Block 82 ():
+/webroot/.htaccess
+----------------------------------------
+
+Code Block 83 ():
+index.php
+----------------------------------------
+
+Code Block 84 ():
+https://myapp.com/articles/view/1
+----------------------------------------
+
+Code Block 85 ():
+https://myapp.com/index.php/articles/view/1
+----------------------------------------
+

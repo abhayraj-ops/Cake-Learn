@@ -1,0 +1,510 @@
+URL: https://book.cakephp.org/5.x/deployment.html#symlink-assets
+Title: Deployment | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Deployment ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Moving files ​
+  - Adjusting Configuration ​
+  - Check Your Security ​
+  - Set Document Root ​
+  - Improve Your Application's Performance ​
+  - Deploying an update ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Once your app is ready to be deployed there are a few things you should do.
+
+You can clone your repository onto your production server and then checkout the commit/tag you want to run. Then, run composer install. While this requires some knowledge about git and an existing install of git and composer this process will take care about library dependencies and file and folder permissions.
+
+Be aware that when deploying via FTP you will have to fix file and folder permissions.
+
+You can also use this deployment technique to setup a staging or demo-server (pre-production) and keep it in sync with your local environment.
+
+You'll want to make a few adjustments to your application's configuration for a production environment. The value of debug is extremely important. Turning debug = false disables a number of development features that should never be exposed to the Internet at large. Disabling debug changes the following features:
+
+In addition to the above, many plugins and application extensions use debug to modify their behavior.
+
+You can check against an environment variable to set the debug level dynamically between environments. This will avoid deploying an application with debug true and also save yourself from having to change the debug level each time before deploying to a production environment.
+
+For example, you can set an environment variable in your Apache configuration:
+
+And then you can set the debug level dynamically in app_local.php:
+
+It is recommended that you put configuration that is shared across all of your application's environments in config/app.php. For configuration that varies between environments either use config/app_local.php or environment variables.
+
+If you're throwing your application out into the wild, it's a good idea to make sure it doesn't have any obvious leaks:
+
+Setting the document root correctly on your application is an important step to keeping your code secure and your application safer. CakePHP applications should have the document root set to the application's webroot. This makes the application and configuration files inaccessible through a URL. Setting the document root is different for different webservers. See the Url Rewriting documentation for webserver specific information.
+
+In all cases you will want to set the virtual host/domain's document to be webroot/. This removes the possibility of files outside of the webroot directory being executed.
+
+Class loading can take a big share of your application's processing time. In order to avoid this problem, it is recommended that you run this command in your production server once the application is deployed:
+
+Since handling static assets, such as images, JavaScript and CSS files of plugins, through the Dispatcher is incredibly inefficient, it is strongly recommended to symlink them for production. This can be done by using the plugin command:
+
+The above command will symlink the webroot/ directory of all loaded plugins to appropriate path in the app's webroot/ directory.
+
+If your filesystem doesn't allow creating symlinks the directories will be copied instead of being symlinked. You can also explicitly copy the directories using:
+
+CakePHP uses assert() internally to provide runtime type checking and provide better error messages during development. You can have PHP skip these assertions by updating your php.ini to include:
+
+Skipping code generation for assert() will yield faster runtime performance, and is recommended for applications that have good test coverage or that are using a static analyzer.
+
+On each deploy you'll likely have a few tasks to co-ordinate on your web server. Some typical ones are:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+composer install
+----------------------------------------
+
+Code Block 2 ():
+git
+----------------------------------------
+
+Code Block 3 ():
+composer
+----------------------------------------
+
+Code Block 4 ():
+debug
+----------------------------------------
+
+Code Block 5 ():
+false
+----------------------------------------
+
+Code Block 6 ():
+pr()
+----------------------------------------
+
+Code Block 7 ():
+debug()
+----------------------------------------
+
+Code Block 8 ():
+dd()
+----------------------------------------
+
+Code Block 9 ():
+debug
+----------------------------------------
+
+Code Block 10 ():
+true
+----------------------------------------
+
+Code Block 11 ():
+SetEnv CAKEPHP_DEBUG 1
+----------------------------------------
+
+Code Block 12 ():
+SetEnv CAKEPHP_DEBUG 1
+----------------------------------------
+
+Code Block 13 (shiki):
+$debug = (bool)getenv('CAKEPHP_DEBUG');
+
+return [
+    'debug' => $debug,
+    .....
+];
+----------------------------------------
+
+Code Block 14 ():
+$debug = (bool)getenv('CAKEPHP_DEBUG');
+
+return [
+    'debug' => $debug,
+    .....
+];
+----------------------------------------
+
+Code Block 15 ():
+webroot/
+----------------------------------------
+
+Code Block 16 ():
+webroot
+----------------------------------------
+
+Code Block 17 ():
+webroot/
+----------------------------------------
+
+Code Block 18 ():
+php composer.phar dumpautoload -o
+----------------------------------------
+
+Code Block 19 ():
+php composer.phar dumpautoload -o
+----------------------------------------
+
+Code Block 20 ():
+Dispatcher
+----------------------------------------
+
+Code Block 21 ():
+plugin
+----------------------------------------
+
+Code Block 22 ():
+bin/cake plugin assets symlink
+----------------------------------------
+
+Code Block 23 ():
+bin/cake plugin assets symlink
+----------------------------------------
+
+Code Block 24 ():
+webroot/
+----------------------------------------
+
+Code Block 25 ():
+webroot/
+----------------------------------------
+
+Code Block 26 ():
+bin/cake plugin assets copy
+----------------------------------------
+
+Code Block 27 ():
+bin/cake plugin assets copy
+----------------------------------------
+
+Code Block 28 ():
+assert()
+----------------------------------------
+
+Code Block 29 ():
+php.ini
+----------------------------------------
+
+Code Block 30 (shiki):
+; Turn off assert() code generation.
+zend.assertions = -1
+----------------------------------------
+
+Code Block 31 ():
+; Turn off assert() code generation.
+zend.assertions = -1
+----------------------------------------
+
+Code Block 32 ():
+assert()
+----------------------------------------
+
+Code Block 33 ():
+composer install
+----------------------------------------
+
+Code Block 34 ():
+composer update
+----------------------------------------
+
+Code Block 35 ():
+bin/cake schema_cache clear
+----------------------------------------
+

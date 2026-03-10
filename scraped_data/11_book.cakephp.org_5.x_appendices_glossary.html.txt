@@ -1,0 +1,462 @@
+URL: https://book.cakephp.org/5.x/appendices/glossary.html
+Title: Glossary | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Glossary ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - CDN ​
+  - columns ​
+  - CSRF ​
+  - DI Container ​
+  - DSN ​
+  - dot notation ​
+  - DRY ​
+  - fields ​
+  - HTML attributes ​
+  - PaaS ​
+  - properties ​
+  - plugin syntax ​
+  - routes.php ​
+  - routing array ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Content Delivery Network. A 3rd party vendor you can pay to help distribute your content to data centers around the world. This helps put your static assets closer to geographically distributed users.
+
+Used in the ORM when referring to the table columns in an database table.
+
+Cross Site Request Forgery. Prevents replay attacks, double submissions and forged requests from other domains.
+
+In Application::services() you can configure application services and their dependencies. Application services are automatically injected into Controller actions, and Command Constructors. See Dependency Injection.
+
+Data Source Name. A connection string format that is formed like a URI. CakePHP supports DSNs for Cache, Database, Log and Email connections.
+
+Dot notation defines an array path, by separating nested levels with . For example:
+
+Would point to the following value:
+
+Don't repeat yourself. Is a principle of software development aimed at reducing repetition of information of all kinds. In CakePHP DRY is used to allow you to code things once and re-use them across your application.
+
+A generic term used to describe both entity properties, or database columns. Often used in conjunction with the FormHelper.
+
+An array of key => values that are composed into HTML attributes. For example:
+
+If an option can be minimized or accepts its name as the value, then true can be used:
+
+Platform as a Service. Platform as a Service providers will provide cloud based hosting, database and caching resources. Some popular providers include Heroku, EngineYard and PagodaBox
+
+Used when referencing columns mapped onto an ORM entity.
+
+Plugin syntax refers to the dot separated class name indicating classes are part of a plugin:
+
+A file in the config/ directory that contains routing configuration. This file is included before each request is processed. It should connect all the routes your application needs so requests can be routed to the correct controller + action.
+
+An array of attributes that are passed to Router::url(). They typically look like:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+Application::services()
+----------------------------------------
+
+Code Block 2 ():
+.
+----------------------------------------
+
+Code Block 3 ():
+Cache.default.engine
+----------------------------------------
+
+Code Block 4 ():
+Cache.default.engine
+----------------------------------------
+
+Code Block 5 (shiki):
+[
+    'Cache' => [
+        'default' => [
+            'engine' => 'File',
+        ]
+    ]
+]
+----------------------------------------
+
+Code Block 6 ():
+[
+    'Cache' => [
+        'default' => [
+            'engine' => 'File',
+        ]
+    ]
+]
+----------------------------------------
+
+Code Block 7 (shiki):
+// Given
+['class' => 'my-class', 'target' => '_blank']
+
+// Would generate
+class="my-class" target="_blank"
+----------------------------------------
+
+Code Block 8 ():
+// Given
+['class' => 'my-class', 'target' => '_blank']
+
+// Would generate
+class="my-class" target="_blank"
+----------------------------------------
+
+Code Block 9 ():
+true
+----------------------------------------
+
+Code Block 10 (shiki):
+// Given
+['checked' => true]
+
+// Would generate
+checked="checked"
+----------------------------------------
+
+Code Block 11 ():
+// Given
+['checked' => true]
+
+// Would generate
+checked="checked"
+----------------------------------------
+
+Code Block 12 (shiki):
+// The plugin is "DebugKit", and the class name is "Toolbar".
+'DebugKit.Toolbar'
+
+// The plugin is "AcmeCorp/Tools", and the class name is "Toolbar".
+'AcmeCorp/Tools.Toolbar'
+----------------------------------------
+
+Code Block 13 ():
+// The plugin is "DebugKit", and the class name is "Toolbar".
+'DebugKit.Toolbar'
+
+// The plugin is "AcmeCorp/Tools", and the class name is "Toolbar".
+'AcmeCorp/Tools.Toolbar'
+----------------------------------------
+
+Code Block 14 ():
+config/
+----------------------------------------
+
+Code Block 15 ():
+Router::url()
+----------------------------------------
+
+Code Block 16 (shiki):
+['controller' => 'Posts', 'action' => 'view', 5]
+----------------------------------------
+
+Code Block 17 ():
+['controller' => 'Posts', 'action' => 'view', 5]
+----------------------------------------
+

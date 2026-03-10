@@ -1,0 +1,6170 @@
+URL: https://book.cakephp.org/5.x/views/helpers/form.html
+Title: Form | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Form ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Starting a Form ​
+  - Creating Form Controls ​
+  - Generating Specific Types of Controls ​
+  - Creating Input Elements ​
+  - Creating Labels ​
+  - Displaying and Checking Errors ​
+  - Creating Buttons and Submit Elements ​
+  - Closing the Form ​
+  - Creating Standalone Buttons and POST Links ​
+  - Customizing the Templates FormHelper Uses ​
+  - Generating Entire Forms ​
+  - Creating Inputs for Associated Data ​
+  - Adding Custom Widgets ​
+  - Working with FormProtectionComponent ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Options for Form Creation ​
+  - Getting form values from other values sources ​
+  - Changing the HTTP Method for a Form ​
+  - Setting a URL for the Form ​
+  - Using Custom Validators ​
+  - Creating context classes ​
+  - Field Naming Conventions ​
+  - Options for Control ​
+  - Common Options For Specific Controls ​
+  - Creating Text Inputs ​
+  - Creating Password Inputs ​
+  - Creating Hidden Inputs ​
+  - Creating Textareas ​
+  - Creating Select, Checkbox and Radio Controls ​
+  - Creating File Inputs ​
+  - Creating Date & Time Related Controls ​
+  - Displaying Errors ​
+  - Checking for Errors ​
+  - Displaying validation messages in HTML5 validity messages ​
+  - Creating Submit Elements ​
+  - Creating Button Elements ​
+  - Creating POST Buttons ​
+  - Creating POST Links ​
+  - Creating DELETE Links ​
+  - List of Templates ​
+  - Adding Additional Template Variables to Templates ​
+  - Moving Checkboxes & Radios Outside of a Label ​
+  - Creating Multiple Controls ​
+  - Creating Controls for a Whole Entity ​
+  - Building a Widget Class ​
+  - Using Widgets ​
+H4:
+  - CMS Tutorial
+  - Options for Select, Checkbox and Radio Controls ​
+  - Using Collections to build options ​
+  - Creating Checkboxes ​
+  - Creating Radio Buttons ​
+  - Creating Select Pickers ​
+  - Creating Date Controls ​
+  - Creating Time Controls ​
+  - Creating Month Controls ​
+  - Creating Year Controls ​
+  - Using Distinct Custom Control Containers ​
+  - Using Distinct Custom Form Groups ​
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\View\Helper\FormHelper(View $view, array $config = [])
+
+The FormHelper does most of the heavy lifting in form creation. The FormHelper focuses on creating forms quickly, in a way that will streamline validation, re-population and layout. The FormHelper is also flexible - it will do almost everything for you using conventions, or you can use specific methods to get only what you need.
+
+method Cake\View\Helper\FormHelper::create(mixed $context = null, array $options = []): string
+
+The first method you'll need to use in order to take advantage of the FormHelper is create(). This method outputs an opening form tag.
+
+All parameters are optional. If create() is called with no parameters supplied, it assumes you are building a form that submits to the current controller, via the current URL. The default method for form submission is POST. If you were to call create() inside the view for UsersController::add(), you would see something like the following output in the rendered view:
+
+The $context argument is used as the form's 'context'. There are several built-in form contexts and you can add your own, which we'll cover below, in a following section. The built-in providers map to the following values of $context:
+
+Once a form has been created with a context, all controls you create will use the active context. In the case of an ORM backed form, FormHelper can access associated data, validation errors and schema metadata. You can close the active context using the end() method, or by calling create() again.
+
+To create a form for an entity, do the following:
+
+Output:
+
+This will POST the form data to the add() action of ArticlesController. However, you can also use the same logic to create an edit form. The FormHelper uses the Entity object to automatically detect whether to create an add or edit form. If the provided entity is not 'new', the form will be created as an edit form.
+
+For example, if we browse to https://example.com/articles/edit/5, we could do the following:
+
+Output:
+
+NOTE
+
+Since this is an edit form, a hidden input field is generated to override the default HTTP method.
+
+In some cases, the entity's ID is automatically appended to the end of the form's action URL. If you would like to avoid an ID being added to the URL, you can pass a string to $options['url'], such as '/my-account' or \Cake\Routing\Router::url(['controller' => 'Users', 'action' => 'myAccount']).
+
+The $options array is where most of the form configuration happens. This special array can contain a number of different key-value pairs that affect the way the form tag is generated. Valid values:
+
+TIP
+
+Besides the above options you can provide, in the $options argument, any valid HTML attributes that you want to pass to the created form element.
+
+A FormHelper's values sources define where its rendered elements, such as input-tags, receive their values from.
+
+The supported sources are context, data and query. You can use one or more sources by setting valueSources option or by using setValuesSource(). Any widgets generated by FormHelper will gather their values from the sources, in the order you setup.
+
+By default, FormHelper draws its values from data or context, i.e. it will fetch data from $request->getData() or, if not present, from the active context's data, that are the entity's data in the case of EntityContext.
+
+If however, you are building a form that needs to read from the query string, you can change where FormHelper reads input data from:
+
+When input data has to be processed by the entity, i.e. marshal transformations, table query result or entity computations, and displayed after one or multiple form submissions where request data is retained, you need to put context first:
+
+The value sources will be reset to the default ['data', 'context'] when end() is called.
+
+By using the type option you can change the HTTP method a form will use:
+
+Output:
+
+Specifying a 'file' value for type, changes the form submission method to 'post', and includes an enctype of "multipart/form-data" on the form tag. This is to be used if there are any file elements inside the form. The absence of the proper enctype attribute will cause the file uploads not to function.
+
+For example:
+
+Output:
+
+When using 'put', 'patch' or 'delete' as 'type' values, your form will be functionally equivalent to a 'post' form, but when submitted, the HTTP request method will be overridden with 'PUT', 'PATCH' or 'DELETE', respectively. This allows CakePHP to emulate proper REST support in web browsers.
+
+Using the 'url' option allows you to point the form to a specific action in your current controller or another controller in your application.
+
+For example, if you'd like to point the form to the publish() action of the current controller, you would supply an $options array, like the following:
+
+Output:
+
+If the desired form action isn't in the current controller, you can specify a complete URL for the form action. The supplied URL can be relative to your CakePHP application:
+
+Output:
+
+Or you can point to an external domain:
+
+Output:
+
+Use 'url' => false if you don't want to output a URL as the form action.
+
+Often models will have multiple validator sets, you can have FormHelper mark fields required based on the specific validator your controller action is going to apply. For example, your Users table has specific validation rules that only apply when an account is being registered:
+
+The above will use validation rules defined in the register validator, which are defined by UsersTable::validationRegister(), for $user and all related associations. If you are creating a form for associated entities, you can define validation rules for each association by using an array:
+
+The above would use register for the user, and default for the user's comments. FormHelper uses validators to generate HTML5 required attributes, relevant ARIA attributes, and set error messages with the browser validator API . If you would like to disable HTML5 validation messages use:
+
+This will not disable required/aria-required attributes.
+
+While the built-in context classes are intended to cover the basic cases you'll encounter you may need to build a new context class if you are using a different ORM. In these situations you need to implement the Cake\View\Form\ContextInterface . Once you have implemented this interface you can wire your new context into the FormHelper. It is often best to do this in a View.beforeRender event listener, or in an application view class:
+
+Context factory functions are where you can add logic for checking the form options for the correct type of entity. If matching input data is found you can return an object. If there is no match return null.
+
+method Cake\View\Helper\FormHelper::control(string $fieldName, array $options = []): string
+
+The control() method lets you generate complete form controls. These controls will include a wrapping div, label, control widget, and validation error if necessary. By using the metadata in the form context, this method will choose an appropriate control type for each field. Internally control() uses the other methods of FormHelper.
+
+TIP
+
+Please note that while the fields generated by the control() method are called generically "inputs" on this page, technically speaking, the control() method can generate not only all the HTML input type elements, but also other HTML form elements such as select, button, textarea.
+
+By default, the control() method will employ the following widget templates:
+
+In case of validation errors it will also use:
+
+The type of control created (when we provide no additional options to specify the generated element type) is inferred via model introspection and depends on the column datatype:
+
+The $options parameter allows you to choose a specific control type if you need to:
+
+TIP
+
+As a small subtlety, generating specific elements via the control() form method will always also generate the wrapping div, by default. Generating the same type of element via one of the specific form methods (e.g. $this->Form->checkbox('published');) in most cases won't generate the wrapping div. Depending on your needs you can use one or another.
+
+The wrapping div will have a required class name appended if the validation rules for the model's field indicate that it is required and not allowed to be empty. You can disable automatic required flagging using the 'required' option:
+
+To skip browser validation triggering for the whole form you can set option 'formnovalidate' => true for the input button you generate using Cake\View\Helper\FormHelper::submit() or set 'novalidate' => true in options for Cake\View\Helper\FormHelper::create().
+
+For example, let's assume that your Users model includes fields for a username (varchar), password (varchar), approved (datetime) and quote (text). You can use the control() method of the FormHelper to create appropriate controls for all of these form fields:
+
+A more extensive example showing some options for a date field:
+
+Besides the specific Control Specific Options, you also can specify any option accepted by corresponding specific method for the chosen (or inferred by CakePHP) control type and any HTML attribute (for instance onfocus).
+
+If you want to create a select form field while using a belongsTo (or hasOne) relation, you can add the following to your UsersController (assuming your User belongsTo Group):
+
+Afterwards, add the following to your view template:
+
+To make a select box for a belongsToMany Groups association you can add the following to your UsersController:
+
+Afterwards, add the following to your view template:
+
+If your model name consists of two or more words (e.g. "UserGroups"), when passing the data using set() you should name your data in a pluralised and lower camelCased format as follows:
+
+NOTE
+
+You should not use FormHelper::control() to generate submit buttons. Use Cake\View\Helper\FormHelper::submit() instead.
+
+When creating control widgets you should name your fields after the matching attributes in the form's entity. For example, if you created a form for an $article entity, you would create fields named after the properties. E.g. title, body and published.
+
+You can create controls for associated models, or arbitrary models by passing in association.fieldname as the first parameter:
+
+Any dots in your field names will be converted into nested request data. For example, if you created a field with a name 0.comments.body you would get a name attribute that looks like 0[comments][body]. This convention matches the conventions you use with the ORM. Details for the various association types can be found in the Associated Form Inputs section.
+
+When creating datetime related controls, FormHelper will append a field-suffix. You may notice additional fields named year, month, day, hour, minute, or meridian being added. These fields will be automatically converted into DateTime objects when entities are marshalled.
+
+FormHelper::control() supports a large number of options via its $options argument. In addition to its own options, control() accepts options for the inferred/chosen generated control types (e.g. for checkbox or textarea), as well as HTML attributes. This subsection will cover the options specific to FormHelper::control().
+
+$options['type'] - A string that specifies the widget type to be generated. In addition to the field types found in the Automagic Form Elements, you can also create 'file', 'password', and any other type supported by HTML5. By specifying a 'type' you will force the type of the generated control, overriding model introspection. Defaults to null.
+
+For example:
+
+Output:
+
+$options['label'] - Either a string caption or an array of options for the label. You can set this key to the string you would like to be displayed within the label that usually accompanies the input HTML element. Defaults to null.
+
+For example:
+
+Output:
+
+Alternatively, set this key to false to disable the generation of the label element.
+
+For example:
+
+Output:
+
+If the label is disabled, and a placeholder attribute is provided, the generated input will have aria-label set.
+
+Set the label option to an array to provide additional options for the label element. If you do this, you can use a 'text' key in the array to customize the label text.
+
+For example:
+
+Output:
+
+$options['options'] - You can provide in here an array containing the elements to be generated for widgets such as radio or select, which require an array of items as an argument (see Create Radio Button and Create Select Picker for more details). Defaults to null.
+
+$options['error'] - Using this key allows you to override the default model error messages and can be used, for example, to set i18n messages. To disable the error message output & field classes set the 'error' key to false. Defaults to null.
+
+For example:
+
+To override the model error messages use an array with the keys matching the original validation error messages.
+
+For example:
+
+As seen above you can set the error message for each validation rule you have in your models. In addition you can provide i18n messages for your forms.
+
+To disable the HTML entity encoding for error messages only, the 'escape' sub key can be used:
+
+$options['nestedInput'] - Used with checkboxes and radio buttons. Controls whether the input element is generated inside or outside the label element. When control() generates a checkbox or a radio button, you can set this to false to force the generation of the HTML input element outside of the label element.
+
+On the other hand you can set this to true for any control type to force the generated input element inside the label. If you change this for radio buttons then you might want to also modify the default radioWrapper template to add a wrapping div. Depending on the generated control type it defaults to true or false.
+
+If you want to disable the nesting of checkbox and radio inputs globally you can set nestedCheckboxAndRadio option of FormHelper to false.
+
+$options['templates'] - The templates you want to use for this input. Any specified templates will be merged on top of the already loaded templates. This option can be either a filename (without extension) in /config that contains the templates you want to load, or an array of templates to use.
+
+$options['labelOptions'] - Set this to false to disable labels around nestedWidgets or set it to an array of attributes to be provided to the label tag.
+
+$options['readonly'] - Set the field to readonly in form.
+
+For example:
+
+In addition to the generic control() method, FormHelper has specific methods for generating a number of different types of controls. These can be used to generate just the control widget itself, and combined with other methods like Cake\View\Helper\FormHelper::label() and Cake\View\Helper\FormHelper::error() to generate fully custom form layouts.
+
+Many of the various control element methods support a common set of options which, depending on the form method used, must be provided inside the $options or in the $attributes array argument. All of these options are also supported by the control() method. To reduce repetition, the common options shared by all control methods are as follows:
+
+'id' - Set this key to force the value of the DOM id for the control. This will override the 'idPrefix' that may be set.
+
+'default' - Used to set a default value for the control field. The value is used if the data passed to the form does not contain a value for the field (or if no data is passed at all). If no default value is provided, the column's default value will be used.
+
+Example usage:
+
+Example with select field (size "Medium" will be selected as default):
+
+NOTE
+
+You cannot use default to check a checkbox - instead you might set the value in $this->request->getData() in your controller, or set the control option 'checked' to true.
+
+Beware of using false to assign a default value. A false value is used to disable/exclude options of a control field, so 'default' => false would not set any value at all. Instead use 'default' => 0.
+
+'value' - Used to set a specific value for the control field. This will override any value that may else be injected from the context, such as Form, Entity or request->getData() etc.
+
+NOTE
+
+If you want to set a field to not render its value fetched from context or valuesSource you will need to set 'value' to '' (instead of setting it to null).
+
+In addition to the above options, you can mixin any HTML attribute you wish to use. Any non-special option name will be treated as an HTML attribute, and applied to the generated HTML control element.
+
+The rest of the methods available in the FormHelper are for creating specific form elements. Many of these methods also make use of a special $options or $attributes parameter. In this case, however, this parameter is used primarily to specify HTML tag attributes (such as the value or DOM id of an element in the form).
+
+method Cake\View\Helper\FormHelper::text(string $fieldName, array $options = []): string
+
+Creates a simple input HTML element of text type.
+
+For example:
+
+Will output:
+
+method Cake\View\Helper\FormHelper::password(string $fieldName, array $options = []): string
+
+Creates a simple input element of password type.
+
+For example:
+
+Will output:
+
+method Cake\View\Helper\FormHelper::hidden(string $fieldName, array $options): string
+
+Creates a hidden form input.
+
+For example:
+
+Will output:
+
+method Cake\View\Helper\FormHelper::textarea(string $fieldName, array $options): string
+
+Creates a textarea control field. The default widget template used is:
+
+For example:
+
+Will output:
+
+If the form is being edited (i.e. the array $this->request->getData() contains the information previously saved for the User entity), the value corresponding to notes field will automatically be added to the HTML generated.
+
+Example:
+
+Options for Textarea
+
+In addition to the General Control Options, textarea() supports a couple of specific options:
+
+'escape' - Determines whether or not the contents of the textarea should be escaped. Defaults to true.
+
+For example:
+
+'rows', 'cols' - You can use these two keys to set the HTML attributes which specify the number of rows and columns for the textarea field.
+
+For example:
+
+Output:
+
+These controls share some commonalities and a few options and thus, they are all grouped in this subsection for easier reference.
+
+You can find below the options which are shared by select(), checkbox() and radio() (the options particular only to one of the methods are described in each method's own section.)
+
+'value' - Sets or selects the value of the affected element(s):
+
+For checkboxes, it sets the HTML 'value' attribute assigned to the input element to whatever you provide as value.
+
+For radio buttons or select pickers it defines which element will be selected when the form is rendered (in this case 'value' must be assigned a valid, existent element value). May also be used in combination with any select-type control, such as date(), time(), dateTime():
+
+NOTE
+
+The 'value' key for date() and dateTime() controls may also have as value a UNIX timestamp, or a DateTime object.
+
+For a select control where you set the 'multiple' attribute to true, you can provide an array with the values you want to select by default:
+
+'empty' - Applies to radio() and select(). Defaults to false.
+
+When passed to radio() and set to true it will create an extra input element as the first radio button, with a value of '' and a label caption equal to the string 'empty'. If you want to control the label caption set this option to a string instead.
+
+When passed to a select method, this creates a blank HTML option element with an empty value in your drop down list. If you want to have an empty value with text displayed instead of just a blank option, pass a string to 'empty':
+
+Output:
+
+'hiddenField' - For checkboxes and radio buttons, by default, a hidden input element is also created, along with the main element, so that the key in $this->request->getData() will exist even without a value specified. For checkboxes its value defaults to 0 and for radio buttons to ''.
+
+Example of default output:
+
+This can be disabled by setting 'hiddenField' to false:
+
+Which outputs:
+
+If you want to create multiple blocks of controls on a form, that are all grouped together, you should set this parameter to false on all controls except the first. If the hidden input is on the page in multiple places, only the last group of inputs' values will be saved.
+
+In this example, only the tertiary colors would be passed, and the primary colors would be overridden:
+
+Disabling 'hiddenField' on the second control group would prevent this behavior.
+
+You can set a hidden field to a value other than 0, such as 'N':
+
+It's possible to use the Collection class to build your options array. This approach is ideal if you already have a collection of entities and would like to build a select element from them.
+
+You can use the combine method to build a basic options array.
+
+It's also possible to add extra attributes by expanding the array. The following will create a data attribute on the option element, using the map collection method.
+
+method Cake\View\Helper\FormHelper::checkbox(string $fieldName, array $options): array|string
+
+Creates a checkbox form element. The widget template used is:
+
+Options for Checkboxes
+
+This method also generates an associated hidden form input element to force the submission of data for the specified field.
+
+For example:
+
+Will output:
+
+It is possible to specify the value of the checkbox by using the $options array.
+
+For example:
+
+Will output:
+
+If you don't want the FormHelper to create a hidden input use 'hiddenField'.
+
+For example:
+
+Will output:
+
+method Cake\View\Helper\FormHelper::radio(string $fieldName, array $options, array $attributes): string
+
+Creates a set of radio button inputs. The default widget templates used are:
+
+Attributes for Radio Buttons
+
+You must provide the label captions for the radio buttons via the $options argument.
+
+For example:
+
+Will output:
+
+Generally $options contains simple key => value pairs. However, if you need to put custom attributes on your radio buttons you can use an expanded format.
+
+For example:
+
+Will output:
+
+You can define additional attributes for an individual option's label as well:
+
+Will output:
+
+If the label key is used on an option, the attributes in $attributes['label'] will be ignored.
+
+method Cake\View\Helper\FormHelper::select(string $fieldName, array $options, array $attributes): string
+
+Creates a select element, populated with the items from the $options array. If $attributes['value'] is provided, then the HTML option element(s) which have the specified value(s) will be shown as selected when rendering the select picker.
+
+By default, select uses the following widget templates:
+
+May also use:
+
+Attributes for Select Pickers
+
+The $options argument allows you to manually specify the contents of the option elements of a select control.
+
+For example:
+
+Output:
+
+The array for $options can also be supplied as key-value pairs.
+
+For example:
+
+Output:
+
+If you would like to generate a select with optgroups, just pass data in hierarchical format (nested array). This works on multiple checkboxes and radio buttons too, but instead of optgroup it wraps the elements in fieldset elements.
+
+For example:
+
+Output:
+
+To generate HTML attributes within an option tag:
+
+Output:
+
+Controlling Select Pickers via Attributes
+
+By using specific options in the $attributes parameter you can control certain behaviors of the select() method.
+
+'empty' - Set the 'empty' key in the $attributes argument to true (the default value is false) to add a blank option with an empty value at the top of your dropdown list.
+
+For example:
+
+Will output:
+
+'escape' - The select() method allows for an attribute called 'escape' which accepts a boolean value and determines whether to HTML entity encode the contents of the select's option elements.
+
+For example:
+
+'multiple' - If set to true, the select picker will allow multiple selections.
+
+For example:
+
+Alternatively, set 'multiple' to 'checkbox' in order to output a list of related checkboxes:
+
+Output:
+
+'disabled' - This option can be set in order to disable all or some of the select's option items. To disable all items set 'disabled' to true. To disable only certain items, assign to 'disabled' an array containing the keys of the items to be disabled.
+
+For example:
+
+Will output:
+
+This option also works when 'multiple' is set to 'checkbox':
+
+Output:
+
+method Cake\View\Helper\FormHelper::file(string $fieldName, array $options): string
+
+Creates a file upload field in the form. The widget template used by default is:
+
+To add a file upload field to a form, you must first make sure that the form enctype is set to 'multipart/form-data'.
+
+So start off with a create() method such as the following:
+
+Next add a line that looks like either of the following two lines to your form's view template file:
+
+NOTE
+
+Due to the limitations of HTML itself, it is not possible to put default values into input fields of type 'file'. Each time the form is displayed, the value inside will be empty.
+
+To prevent the submittedfile from being over-written as blank, remove it from $_accessible. Alternatively, you can unset the index by using beforeMarshal:
+
+Upon submission, file fields can be accessed though UploadedFileInterface objects on the request. To move uploaded files to a permanent location, you can use:
+
+NOTE
+
+When using $this->Form->file(), remember to set the form encoding-type, by setting the 'type' option to 'file' in $this->Form->create().
+
+method Cake\View\Helper\FormHelper::dateTime(string $fieldName, array $options = []): string
+
+This method will generate an input tag with type "datetime-local".
+
+For example:
+
+Output:
+
+The value for the input can be any valid datetime string or DateTime instance.
+
+For example:
+
+Output:
+
+method Cake\View\Helper\FormHelper::date(string $fieldName, array $options = []): string
+
+This method will generate an input tag with type "date".
+
+For example:
+
+Output:
+
+method Cake\View\Helper\FormHelper::time(string $fieldName, array $options = []): string
+
+This method will generate an input tag with type "time".
+
+For example:
+
+Output:
+
+method Cake\View\Helper\FormHelper::month(string $fieldName, array $attributes): string
+
+This method will generate an input tag with type "month".
+
+For example:
+
+Will output:
+
+method Cake\View\Helper\FormHelper::year(string $fieldName, array $options = []): string
+
+Creates a select element populated with the years from min to max (when these options are provided) or else with values starting from -5 years to +5 years counted from today. Additionally, HTML attributes may be supplied in $options. If $options['empty'] is false, the select picker will not include an empty item in the list.
+
+For example, to create a year range from 2000 to the current year you would do the following:
+
+If it was 2009, you would get the following:
+
+method Cake\View\Helper\FormHelper::label(string $fieldName, string $text, array $options): string
+
+Creates a label element. The argument $fieldName is used for generating the HTML for attribute of the element; if $text is undefined, $fieldName will also be used to inflect the label's text attribute.
+
+For example:
+
+Output:
+
+With the third parameter $options you can set the id or class:
+
+Output:
+
+FormHelper exposes a couple of methods that allow us to easily check for field errors and when necessary display customized error messages.
+
+method Cake\View\Helper\FormHelper::error(string $fieldName, mixed $text, array $options): string
+
+Shows a validation error message, specified by $text, for the given field, in the event that a validation error has occurred. If $text is not provided then the default validation error message for that field will be used.
+
+Uses the following template widgets:
+
+The 'errorList' and 'errorItem' templates are used to format mutiple error messages per field.
+
+Example:
+
+If you would click the Submit button of your form without providing a value for the Ticket field, your form would output:
+
+NOTE
+
+When using Cake\View\Helper\FormHelper::control(), errors are rendered by default, so you don't need to use isFieldError() or call error() manually.
+
+TIP
+
+If you use a certain model field to generate multiple form fields via control(), and you want the same validation error message displayed for each one, you will probably be better off defining a custom error message inside the respective validator rules.
+
+method Cake\View\Helper\FormHelper::isFieldError(string $fieldName): bool
+
+Returns true if the supplied $fieldName has an active validation error, otherwise returns false.
+
+Example:
+
+If the autoSetCustomValidity FormHelper option is set to true, error messages for the field's required and notBlank validation rules will be used in lieu of the default browser HTML5 required messages. Enabling the option will add the onvalid and oninvalid event attributes to your fields, for example:
+
+If you want to manually set those events with custom JavaScript, you can set the autoSetCustomValidity option to false and use the special customValidityMessage template variable instead. This template variable is added when a field is required:
+
+You could then use JavaScript to set the onvalid and oninvalid events as you like.
+
+method Cake\View\Helper\FormHelper::submit(string $caption, array $options): string
+
+Creates an input element of submit type, with $caption as value. If the supplied $caption is a URL pointing to an image (i.e. if the string contains '😕/' or contains any of the extensions '.jpg, .jpe, .jpeg, .gif'), an image submit button will be generated, using the specified image if it exists. If the first character is '/' then the image path is relative to webroot, else if the first character is not '/' then the image path is relative to webroot/img.
+
+By default, it will use the following widget templates:
+
+Options for Submit
+
+The following:
+
+Will output:
+
+You can pass a relative or absolute URL of an image to the caption parameter instead of the caption text:
+
+Will output:
+
+Submit inputs are useful when you only need basic text or images. If you need more complex button content you should use button().
+
+method Cake\View\Helper\FormHelper::button(string $title, array $options = []): string
+
+Creates an HTML button with the specified title and a default type of 'button'.
+
+Options for Button
+
+For example:
+
+Will output:
+
+Example use of the 'escapeTitle' option:
+
+method Cake\View\Helper\FormHelper::end(array $secureAttributes = []): string
+
+The end() method closes and completes a form. Often, end() will only output a closing form tag, but using end() is a good practice as it enables FormHelper to insert the hidden form elements that Cake\Controller\Component\FormProtectionComponent requires:
+
+If you need to add additional attributes to the generated hidden inputs you can use the $secureAttributes argument.
+
+For example:
+
+Will output:
+
+NOTE
+
+If you are using Cake\Controller\Component\FormProtectionComponent in your application you should always end your forms with end().
+
+method Cake\View\Helper\FormHelper::postButton(string $title, mixed $url, array $options = []): string
+
+Creates a <button> tag with a surrounding <form> element that submits via POST, by default. Also, by default, it generates hidden input fields for the FormProtectionComponent.
+
+Options for POST Button
+
+For example:
+
+Will output HTML similar to:
+
+Since this method generates a form element, do not use this method in an already opened form. Instead use Cake\View\Helper\FormHelper::submit() or Cake\View\Helper\FormHelper::button() to create buttons inside opened forms.
+
+method Cake\View\Helper\FormHelper::postLink(string $title, array|string|null $url = null, array $options = []): string
+
+Creates an HTML link, but accesses the URL using the method you specify (defaults to POST). Requires JavaScript to be enabled in browser:
+
+Options for POST Link
+
+This method creates a <form> element. If you want to use this method inside of an existing form, you must use the block option so that the new form is being set to a view block that can be rendered outside of the main form.
+
+If all you are looking for is a button to submit your form, then you should use Cake\View\Helper\FormHelper::button() or Cake\View\Helper\FormHelper::submit() instead.
+
+NOTE
+
+Be careful to not put a postLink inside an open form. Instead use the block option to buffer the form into a view block
+
+method Cake\View\Helper\FormHelper::deleteLink(string $title, array|string|null $url = null, array $options = []): string
+
+Creates an HTML link, but accesses the URL using the method you specify (defaults to DELETE). Requires JavaScript to be enabled in browser:
+
+Added in version 5.2.0
+
+The deleteLink method was added.
+
+Like many helpers in CakePHP, FormHelper uses string templates to format the HTML it creates. While the default templates are intended to be a reasonable set of defaults, you may need to customize the templates to suit your application.
+
+To change the templates when the helper is loaded you can set the 'templates' option when including the helper in your controller:
+
+This would load the tags found in config/app_form.php. This file should contain an array of templates indexed by name:
+
+Any templates you define will replace the default ones included in the helper. Templates that are not replaced, will continue to use the default values.
+
+You can also change the templates at runtime using the setTemplates() method:
+
+WARNING
+
+Template strings containing a percentage sign (%) need special attention; you should prefix this character with another percentage so it looks like %%. The reason is that internally templates are compiled to be used with sprintf(). Example: '<div style="width:%%"></div>'
+
+The list of default templates, their default format and the variables they expect can be found in the FormHelper API documentation.
+
+In addition to these templates, the control() method will attempt to use distinct templates for each control container. For example, when creating a datetime control the datetimeContainer will be used if it is present. If that container is missing the inputContainer template will be used.
+
+For example:
+
+Similar to controlling containers, the control() method will also attempt to use distinct templates for each form group. A form group is a combo of label and control. For example, when creating a radio control the radioFormGroup will be used if it is present. If that template is missing by default each set of label & input is rendered using the default formGroup template.
+
+For example:
+
+You can add additional template placeholders in custom templates, and populate those placeholders when generating controls.
+
+For example:
+
+Output:
+
+By default, CakePHP nests checkboxes created via control() and radio buttons created by both control() and radio() within label elements. This helps make it easier to integrate popular CSS frameworks. If you need to place checkbox/radio inputs outside of the label you can do so by modifying the templates:
+
+This will make radio buttons and checkboxes render outside of their labels.
+
+method Cake\View\Helper\FormHelper::controls(array $fields = [], array $options = []): string
+
+Generates a set of controls for the given context wrapped in a fieldset. You can specify the generated fields by including them:
+
+You can customize the legend text using an option:
+
+You can customize the generated controls by defining additional options in the $fields parameter:
+
+When customizing, $fields, you can use the $options parameter to control the generated legend/fieldset.
+
+For example:
+
+If you disable the fieldset, the legend will not print.
+
+method Cake\View\Helper\FormHelper::allControls(array $fields, array $options = []): string
+
+This method is closely related to controls(), however the $fields argument is defaulted to all fields in the current top-level entity. To exclude specific fields from the generated controls, set them to false in the $fields parameter:
+
+Creating forms for associated data is straightforward and is closely related to the paths in your entity's data. Assuming the following table relations:
+
+If we were editing an article with its associations loaded we could create the following controls:
+
+The above controls could then be marshalled into a completed entity graph using the following code in your controller:
+
+The above example shows an expanded example for belongs to many associations, with separate inputs for each entity and join data record. You can also create a multiple select input for belongs to many associations:
+
+You can add custom control widgets in CakePHP, and use them like any other control type. All of the core control types are implemented as widgets, which means you can override any core widget with your own implementation as well.
+
+Widget classes have a very simple required interface. They must implement the Cake\View\Widget\WidgetInterface. This interface requires the render(array $data) and secureFields(array $data) methods to be implemented. The render() method expects an array of data to build the widget and is expected to return a string of HTML for the widget. The secureFields() method expects an array of data as well and is expected to return an array containing the list of fields to secure for this widget. If CakePHP is constructing your widget you can expect to get a Cake\View\StringTemplate instance as the first argument, followed by any dependencies you define. If we wanted to build an Autocomplete widget you could do the following:
+
+Obviously, this is a very simple example, but it demonstrates how a custom widget could be built. This widget would render the "autocomplete" string template, such as:
+
+For more information on string templates, see Customizing Templates.
+
+You can load custom widgets when loading FormHelper or by using the addWidget() method. When loading FormHelper, widgets are defined as a setting:
+
+If your widget requires other widgets, you can have FormHelper populate those dependencies by declaring them:
+
+In the above example, the autocomplete widget would depend on the text and label widgets. If your widget needs access to the View, you should use the _view 'widget'. When the autocomplete widget is created, it will be passed the widget objects that are related to the text and label names. To add widgets using the addWidget() method would look like:
+
+Once added/replaced, widgets can be used as the control 'type':
+
+This will create the custom widget with a label and wrapping div just like controls() always does. Alternatively, you can create just the control widget using the magic method:
+
+Cake\Controller\Component\FormProtectionComponent offers several features that make your forms safer and more secure. By simply including the FormProtectionComponent in your controller, you'll automatically benefit from form tampering-prevention features.
+
+As mentioned previously when using FormProtectionComponent, you should always close your forms using Cake\View\Helper\FormHelper::end(). This will ensure that the special _Token inputs are generated.
+
+method Cake\View\Helper\FormHelper::unlockField(string $name): $this
+
+Unlocks a field making it exempt from the FormProtectionComponent field hashing. This also allows the fields to be manipulated by JavaScript. The $name parameter should be the entity property name for the field:
+
+method Cake\View\Helper\FormHelper::secure(array $fields = [], array $secureAttributes = []): string
+
+Generates a hidden input field with a security hash based on the fields used in the form or an empty string when secured forms are not in use. If $secureAttributes is set, these HTML attributes will be merged into the hidden input tags generated for the FormProtectionComponent. This is especially useful to set HTML5 attributes like 'form'.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+method
+----------------------------------------
+
+Code Block 3 ():
+$context
+----------------------------------------
+
+Code Block 4 ():
+Form
+----------------------------------------
+
+Code Block 5 ():
+null
+----------------------------------------
+
+Code Block 6 ():
+$options
+----------------------------------------
+
+Code Block 7 ():
+create()
+----------------------------------------
+
+Code Block 8 ():
+create()
+----------------------------------------
+
+Code Block 9 ():
+create()
+----------------------------------------
+
+Code Block 10 ():
+UsersController::add()
+----------------------------------------
+
+Code Block 11 (shiki):
+<form method="post" action="/users/add">
+----------------------------------------
+
+Code Block 12 ():
+<form method="post" action="/users/add">
+----------------------------------------
+
+Code Block 13 ():
+$context
+----------------------------------------
+
+Code Block 14 ():
+$context
+----------------------------------------
+
+Code Block 15 ():
+Entity
+----------------------------------------
+
+Code Block 16 ():
+'schema'
+----------------------------------------
+
+Code Block 17 ():
+null
+----------------------------------------
+
+Code Block 18 ():
+end()
+----------------------------------------
+
+Code Block 19 ():
+create()
+----------------------------------------
+
+Code Block 20 (shiki):
+// If you are on /articles/add
+// $article should be an empty Article entity.
+echo $this->Form->create($article);
+----------------------------------------
+
+Code Block 21 ():
+// If you are on /articles/add
+// $article should be an empty Article entity.
+echo $this->Form->create($article);
+----------------------------------------
+
+Code Block 22 (shiki):
+<form method="post" action="/articles/add">
+----------------------------------------
+
+Code Block 23 ():
+<form method="post" action="/articles/add">
+----------------------------------------
+
+Code Block 24 ():
+add()
+----------------------------------------
+
+Code Block 25 ():
+Entity
+----------------------------------------
+
+Code Block 26 (shiki):
+// src/Controller/ArticlesController.php:
+public function edit($id = null)
+{
+    if (!$id) {
+        throw new NotFoundException;
+    }
+    $article = $this->Articles->get($id);
+    // Save logic goes here
+    $this->set('article', $article);
+}
+
+// View/Articles/edit.php:
+// Since $article->isNew() is false, we will get an edit form
+<?= $this->Form->create($article) ?>
+----------------------------------------
+
+Code Block 27 ():
+// src/Controller/ArticlesController.php:
+public function edit($id = null)
+{
+    if (!$id) {
+        throw new NotFoundException;
+    }
+    $article = $this->Articles->get($id);
+    // Save logic goes here
+    $this->set('article', $article);
+}
+
+// View/Articles/edit.php:
+// Since $article->isNew() is false, we will get an edit form
+<?= $this->Form->create($article) ?>
+----------------------------------------
+
+Code Block 28 (shiki):
+<form method="post" action="/articles/edit/5">
+<input type="hidden" name="_method" value="PUT">
+----------------------------------------
+
+Code Block 29 ():
+<form method="post" action="/articles/edit/5">
+<input type="hidden" name="_method" value="PUT">
+----------------------------------------
+
+Code Block 30 ():
+input
+----------------------------------------
+
+Code Block 31 ():
+action
+----------------------------------------
+
+Code Block 32 ():
+$options['url']
+----------------------------------------
+
+Code Block 33 ():
+'/my-account'
+----------------------------------------
+
+Code Block 34 ():
+\Cake\Routing\Router::url(['controller' => 'Users', 'action' => 'myAccount'])
+----------------------------------------
+
+Code Block 35 ():
+$options
+----------------------------------------
+
+Code Block 36 ():
+'type'
+----------------------------------------
+
+Code Block 37 ():
+'get'
+----------------------------------------
+
+Code Block 38 ():
+'file'
+----------------------------------------
+
+Code Block 39 ():
+'enctype'
+----------------------------------------
+
+Code Block 40 ():
+'post'
+----------------------------------------
+
+Code Block 41 ():
+'put', 'delete', 'patch'
+----------------------------------------
+
+Code Block 42 ():
+'method'
+----------------------------------------
+
+Code Block 43 ():
+'url'
+----------------------------------------
+
+Code Block 44 ():
+'encoding'
+----------------------------------------
+
+Code Block 45 ():
+accept-charset
+----------------------------------------
+
+Code Block 46 ():
+Configure::read('App.encoding')
+----------------------------------------
+
+Code Block 47 ():
+'enctype'
+----------------------------------------
+
+Code Block 48 ():
+'templates'
+----------------------------------------
+
+Code Block 49 ():
+/config
+----------------------------------------
+
+Code Block 50 ():
+'context'
+----------------------------------------
+
+Code Block 51 ():
+EntityContext
+----------------------------------------
+
+Code Block 52 ():
+'table'
+----------------------------------------
+
+Code Block 53 ():
+'idPrefix'
+----------------------------------------
+
+Code Block 54 ():
+'templateVars'
+----------------------------------------
+
+Code Block 55 ():
+formStart
+----------------------------------------
+
+Code Block 56 ():
+autoSetCustomValidity
+----------------------------------------
+
+Code Block 57 ():
+true
+----------------------------------------
+
+Code Block 58 ():
+true
+----------------------------------------
+
+Code Block 59 ():
+$options
+----------------------------------------
+
+Code Block 60 ():
+form
+----------------------------------------
+
+Code Block 61 ():
+context
+----------------------------------------
+
+Code Block 62 ():
+data
+----------------------------------------
+
+Code Block 63 ():
+query
+----------------------------------------
+
+Code Block 64 ():
+valueSources
+----------------------------------------
+
+Code Block 65 ():
+setValuesSource()
+----------------------------------------
+
+Code Block 66 ():
+FormHelper
+----------------------------------------
+
+Code Block 67 ():
+FormHelper
+----------------------------------------
+
+Code Block 68 ():
+data
+----------------------------------------
+
+Code Block 69 ():
+context
+----------------------------------------
+
+Code Block 70 ():
+$request->getData()
+----------------------------------------
+
+Code Block 71 ():
+EntityContext
+----------------------------------------
+
+Code Block 72 ():
+FormHelper
+----------------------------------------
+
+Code Block 73 (shiki):
+// Use query string instead of request data:
+echo $this->Form->create($article, [
+    'type' => 'get',
+    'valueSources' => ['query', 'context'],
+]);
+
+// Same effect:
+echo $this->Form
+    ->setValueSources(['query', 'context'])
+    ->create($articles, ['type' => 'get']);
+----------------------------------------
+
+Code Block 74 ():
+// Use query string instead of request data:
+echo $this->Form->create($article, [
+    'type' => 'get',
+    'valueSources' => ['query', 'context'],
+]);
+
+// Same effect:
+echo $this->Form
+    ->setValueSources(['query', 'context'])
+    ->create($articles, ['type' => 'get']);
+----------------------------------------
+
+Code Block 75 ():
+context
+----------------------------------------
+
+Code Block 76 (shiki):
+// Prioritize context over request data:
+echo $this->Form->create($article,
+    'valueSources' => ['context', 'data'],
+]);
+----------------------------------------
+
+Code Block 77 ():
+// Prioritize context over request data:
+echo $this->Form->create($article,
+    'valueSources' => ['context', 'data'],
+]);
+----------------------------------------
+
+Code Block 78 ():
+['data', 'context']
+----------------------------------------
+
+Code Block 79 ():
+end()
+----------------------------------------
+
+Code Block 80 ():
+type
+----------------------------------------
+
+Code Block 81 (shiki):
+echo $this->Form->create($article, ['type' => 'get']);
+----------------------------------------
+
+Code Block 82 ():
+echo $this->Form->create($article, ['type' => 'get']);
+----------------------------------------
+
+Code Block 83 (shiki):
+<form method="get" action="/articles/edit/5">
+----------------------------------------
+
+Code Block 84 ():
+<form method="get" action="/articles/edit/5">
+----------------------------------------
+
+Code Block 85 ():
+'file'
+----------------------------------------
+
+Code Block 86 ():
+type
+----------------------------------------
+
+Code Block 87 ():
+enctype
+----------------------------------------
+
+Code Block 88 ():
+enctype
+----------------------------------------
+
+Code Block 89 (shiki):
+echo $this->Form->create($article, ['type' => 'file']);
+----------------------------------------
+
+Code Block 90 ():
+echo $this->Form->create($article, ['type' => 'file']);
+----------------------------------------
+
+Code Block 91 (shiki):
+<form enctype="multipart/form-data" method="post" action="/articles/add">
+----------------------------------------
+
+Code Block 92 ():
+<form enctype="multipart/form-data" method="post" action="/articles/add">
+----------------------------------------
+
+Code Block 93 ():
+'put'
+----------------------------------------
+
+Code Block 94 ():
+'patch'
+----------------------------------------
+
+Code Block 95 ():
+'delete'
+----------------------------------------
+
+Code Block 96 ():
+'type'
+----------------------------------------
+
+Code Block 97 ():
+'url'
+----------------------------------------
+
+Code Block 98 ():
+publish()
+----------------------------------------
+
+Code Block 99 ():
+$options
+----------------------------------------
+
+Code Block 100 (shiki):
+echo $this->Form->create($article, ['url' => ['action' => 'publish']]);
+----------------------------------------
+
+Code Block 101 ():
+echo $this->Form->create($article, ['url' => ['action' => 'publish']]);
+----------------------------------------
+
+Code Block 102 (shiki):
+<form method="post" action="/articles/publish">
+----------------------------------------
+
+Code Block 103 ():
+<form method="post" action="/articles/publish">
+----------------------------------------
+
+Code Block 104 (shiki):
+echo $this->Form->create(null, [
+    'url' => [
+        'controller' => 'Articles',
+        'action' => 'publish',
+    ],
+]);
+----------------------------------------
+
+Code Block 105 ():
+echo $this->Form->create(null, [
+    'url' => [
+        'controller' => 'Articles',
+        'action' => 'publish',
+    ],
+]);
+----------------------------------------
+
+Code Block 106 (shiki):
+<form method="post" action="/articles/publish">
+----------------------------------------
+
+Code Block 107 ():
+<form method="post" action="/articles/publish">
+----------------------------------------
+
+Code Block 108 (shiki):
+echo $this->Form->create(null, [
+    'url' => 'https://www.google.com/search',
+    'type' => 'get',
+]);
+----------------------------------------
+
+Code Block 109 ():
+echo $this->Form->create(null, [
+    'url' => 'https://www.google.com/search',
+    'type' => 'get',
+]);
+----------------------------------------
+
+Code Block 110 (shiki):
+<form method="get" action="https://www.google.com/search">
+----------------------------------------
+
+Code Block 111 ():
+<form method="get" action="https://www.google.com/search">
+----------------------------------------
+
+Code Block 112 ():
+'url' => false
+----------------------------------------
+
+Code Block 113 (shiki):
+echo $this->Form->create($user, [
+    'context' => ['validator' => 'register'],
+]);
+----------------------------------------
+
+Code Block 114 ():
+echo $this->Form->create($user, [
+    'context' => ['validator' => 'register'],
+]);
+----------------------------------------
+
+Code Block 115 ():
+register
+----------------------------------------
+
+Code Block 116 ():
+UsersTable::validationRegister()
+----------------------------------------
+
+Code Block 117 ():
+$user
+----------------------------------------
+
+Code Block 118 (shiki):
+echo $this->Form->create($user, [
+    'context' => [
+        'validator' => [
+            'Users' => 'register',
+            'Comments' => 'default',
+        ],
+    ],
+]);
+----------------------------------------
+
+Code Block 119 ():
+echo $this->Form->create($user, [
+    'context' => [
+        'validator' => [
+            'Users' => 'register',
+            'Comments' => 'default',
+        ],
+    ],
+]);
+----------------------------------------
+
+Code Block 120 ():
+register
+----------------------------------------
+
+Code Block 121 ():
+default
+----------------------------------------
+
+Code Block 122 (shiki):
+$this->Form->setConfig('autoSetCustomValidity', false);
+----------------------------------------
+
+Code Block 123 ():
+$this->Form->setConfig('autoSetCustomValidity', false);
+----------------------------------------
+
+Code Block 124 ():
+required
+----------------------------------------
+
+Code Block 125 ():
+aria-required
+----------------------------------------
+
+Code Block 126 ():
+View.beforeRender
+----------------------------------------
+
+Code Block 127 (shiki):
+$this->Form->addContextProvider('myprovider', function ($request, $data) {
+    if ($data['entity'] instanceof MyOrmClass) {
+        return new MyProvider($data);
+    }
+});
+----------------------------------------
+
+Code Block 128 ():
+$this->Form->addContextProvider('myprovider', function ($request, $data) {
+    if ($data['entity'] instanceof MyOrmClass) {
+        return new MyProvider($data);
+    }
+});
+----------------------------------------
+
+Code Block 129 ():
+method
+----------------------------------------
+
+Code Block 130 ():
+$fieldName
+----------------------------------------
+
+Code Block 131 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 132 ():
+$options
+----------------------------------------
+
+Code Block 133 ():
+control()
+----------------------------------------
+
+Code Block 134 ():
+control()
+----------------------------------------
+
+Code Block 135 ():
+div
+----------------------------------------
+
+Code Block 136 ():
+label
+----------------------------------------
+
+Code Block 137 ():
+control()
+----------------------------------------
+
+Code Block 138 ():
+control()
+----------------------------------------
+
+Code Block 139 ():
+control()
+----------------------------------------
+
+Code Block 140 ():
+input
+----------------------------------------
+
+Code Block 141 ():
+select
+----------------------------------------
+
+Code Block 142 ():
+button
+----------------------------------------
+
+Code Block 143 ():
+textarea
+----------------------------------------
+
+Code Block 144 ():
+control()
+----------------------------------------
+
+Code Block 145 (shiki):
+'inputContainer' => '<div class="{{constainerClass}} {{type}}{{required}}">{{content}}</div>'
+'input' => '<input type="{{type}}" name="{{name}}"{{attrs}}>'
+'requiredClass' => 'required'
+'containerClass' => 'input'
+----------------------------------------
+
+Code Block 146 ():
+'inputContainer' => '<div class="{{constainerClass}} {{type}}{{required}}">{{content}}</div>'
+'input' => '<input type="{{type}}" name="{{name}}"{{attrs}}>'
+'requiredClass' => 'required'
+'containerClass' => 'input'
+----------------------------------------
+
+Code Block 147 (shiki):
+'inputContainerError' => '<div class="{{containerClass}} {{type}}{{required}} error">{{content}}{{error}}</div>'
+----------------------------------------
+
+Code Block 148 ():
+'inputContainerError' => '<div class="{{containerClass}} {{type}}{{required}} error">{{content}}{{error}}</div>'
+----------------------------------------
+
+Code Block 149 ():
+$options
+----------------------------------------
+
+Code Block 150 (shiki):
+echo $this->Form->control('published', ['type' => 'checkbox']);
+----------------------------------------
+
+Code Block 151 ():
+echo $this->Form->control('published', ['type' => 'checkbox']);
+----------------------------------------
+
+Code Block 152 ():
+control()
+----------------------------------------
+
+Code Block 153 ():
+div
+----------------------------------------
+
+Code Block 154 ():
+$this->Form->checkbox('published');
+----------------------------------------
+
+Code Block 155 ():
+div
+----------------------------------------
+
+Code Block 156 ():
+div
+----------------------------------------
+
+Code Block 157 ():
+required
+----------------------------------------
+
+Code Block 158 ():
+required
+----------------------------------------
+
+Code Block 159 ():
+'required'
+----------------------------------------
+
+Code Block 160 (shiki):
+echo $this->Form->control('title', ['required' => false]);
+----------------------------------------
+
+Code Block 161 ():
+echo $this->Form->control('title', ['required' => false]);
+----------------------------------------
+
+Code Block 162 ():
+'formnovalidate' => true
+----------------------------------------
+
+Code Block 163 ():
+Cake\View\Helper\FormHelper::submit()
+----------------------------------------
+
+Code Block 164 ():
+'novalidate' => true
+----------------------------------------
+
+Code Block 165 ():
+Cake\View\Helper\FormHelper::create()
+----------------------------------------
+
+Code Block 166 ():
+control()
+----------------------------------------
+
+Code Block 167 (shiki):
+echo $this->Form->create($user);
+// The following generates a Text input
+echo $this->Form->control('username');
+// The following generates a Password input
+echo $this->Form->control('password');
+// Assuming 'approved' is a datetime or timestamp field the following
+//generates an input of type "datetime-local"
+echo $this->Form->control('approved');
+// The following generates a Textarea element
+echo $this->Form->control('quote');
+
+echo $this->Form->button('Add');
+echo $this->Form->end();
+----------------------------------------
+
+Code Block 168 ():
+echo $this->Form->create($user);
+// The following generates a Text input
+echo $this->Form->control('username');
+// The following generates a Password input
+echo $this->Form->control('password');
+// Assuming 'approved' is a datetime or timestamp field the following
+//generates an input of type "datetime-local"
+echo $this->Form->control('approved');
+// The following generates a Textarea element
+echo $this->Form->control('quote');
+
+echo $this->Form->button('Add');
+echo $this->Form->end();
+----------------------------------------
+
+Code Block 169 (shiki):
+echo $this->Form->control('birth_date', [
+    'label' => 'Date of birth',
+    'min' => date('Y') - 70,
+    'max' => date('Y') - 18,
+]);
+----------------------------------------
+
+Code Block 170 ():
+echo $this->Form->control('birth_date', [
+    'label' => 'Date of birth',
+    'min' => date('Y') - 70,
+    'max' => date('Y') - 18,
+]);
+----------------------------------------
+
+Code Block 171 ():
+onfocus
+----------------------------------------
+
+Code Block 172 ():
+select
+----------------------------------------
+
+Code Block 173 (shiki):
+$this->set('groups', $this->Users->Groups->find('list')->all());
+----------------------------------------
+
+Code Block 174 ():
+$this->set('groups', $this->Users->Groups->find('list')->all());
+----------------------------------------
+
+Code Block 175 (shiki):
+echo $this->Form->control('group_id', ['options' => $groups]);
+----------------------------------------
+
+Code Block 176 ():
+echo $this->Form->control('group_id', ['options' => $groups]);
+----------------------------------------
+
+Code Block 177 ():
+select
+----------------------------------------
+
+Code Block 178 (shiki):
+$this->set('groups', $this->Users->Groups->find('list')->all());
+----------------------------------------
+
+Code Block 179 ():
+$this->set('groups', $this->Users->Groups->find('list')->all());
+----------------------------------------
+
+Code Block 180 (shiki):
+echo $this->Form->control('groups._ids', ['options' => $groups]);
+----------------------------------------
+
+Code Block 181 ():
+echo $this->Form->control('groups._ids', ['options' => $groups]);
+----------------------------------------
+
+Code Block 182 ():
+set()
+----------------------------------------
+
+Code Block 183 (shiki):
+$this->set('userGroups', $this->UserGroups->find('list')->all());
+----------------------------------------
+
+Code Block 184 ():
+$this->set('userGroups', $this->UserGroups->find('list')->all());
+----------------------------------------
+
+Code Block 185 ():
+FormHelper::control()
+----------------------------------------
+
+Code Block 186 ():
+Cake\View\Helper\FormHelper::submit()
+----------------------------------------
+
+Code Block 187 ():
+$article
+----------------------------------------
+
+Code Block 188 ():
+title
+----------------------------------------
+
+Code Block 189 ():
+body
+----------------------------------------
+
+Code Block 190 ():
+published
+----------------------------------------
+
+Code Block 191 ():
+association.fieldname
+----------------------------------------
+
+Code Block 192 (shiki):
+echo $this->Form->control('association.fieldname');
+----------------------------------------
+
+Code Block 193 ():
+echo $this->Form->control('association.fieldname');
+----------------------------------------
+
+Code Block 194 ():
+0.comments.body
+----------------------------------------
+
+Code Block 195 ():
+0[comments][body]
+----------------------------------------
+
+Code Block 196 ():
+year
+----------------------------------------
+
+Code Block 197 ():
+month
+----------------------------------------
+
+Code Block 198 ():
+day
+----------------------------------------
+
+Code Block 199 ():
+hour
+----------------------------------------
+
+Code Block 200 ():
+minute
+----------------------------------------
+
+Code Block 201 ():
+meridian
+----------------------------------------
+
+Code Block 202 ():
+DateTime
+----------------------------------------
+
+Code Block 203 ():
+FormHelper::control()
+----------------------------------------
+
+Code Block 204 ():
+$options
+----------------------------------------
+
+Code Block 205 ():
+control()
+----------------------------------------
+
+Code Block 206 ():
+checkbox
+----------------------------------------
+
+Code Block 207 ():
+textarea
+----------------------------------------
+
+Code Block 208 ():
+FormHelper::control()
+----------------------------------------
+
+Code Block 209 ():
+$options['type']
+----------------------------------------
+
+Code Block 210 ():
+'file'
+----------------------------------------
+
+Code Block 211 ():
+'password'
+----------------------------------------
+
+Code Block 212 ():
+'type'
+----------------------------------------
+
+Code Block 213 ():
+null
+----------------------------------------
+
+Code Block 214 (shiki):
+echo $this->Form->control('field', ['type' => 'file']);
+echo $this->Form->control('email', ['type' => 'email']);
+----------------------------------------
+
+Code Block 215 ():
+echo $this->Form->control('field', ['type' => 'file']);
+echo $this->Form->control('email', ['type' => 'email']);
+----------------------------------------
+
+Code Block 216 (shiki):
+<div class="input file">
+    <label for="field">Field</label>
+    <input type="file" name="field" value="" id="field">
+</div>
+<div class="input email">
+    <label for="email">Email</label>
+    <input type="email" name="email" value="" id="email">
+</div>
+----------------------------------------
+
+Code Block 217 ():
+<div class="input file">
+    <label for="field">Field</label>
+    <input type="file" name="field" value="" id="field">
+</div>
+<div class="input email">
+    <label for="email">Email</label>
+    <input type="email" name="email" value="" id="email">
+</div>
+----------------------------------------
+
+Code Block 218 ():
+$options['label']
+----------------------------------------
+
+Code Block 219 ():
+input
+----------------------------------------
+
+Code Block 220 ():
+null
+----------------------------------------
+
+Code Block 221 (shiki):
+echo $this->Form->control('name', [
+    'label' => 'The User Alias',
+]);
+----------------------------------------
+
+Code Block 222 ():
+echo $this->Form->control('name', [
+    'label' => 'The User Alias',
+]);
+----------------------------------------
+
+Code Block 223 (shiki):
+<div class="input">
+    <label for="name">The User Alias</label>
+    <input name="name" type="text" value="" id="name">
+</div>
+----------------------------------------
+
+Code Block 224 ():
+<div class="input">
+    <label for="name">The User Alias</label>
+    <input name="name" type="text" value="" id="name">
+</div>
+----------------------------------------
+
+Code Block 225 ():
+false
+----------------------------------------
+
+Code Block 226 ():
+label
+----------------------------------------
+
+Code Block 227 (shiki):
+echo $this->Form->control('name', ['label' => false]);
+----------------------------------------
+
+Code Block 228 ():
+echo $this->Form->control('name', ['label' => false]);
+----------------------------------------
+
+Code Block 229 (shiki):
+<div class="input">
+    <input name="name" type="text" value="" id="name">
+</div>
+----------------------------------------
+
+Code Block 230 ():
+<div class="input">
+    <input name="name" type="text" value="" id="name">
+</div>
+----------------------------------------
+
+Code Block 231 ():
+placeholder
+----------------------------------------
+
+Code Block 232 ():
+aria-label
+----------------------------------------
+
+Code Block 233 ():
+label
+----------------------------------------
+
+Code Block 234 ():
+label
+----------------------------------------
+
+Code Block 235 ():
+'text'
+----------------------------------------
+
+Code Block 236 (shiki):
+echo $this->Form->control('name', [
+    'label' => [
+        'class' => 'thingy',
+        'text' => 'The User Alias',
+    ]
+]);
+----------------------------------------
+
+Code Block 237 ():
+echo $this->Form->control('name', [
+    'label' => [
+        'class' => 'thingy',
+        'text' => 'The User Alias',
+    ]
+]);
+----------------------------------------
+
+Code Block 238 (shiki):
+<div class="input">
+    <label for="name" class="thingy">The User Alias</label>
+    <input name="name" type="text" value="" id="name">
+</div>
+----------------------------------------
+
+Code Block 239 ():
+<div class="input">
+    <label for="name" class="thingy">The User Alias</label>
+    <input name="name" type="text" value="" id="name">
+</div>
+----------------------------------------
+
+Code Block 240 ():
+$options['options']
+----------------------------------------
+
+Code Block 241 ():
+radio
+----------------------------------------
+
+Code Block 242 ():
+select
+----------------------------------------
+
+Code Block 243 ():
+null
+----------------------------------------
+
+Code Block 244 ():
+$options['error']
+----------------------------------------
+
+Code Block 245 ():
+'error'
+----------------------------------------
+
+Code Block 246 ():
+false
+----------------------------------------
+
+Code Block 247 ():
+null
+----------------------------------------
+
+Code Block 248 (shiki):
+echo $this->Form->control('name', ['error' => false]);
+----------------------------------------
+
+Code Block 249 ():
+echo $this->Form->control('name', ['error' => false]);
+----------------------------------------
+
+Code Block 250 (shiki):
+$this->Form->control('name', [
+    'error' => ['Not long enough' => __('This is not long enough')],
+]);
+----------------------------------------
+
+Code Block 251 ():
+$this->Form->control('name', [
+    'error' => ['Not long enough' => __('This is not long enough')],
+]);
+----------------------------------------
+
+Code Block 252 ():
+'escape'
+----------------------------------------
+
+Code Block 253 (shiki):
+$this->Form->control('name', [
+    'error' => ['escape' => false],
+]);
+----------------------------------------
+
+Code Block 254 ():
+$this->Form->control('name', [
+    'error' => ['escape' => false],
+]);
+----------------------------------------
+
+Code Block 255 ():
+$options['nestedInput']
+----------------------------------------
+
+Code Block 256 ():
+label
+----------------------------------------
+
+Code Block 257 ():
+control()
+----------------------------------------
+
+Code Block 258 ():
+false
+----------------------------------------
+
+Code Block 259 ():
+input
+----------------------------------------
+
+Code Block 260 ():
+label
+----------------------------------------
+
+Code Block 261 ():
+true
+----------------------------------------
+
+Code Block 262 ():
+div
+----------------------------------------
+
+Code Block 263 ():
+true
+----------------------------------------
+
+Code Block 264 ():
+false
+----------------------------------------
+
+Code Block 265 ():
+nestedCheckboxAndRadio
+----------------------------------------
+
+Code Block 266 ():
+FormHelper
+----------------------------------------
+
+Code Block 267 ():
+false
+----------------------------------------
+
+Code Block 268 ():
+$options['templates']
+----------------------------------------
+
+Code Block 269 ():
+/config
+----------------------------------------
+
+Code Block 270 ():
+$options['labelOptions']
+----------------------------------------
+
+Code Block 271 ():
+false
+----------------------------------------
+
+Code Block 272 ():
+label
+----------------------------------------
+
+Code Block 273 ():
+$options['readonly']
+----------------------------------------
+
+Code Block 274 ():
+readonly
+----------------------------------------
+
+Code Block 275 (shiki):
+echo $this->Form->control('name', ['readonly' => true]);
+----------------------------------------
+
+Code Block 276 ():
+echo $this->Form->control('name', ['readonly' => true]);
+----------------------------------------
+
+Code Block 277 ():
+control()
+----------------------------------------
+
+Code Block 278 ():
+FormHelper
+----------------------------------------
+
+Code Block 279 ():
+Cake\View\Helper\FormHelper::label()
+----------------------------------------
+
+Code Block 280 ():
+Cake\View\Helper\FormHelper::error()
+----------------------------------------
+
+Code Block 281 ():
+$options
+----------------------------------------
+
+Code Block 282 ():
+$attributes
+----------------------------------------
+
+Code Block 283 ():
+control()
+----------------------------------------
+
+Code Block 284 ():
+'id'
+----------------------------------------
+
+Code Block 285 ():
+'idPrefix'
+----------------------------------------
+
+Code Block 286 ():
+'default'
+----------------------------------------
+
+Code Block 287 (shiki):
+echo $this->Form->text('ingredient', ['default' => 'Sugar']);
+----------------------------------------
+
+Code Block 288 ():
+echo $this->Form->text('ingredient', ['default' => 'Sugar']);
+----------------------------------------
+
+Code Block 289 ():
+select
+----------------------------------------
+
+Code Block 290 (shiki):
+$sizes = ['s' => 'Small', 'm' => 'Medium', 'l' => 'Large'];
+echo $this->Form->select('size', $sizes, ['default' => 'm']);
+----------------------------------------
+
+Code Block 291 ():
+$sizes = ['s' => 'Small', 'm' => 'Medium', 'l' => 'Large'];
+echo $this->Form->select('size', $sizes, ['default' => 'm']);
+----------------------------------------
+
+Code Block 292 ():
+default
+----------------------------------------
+
+Code Block 293 ():
+$this->request->getData()
+----------------------------------------
+
+Code Block 294 ():
+'checked'
+----------------------------------------
+
+Code Block 295 ():
+true
+----------------------------------------
+
+Code Block 296 ():
+false
+----------------------------------------
+
+Code Block 297 ():
+false
+----------------------------------------
+
+Code Block 298 ():
+'default' => false
+----------------------------------------
+
+Code Block 299 ():
+'default' => 0
+----------------------------------------
+
+Code Block 300 ():
+'value'
+----------------------------------------
+
+Code Block 301 ():
+request->getData()
+----------------------------------------
+
+Code Block 302 ():
+'value'
+----------------------------------------
+
+Code Block 303 ():
+''
+----------------------------------------
+
+Code Block 304 ():
+null
+----------------------------------------
+
+Code Block 305 ():
+$options
+----------------------------------------
+
+Code Block 306 ():
+$attributes
+----------------------------------------
+
+Code Block 307 ():
+method
+----------------------------------------
+
+Code Block 308 ():
+$name
+----------------------------------------
+
+Code Block 309 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 310 ():
+$options
+----------------------------------------
+
+Code Block 311 ():
+input
+----------------------------------------
+
+Code Block 312 ():
+text
+----------------------------------------
+
+Code Block 313 (shiki):
+echo $this->Form->text('username', ['class' => 'users']);
+----------------------------------------
+
+Code Block 314 ():
+echo $this->Form->text('username', ['class' => 'users']);
+----------------------------------------
+
+Code Block 315 (shiki):
+<input name="username" type="text" class="users">
+----------------------------------------
+
+Code Block 316 ():
+<input name="username" type="text" class="users">
+----------------------------------------
+
+Code Block 317 ():
+method
+----------------------------------------
+
+Code Block 318 ():
+$fieldName
+----------------------------------------
+
+Code Block 319 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 320 ():
+$options
+----------------------------------------
+
+Code Block 321 ():
+input
+----------------------------------------
+
+Code Block 322 ():
+password
+----------------------------------------
+
+Code Block 323 (shiki):
+echo $this->Form->password('password');
+----------------------------------------
+
+Code Block 324 ():
+echo $this->Form->password('password');
+----------------------------------------
+
+Code Block 325 (shiki):
+<input name="password" value="" type="password">
+----------------------------------------
+
+Code Block 326 ():
+<input name="password" value="" type="password">
+----------------------------------------
+
+Code Block 327 ():
+method
+----------------------------------------
+
+Code Block 328 ():
+$fieldName
+----------------------------------------
+
+Code Block 329 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 330 ():
+$options
+----------------------------------------
+
+Code Block 331 (shiki):
+echo $this->Form->hidden('id');
+----------------------------------------
+
+Code Block 332 ():
+echo $this->Form->hidden('id');
+----------------------------------------
+
+Code Block 333 (shiki):
+<input name="id" type="hidden">
+----------------------------------------
+
+Code Block 334 ():
+<input name="id" type="hidden">
+----------------------------------------
+
+Code Block 335 ():
+method
+----------------------------------------
+
+Code Block 336 ():
+$fieldName
+----------------------------------------
+
+Code Block 337 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 338 ():
+$options
+----------------------------------------
+
+Code Block 339 (shiki):
+'textarea' => '<textarea name="{{name}}"{{attrs}}>{{value}}</textarea>'
+----------------------------------------
+
+Code Block 340 ():
+'textarea' => '<textarea name="{{name}}"{{attrs}}>{{value}}</textarea>'
+----------------------------------------
+
+Code Block 341 (shiki):
+echo $this->Form->textarea('notes');
+----------------------------------------
+
+Code Block 342 ():
+echo $this->Form->textarea('notes');
+----------------------------------------
+
+Code Block 343 (shiki):
+<textarea name="notes"></textarea>
+----------------------------------------
+
+Code Block 344 ():
+<textarea name="notes"></textarea>
+----------------------------------------
+
+Code Block 345 ():
+$this->request->getData()
+----------------------------------------
+
+Code Block 346 ():
+User
+----------------------------------------
+
+Code Block 347 ():
+notes
+----------------------------------------
+
+Code Block 348 (shiki):
+<textarea name="notes" id="notes">
+    This text is to be edited.
+</textarea>
+----------------------------------------
+
+Code Block 349 ():
+<textarea name="notes" id="notes">
+    This text is to be edited.
+</textarea>
+----------------------------------------
+
+Code Block 350 ():
+textarea()
+----------------------------------------
+
+Code Block 351 ():
+'escape'
+----------------------------------------
+
+Code Block 352 ():
+true
+----------------------------------------
+
+Code Block 353 (shiki):
+echo $this->Form->textarea('notes', ['escape' => false]);
+// OR....
+echo $this->Form->control('notes', ['type' => 'textarea', 'escape' => false]);
+----------------------------------------
+
+Code Block 354 ():
+echo $this->Form->textarea('notes', ['escape' => false]);
+// OR....
+echo $this->Form->control('notes', ['type' => 'textarea', 'escape' => false]);
+----------------------------------------
+
+Code Block 355 ():
+'rows', 'cols'
+----------------------------------------
+
+Code Block 356 ():
+textarea
+----------------------------------------
+
+Code Block 357 (shiki):
+echo $this->Form->textarea('comment', ['rows' => '5', 'cols' => '5']);
+----------------------------------------
+
+Code Block 358 ():
+echo $this->Form->textarea('comment', ['rows' => '5', 'cols' => '5']);
+----------------------------------------
+
+Code Block 359 (shiki):
+<textarea name="comment" cols="5" rows="5">
+</textarea>
+----------------------------------------
+
+Code Block 360 ():
+<textarea name="comment" cols="5" rows="5">
+</textarea>
+----------------------------------------
+
+Code Block 361 ():
+select()
+----------------------------------------
+
+Code Block 362 ():
+checkbox()
+----------------------------------------
+
+Code Block 363 ():
+radio()
+----------------------------------------
+
+Code Block 364 ():
+'value'
+----------------------------------------
+
+Code Block 365 ():
+'value'
+----------------------------------------
+
+Code Block 366 ():
+input
+----------------------------------------
+
+Code Block 367 ():
+'value'
+----------------------------------------
+
+Code Block 368 ():
+date()
+----------------------------------------
+
+Code Block 369 ():
+time()
+----------------------------------------
+
+Code Block 370 ():
+dateTime()
+----------------------------------------
+
+Code Block 371 (shiki):
+echo $this->Form->time('close_time', [
+    'value' => '13:30:00',
+]);
+----------------------------------------
+
+Code Block 372 ():
+echo $this->Form->time('close_time', [
+    'value' => '13:30:00',
+]);
+----------------------------------------
+
+Code Block 373 ():
+'value'
+----------------------------------------
+
+Code Block 374 ():
+date()
+----------------------------------------
+
+Code Block 375 ():
+dateTime()
+----------------------------------------
+
+Code Block 376 ():
+select
+----------------------------------------
+
+Code Block 377 ():
+'multiple'
+----------------------------------------
+
+Code Block 378 ():
+true
+----------------------------------------
+
+Code Block 379 (shiki):
+// HTML <option> elements with values 1 and 3 will be rendered preselected
+echo $this->Form->select(
+    'rooms',
+    [1, 2, 3, 4, 5],
+    [
+        'multiple' => true,
+        'value' => [1, 3],
+    ]
+);
+----------------------------------------
+
+Code Block 380 ():
+// HTML <option> elements with values 1 and 3 will be rendered preselected
+echo $this->Form->select(
+    'rooms',
+    [1, 2, 3, 4, 5],
+    [
+        'multiple' => true,
+        'value' => [1, 3],
+    ]
+);
+----------------------------------------
+
+Code Block 381 ():
+'empty'
+----------------------------------------
+
+Code Block 382 ():
+radio()
+----------------------------------------
+
+Code Block 383 ():
+select()
+----------------------------------------
+
+Code Block 384 ():
+false
+----------------------------------------
+
+Code Block 385 ():
+radio()
+----------------------------------------
+
+Code Block 386 ():
+true
+----------------------------------------
+
+Code Block 387 ():
+''
+----------------------------------------
+
+Code Block 388 ():
+'empty'
+----------------------------------------
+
+Code Block 389 ():
+select
+----------------------------------------
+
+Code Block 390 ():
+option
+----------------------------------------
+
+Code Block 391 ():
+option
+----------------------------------------
+
+Code Block 392 ():
+'empty'
+----------------------------------------
+
+Code Block 393 (shiki):
+echo $this->Form->select(
+    'field',
+    [1, 2, 3, 4, 5],
+    ['empty' => '(choose one)'],
+);
+----------------------------------------
+
+Code Block 394 ():
+echo $this->Form->select(
+    'field',
+    [1, 2, 3, 4, 5],
+    ['empty' => '(choose one)'],
+);
+----------------------------------------
+
+Code Block 395 (shiki):
+<select name="field">
+    <option value="">(choose one)</option>
+    <option value="0">1</option>
+    <option value="1">2</option>
+    <option value="2">3</option>
+    <option value="3">4</option>
+    <option value="4">5</option>
+</select>
+----------------------------------------
+
+Code Block 396 ():
+<select name="field">
+    <option value="">(choose one)</option>
+    <option value="0">1</option>
+    <option value="1">2</option>
+    <option value="2">3</option>
+    <option value="3">4</option>
+    <option value="4">5</option>
+</select>
+----------------------------------------
+
+Code Block 397 ():
+'hiddenField'
+----------------------------------------
+
+Code Block 398 ():
+input
+----------------------------------------
+
+Code Block 399 ():
+$this->request->getData()
+----------------------------------------
+
+Code Block 400 ():
+0
+----------------------------------------
+
+Code Block 401 ():
+''
+----------------------------------------
+
+Code Block 402 (shiki):
+<input type="hidden" name="published" value="0">
+<input type="checkbox" name="published" value="1">
+----------------------------------------
+
+Code Block 403 ():
+<input type="hidden" name="published" value="0">
+<input type="checkbox" name="published" value="1">
+----------------------------------------
+
+Code Block 404 ():
+'hiddenField'
+----------------------------------------
+
+Code Block 405 ():
+false
+----------------------------------------
+
+Code Block 406 (shiki):
+echo $this->Form->checkbox('published', ['hiddenField' => false]);
+----------------------------------------
+
+Code Block 407 ():
+echo $this->Form->checkbox('published', ['hiddenField' => false]);
+----------------------------------------
+
+Code Block 408 (shiki):
+<input type="checkbox" name="published" value="1">
+----------------------------------------
+
+Code Block 409 ():
+<input type="checkbox" name="published" value="1">
+----------------------------------------
+
+Code Block 410 ():
+false
+----------------------------------------
+
+Code Block 411 ():
+inputs
+----------------------------------------
+
+Code Block 412 (shiki):
+<h2>Primary Colors</h2>
+<input type="hidden" name="color" value="0">
+<label for="color-red">
+    <input type="checkbox" name="color[]" value="5" id="color-red">
+    Red
+</label>
+
+<label for="color-blue">
+    <input type="checkbox" name="color[]" value="5" id="color-blue">
+    Blue
+</label>
+
+<label for="color-yellow">
+    <input type="checkbox" name="color[]" value="5" id="color-yellow">
+    Yellow
+</label>
+
+<h2>Tertiary Colors</h2>
+<input type="hidden" name="color" value="0">
+<label for="color-green">
+    <input type="checkbox" name="color[]" value="5" id="color-green">
+    Green
+</label>
+<label for="color-purple">
+    <input type="checkbox" name="color[]" value="5" id="color-purple">
+    Purple
+</label>
+<label for="color-orange">
+    <input type="checkbox" name="color[]" value="5" id="color-orange">
+    Orange
+</label>
+----------------------------------------
+
+Code Block 413 ():
+<h2>Primary Colors</h2>
+<input type="hidden" name="color" value="0">
+<label for="color-red">
+    <input type="checkbox" name="color[]" value="5" id="color-red">
+    Red
+</label>
+
+<label for="color-blue">
+    <input type="checkbox" name="color[]" value="5" id="color-blue">
+    Blue
+</label>
+
+<label for="color-yellow">
+    <input type="checkbox" name="color[]" value="5" id="color-yellow">
+    Yellow
+</label>
+
+<h2>Tertiary Colors</h2>
+<input type="hidden" name="color" value="0">
+<label for="color-green">
+    <input type="checkbox" name="color[]" value="5" id="color-green">
+    Green
+</label>
+<label for="color-purple">
+    <input type="checkbox" name="color[]" value="5" id="color-purple">
+    Purple
+</label>
+<label for="color-orange">
+    <input type="checkbox" name="color[]" value="5" id="color-orange">
+    Orange
+</label>
+----------------------------------------
+
+Code Block 414 ():
+'hiddenField'
+----------------------------------------
+
+Code Block 415 (shiki):
+echo $this->Form->checkbox('published', [
+    'value' => 'Y',
+    'hiddenField' => 'N',
+]);
+----------------------------------------
+
+Code Block 416 ():
+echo $this->Form->checkbox('published', [
+    'value' => 'Y',
+    'hiddenField' => 'N',
+]);
+----------------------------------------
+
+Code Block 417 ():
+combine
+----------------------------------------
+
+Code Block 418 (shiki):
+$options = $examples->combine('id', 'name');
+----------------------------------------
+
+Code Block 419 ():
+$options = $examples->combine('id', 'name');
+----------------------------------------
+
+Code Block 420 ():
+map
+----------------------------------------
+
+Code Block 421 (shiki):
+$options = $examples->map(function ($value, $key) {
+    return [
+        'value' => $value->id,
+        'text' => $value->name,
+        'data-created' => $value->created,
+    ];
+});
+----------------------------------------
+
+Code Block 422 ():
+$options = $examples->map(function ($value, $key) {
+    return [
+        'value' => $value->id,
+        'text' => $value->name,
+        'data-created' => $value->created,
+    ];
+});
+----------------------------------------
+
+Code Block 423 ():
+method
+----------------------------------------
+
+Code Block 424 ():
+$fieldName
+----------------------------------------
+
+Code Block 425 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 426 ():
+$options
+----------------------------------------
+
+Code Block 427 ():
+checkbox
+----------------------------------------
+
+Code Block 428 (shiki):
+'checkbox' => '<input type="checkbox" name="{{name}}" value="{{value}}"{{attrs}}>'
+----------------------------------------
+
+Code Block 429 ():
+'checkbox' => '<input type="checkbox" name="{{name}}" value="{{value}}"{{attrs}}>'
+----------------------------------------
+
+Code Block 430 ():
+'checked'
+----------------------------------------
+
+Code Block 431 ():
+false
+----------------------------------------
+
+Code Block 432 ():
+'disabled'
+----------------------------------------
+
+Code Block 433 ():
+input
+----------------------------------------
+
+Code Block 434 (shiki):
+echo $this->Form->checkbox('done');
+----------------------------------------
+
+Code Block 435 ():
+echo $this->Form->checkbox('done');
+----------------------------------------
+
+Code Block 436 (shiki):
+<input type="hidden" name="done" value="0">
+<input type="checkbox" name="done" value="1">
+----------------------------------------
+
+Code Block 437 ():
+<input type="hidden" name="done" value="0">
+<input type="checkbox" name="done" value="1">
+----------------------------------------
+
+Code Block 438 ():
+$options
+----------------------------------------
+
+Code Block 439 (shiki):
+echo $this->Form->checkbox('done', ['value' => 555]);
+----------------------------------------
+
+Code Block 440 ():
+echo $this->Form->checkbox('done', ['value' => 555]);
+----------------------------------------
+
+Code Block 441 (shiki):
+<input type="hidden" name="done" value="0">
+<input type="checkbox" name="done" value="555">
+----------------------------------------
+
+Code Block 442 ():
+<input type="hidden" name="done" value="0">
+<input type="checkbox" name="done" value="555">
+----------------------------------------
+
+Code Block 443 ():
+'hiddenField'
+----------------------------------------
+
+Code Block 444 (shiki):
+echo $this->Form->checkbox('done', ['hiddenField' => false]);
+----------------------------------------
+
+Code Block 445 ():
+echo $this->Form->checkbox('done', ['hiddenField' => false]);
+----------------------------------------
+
+Code Block 446 (shiki):
+<input type="checkbox" name="done" value="1">
+----------------------------------------
+
+Code Block 447 ():
+<input type="checkbox" name="done" value="1">
+----------------------------------------
+
+Code Block 448 ():
+method
+----------------------------------------
+
+Code Block 449 ():
+$fieldName
+----------------------------------------
+
+Code Block 450 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 451 ():
+$options
+----------------------------------------
+
+Code Block 452 ():
+'hiddenField'
+----------------------------------------
+
+Code Block 453 ():
+true
+----------------------------------------
+
+Code Block 454 ():
+'hiddenField'
+----------------------------------------
+
+Code Block 455 ():
+false
+----------------------------------------
+
+Code Block 456 ():
+$attributes
+----------------------------------------
+
+Code Block 457 (shiki):
+'radio' => '<input type="radio" name="{{name}}" value="{{value}}"{{attrs}}>'
+'radioWrapper' => '{{label}}'
+----------------------------------------
+
+Code Block 458 ():
+'radio' => '<input type="radio" name="{{name}}" value="{{value}}"{{attrs}}>'
+'radioWrapper' => '{{label}}'
+----------------------------------------
+
+Code Block 459 ():
+'label'
+----------------------------------------
+
+Code Block 460 ():
+class
+----------------------------------------
+
+Code Block 461 ():
+selected
+----------------------------------------
+
+Code Block 462 ():
+class
+----------------------------------------
+
+Code Block 463 ():
+true
+----------------------------------------
+
+Code Block 464 ():
+'hiddenField'
+----------------------------------------
+
+Code Block 465 ():
+true
+----------------------------------------
+
+Code Block 466 ():
+''
+----------------------------------------
+
+Code Block 467 ():
+true
+----------------------------------------
+
+Code Block 468 ():
+'disabled'
+----------------------------------------
+
+Code Block 469 ():
+true
+----------------------------------------
+
+Code Block 470 ():
+'disabled'
+----------------------------------------
+
+Code Block 471 ():
+false
+----------------------------------------
+
+Code Block 472 ():
+$options
+----------------------------------------
+
+Code Block 473 (shiki):
+$this->Form->radio('gender', ['Masculine', 'Feminine', 'Neuter']);
+----------------------------------------
+
+Code Block 474 ():
+$this->Form->radio('gender', ['Masculine', 'Feminine', 'Neuter']);
+----------------------------------------
+
+Code Block 475 (shiki):
+<input name="gender" value="" type="hidden">
+<label for="gender-0">
+    <input name="gender" value="0" id="gender-0" type="radio">
+    Masculine
+</label>
+<label for="gender-1">
+    <input name="gender" value="1" id="gender-1" type="radio">
+    Feminine
+</label>
+<label for="gender-2">
+    <input name="gender" value="2" id="gender-2" type="radio">
+    Neuter
+</label>
+----------------------------------------
+
+Code Block 476 ():
+<input name="gender" value="" type="hidden">
+<label for="gender-0">
+    <input name="gender" value="0" id="gender-0" type="radio">
+    Masculine
+</label>
+<label for="gender-1">
+    <input name="gender" value="1" id="gender-1" type="radio">
+    Feminine
+</label>
+<label for="gender-2">
+    <input name="gender" value="2" id="gender-2" type="radio">
+    Neuter
+</label>
+----------------------------------------
+
+Code Block 477 ():
+$options
+----------------------------------------
+
+Code Block 478 ():
+key => value
+----------------------------------------
+
+Code Block 479 (shiki):
+echo $this->Form->radio(
+    'favorite_color',
+    [
+        ['value' => 'r', 'text' => 'Red', 'style' => 'color:red;'],
+        ['value' => 'u', 'text' => 'Blue', 'style' => 'color:blue;'],
+        ['value' => 'g', 'text' => 'Green', 'style' => 'color:green;'],
+    ]
+);
+----------------------------------------
+
+Code Block 480 ():
+echo $this->Form->radio(
+    'favorite_color',
+    [
+        ['value' => 'r', 'text' => 'Red', 'style' => 'color:red;'],
+        ['value' => 'u', 'text' => 'Blue', 'style' => 'color:blue;'],
+        ['value' => 'g', 'text' => 'Green', 'style' => 'color:green;'],
+    ]
+);
+----------------------------------------
+
+Code Block 481 (shiki):
+<input type="hidden" name="favorite_color" value="">
+<label for="favorite-color-r">
+    <input type="radio" name="favorite_color" value="r" style="color:red;" id="favorite-color-r">
+    Red
+</label>
+<label for="favorite-color-u">
+    <input type="radio" name="favorite_color" value="u" style="color:blue;" id="favorite-color-u">
+    Blue
+</label>
+<label for="favorite-color-g">
+    <input type="radio" name="favorite_color" value="g" style="color:green;" id="favorite-color-g">
+    Green
+</label>
+----------------------------------------
+
+Code Block 482 ():
+<input type="hidden" name="favorite_color" value="">
+<label for="favorite-color-r">
+    <input type="radio" name="favorite_color" value="r" style="color:red;" id="favorite-color-r">
+    Red
+</label>
+<label for="favorite-color-u">
+    <input type="radio" name="favorite_color" value="u" style="color:blue;" id="favorite-color-u">
+    Blue
+</label>
+<label for="favorite-color-g">
+    <input type="radio" name="favorite_color" value="g" style="color:green;" id="favorite-color-g">
+    Green
+</label>
+----------------------------------------
+
+Code Block 483 (shiki):
+echo $this->Form->radio(
+    'favorite_color',
+    [
+        ['value' => 'r', 'text' => 'Red', 'label' => ['class' => 'red']],
+        ['value' => 'u', 'text' => 'Blue', 'label' => ['class' => 'blue']],
+    ]
+);
+----------------------------------------
+
+Code Block 484 ():
+echo $this->Form->radio(
+    'favorite_color',
+    [
+        ['value' => 'r', 'text' => 'Red', 'label' => ['class' => 'red']],
+        ['value' => 'u', 'text' => 'Blue', 'label' => ['class' => 'blue']],
+    ]
+);
+----------------------------------------
+
+Code Block 485 (shiki):
+<input type="hidden" name="favorite_color" value="">
+<label for="favorite-color-r" class="red">
+    <input type="radio" name="favorite_color" value="r" style="color:red;" id="favorite-color-r">
+    Red
+</label>
+<label for="favorite-color-u" class="blue">
+    <input type="radio" name="favorite_color" value="u" style="color:blue;" id="favorite-color-u">
+    Blue
+</label>
+----------------------------------------
+
+Code Block 486 ():
+<input type="hidden" name="favorite_color" value="">
+<label for="favorite-color-r" class="red">
+    <input type="radio" name="favorite_color" value="r" style="color:red;" id="favorite-color-r">
+    Red
+</label>
+<label for="favorite-color-u" class="blue">
+    <input type="radio" name="favorite_color" value="u" style="color:blue;" id="favorite-color-u">
+    Blue
+</label>
+----------------------------------------
+
+Code Block 487 ():
+label
+----------------------------------------
+
+Code Block 488 ():
+$attributes['label']
+----------------------------------------
+
+Code Block 489 ():
+method
+----------------------------------------
+
+Code Block 490 ():
+$fieldName
+----------------------------------------
+
+Code Block 491 ():
+'fieldname'
+----------------------------------------
+
+Code Block 492 ():
+'related_entity.fieldname'
+----------------------------------------
+
+Code Block 493 ():
+name
+----------------------------------------
+
+Code Block 494 ():
+select
+----------------------------------------
+
+Code Block 495 ():
+$options
+----------------------------------------
+
+Code Block 496 ():
+select
+----------------------------------------
+
+Code Block 497 ():
+option
+----------------------------------------
+
+Code Block 498 ():
+$attributes
+----------------------------------------
+
+Code Block 499 ():
+select
+----------------------------------------
+
+Code Block 500 ():
+$options
+----------------------------------------
+
+Code Block 501 ():
+$attributes['value']
+----------------------------------------
+
+Code Block 502 ():
+option
+----------------------------------------
+
+Code Block 503 ():
+select
+----------------------------------------
+
+Code Block 504 (shiki):
+'select' => '<select name="{{name}}"{{attrs}}>{{content}}</select>'
+'option' => '<option value="{{value}}"{{attrs}}>{{text}}</option>'
+----------------------------------------
+
+Code Block 505 ():
+'select' => '<select name="{{name}}"{{attrs}}>{{content}}</select>'
+'option' => '<option value="{{value}}"{{attrs}}>{{text}}</option>'
+----------------------------------------
+
+Code Block 506 (shiki):
+'optgroup' => '<optgroup label="{{label}}"{{attrs}}>{{content}}</optgroup>'
+'selectMultiple' => '<select name="{{name}}[]" multiple="multiple"{{attrs}}>{{content}}</select>'
+----------------------------------------
+
+Code Block 507 ():
+'optgroup' => '<optgroup label="{{label}}"{{attrs}}>{{content}}</optgroup>'
+'selectMultiple' => '<select name="{{name}}[]" multiple="multiple"{{attrs}}>{{content}}</select>'
+----------------------------------------
+
+Code Block 508 ():
+'multiple'
+----------------------------------------
+
+Code Block 509 ():
+true
+----------------------------------------
+
+Code Block 510 ():
+'checkbox'
+----------------------------------------
+
+Code Block 511 ():
+null
+----------------------------------------
+
+Code Block 512 ():
+'escape'
+----------------------------------------
+
+Code Block 513 ():
+true
+----------------------------------------
+
+Code Block 514 ():
+option
+----------------------------------------
+
+Code Block 515 ():
+true
+----------------------------------------
+
+Code Block 516 ():
+'val'
+----------------------------------------
+
+Code Block 517 ():
+'disabled'
+----------------------------------------
+
+Code Block 518 ():
+disabled
+----------------------------------------
+
+Code Block 519 ():
+true
+----------------------------------------
+
+Code Block 520 ():
+option
+----------------------------------------
+
+Code Block 521 ():
+$options
+----------------------------------------
+
+Code Block 522 ():
+option
+----------------------------------------
+
+Code Block 523 ():
+select
+----------------------------------------
+
+Code Block 524 (shiki):
+echo $this->Form->select('field', [1, 2, 3, 4, 5]);
+----------------------------------------
+
+Code Block 525 ():
+echo $this->Form->select('field', [1, 2, 3, 4, 5]);
+----------------------------------------
+
+Code Block 526 (shiki):
+<select name="field">
+    <option value="0">1</option>
+    <option value="1">2</option>
+    <option value="2">3</option>
+    <option value="3">4</option>
+    <option value="4">5</option>
+</select>
+----------------------------------------
+
+Code Block 527 ():
+<select name="field">
+    <option value="0">1</option>
+    <option value="1">2</option>
+    <option value="2">3</option>
+    <option value="3">4</option>
+    <option value="4">5</option>
+</select>
+----------------------------------------
+
+Code Block 528 ():
+$options
+----------------------------------------
+
+Code Block 529 (shiki):
+echo $this->Form->select('field', [
+    'Value 1' => 'Label 1',
+    'Value 2' => 'Label 2',
+    'Value 3' => 'Label 3',
+]);
+----------------------------------------
+
+Code Block 530 ():
+echo $this->Form->select('field', [
+    'Value 1' => 'Label 1',
+    'Value 2' => 'Label 2',
+    'Value 3' => 'Label 3',
+]);
+----------------------------------------
+
+Code Block 531 (shiki):
+<select name="field">
+    <option value="Value 1">Label 1</option>
+    <option value="Value 2">Label 2</option>
+    <option value="Value 3">Label 3</option>
+</select>
+----------------------------------------
+
+Code Block 532 ():
+<select name="field">
+    <option value="Value 1">Label 1</option>
+    <option value="Value 2">Label 2</option>
+    <option value="Value 3">Label 3</option>
+</select>
+----------------------------------------
+
+Code Block 533 ():
+select
+----------------------------------------
+
+Code Block 534 ():
+optgroup
+----------------------------------------
+
+Code Block 535 ():
+fieldset
+----------------------------------------
+
+Code Block 536 (shiki):
+$options = [
+    'Group 1' => [
+        'Value 1' => 'Label 1',
+        'Value 2' => 'Label 2',
+    ],
+    'Group 2' => [
+        'Value 3' => 'Label 3',
+    ],
+];
+echo $this->Form->select('field', $options);
+----------------------------------------
+
+Code Block 537 ():
+$options = [
+    'Group 1' => [
+        'Value 1' => 'Label 1',
+        'Value 2' => 'Label 2',
+    ],
+    'Group 2' => [
+        'Value 3' => 'Label 3',
+    ],
+];
+echo $this->Form->select('field', $options);
+----------------------------------------
+
+Code Block 538 (shiki):
+<select name="field">
+    <optgroup label="Group 1">
+        <option value="Value 1">Label 1</option>
+        <option value="Value 2">Label 2</option>
+    </optgroup>
+    <optgroup label="Group 2">
+        <option value="Value 3">Label 3</option>
+    </optgroup>
+</select>
+----------------------------------------
+
+Code Block 539 ():
+<select name="field">
+    <optgroup label="Group 1">
+        <option value="Value 1">Label 1</option>
+        <option value="Value 2">Label 2</option>
+    </optgroup>
+    <optgroup label="Group 2">
+        <option value="Value 3">Label 3</option>
+    </optgroup>
+</select>
+----------------------------------------
+
+Code Block 540 ():
+option
+----------------------------------------
+
+Code Block 541 (shiki):
+$options = [
+    ['text' => 'Description 1', 'value' => 'value 1', 'attr_name' => 'attr_value 1'],
+    ['text' => 'Description 2', 'value' => 'value 2', 'attr_name' => 'attr_value 2'],
+    ['text' => 'Description 3', 'value' => 'value 3', 'other_attr_name' => 'other_attr_value'],
+];
+echo $this->Form->select('field', $options);
+----------------------------------------
+
+Code Block 542 ():
+$options = [
+    ['text' => 'Description 1', 'value' => 'value 1', 'attr_name' => 'attr_value 1'],
+    ['text' => 'Description 2', 'value' => 'value 2', 'attr_name' => 'attr_value 2'],
+    ['text' => 'Description 3', 'value' => 'value 3', 'other_attr_name' => 'other_attr_value'],
+];
+echo $this->Form->select('field', $options);
+----------------------------------------
+
+Code Block 543 (shiki):
+<select name="field">
+    <option value="value 1" attr_name="attr_value 1">Description 1</option>
+    <option value="value 2" attr_name="attr_value 2">Description 2</option>
+    <option value="value 3" other_attr_name="other_attr_value">Description 3</option>
+</select>
+----------------------------------------
+
+Code Block 544 ():
+<select name="field">
+    <option value="value 1" attr_name="attr_value 1">Description 1</option>
+    <option value="value 2" attr_name="attr_value 2">Description 2</option>
+    <option value="value 3" other_attr_name="other_attr_value">Description 3</option>
+</select>
+----------------------------------------
+
+Code Block 545 ():
+$attributes
+----------------------------------------
+
+Code Block 546 ():
+select()
+----------------------------------------
+
+Code Block 547 ():
+'empty'
+----------------------------------------
+
+Code Block 548 ():
+'empty'
+----------------------------------------
+
+Code Block 549 ():
+$attributes
+----------------------------------------
+
+Code Block 550 ():
+true
+----------------------------------------
+
+Code Block 551 ():
+false
+----------------------------------------
+
+Code Block 552 (shiki):
+$options = ['M' => 'Male', 'F' => 'Female'];
+echo $this->Form->select('gender', $options, ['empty' => true]);
+----------------------------------------
+
+Code Block 553 ():
+$options = ['M' => 'Male', 'F' => 'Female'];
+echo $this->Form->select('gender', $options, ['empty' => true]);
+----------------------------------------
+
+Code Block 554 (shiki):
+<select name="gender">
+    <option value=""></option>
+    <option value="M">Male</option>
+    <option value="F">Female</option>
+</select>
+----------------------------------------
+
+Code Block 555 ():
+<select name="gender">
+    <option value=""></option>
+    <option value="M">Male</option>
+    <option value="F">Female</option>
+</select>
+----------------------------------------
+
+Code Block 556 ():
+'escape'
+----------------------------------------
+
+Code Block 557 ():
+select()
+----------------------------------------
+
+Code Block 558 ():
+'escape'
+----------------------------------------
+
+Code Block 559 ():
+select
+----------------------------------------
+
+Code Block 560 ():
+option
+----------------------------------------
+
+Code Block 561 (shiki):
+// This will prevent HTML-encoding the contents of each option element
+$options = ['M' => 'Male', 'F' => 'Female'];
+echo $this->Form->select('gender', $options, ['escape' => false]);
+----------------------------------------
+
+Code Block 562 ():
+// This will prevent HTML-encoding the contents of each option element
+$options = ['M' => 'Male', 'F' => 'Female'];
+echo $this->Form->select('gender', $options, ['escape' => false]);
+----------------------------------------
+
+Code Block 563 ():
+'multiple'
+----------------------------------------
+
+Code Block 564 ():
+true
+----------------------------------------
+
+Code Block 565 (shiki):
+echo $this->Form->select('field', $options, ['multiple' => true]);
+----------------------------------------
+
+Code Block 566 ():
+echo $this->Form->select('field', $options, ['multiple' => true]);
+----------------------------------------
+
+Code Block 567 ():
+'multiple'
+----------------------------------------
+
+Code Block 568 ():
+'checkbox'
+----------------------------------------
+
+Code Block 569 (shiki):
+$options = [
+    'Value 1' => 'Label 1',
+    'Value 2' => 'Label 2',
+];
+echo $this->Form->select('field', $options, [
+    'multiple' => 'checkbox',
+]);
+----------------------------------------
+
+Code Block 570 ():
+$options = [
+    'Value 1' => 'Label 1',
+    'Value 2' => 'Label 2',
+];
+echo $this->Form->select('field', $options, [
+    'multiple' => 'checkbox',
+]);
+----------------------------------------
+
+Code Block 571 (shiki):
+<input name="field" value="" type="hidden">
+<div class="checkbox">
+    <label for="field-1">
+        <input name="field[]" value="Value 1" id="field-1" type="checkbox">
+        Label 1
+    </label>
+</div>
+<div class="checkbox">
+    <label for="field-2">
+        <input name="field[]" value="Value 2" id="field-2" type="checkbox">
+        Label 2
+    </label>
+</div>
+----------------------------------------
+
+Code Block 572 ():
+<input name="field" value="" type="hidden">
+<div class="checkbox">
+    <label for="field-1">
+        <input name="field[]" value="Value 1" id="field-1" type="checkbox">
+        Label 1
+    </label>
+</div>
+<div class="checkbox">
+    <label for="field-2">
+        <input name="field[]" value="Value 2" id="field-2" type="checkbox">
+        Label 2
+    </label>
+</div>
+----------------------------------------
+
+Code Block 573 ():
+'disabled'
+----------------------------------------
+
+Code Block 574 ():
+select
+----------------------------------------
+
+Code Block 575 ():
+option
+----------------------------------------
+
+Code Block 576 ():
+'disabled'
+----------------------------------------
+
+Code Block 577 ():
+true
+----------------------------------------
+
+Code Block 578 ():
+'disabled'
+----------------------------------------
+
+Code Block 579 (shiki):
+$options = [
+    'M' => 'Masculine',
+    'F' => 'Feminine',
+    'N' => 'Neuter',
+];
+echo $this->Form->select('gender', $options, [
+    'disabled' => ['M', 'N'],
+]);
+----------------------------------------
+
+Code Block 580 ():
+$options = [
+    'M' => 'Masculine',
+    'F' => 'Feminine',
+    'N' => 'Neuter',
+];
+echo $this->Form->select('gender', $options, [
+    'disabled' => ['M', 'N'],
+]);
+----------------------------------------
+
+Code Block 581 (shiki):
+<select name="gender">
+    <option value="M" disabled="disabled">Masculine</option>
+    <option value="F">Feminine</option>
+    <option value="N" disabled="disabled">Neuter</option>
+</select>
+----------------------------------------
+
+Code Block 582 ():
+<select name="gender">
+    <option value="M" disabled="disabled">Masculine</option>
+    <option value="F">Feminine</option>
+    <option value="N" disabled="disabled">Neuter</option>
+</select>
+----------------------------------------
+
+Code Block 583 ():
+'multiple'
+----------------------------------------
+
+Code Block 584 ():
+'checkbox'
+----------------------------------------
+
+Code Block 585 (shiki):
+$options = [
+    'Value 1' => 'Label 1',
+    'Value 2' => 'Label 2',
+];
+echo $this->Form->select('field', $options, [
+    'multiple' => 'checkbox',
+    'disabled' => ['Value 1'],
+]);
+----------------------------------------
+
+Code Block 586 ():
+$options = [
+    'Value 1' => 'Label 1',
+    'Value 2' => 'Label 2',
+];
+echo $this->Form->select('field', $options, [
+    'multiple' => 'checkbox',
+    'disabled' => ['Value 1'],
+]);
+----------------------------------------
+
+Code Block 587 (shiki):
+<input name="field" value="" type="hidden">
+<div class="checkbox">
+    <label for="field-1">
+        <input name="field[]" disabled="disabled" value="Value 1" type="checkbox">
+        Label 1
+    </label>
+</div>
+<div class="checkbox">
+    <label for="field-2">
+        <input name="field[]" value="Value 2" id="field-2" type="checkbox">
+        Label 2
+    </label>
+</div>
+----------------------------------------
+
+Code Block 588 ():
+<input name="field" value="" type="hidden">
+<div class="checkbox">
+    <label for="field-1">
+        <input name="field[]" disabled="disabled" value="Value 1" type="checkbox">
+        Label 1
+    </label>
+</div>
+<div class="checkbox">
+    <label for="field-2">
+        <input name="field[]" value="Value 2" id="field-2" type="checkbox">
+        Label 2
+    </label>
+</div>
+----------------------------------------
+
+Code Block 589 ():
+method
+----------------------------------------
+
+Code Block 590 ():
+$fieldName
+----------------------------------------
+
+Code Block 591 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 592 ():
+$options
+----------------------------------------
+
+Code Block 593 (shiki):
+'file' => '<input type="file" name="{{name}}"{{attrs}}>'
+----------------------------------------
+
+Code Block 594 ():
+'file' => '<input type="file" name="{{name}}"{{attrs}}>'
+----------------------------------------
+
+Code Block 595 ():
+'multipart/form-data'
+----------------------------------------
+
+Code Block 596 ():
+create()
+----------------------------------------
+
+Code Block 597 (shiki):
+echo $this->Form->create($document, ['enctype' => 'multipart/form-data']);
+// OR
+echo $this->Form->create($document, ['type' => 'file']);
+----------------------------------------
+
+Code Block 598 ():
+echo $this->Form->create($document, ['enctype' => 'multipart/form-data']);
+// OR
+echo $this->Form->create($document, ['type' => 'file']);
+----------------------------------------
+
+Code Block 599 (shiki):
+echo $this->Form->control('submittedfile', [
+    'type' => 'file',
+]);
+
+// OR
+echo $this->Form->file('submittedfile');
+----------------------------------------
+
+Code Block 600 ():
+echo $this->Form->control('submittedfile', [
+    'type' => 'file',
+]);
+
+// OR
+echo $this->Form->file('submittedfile');
+----------------------------------------
+
+Code Block 601 ():
+submittedfile
+----------------------------------------
+
+Code Block 602 ():
+$_accessible
+----------------------------------------
+
+Code Block 603 ():
+beforeMarshal
+----------------------------------------
+
+Code Block 604 (shiki):
+public function beforeMarshal(\Cake\Event\EventInterface $event, \ArrayObject $data, \ArrayObject $options): void
+{
+    if ($data['submittedfile'] === '') {
+        unset($data['submittedfile']);
+    }
+}
+----------------------------------------
+
+Code Block 605 ():
+public function beforeMarshal(\Cake\Event\EventInterface $event, \ArrayObject $data, \ArrayObject $options): void
+{
+    if ($data['submittedfile'] === '') {
+        unset($data['submittedfile']);
+    }
+}
+----------------------------------------
+
+Code Block 606 ():
+UploadedFileInterface
+----------------------------------------
+
+Code Block 607 (shiki):
+$fileobject = $this->request->getData('submittedfile');
+$destination = UPLOAD_DIRECTORY . $fileobject->getClientFilename();
+
+// Existing files with the same name will be replaced.
+$fileobject->moveTo($destination);
+----------------------------------------
+
+Code Block 608 ():
+$fileobject = $this->request->getData('submittedfile');
+$destination = UPLOAD_DIRECTORY . $fileobject->getClientFilename();
+
+// Existing files with the same name will be replaced.
+$fileobject->moveTo($destination);
+----------------------------------------
+
+Code Block 609 ():
+$this->Form->file()
+----------------------------------------
+
+Code Block 610 ():
+'type'
+----------------------------------------
+
+Code Block 611 ():
+'file'
+----------------------------------------
+
+Code Block 612 ():
+$this->Form->create()
+----------------------------------------
+
+Code Block 613 ():
+method
+----------------------------------------
+
+Code Block 614 ():
+$fieldName
+----------------------------------------
+
+Code Block 615 ():
+name
+----------------------------------------
+
+Code Block 616 ():
+select
+----------------------------------------
+
+Code Block 617 ():
+$options
+----------------------------------------
+
+Code Block 618 (shiki):
+<?= $this->form->dateTime('registered') ?>
+----------------------------------------
+
+Code Block 619 ():
+<?= $this->form->dateTime('registered') ?>
+----------------------------------------
+
+Code Block 620 (shiki):
+<input type="datetime-local" name="registered">
+----------------------------------------
+
+Code Block 621 ():
+<input type="datetime-local" name="registered">
+----------------------------------------
+
+Code Block 622 ():
+DateTime
+----------------------------------------
+
+Code Block 623 (shiki):
+<?= $this->form->dateTime('registered', ['value' => new DateTime()]) ?>
+----------------------------------------
+
+Code Block 624 ():
+<?= $this->form->dateTime('registered', ['value' => new DateTime()]) ?>
+----------------------------------------
+
+Code Block 625 (shiki):
+<input type="datetime-local" name="registered" value="2019-02-08T18:20:10">
+----------------------------------------
+
+Code Block 626 ():
+<input type="datetime-local" name="registered" value="2019-02-08T18:20:10">
+----------------------------------------
+
+Code Block 627 ():
+method
+----------------------------------------
+
+Code Block 628 ():
+$fieldName
+----------------------------------------
+
+Code Block 629 ():
+name
+----------------------------------------
+
+Code Block 630 ():
+select
+----------------------------------------
+
+Code Block 631 ():
+$options
+----------------------------------------
+
+Code Block 632 (shiki):
+<?= $this->form->date('registered') ?>
+----------------------------------------
+
+Code Block 633 ():
+<?= $this->form->date('registered') ?>
+----------------------------------------
+
+Code Block 634 (shiki):
+<input type="date" name="registered">
+----------------------------------------
+
+Code Block 635 ():
+<input type="date" name="registered">
+----------------------------------------
+
+Code Block 636 ():
+method
+----------------------------------------
+
+Code Block 637 ():
+$fieldName
+----------------------------------------
+
+Code Block 638 ():
+name
+----------------------------------------
+
+Code Block 639 ():
+select
+----------------------------------------
+
+Code Block 640 ():
+$options
+----------------------------------------
+
+Code Block 641 (shiki):
+echo $this->Form->time('released');
+----------------------------------------
+
+Code Block 642 ():
+echo $this->Form->time('released');
+----------------------------------------
+
+Code Block 643 (shiki):
+<input type="time" name="released">
+----------------------------------------
+
+Code Block 644 ():
+<input type="time" name="released">
+----------------------------------------
+
+Code Block 645 ():
+method
+----------------------------------------
+
+Code Block 646 ():
+$fieldName
+----------------------------------------
+
+Code Block 647 ():
+name
+----------------------------------------
+
+Code Block 648 ():
+select
+----------------------------------------
+
+Code Block 649 ():
+$options
+----------------------------------------
+
+Code Block 650 (shiki):
+echo $this->Form->month('mob');
+----------------------------------------
+
+Code Block 651 ():
+echo $this->Form->month('mob');
+----------------------------------------
+
+Code Block 652 (shiki):
+<input type="month" name="mob">
+----------------------------------------
+
+Code Block 653 ():
+<input type="month" name="mob">
+----------------------------------------
+
+Code Block 654 ():
+method
+----------------------------------------
+
+Code Block 655 ():
+$fieldName
+----------------------------------------
+
+Code Block 656 ():
+name
+----------------------------------------
+
+Code Block 657 ():
+select
+----------------------------------------
+
+Code Block 658 ():
+$options
+----------------------------------------
+
+Code Block 659 ():
+min
+----------------------------------------
+
+Code Block 660 ():
+max
+----------------------------------------
+
+Code Block 661 ():
+order
+----------------------------------------
+
+Code Block 662 ():
+'asc'
+----------------------------------------
+
+Code Block 663 ():
+'desc'
+----------------------------------------
+
+Code Block 664 ():
+'desc'
+----------------------------------------
+
+Code Block 665 ():
+select
+----------------------------------------
+
+Code Block 666 ():
+min
+----------------------------------------
+
+Code Block 667 ():
+max
+----------------------------------------
+
+Code Block 668 ():
+$options
+----------------------------------------
+
+Code Block 669 ():
+$options['empty']
+----------------------------------------
+
+Code Block 670 ():
+false
+----------------------------------------
+
+Code Block 671 (shiki):
+echo $this->Form->year('purchased', [
+    'min' => 2000,
+    'max' => date('Y'),
+]);
+----------------------------------------
+
+Code Block 672 ():
+echo $this->Form->year('purchased', [
+    'min' => 2000,
+    'max' => date('Y'),
+]);
+----------------------------------------
+
+Code Block 673 (shiki):
+<select name="purchased">
+    <option value=""></option>
+    <option value="2009">2009</option>
+    <option value="2008">2008</option>
+    <option value="2007">2007</option>
+    <option value="2006">2006</option>
+    <option value="2005">2005</option>
+    <option value="2004">2004</option>
+    <option value="2003">2003</option>
+    <option value="2002">2002</option>
+    <option value="2001">2001</option>
+    <option value="2000">2000</option>
+</select>
+----------------------------------------
+
+Code Block 674 ():
+<select name="purchased">
+    <option value=""></option>
+    <option value="2009">2009</option>
+    <option value="2008">2008</option>
+    <option value="2007">2007</option>
+    <option value="2006">2006</option>
+    <option value="2005">2005</option>
+    <option value="2004">2004</option>
+    <option value="2003">2003</option>
+    <option value="2002">2002</option>
+    <option value="2001">2001</option>
+    <option value="2000">2000</option>
+</select>
+----------------------------------------
+
+Code Block 675 ():
+method
+----------------------------------------
+
+Code Block 676 ():
+$fieldName
+----------------------------------------
+
+Code Block 677 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 678 ():
+$text
+----------------------------------------
+
+Code Block 679 ():
+$options
+----------------------------------------
+
+Code Block 680 ():
+label
+----------------------------------------
+
+Code Block 681 ():
+$fieldName
+----------------------------------------
+
+Code Block 682 ():
+for
+----------------------------------------
+
+Code Block 683 ():
+$text
+----------------------------------------
+
+Code Block 684 ():
+$fieldName
+----------------------------------------
+
+Code Block 685 ():
+text
+----------------------------------------
+
+Code Block 686 (shiki):
+echo $this->Form->label('name');
+echo $this->Form->label('name', 'Your username');
+----------------------------------------
+
+Code Block 687 ():
+echo $this->Form->label('name');
+echo $this->Form->label('name', 'Your username');
+----------------------------------------
+
+Code Block 688 (shiki):
+<label for="name">Name</label>
+<label for="name">Your username</label>
+----------------------------------------
+
+Code Block 689 ():
+<label for="name">Name</label>
+<label for="name">Your username</label>
+----------------------------------------
+
+Code Block 690 ():
+$options
+----------------------------------------
+
+Code Block 691 (shiki):
+echo $this->Form->label('name', null, ['id' => 'user-label']);
+echo $this->Form->label('name', 'Your username', ['class' => 'highlight']);
+----------------------------------------
+
+Code Block 692 ():
+echo $this->Form->label('name', null, ['id' => 'user-label']);
+echo $this->Form->label('name', 'Your username', ['class' => 'highlight']);
+----------------------------------------
+
+Code Block 693 (shiki):
+<label for="name" id="user-label">Name</label>
+<label for="name" class="highlight">Your username</label>
+----------------------------------------
+
+Code Block 694 ():
+<label for="name" id="user-label">Name</label>
+<label for="name" class="highlight">Your username</label>
+----------------------------------------
+
+Code Block 695 ():
+method
+----------------------------------------
+
+Code Block 696 ():
+$fieldName
+----------------------------------------
+
+Code Block 697 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 698 ():
+$text
+----------------------------------------
+
+Code Block 699 ():
+null
+----------------------------------------
+
+Code Block 700 ():
+$options
+----------------------------------------
+
+Code Block 701 ():
+'escape'
+----------------------------------------
+
+Code Block 702 ():
+true
+----------------------------------------
+
+Code Block 703 ():
+$text
+----------------------------------------
+
+Code Block 704 ():
+$text
+----------------------------------------
+
+Code Block 705 (shiki):
+'error' => '<div class="error-message">{{content}}</div>'
+'errorList' => '<ul>{{content}}</ul>'
+'errorItem' => '<li>{{text}}</li>'
+----------------------------------------
+
+Code Block 706 ():
+'error' => '<div class="error-message">{{content}}</div>'
+'errorList' => '<ul>{{content}}</ul>'
+'errorItem' => '<li>{{text}}</li>'
+----------------------------------------
+
+Code Block 707 ():
+'errorList'
+----------------------------------------
+
+Code Block 708 ():
+'errorItem'
+----------------------------------------
+
+Code Block 709 (shiki):
+// If in TicketsTable you have a 'notEmpty' validation rule:
+public function validationDefault(Validator $validator): Validator
+{
+    $validator
+        ->requirePresence('ticket', 'create')
+        ->notEmpty('ticket');
+}
+
+// And inside templates/Tickets/add.php you have:
+echo $this->Form->text('ticket');
+
+if ($this->Form->isFieldError('ticket')) {
+    echo $this->Form->error('ticket', 'Completely custom error message!');
+}
+----------------------------------------
+
+Code Block 710 ():
+// If in TicketsTable you have a 'notEmpty' validation rule:
+public function validationDefault(Validator $validator): Validator
+{
+    $validator
+        ->requirePresence('ticket', 'create')
+        ->notEmpty('ticket');
+}
+
+// And inside templates/Tickets/add.php you have:
+echo $this->Form->text('ticket');
+
+if ($this->Form->isFieldError('ticket')) {
+    echo $this->Form->error('ticket', 'Completely custom error message!');
+}
+----------------------------------------
+
+Code Block 711 (shiki):
+<input name="ticket" class="form-error" required="required" value="" type="text">
+<div class="error-message">Completely custom error message!</div>
+----------------------------------------
+
+Code Block 712 ():
+<input name="ticket" class="form-error" required="required" value="" type="text">
+<div class="error-message">Completely custom error message!</div>
+----------------------------------------
+
+Code Block 713 ():
+Cake\View\Helper\FormHelper::control()
+----------------------------------------
+
+Code Block 714 ():
+isFieldError()
+----------------------------------------
+
+Code Block 715 ():
+error()
+----------------------------------------
+
+Code Block 716 ():
+control()
+----------------------------------------
+
+Code Block 717 ():
+method
+----------------------------------------
+
+Code Block 718 ():
+$fieldName
+----------------------------------------
+
+Code Block 719 ():
+'Modelname.fieldname'
+----------------------------------------
+
+Code Block 720 ():
+true
+----------------------------------------
+
+Code Block 721 ():
+$fieldName
+----------------------------------------
+
+Code Block 722 ():
+false
+----------------------------------------
+
+Code Block 723 (shiki):
+if ($this->Form->isFieldError('gender')) {
+    echo $this->Form->error('gender');
+}
+----------------------------------------
+
+Code Block 724 ():
+if ($this->Form->isFieldError('gender')) {
+    echo $this->Form->error('gender');
+}
+----------------------------------------
+
+Code Block 725 ():
+autoSetCustomValidity
+----------------------------------------
+
+Code Block 726 ():
+true
+----------------------------------------
+
+Code Block 727 ():
+onvalid
+----------------------------------------
+
+Code Block 728 ():
+oninvalid
+----------------------------------------
+
+Code Block 729 (shiki):
+<input type="text" name="field" required onvalid="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Custom notBlank message')">
+----------------------------------------
+
+Code Block 730 ():
+<input type="text" name="field" required onvalid="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Custom notBlank message')">
+----------------------------------------
+
+Code Block 731 ():
+autoSetCustomValidity
+----------------------------------------
+
+Code Block 732 ():
+false
+----------------------------------------
+
+Code Block 733 ():
+customValidityMessage
+----------------------------------------
+
+Code Block 734 (shiki):
+// example template
+[
+    'input' => '<input type="{{type}}" name="{{name}}" data-error-message="{{customValidityMessage}}" {{attrs}}/>',
+]
+
+// would create an input like this
+<input type="text" name="field" required data-error-message="Custom notBlank message" />
+----------------------------------------
+
+Code Block 735 ():
+// example template
+[
+    'input' => '<input type="{{type}}" name="{{name}}" data-error-message="{{customValidityMessage}}" {{attrs}}/>',
+]
+
+// would create an input like this
+<input type="text" name="field" required data-error-message="Custom notBlank message" />
+----------------------------------------
+
+Code Block 736 ():
+onvalid
+----------------------------------------
+
+Code Block 737 ():
+oninvalid
+----------------------------------------
+
+Code Block 738 ():
+method
+----------------------------------------
+
+Code Block 739 ():
+$caption
+----------------------------------------
+
+Code Block 740 ():
+'Submit'
+----------------------------------------
+
+Code Block 741 ():
+$options
+----------------------------------------
+
+Code Block 742 ():
+input
+----------------------------------------
+
+Code Block 743 ():
+submit
+----------------------------------------
+
+Code Block 744 ():
+$caption
+----------------------------------------
+
+Code Block 745 ():
+$caption
+----------------------------------------
+
+Code Block 746 (shiki):
+'inputSubmit' => '<input type="{{type}}"{{attrs}}>'
+'submitContainer' => '<div class="submit">{{content}}</div>'
+----------------------------------------
+
+Code Block 747 ():
+'inputSubmit' => '<input type="{{type}}"{{attrs}}>'
+'submitContainer' => '<div class="submit">{{content}}</div>'
+----------------------------------------
+
+Code Block 748 ():
+'type'
+----------------------------------------
+
+Code Block 749 ():
+'reset'
+----------------------------------------
+
+Code Block 750 ():
+'submit'
+----------------------------------------
+
+Code Block 751 ():
+'templateVars'
+----------------------------------------
+
+Code Block 752 ():
+input
+----------------------------------------
+
+Code Block 753 (shiki):
+echo $this->Form->submit('Click me');
+----------------------------------------
+
+Code Block 754 ():
+echo $this->Form->submit('Click me');
+----------------------------------------
+
+Code Block 755 (shiki):
+<div class="submit"><input value="Click me" type="submit"></div>
+----------------------------------------
+
+Code Block 756 ():
+<div class="submit"><input value="Click me" type="submit"></div>
+----------------------------------------
+
+Code Block 757 (shiki):
+echo $this->Form->submit('ok.png');
+----------------------------------------
+
+Code Block 758 ():
+echo $this->Form->submit('ok.png');
+----------------------------------------
+
+Code Block 759 (shiki):
+<div class="submit"><input type="image" src="/img/ok.png"></div>
+----------------------------------------
+
+Code Block 760 ():
+<div class="submit"><input type="image" src="/img/ok.png"></div>
+----------------------------------------
+
+Code Block 761 ():
+button()
+----------------------------------------
+
+Code Block 762 ():
+method
+----------------------------------------
+
+Code Block 763 ():
+$title
+----------------------------------------
+
+Code Block 764 ():
+$options
+----------------------------------------
+
+Code Block 765 ():
+'button'
+----------------------------------------
+
+Code Block 766 ():
+'type'
+----------------------------------------
+
+Code Block 767 ():
+'submit'
+----------------------------------------
+
+Code Block 768 ():
+$this->Form->submit()
+----------------------------------------
+
+Code Block 769 ():
+div
+----------------------------------------
+
+Code Block 770 ():
+submit()
+----------------------------------------
+
+Code Block 771 ():
+'reset'
+----------------------------------------
+
+Code Block 772 ():
+'button'
+----------------------------------------
+
+Code Block 773 ():
+'escapeTitle'
+----------------------------------------
+
+Code Block 774 ():
+true
+----------------------------------------
+
+Code Block 775 ():
+$title
+----------------------------------------
+
+Code Block 776 ():
+true
+----------------------------------------
+
+Code Block 777 ():
+'escape'
+----------------------------------------
+
+Code Block 778 ():
+true
+----------------------------------------
+
+Code Block 779 ():
+true
+----------------------------------------
+
+Code Block 780 ():
+'confirm'
+----------------------------------------
+
+Code Block 781 ():
+null
+----------------------------------------
+
+Code Block 782 (shiki):
+echo $this->Form->button('A Button');
+echo $this->Form->button('Another Button', ['type' => 'button']);
+echo $this->Form->button('Reset the Form', ['type' => 'reset']);
+echo $this->Form->button('Submit Form', ['type' => 'submit']);
+----------------------------------------
+
+Code Block 783 ():
+echo $this->Form->button('A Button');
+echo $this->Form->button('Another Button', ['type' => 'button']);
+echo $this->Form->button('Reset the Form', ['type' => 'reset']);
+echo $this->Form->button('Submit Form', ['type' => 'submit']);
+----------------------------------------
+
+Code Block 784 (shiki):
+<button type="submit">A Button</button>
+<button type="button">Another Button</button>
+<button type="reset">Reset the Form</button>
+<button type="submit">Submit Form</button>
+----------------------------------------
+
+Code Block 785 ():
+<button type="submit">A Button</button>
+<button type="button">Another Button</button>
+<button type="reset">Reset the Form</button>
+<button type="submit">Submit Form</button>
+----------------------------------------
+
+Code Block 786 ():
+'escapeTitle'
+----------------------------------------
+
+Code Block 787 (shiki):
+// Will render unescaped HTML.
+echo $this->Form->button('<em>Submit Form</em>', [
+    'type' => 'submit',
+    'escapeTitle' => false,
+]);
+----------------------------------------
+
+Code Block 788 ():
+// Will render unescaped HTML.
+echo $this->Form->button('<em>Submit Form</em>', [
+    'type' => 'submit',
+    'escapeTitle' => false,
+]);
+----------------------------------------
+
+Code Block 789 ():
+method
+----------------------------------------
+
+Code Block 790 ():
+$secureAttributes
+----------------------------------------
+
+Code Block 791 ():
+end()
+----------------------------------------
+
+Code Block 792 ():
+end()
+----------------------------------------
+
+Code Block 793 ():
+end()
+----------------------------------------
+
+Code Block 794 ():
+Cake\Controller\Component\FormProtectionComponent
+----------------------------------------
+
+Code Block 795 (shiki):
+<?= $this->Form->create(); ?>
+
+<!-- Form elements go here -->
+
+<?= $this->Form->end(); ?>
+----------------------------------------
+
+Code Block 796 ():
+<?= $this->Form->create(); ?>
+
+<!-- Form elements go here -->
+
+<?= $this->Form->end(); ?>
+----------------------------------------
+
+Code Block 797 ():
+$secureAttributes
+----------------------------------------
+
+Code Block 798 (shiki):
+echo $this->Form->end(['data-type' => 'hidden']);
+----------------------------------------
+
+Code Block 799 ():
+echo $this->Form->end(['data-type' => 'hidden']);
+----------------------------------------
+
+Code Block 800 (shiki):
+<div style="display:none;">
+    <input type="hidden" name="_Token[fields]" data-type="hidden"
+        value="2981c38990f3f6ba935e6561dc77277966fabd6d%3AAddresses.id">
+    <input type="hidden" name="_Token[unlocked]" data-type="hidden"
+        value="address%7Cfirst_name">
+</div>
+----------------------------------------
+
+Code Block 801 ():
+<div style="display:none;">
+    <input type="hidden" name="_Token[fields]" data-type="hidden"
+        value="2981c38990f3f6ba935e6561dc77277966fabd6d%3AAddresses.id">
+    <input type="hidden" name="_Token[unlocked]" data-type="hidden"
+        value="address%7Cfirst_name">
+</div>
+----------------------------------------
+
+Code Block 802 ():
+Cake\Controller\Component\FormProtectionComponent
+----------------------------------------
+
+Code Block 803 ():
+end()
+----------------------------------------
+
+Code Block 804 ():
+method
+----------------------------------------
+
+Code Block 805 ():
+$title
+----------------------------------------
+
+Code Block 806 ():
+$url
+----------------------------------------
+
+Code Block 807 ():
+$options
+----------------------------------------
+
+Code Block 808 ():
+<button>
+----------------------------------------
+
+Code Block 809 ():
+<form>
+----------------------------------------
+
+Code Block 810 ():
+'data'
+----------------------------------------
+
+Code Block 811 ():
+'method'
+----------------------------------------
+
+Code Block 812 ():
+'delete'
+----------------------------------------
+
+Code Block 813 ():
+'post'
+----------------------------------------
+
+Code Block 814 ():
+'form'
+----------------------------------------
+
+Code Block 815 ():
+FormHelper::create()
+----------------------------------------
+
+Code Block 816 ():
+postButton()
+----------------------------------------
+
+Code Block 817 ():
+button()
+----------------------------------------
+
+Code Block 818 (shiki):
+// In templates/Tickets/index.php
+<?= $this->Form->postButton('Delete Record', ['controller' => 'Tickets', 'action' => 'delete', 5]) ?>
+----------------------------------------
+
+Code Block 819 ():
+// In templates/Tickets/index.php
+<?= $this->Form->postButton('Delete Record', ['controller' => 'Tickets', 'action' => 'delete', 5]) ?>
+----------------------------------------
+
+Code Block 820 (shiki):
+<form method="post" accept-charset="utf-8" action="/Rtools/tickets/delete/5">
+    <div style="display:none;">
+        <input name="_method" value="POST" type="hidden">
+    </div>
+    <button type="submit">Delete Record</button>
+    <div style="display:none;">
+        <input name="_Token[fields]" value="186cfbfc6f519622e19d1e688633c4028229081f%3A" type="hidden">
+        <input name="_Token[unlocked]" value="" type="hidden">
+        <input name="_Token[debug]" value="%5B%22%5C%2FRtools%5C%2Ftickets%5C%2Fdelete%5C%2F1%22%2C%5B%5D%2C%5B%5D%5D" type="hidden">
+    </div>
+</form>
+----------------------------------------
+
+Code Block 821 ():
+<form method="post" accept-charset="utf-8" action="/Rtools/tickets/delete/5">
+    <div style="display:none;">
+        <input name="_method" value="POST" type="hidden">
+    </div>
+    <button type="submit">Delete Record</button>
+    <div style="display:none;">
+        <input name="_Token[fields]" value="186cfbfc6f519622e19d1e688633c4028229081f%3A" type="hidden">
+        <input name="_Token[unlocked]" value="" type="hidden">
+        <input name="_Token[debug]" value="%5B%22%5C%2FRtools%5C%2Ftickets%5C%2Fdelete%5C%2F1%22%2C%5B%5D%2C%5B%5D%5D" type="hidden">
+    </div>
+</form>
+----------------------------------------
+
+Code Block 822 ():
+form
+----------------------------------------
+
+Code Block 823 ():
+Cake\View\Helper\FormHelper::submit()
+----------------------------------------
+
+Code Block 824 ():
+Cake\View\Helper\FormHelper::button()
+----------------------------------------
+
+Code Block 825 ():
+method
+----------------------------------------
+
+Code Block 826 ():
+$title
+----------------------------------------
+
+Code Block 827 ():
+<a>
+----------------------------------------
+
+Code Block 828 ():
+$url
+----------------------------------------
+
+Code Block 829 ():
+http://
+----------------------------------------
+
+Code Block 830 ():
+$options
+----------------------------------------
+
+Code Block 831 (shiki):
+// In your template, to delete an article, for example
+<?= $this->Form->postLink(
+    'Delete',
+    ['action' => 'delete', $article->id],
+    ['confirm' => 'Are you sure?'])
+?>
+----------------------------------------
+
+Code Block 832 ():
+// In your template, to delete an article, for example
+<?= $this->Form->postLink(
+    'Delete',
+    ['action' => 'delete', $article->id],
+    ['confirm' => 'Are you sure?'])
+?>
+----------------------------------------
+
+Code Block 833 ():
+'data'
+----------------------------------------
+
+Code Block 834 ():
+'method'
+----------------------------------------
+
+Code Block 835 ():
+'delete'
+----------------------------------------
+
+Code Block 836 ():
+'post'
+----------------------------------------
+
+Code Block 837 ():
+'confirm'
+----------------------------------------
+
+Code Block 838 ():
+null
+----------------------------------------
+
+Code Block 839 ():
+'block'
+----------------------------------------
+
+Code Block 840 ():
+true
+----------------------------------------
+
+Code Block 841 ():
+'postLink'
+----------------------------------------
+
+Code Block 842 ():
+null
+----------------------------------------
+
+Code Block 843 ():
+postLink
+----------------------------------------
+
+Code Block 844 ():
+link()
+----------------------------------------
+
+Code Block 845 ():
+<form>
+----------------------------------------
+
+Code Block 846 ():
+block
+----------------------------------------
+
+Code Block 847 ():
+Cake\View\Helper\FormHelper::button()
+----------------------------------------
+
+Code Block 848 ():
+Cake\View\Helper\FormHelper::submit()
+----------------------------------------
+
+Code Block 849 ():
+block
+----------------------------------------
+
+Code Block 850 ():
+method
+----------------------------------------
+
+Code Block 851 ():
+$title
+----------------------------------------
+
+Code Block 852 ():
+<a>
+----------------------------------------
+
+Code Block 853 ():
+$url
+----------------------------------------
+
+Code Block 854 ():
+http://
+----------------------------------------
+
+Code Block 855 ():
+$options
+----------------------------------------
+
+Code Block 856 (shiki):
+// In your template, to delete an article, for example
+<?= $this->Form->deleteLink(
+    'Delete',
+    ['action' => 'delete', $article->id],
+    ['confirm' => 'Are you sure?'])
+?>
+----------------------------------------
+
+Code Block 857 ():
+// In your template, to delete an article, for example
+<?= $this->Form->deleteLink(
+    'Delete',
+    ['action' => 'delete', $article->id],
+    ['confirm' => 'Are you sure?'])
+?>
+----------------------------------------
+
+Code Block 858 ():
+deleteLink
+----------------------------------------
+
+Code Block 859 ():
+'templates'
+----------------------------------------
+
+Code Block 860 (shiki):
+// In a View class
+$this->addHelper('Form', [
+    'templates' => 'app_form',
+]);
+----------------------------------------
+
+Code Block 861 ():
+// In a View class
+$this->addHelper('Form', [
+    'templates' => 'app_form',
+]);
+----------------------------------------
+
+Code Block 862 (shiki):
+// in config/app_form.php
+return [
+    'inputContainer' => '<div class="form-control">{{content}}</div>',
+];
+----------------------------------------
+
+Code Block 863 ():
+// in config/app_form.php
+return [
+    'inputContainer' => '<div class="form-control">{{content}}</div>',
+];
+----------------------------------------
+
+Code Block 864 ():
+setTemplates()
+----------------------------------------
+
+Code Block 865 (shiki):
+$myTemplates = [
+    'inputContainer' => '<div class="form-control">{{content}}</div>',
+];
+$this->Form->setTemplates($myTemplates);
+----------------------------------------
+
+Code Block 866 ():
+$myTemplates = [
+    'inputContainer' => '<div class="form-control">{{content}}</div>',
+];
+$this->Form->setTemplates($myTemplates);
+----------------------------------------
+
+Code Block 867 ():
+%
+----------------------------------------
+
+Code Block 868 ():
+%%
+----------------------------------------
+
+Code Block 869 ():
+sprintf()
+----------------------------------------
+
+Code Block 870 ():
+'<div style="width:%%"></div>'
+----------------------------------------
+
+Code Block 871 ():
+control()
+----------------------------------------
+
+Code Block 872 ():
+datetimeContainer
+----------------------------------------
+
+Code Block 873 ():
+inputContainer
+----------------------------------------
+
+Code Block 874 (shiki):
+// Add custom radio wrapping HTML
+$this->Form->setTemplates([
+    'radioContainer' => '<div class="form-radio">{{content}}</div>',
+]);
+
+// Create a radio set with our custom wrapping div.
+echo $this->Form->control('email_notifications', [
+    'options' => ['y', 'n'],
+    'type' => 'radio',
+]);
+----------------------------------------
+
+Code Block 875 ():
+// Add custom radio wrapping HTML
+$this->Form->setTemplates([
+    'radioContainer' => '<div class="form-radio">{{content}}</div>',
+]);
+
+// Create a radio set with our custom wrapping div.
+echo $this->Form->control('email_notifications', [
+    'options' => ['y', 'n'],
+    'type' => 'radio',
+]);
+----------------------------------------
+
+Code Block 876 ():
+control()
+----------------------------------------
+
+Code Block 877 ():
+radioFormGroup
+----------------------------------------
+
+Code Block 878 ():
+label
+----------------------------------------
+
+Code Block 879 ():
+input
+----------------------------------------
+
+Code Block 880 ():
+formGroup
+----------------------------------------
+
+Code Block 881 (shiki):
+// Add custom radio form group
+$this->Form->setTemplates([
+    'radioFormGroup' => '<div class="radio">{{label}}{{input}}</div>',
+]);
+----------------------------------------
+
+Code Block 882 ():
+// Add custom radio form group
+$this->Form->setTemplates([
+    'radioFormGroup' => '<div class="radio">{{label}}{{input}}</div>',
+]);
+----------------------------------------
+
+Code Block 883 (shiki):
+// Add a template with the help placeholder.
+$this->Form->setTemplates([
+    'inputContainer' => '<div class="input {{type}}{{required}}">
+        {{content}} <span class="help">{{help}}</span></div>',
+]);
+
+// Generate an input and populate the help variable
+echo $this->Form->control('password', [
+    'templateVars' => ['help' => 'At least 8 characters long.'],
+]);
+----------------------------------------
+
+Code Block 884 ():
+// Add a template with the help placeholder.
+$this->Form->setTemplates([
+    'inputContainer' => '<div class="input {{type}}{{required}}">
+        {{content}} <span class="help">{{help}}</span></div>',
+]);
+
+// Generate an input and populate the help variable
+echo $this->Form->control('password', [
+    'templateVars' => ['help' => 'At least 8 characters long.'],
+]);
+----------------------------------------
+
+Code Block 885 (shiki):
+<div class="input password">
+    <label for="password">
+        Password
+    </label>
+    <input name="password" id="password" type="password">
+    <span class="help">At least 8 characters long.</span>
+</div>
+----------------------------------------
+
+Code Block 886 ():
+<div class="input password">
+    <label for="password">
+        Password
+    </label>
+    <input name="password" id="password" type="password">
+    <span class="help">At least 8 characters long.</span>
+</div>
+----------------------------------------
+
+Code Block 887 ():
+control()
+----------------------------------------
+
+Code Block 888 ():
+control()
+----------------------------------------
+
+Code Block 889 ():
+radio()
+----------------------------------------
+
+Code Block 890 (shiki):
+$this->Form->setTemplates([
+    'nestingLabel' => '{{hidden}}{{input}}<label{{attrs}}>{{text}}</label>',
+    'formGroup' => '{{input}}{{label}}',
+]);
+----------------------------------------
+
+Code Block 891 ():
+$this->Form->setTemplates([
+    'nestingLabel' => '{{hidden}}{{input}}<label{{attrs}}>{{text}}</label>',
+    'formGroup' => '{{input}}{{label}}',
+]);
+----------------------------------------
+
+Code Block 892 ():
+method
+----------------------------------------
+
+Code Block 893 ():
+$fields
+----------------------------------------
+
+Code Block 894 ():
+$options
+----------------------------------------
+
+Code Block 895 ():
+'fieldset'
+----------------------------------------
+
+Code Block 896 ():
+false
+----------------------------------------
+
+Code Block 897 ():
+fieldset
+----------------------------------------
+
+Code Block 898 ():
+legend
+----------------------------------------
+
+Code Block 899 ():
+legend
+----------------------------------------
+
+Code Block 900 ():
+false
+----------------------------------------
+
+Code Block 901 ():
+fieldset
+----------------------------------------
+
+Code Block 902 (shiki):
+echo $this->Form->controls([
+    'name',
+    'email',
+]);
+----------------------------------------
+
+Code Block 903 ():
+echo $this->Form->controls([
+    'name',
+    'email',
+]);
+----------------------------------------
+
+Code Block 904 (shiki):
+echo $this->Form->controls($fields, ['legend' => 'Update news post']);
+----------------------------------------
+
+Code Block 905 ():
+echo $this->Form->controls($fields, ['legend' => 'Update news post']);
+----------------------------------------
+
+Code Block 906 ():
+$fields
+----------------------------------------
+
+Code Block 907 (shiki):
+echo $this->Form->controls([
+    'name' => ['label' => 'custom label'],
+]);
+----------------------------------------
+
+Code Block 908 ():
+echo $this->Form->controls([
+    'name' => ['label' => 'custom label'],
+]);
+----------------------------------------
+
+Code Block 909 ():
+$fields
+----------------------------------------
+
+Code Block 910 ():
+$options
+----------------------------------------
+
+Code Block 911 (shiki):
+echo $this->Form->controls(
+    [
+        'name' => ['label' => 'custom label'],
+    ],
+    [
+        'legend' => 'Update your post',
+    ]
+);
+----------------------------------------
+
+Code Block 912 ():
+echo $this->Form->controls(
+    [
+        'name' => ['label' => 'custom label'],
+    ],
+    [
+        'legend' => 'Update your post',
+    ]
+);
+----------------------------------------
+
+Code Block 913 ():
+fieldset
+----------------------------------------
+
+Code Block 914 ():
+legend
+----------------------------------------
+
+Code Block 915 ():
+method
+----------------------------------------
+
+Code Block 916 ():
+$fields
+----------------------------------------
+
+Code Block 917 ():
+$options
+----------------------------------------
+
+Code Block 918 ():
+'fieldset'
+----------------------------------------
+
+Code Block 919 ():
+false
+----------------------------------------
+
+Code Block 920 ():
+fieldset
+----------------------------------------
+
+Code Block 921 ():
+legend
+----------------------------------------
+
+Code Block 922 ():
+legend
+----------------------------------------
+
+Code Block 923 ():
+false
+----------------------------------------
+
+Code Block 924 ():
+controls()
+----------------------------------------
+
+Code Block 925 ():
+$fields
+----------------------------------------
+
+Code Block 926 ():
+false
+----------------------------------------
+
+Code Block 927 ():
+$fields
+----------------------------------------
+
+Code Block 928 (shiki):
+echo $this->Form->allControls(['password' => false]);
+----------------------------------------
+
+Code Block 929 ():
+echo $this->Form->allControls(['password' => false]);
+----------------------------------------
+
+Code Block 930 (shiki):
+$this->Form->create($article);
+
+// Article controls.
+echo $this->Form->control('title');
+
+// Author controls (belongsTo)
+echo $this->Form->control('author.id');
+echo $this->Form->control('author.first_name');
+echo $this->Form->control('author.last_name');
+
+// Author profile (belongsTo + hasOne)
+echo $this->Form->control('author.profile.id');
+echo $this->Form->control('author.profile.username');
+
+// Tags controls (belongsToMany)
+// as separate inputs
+echo $this->Form->control('tags.0.id');
+echo $this->Form->control('tags.0.name');
+echo $this->Form->control('tags.1.id');
+echo $this->Form->control('tags.1.name');
+
+// Inputs for the joint table (articles_tags)
+echo $this->Form->control('tags.0._joinData.starred');
+echo $this->Form->control('tags.1._joinData.starred');
+
+// Comments controls (hasMany)
+echo $this->Form->control('comments.0.id');
+echo $this->Form->control('comments.0.comment');
+echo $this->Form->control('comments.1.id');
+echo $this->Form->control('comments.1.comment');
+----------------------------------------
+
+Code Block 931 ():
+$this->Form->create($article);
+
+// Article controls.
+echo $this->Form->control('title');
+
+// Author controls (belongsTo)
+echo $this->Form->control('author.id');
+echo $this->Form->control('author.first_name');
+echo $this->Form->control('author.last_name');
+
+// Author profile (belongsTo + hasOne)
+echo $this->Form->control('author.profile.id');
+echo $this->Form->control('author.profile.username');
+
+// Tags controls (belongsToMany)
+// as separate inputs
+echo $this->Form->control('tags.0.id');
+echo $this->Form->control('tags.0.name');
+echo $this->Form->control('tags.1.id');
+echo $this->Form->control('tags.1.name');
+
+// Inputs for the joint table (articles_tags)
+echo $this->Form->control('tags.0._joinData.starred');
+echo $this->Form->control('tags.1._joinData.starred');
+
+// Comments controls (hasMany)
+echo $this->Form->control('comments.0.id');
+echo $this->Form->control('comments.0.comment');
+echo $this->Form->control('comments.1.id');
+echo $this->Form->control('comments.1.comment');
+----------------------------------------
+
+Code Block 932 (shiki):
+$article = $this->Articles->patchEntity($article, $this->request->getData(), [
+    'associated' => [
+        'Authors',
+        'Authors.Profiles',
+        'Tags',
+        'Comments',
+    ],
+]);
+----------------------------------------
+
+Code Block 933 ():
+$article = $this->Articles->patchEntity($article, $this->request->getData(), [
+    'associated' => [
+        'Authors',
+        'Authors.Profiles',
+        'Tags',
+        'Comments',
+    ],
+]);
+----------------------------------------
+
+Code Block 934 (shiki):
+// Multiple select element for belongsToMany
+// Does not support _joinData
+echo $this->Form->control('tags._ids', [
+    'type' => 'select',
+    'multiple' => true,
+    'options' => $tags, // $tags is the output of $this->Articles->Tags->find('list')->all() in the controller
+]);
+----------------------------------------
+
+Code Block 935 ():
+// Multiple select element for belongsToMany
+// Does not support _joinData
+echo $this->Form->control('tags._ids', [
+    'type' => 'select',
+    'multiple' => true,
+    'options' => $tags, // $tags is the output of $this->Articles->Tags->find('list')->all() in the controller
+]);
+----------------------------------------
+
+Code Block 936 ():
+Cake\View\Widget\WidgetInterface
+----------------------------------------
+
+Code Block 937 ():
+render(array $data)
+----------------------------------------
+
+Code Block 938 ():
+secureFields(array $data)
+----------------------------------------
+
+Code Block 939 ():
+render()
+----------------------------------------
+
+Code Block 940 ():
+secureFields()
+----------------------------------------
+
+Code Block 941 ():
+Cake\View\StringTemplate
+----------------------------------------
+
+Code Block 942 (shiki):
+namespace App\View\Widget;
+
+use Cake\View\Form\ContextInterface;
+use Cake\View\StringTemplate;
+use Cake\View\Widget\WidgetInterface;
+
+class AutocompleteWidget implements WidgetInterface
+{
+    /**
+     * StringTemplate instance.
+     *
+     * @var \Cake\View\StringTemplate
+     */
+    protected StringTemplate $_templates;
+
+    /**
+     * Constructor.
+     *
+     * @param \Cake\View\StringTemplate $templates Templates list.
+     */
+    public function __construct(StringTemplate $templates)
+    {
+        $this->_templates = $templates;
+    }
+
+    /**
+     * Methods that render the widget.
+     *
+     * @param array $data The data to build an input with.
+     * @param \Cake\View\Form\ContextInterface $context The current form context.
+     *
+     * @return string
+     */
+    public function render(array $data, ContextInterface $context): string
+    {
+        $data += [
+            'name' => '',
+        ];
+
+        return $this->_templates->format('autocomplete', [
+            'name' => $data['name'],
+            'attrs' => $this->_templates->formatAttributes($data, ['name']),
+        ]);
+    }
+
+    public function secureFields(array $data): array
+    {
+        return [$data['name']];
+    }
+}
+----------------------------------------
+
+Code Block 943 ():
+namespace App\View\Widget;
+
+use Cake\View\Form\ContextInterface;
+use Cake\View\StringTemplate;
+use Cake\View\Widget\WidgetInterface;
+
+class AutocompleteWidget implements WidgetInterface
+{
+    /**
+     * StringTemplate instance.
+     *
+     * @var \Cake\View\StringTemplate
+     */
+    protected StringTemplate $_templates;
+
+    /**
+     * Constructor.
+     *
+     * @param \Cake\View\StringTemplate $templates Templates list.
+     */
+    public function __construct(StringTemplate $templates)
+    {
+        $this->_templates = $templates;
+    }
+
+    /**
+     * Methods that render the widget.
+     *
+     * @param array $data The data to build an input with.
+     * @param \Cake\View\Form\ContextInterface $context The current form context.
+     *
+     * @return string
+     */
+    public function render(array $data, ContextInterface $context): string
+    {
+        $data += [
+            'name' => '',
+        ];
+
+        return $this->_templates->format('autocomplete', [
+            'name' => $data['name'],
+            'attrs' => $this->_templates->formatAttributes($data, ['name']),
+        ]);
+    }
+
+    public function secureFields(array $data): array
+    {
+        return [$data['name']];
+    }
+}
+----------------------------------------
+
+Code Block 944 (shiki):
+$this->Form->setTemplates([
+    'autocomplete' => '<input type="autocomplete" name="{{name}}" {{attrs}} />',
+]);
+----------------------------------------
+
+Code Block 945 ():
+$this->Form->setTemplates([
+    'autocomplete' => '<input type="autocomplete" name="{{name}}" {{attrs}} />',
+]);
+----------------------------------------
+
+Code Block 946 ():
+addWidget()
+----------------------------------------
+
+Code Block 947 (shiki):
+// In View class
+$this->addHelper('Form', [
+    'widgets' => [
+        'autocomplete' => ['Autocomplete'],
+    ],
+]);
+----------------------------------------
+
+Code Block 948 ():
+// In View class
+$this->addHelper('Form', [
+    'widgets' => [
+        'autocomplete' => ['Autocomplete'],
+    ],
+]);
+----------------------------------------
+
+Code Block 949 (shiki):
+$this->addHelper('Form', [
+    'widgets' => [
+        'autocomplete' => [
+            'App\View\Widget\AutocompleteWidget',
+            'text',
+            'label',
+        ],
+    ],
+]);
+----------------------------------------
+
+Code Block 950 ():
+$this->addHelper('Form', [
+    'widgets' => [
+        'autocomplete' => [
+            'App\View\Widget\AutocompleteWidget',
+            'text',
+            'label',
+        ],
+    ],
+]);
+----------------------------------------
+
+Code Block 951 ():
+autocomplete
+----------------------------------------
+
+Code Block 952 ():
+text
+----------------------------------------
+
+Code Block 953 ():
+label
+----------------------------------------
+
+Code Block 954 ():
+_view
+----------------------------------------
+
+Code Block 955 ():
+autocomplete
+----------------------------------------
+
+Code Block 956 ():
+text
+----------------------------------------
+
+Code Block 957 ():
+label
+----------------------------------------
+
+Code Block 958 ():
+addWidget()
+----------------------------------------
+
+Code Block 959 (shiki):
+// Using a classname.
+$this->Form->addWidget(
+    'autocomplete',
+    ['Autocomplete', 'text', 'label'],
+);
+
+// Using an instance - requires you to resolve dependencies.
+$autocomplete = new AutocompleteWidget(
+    $this->Form->getTemplater(),
+    $this->Form->getWidgetLocator()->get('text'),
+    $this->Form->getWidgetLocator()->get('label'),
+);
+$this->Form->addWidget('autocomplete', $autocomplete);
+----------------------------------------
+
+Code Block 960 ():
+// Using a classname.
+$this->Form->addWidget(
+    'autocomplete',
+    ['Autocomplete', 'text', 'label'],
+);
+
+// Using an instance - requires you to resolve dependencies.
+$autocomplete = new AutocompleteWidget(
+    $this->Form->getTemplater(),
+    $this->Form->getWidgetLocator()->get('text'),
+    $this->Form->getWidgetLocator()->get('label'),
+);
+$this->Form->addWidget('autocomplete', $autocomplete);
+----------------------------------------
+
+Code Block 961 (shiki):
+echo $this->Form->control('search', ['type' => 'autocomplete']);
+----------------------------------------
+
+Code Block 962 ():
+echo $this->Form->control('search', ['type' => 'autocomplete']);
+----------------------------------------
+
+Code Block 963 ():
+label
+----------------------------------------
+
+Code Block 964 ():
+div
+----------------------------------------
+
+Code Block 965 ():
+controls()
+----------------------------------------
+
+Code Block 966 (shiki):
+echo $this->Form->autocomplete('search', $options);
+----------------------------------------
+
+Code Block 967 ():
+echo $this->Form->autocomplete('search', $options);
+----------------------------------------
+
+Code Block 968 ():
+Cake\Controller\Component\FormProtectionComponent
+----------------------------------------
+
+Code Block 969 ():
+FormProtectionComponent
+----------------------------------------
+
+Code Block 970 ():
+Cake\View\Helper\FormHelper::end()
+----------------------------------------
+
+Code Block 971 ():
+_Token
+----------------------------------------
+
+Code Block 972 ():
+method
+----------------------------------------
+
+Code Block 973 ():
+$name
+----------------------------------------
+
+Code Block 974 ():
+FormProtectionComponent
+----------------------------------------
+
+Code Block 975 ():
+$name
+----------------------------------------
+
+Code Block 976 (shiki):
+$this->Form->unlockField('id');
+----------------------------------------
+
+Code Block 977 ():
+$this->Form->unlockField('id');
+----------------------------------------
+
+Code Block 978 ():
+method
+----------------------------------------
+
+Code Block 979 ():
+$fields
+----------------------------------------
+
+Code Block 980 ():
+$this->fields
+----------------------------------------
+
+Code Block 981 ():
+$secureAttributes
+----------------------------------------
+
+Code Block 982 ():
+input
+----------------------------------------
+
+Code Block 983 ():
+$secureAttributes
+----------------------------------------
+
+Code Block 984 ():
+'form'
+----------------------------------------
+

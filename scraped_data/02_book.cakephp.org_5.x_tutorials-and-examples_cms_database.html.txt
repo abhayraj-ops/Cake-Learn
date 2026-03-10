@@ -1,0 +1,862 @@
+URL: https://book.cakephp.org/5.x/tutorials-and-examples/cms/database.html
+Title: CMS Tutorial - Creating the Database | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - CMS Tutorial - Creating the Database ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Database Configuration ​
+  - Creating Database Tables ​
+  - Understanding the Schema ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Option A: Using Migrations (Recommended) ​
+  - Option B: Using Raw SQL ​
+H4:
+  - CMS Tutorial
+  - Adding Seed Data ​
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Now that we have CakePHP installed, let's set up the database for our CMS (Content Management System) application. If you haven't already done so, create an empty database for use in this tutorial, with the name of your choice such as cake_cms.
+
+First, let's tell CakePHP where our database is and how to connect to it. Replace the values in the Datasources.default array in your config/app_local.php file with those that apply to your setup. A sample completed configuration array might look something like the following:
+
+Once you've saved your config/app_local.php file, you should see that the 'CakePHP is able to connect to the database' section has a green chef hat.
+
+Local Configuration
+
+The file config/app_local.php is a local override of the file config/app.php used to configure your development environment quickly.
+
+Choose your preferred approach for creating the database schema:
+
+Which Approach Should I Use?
+
+Migrations (recommended) are version-controlled, database-agnostic, and perfect for team collaboration. Raw SQL is fine for quick prototyping or if you prefer direct database control.
+
+Migrations provide a platform-independent way to manage your database schema, so you don't need to worry about the subtle differences between MySQL, PostgreSQL, SQLite, etc.
+
+Composite Primary Key Adjustment
+
+The articles_tags migration will need manual adjustment. The generated migration sets both columns to auto-increment:
+
+Remove the autoIncrement lines before running the migration to prevent foreign key problems.
+
+Create seed files to populate initial data:
+
+Edit the generated seed files:
+
+Password Security
+
+The seed data above stores passwords in plain text for initial setup purposes only. This is a security risk and should never be used in production. We will properly implement password hashing when we add authentication later in this tutorial.
+
+Run the seeders:
+
+If you prefer to use direct SQL statements, you can execute these in your database client:
+
+You may have noticed that the articles_tags table uses a composite primary key. CakePHP supports composite primary keys almost everywhere, allowing you to have simpler schemas that don't require additional id columns.
+
+The table and column names we used were not arbitrary. By using CakePHP's naming conventions, we can leverage CakePHP more effectively and avoid needing to configure the framework. While CakePHP is flexible enough to accommodate almost any database schema, adhering to the conventions will save you time as you can leverage the convention-based defaults CakePHP provides.
+
+Learn More
+
+Read more about database migrations and seeding in the Migrations documentation.
+
+With the database built, we can now build our Models.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+CMS (Content Management System)
+----------------------------------------
+
+Code Block 2 ():
+cake_cms
+----------------------------------------
+
+Code Block 3 ():
+Datasources.default
+----------------------------------------
+
+Code Block 4 (shiki):
+<?php
+declare(strict_types=1);
+
+// config/app_local.php
+return [
+    // More configuration above.
+    'Datasources' => [
+        'default' => [
+            'host' => 'localhost',
+            'username' => 'cakephp',
+            'password' => 'AngelF00dC4k3~',
+            'database' => 'cake_cms',
+            'url' => env('DATABASE_URL', null),
+        ],
+    ],
+    // More configuration below.
+];
+----------------------------------------
+
+Code Block 5 ():
+<?php
+declare(strict_types=1);
+
+// config/app_local.php
+return [
+    // More configuration above.
+    'Datasources' => [
+        'default' => [
+            'host' => 'localhost',
+            'username' => 'cakephp',
+            'password' => 'AngelF00dC4k3~',
+            'database' => 'cake_cms',
+            'url' => env('DATABASE_URL', null),
+        ],
+    ],
+    // More configuration below.
+];
+----------------------------------------
+
+Code Block 6 (shiki):
+# Generate migration files
+bin/cake bake migration CreateUsers email:string password:string created modified
+bin/cake bake migration CreateArticles user_id:integer title:string slug:string[191]:unique body:text published:boolean created modified
+bin/cake bake migration CreateTags title:string[191]:unique created modified
+bin/cake bake migration CreateArticlesTags article_id:integer:primary tag_id:integer:primary created modified
+
+# Run migrations to create tables
+bin/cake migrations migrate
+----------------------------------------
+
+Code Block 7 ():
+# Generate migration files
+bin/cake bake migration CreateUsers email:string password:string created modified
+bin/cake bake migration CreateArticles user_id:integer title:string slug:string[191]:unique body:text published:boolean created modified
+bin/cake bake migration CreateTags title:string[191]:unique created modified
+bin/cake bake migration CreateArticlesTags article_id:integer:primary tag_id:integer:primary created modified
+
+# Run migrations to create tables
+bin/cake migrations migrate
+----------------------------------------
+
+Code Block 8 (shiki):
+<?php
+declare(strict_types=1);
+
+// Example: config/Migrations/YYYYMMDDHHMMSS_CreateArticles.php
+use Migrations\BaseMigration;
+
+class CreateArticles extends BaseMigration
+{
+    public function change(): void
+    {
+        $table = $this->table('articles');
+        $table->addColumn('user_id', 'integer')
+            ->addColumn('title', 'string', ['limit' => 255])
+            ->addColumn('slug', 'string', ['limit' => 191])
+            ->addColumn('body', 'text', ['null' => true])
+            ->addColumn('published', 'boolean', ['default' => false])
+            ->addColumn('created', 'datetime')
+            ->addColumn('modified', 'datetime')
+            ->addIndex(['slug'], ['unique' => true])
+            ->addForeignKey('user_id', 'users', 'id')
+            ->create();
+    }
+}
+----------------------------------------
+
+Code Block 9 ():
+<?php
+declare(strict_types=1);
+
+// Example: config/Migrations/YYYYMMDDHHMMSS_CreateArticles.php
+use Migrations\BaseMigration;
+
+class CreateArticles extends BaseMigration
+{
+    public function change(): void
+    {
+        $table = $this->table('articles');
+        $table->addColumn('user_id', 'integer')
+            ->addColumn('title', 'string', ['limit' => 255])
+            ->addColumn('slug', 'string', ['limit' => 191])
+            ->addColumn('body', 'text', ['null' => true])
+            ->addColumn('published', 'boolean', ['default' => false])
+            ->addColumn('created', 'datetime')
+            ->addColumn('modified', 'datetime')
+            ->addIndex(['slug'], ['unique' => true])
+            ->addForeignKey('user_id', 'users', 'id')
+            ->create();
+    }
+}
+----------------------------------------
+
+Code Block 10 ():
+articles_tags
+----------------------------------------
+
+Code Block 11 (shiki):
+$table->addColumn('article_id', 'integer', [
+    'autoIncrement' => true, 
+    'default' => null,
+    'limit' => 11,
+    'null' => false,
+]);
+$table->addColumn('tag_id', 'integer', [
+    'autoIncrement' => true, 
+    'default' => null,
+    'limit' => 11,
+    'null' => false,
+]);
+----------------------------------------
+
+Code Block 12 ():
+$table->addColumn('article_id', 'integer', [
+    'autoIncrement' => true, 
+    'default' => null,
+    'limit' => 11,
+    'null' => false,
+]);
+$table->addColumn('tag_id', 'integer', [
+    'autoIncrement' => true, 
+    'default' => null,
+    'limit' => 11,
+    'null' => false,
+]);
+----------------------------------------
+
+Code Block 13 ():
+autoIncrement
+----------------------------------------
+
+Code Block 14 (shiki):
+# Generate seed files
+bin/cake bake seed Users
+bin/cake bake seed Articles
+----------------------------------------
+
+Code Block 15 ():
+# Generate seed files
+bin/cake bake seed Users
+bin/cake bake seed Articles
+----------------------------------------
+
+Code Block 16 (shiki):
+<?php
+declare(strict_types=1);
+
+// config/Seeds/UsersSeed.php
+use Migrations\BaseSeed;
+
+class UsersSeed extends BaseSeed
+{
+    public function run(): void
+    {
+        $data = [
+            [
+                'email' => '[email protected]',
+                'password' => 'secret',
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s'),
+            ],
+        ];
+
+        $table = $this->table('users');
+        $table->insert($data)->save();
+    }
+}
+----------------------------------------
+
+Code Block 17 ():
+<?php
+declare(strict_types=1);
+
+// config/Seeds/UsersSeed.php
+use Migrations\BaseSeed;
+
+class UsersSeed extends BaseSeed
+{
+    public function run(): void
+    {
+        $data = [
+            [
+                'email' => '[email protected]',
+                'password' => 'secret',
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s'),
+            ],
+        ];
+
+        $table = $this->table('users');
+        $table->insert($data)->save();
+    }
+}
+----------------------------------------
+
+Code Block 18 (shiki):
+<?php
+declare(strict_types=1);
+
+// config/Seeds/ArticlesSeed.php
+use Migrations\BaseSeed;
+
+class ArticlesSeed extends BaseSeed
+{
+    public function run(): void
+    {
+        $data = [
+            [
+                'user_id' => 1,
+                'title' => 'First Post',
+                'slug' => 'first-post',
+                'body' => 'This is the first post.',
+                'published' => true,
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s'),
+            ],
+        ];
+
+        $table = $this->table('articles');
+        $table->insert($data)->save();
+    }
+}
+----------------------------------------
+
+Code Block 19 ():
+<?php
+declare(strict_types=1);
+
+// config/Seeds/ArticlesSeed.php
+use Migrations\BaseSeed;
+
+class ArticlesSeed extends BaseSeed
+{
+    public function run(): void
+    {
+        $data = [
+            [
+                'user_id' => 1,
+                'title' => 'First Post',
+                'slug' => 'first-post',
+                'body' => 'This is the first post.',
+                'published' => true,
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s'),
+            ],
+        ];
+
+        $table = $this->table('articles');
+        $table->insert($data)->save();
+    }
+}
+----------------------------------------
+
+Code Block 20 (shiki):
+bin/cake seeds run
+----------------------------------------
+
+Code Block 21 ():
+bin/cake seeds run
+----------------------------------------
+
+Code Block 22 (shiki):
+CREATE DATABASE cake_cms;
+
+USE cake_cms;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created DATETIME,
+    modified DATETIME
+);
+
+CREATE TABLE articles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(191) NOT NULL,
+    body TEXT,
+    published BOOLEAN DEFAULT FALSE,
+    created DATETIME,
+    modified DATETIME,
+    UNIQUE KEY (slug),
+    FOREIGN KEY user_key (user_id) REFERENCES users(id)
+) CHARSET=utf8mb4;
+
+CREATE TABLE tags (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(191),
+    created DATETIME,
+    modified DATETIME,
+    UNIQUE KEY (title)
+) CHARSET=utf8mb4;
+
+CREATE TABLE articles_tags (
+    article_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    PRIMARY KEY (article_id, tag_id),
+    FOREIGN KEY tag_key(tag_id) REFERENCES tags(id),
+    FOREIGN KEY article_key(article_id) REFERENCES articles(id)
+);
+
+INSERT INTO users (email, password, created, modified)
+VALUES
+('[email protected]', 'secret', NOW(), NOW());
+
+INSERT INTO articles (user_id, title, slug, body, published, created, modified)
+VALUES
+(1, 'First Post', 'first-post', 'This is the first post.', 1, NOW(), NOW());
+----------------------------------------
+
+Code Block 23 ():
+CREATE DATABASE cake_cms;
+
+USE cake_cms;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created DATETIME,
+    modified DATETIME
+);
+
+CREATE TABLE articles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(191) NOT NULL,
+    body TEXT,
+    published BOOLEAN DEFAULT FALSE,
+    created DATETIME,
+    modified DATETIME,
+    UNIQUE KEY (slug),
+    FOREIGN KEY user_key (user_id) REFERENCES users(id)
+) CHARSET=utf8mb4;
+
+CREATE TABLE tags (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(191),
+    created DATETIME,
+    modified DATETIME,
+    UNIQUE KEY (title)
+) CHARSET=utf8mb4;
+
+CREATE TABLE articles_tags (
+    article_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    PRIMARY KEY (article_id, tag_id),
+    FOREIGN KEY tag_key(tag_id) REFERENCES tags(id),
+    FOREIGN KEY article_key(article_id) REFERENCES articles(id)
+);
+
+INSERT INTO users (email, password, created, modified)
+VALUES
+('[email protected]', 'secret', NOW(), NOW());
+
+INSERT INTO articles (user_id, title, slug, body, published, created, modified)
+VALUES
+(1, 'First Post', 'first-post', 'This is the first post.', 1, NOW(), NOW());
+----------------------------------------
+
+Code Block 24 (shiki):
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created TIMESTAMP,
+    modified TIMESTAMP
+);
+
+CREATE TABLE articles (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(191) NOT NULL,
+    body TEXT,
+    published BOOLEAN DEFAULT FALSE,
+    created TIMESTAMP,
+    modified TIMESTAMP,
+    UNIQUE (slug),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(191),
+    created TIMESTAMP,
+    modified TIMESTAMP,
+    UNIQUE (title)
+);
+
+CREATE TABLE articles_tags (
+    article_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    PRIMARY KEY (article_id, tag_id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id),
+    FOREIGN KEY (article_id) REFERENCES articles(id)
+);
+
+INSERT INTO users (email, password, created, modified)
+VALUES
+('[email protected]', 'secret', NOW(), NOW());
+
+INSERT INTO articles (user_id, title, slug, body, published, created, modified)
+VALUES
+(1, 'First Post', 'first-post', 'This is the first post.', TRUE, NOW(), NOW());
+----------------------------------------
+
+Code Block 25 ():
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created TIMESTAMP,
+    modified TIMESTAMP
+);
+
+CREATE TABLE articles (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(191) NOT NULL,
+    body TEXT,
+    published BOOLEAN DEFAULT FALSE,
+    created TIMESTAMP,
+    modified TIMESTAMP,
+    UNIQUE (slug),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(191),
+    created TIMESTAMP,
+    modified TIMESTAMP,
+    UNIQUE (title)
+);
+
+CREATE TABLE articles_tags (
+    article_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    PRIMARY KEY (article_id, tag_id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id),
+    FOREIGN KEY (article_id) REFERENCES articles(id)
+);
+
+INSERT INTO users (email, password, created, modified)
+VALUES
+('[email protected]', 'secret', NOW(), NOW());
+
+INSERT INTO articles (user_id, title, slug, body, published, created, modified)
+VALUES
+(1, 'First Post', 'first-post', 'This is the first post.', TRUE, NOW(), NOW());
+----------------------------------------
+
+Code Block 26 ():
+articles_tags
+----------------------------------------
+
+Code Block 27 ():
+id
+----------------------------------------
+

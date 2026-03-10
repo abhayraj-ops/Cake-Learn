@@ -1,0 +1,813 @@
+URL: https://book.cakephp.org/5.x/controllers/middleware.html
+Title: Middleware | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Middleware ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Middleware in CakePHP ​
+  - Using Middleware ​
+  - Creating Middleware ​
+  - Routing Middleware ​
+  - Encrypted Cookie Middleware ​
+  - Body Parser Middleware ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Adding Middleware from Plugins ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+Middleware objects give you the ability to 'wrap' your application in re-usable, composable layers of Request handling, or response building logic. Visually, your application ends up at the center, and middleware is wrapped around the app like an onion. Here we can see an application wrapped with Routes, Assets, Exception Handling and CORS header middleware.
+
+When a request is handled by your application it enters from the outermost middleware. Each middleware can either delegate the request/response to the next layer, or return a response. Returning a response prevents lower layers from ever seeing the request. An example of that is the AssetMiddleware handling a request for a plugin image during development.
+
+If no middleware take action to handle the request, a controller will be located and have its action invoked, or an exception will be raised generating an error page.
+
+Middleware are part of the new HTTP stack in CakePHP that leverages the PSR-7 request and response interfaces. CakePHP also supports the PSR-15 standard for server request handlers so you can use any PSR-15 compatible middleware available on The Packagist.
+
+CakePHP provides several middleware to handle common tasks in web applications:
+
+Middleware can be applied to your application globally, to individual routing scopes, or to specific controllers.
+
+To apply middleware to all requests, use the middleware method of your App\Application class. Your application's middleware hook method will be called at the beginning of the request process, you can use the MiddlewareQueue object to attach middleware:
+
+In addition to adding to the end of the MiddlewareQueue you can do a variety of operations:
+
+If your middleware is only applicable to a subset of routes or individual controllers you can use Route scoped middleware, or Controller middleware.
+
+Plugins can use their middleware hook method to apply any middleware they have to the application's middleware queue:
+
+Middleware can either be implemented as anonymous functions (Closures), or classes which extend Psr\Http\Server\MiddlewareInterface. While Closures are suitable for smaller tasks they make testing harder, and can create a complicated Application class. Middleware classes in CakePHP have a few conventions:
+
+Middleware can return a response either by calling $handler->handle() or by creating their own response. We can see both options in our simple middleware:
+
+Now that we've made a very simple middleware, let's attach it to our application:
+
+Routing middleware is responsible for applying your application's routes and resolving the plugin, controller, and action a request is going to:
+
+If your application has cookies that contain data you want to obfuscate and protect against user tampering, you can use CakePHP's encrypted cookie middleware to transparently encrypt and decrypt cookie data via middleware. Cookie data is encrypted via OpenSSL using AES:
+
+NOTE
+
+It is recommended that the encryption key you use for cookie data, is used exclusively for cookie data.
+
+The encryption algorithms and padding style used by the cookie middleware are backwards compatible with CookieComponent from earlier versions of CakePHP.
+
+If your application accepts JSON, XML or other encoded request bodies, the BodyParserMiddleware will let you decode those requests into an array that is available via $request->getParsedData() and $request->getData(). By default only json bodies will be parsed, but XML parsing can be enabled with an option. You can also define your own parsers:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+Cake\Error\Middleware\ErrorHandlerMiddleware
+----------------------------------------
+
+Code Block 2 ():
+Cake\Routing\AssetMiddleware
+----------------------------------------
+
+Code Block 3 ():
+Cake\Routing\Middleware\RoutingMiddleware
+----------------------------------------
+
+Code Block 4 ():
+Router
+----------------------------------------
+
+Code Block 5 ():
+Cake\I18n\Middleware\LocaleSelectorMiddleware
+----------------------------------------
+
+Code Block 6 ():
+Accept-Language
+----------------------------------------
+
+Code Block 7 ():
+Cake\Http\Middleware\EncryptedCookieMiddleware
+----------------------------------------
+
+Code Block 8 ():
+Cake\Http\Middleware\BodyParserMiddleware
+----------------------------------------
+
+Code Block 9 ():
+Content-Type
+----------------------------------------
+
+Code Block 10 ():
+X-Frame-Options
+----------------------------------------
+
+Code Block 11 ():
+middleware
+----------------------------------------
+
+Code Block 12 ():
+App\Application
+----------------------------------------
+
+Code Block 13 ():
+middleware
+----------------------------------------
+
+Code Block 14 ():
+MiddlewareQueue
+----------------------------------------
+
+Code Block 15 (shiki):
+namespace App;
+
+use Cake\Core\Configure;
+use Cake\Error\Middleware\ErrorHandlerMiddleware;
+use Cake\Http\BaseApplication;
+use Cake\Http\MiddlewareQueue;
+
+class Application extends BaseApplication
+{
+    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    {
+        // Bind the error handler into the middleware queue.
+        $middlewareQueue->add(new ErrorHandlerMiddleware(Configure::read('Error'), $this));
+
+        // Add middleware by classname.
+        // As of 4.5.0 classname middleware are optionally resolved
+        // using the DI container. If the class is not found in the
+        // container then an instance is created by the middleware queue.
+        $middlewareQueue->add(UserRateLimiting::class);
+
+        return $middlewareQueue;
+    }
+}
+----------------------------------------
+
+Code Block 16 ():
+namespace App;
+
+use Cake\Core\Configure;
+use Cake\Error\Middleware\ErrorHandlerMiddleware;
+use Cake\Http\BaseApplication;
+use Cake\Http\MiddlewareQueue;
+
+class Application extends BaseApplication
+{
+    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    {
+        // Bind the error handler into the middleware queue.
+        $middlewareQueue->add(new ErrorHandlerMiddleware(Configure::read('Error'), $this));
+
+        // Add middleware by classname.
+        // As of 4.5.0 classname middleware are optionally resolved
+        // using the DI container. If the class is not found in the
+        // container then an instance is created by the middleware queue.
+        $middlewareQueue->add(UserRateLimiting::class);
+
+        return $middlewareQueue;
+    }
+}
+----------------------------------------
+
+Code Block 17 ():
+MiddlewareQueue
+----------------------------------------
+
+Code Block 18 (shiki):
+$layer = new \App\Middleware\CustomMiddleware;
+
+// Added middleware will be last in line.
+$middlewareQueue->add($layer);
+
+// Prepended middleware will be first in line.
+$middlewareQueue->prepend($layer);
+
+// Insert in a specific slot. If the slot is out of
+// bounds, it will be added to the end.
+$middlewareQueue->insertAt(2, $layer);
+
+// Insert before another middleware.
+// If the named class cannot be found,
+// an exception will be raised.
+$middlewareQueue->insertBefore(
+    'Cake\Error\Middleware\ErrorHandlerMiddleware',
+    $layer,
+);
+
+// Insert after another middleware.
+// If the named class cannot be found, the
+// middleware will added to the end.
+$middlewareQueue->insertAfter(
+    'Cake\Error\Middleware\ErrorHandlerMiddleware',
+    $layer,
+);
+----------------------------------------
+
+Code Block 19 ():
+$layer = new \App\Middleware\CustomMiddleware;
+
+// Added middleware will be last in line.
+$middlewareQueue->add($layer);
+
+// Prepended middleware will be first in line.
+$middlewareQueue->prepend($layer);
+
+// Insert in a specific slot. If the slot is out of
+// bounds, it will be added to the end.
+$middlewareQueue->insertAt(2, $layer);
+
+// Insert before another middleware.
+// If the named class cannot be found,
+// an exception will be raised.
+$middlewareQueue->insertBefore(
+    'Cake\Error\Middleware\ErrorHandlerMiddleware',
+    $layer,
+);
+
+// Insert after another middleware.
+// If the named class cannot be found, the
+// middleware will added to the end.
+$middlewareQueue->insertAfter(
+    'Cake\Error\Middleware\ErrorHandlerMiddleware',
+    $layer,
+);
+----------------------------------------
+
+Code Block 20 ():
+middleware
+----------------------------------------
+
+Code Block 21 (shiki):
+// in plugins/ContactManager/src/Plugin.php
+namespace ContactManager;
+
+use Cake\Core\BasePlugin;
+use Cake\Http\MiddlewareQueue;
+use ContactManager\Middleware\ContactManagerContextMiddleware;
+
+class Plugin extends BasePlugin
+{
+    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    {
+        $middlewareQueue->add(new ContactManagerContextMiddleware());
+
+        return $middlewareQueue;
+    }
+}
+----------------------------------------
+
+Code Block 22 ():
+// in plugins/ContactManager/src/Plugin.php
+namespace ContactManager;
+
+use Cake\Core\BasePlugin;
+use Cake\Http\MiddlewareQueue;
+use ContactManager\Middleware\ContactManagerContextMiddleware;
+
+class Plugin extends BasePlugin
+{
+    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    {
+        $middlewareQueue->add(new ContactManagerContextMiddleware());
+
+        return $middlewareQueue;
+    }
+}
+----------------------------------------
+
+Code Block 23 ():
+Psr\Http\Server\MiddlewareInterface
+----------------------------------------
+
+Code Block 24 ():
+Application
+----------------------------------------
+
+Code Block 25 ():
+Middleware
+----------------------------------------
+
+Code Block 26 ():
+LinkMiddleware
+----------------------------------------
+
+Code Block 27 ():
+Psr\Http\Server\MiddlewareInterface
+----------------------------------------
+
+Code Block 28 ():
+$handler->handle()
+----------------------------------------
+
+Code Block 29 (shiki):
+// In src/Middleware/TrackingCookieMiddleware.php
+namespace App\Middleware;
+
+use Cake\Http\Cookie\Cookie;
+use Cake\I18n\Time;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
+
+class TrackingCookieMiddleware implements MiddlewareInterface
+{
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler,
+    ): ResponseInterface
+    {
+        // Calling $handler->handle() delegates control to the *next* middleware
+        // In your application's queue.
+        $response = $handler->handle($request);
+
+        if (!$request->getCookie('landing_page')) {
+            $expiry = new Time('+ 1 year');
+            $response = $response->withCookie(new Cookie(
+                'landing_page',
+                $request->getRequestTarget(),
+                $expiry,
+            ));
+        }
+
+        return $response;
+    }
+}
+----------------------------------------
+
+Code Block 30 ():
+// In src/Middleware/TrackingCookieMiddleware.php
+namespace App\Middleware;
+
+use Cake\Http\Cookie\Cookie;
+use Cake\I18n\Time;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
+
+class TrackingCookieMiddleware implements MiddlewareInterface
+{
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler,
+    ): ResponseInterface
+    {
+        // Calling $handler->handle() delegates control to the *next* middleware
+        // In your application's queue.
+        $response = $handler->handle($request);
+
+        if (!$request->getCookie('landing_page')) {
+            $expiry = new Time('+ 1 year');
+            $response = $response->withCookie(new Cookie(
+                'landing_page',
+                $request->getRequestTarget(),
+                $expiry,
+            ));
+        }
+
+        return $response;
+    }
+}
+----------------------------------------
+
+Code Block 31 (shiki):
+// In src/Application.php
+namespace App;
+
+use App\Middleware\TrackingCookieMiddleware;
+use Cake\Http\MiddlewareQueue;
+
+class Application
+{
+    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    {
+        // Add your simple middleware onto the queue
+        $middlewareQueue->add(new TrackingCookieMiddleware());
+
+        // Add some more middleware onto the queue
+
+        return $middlewareQueue;
+    }
+}
+----------------------------------------
+
+Code Block 32 ():
+// In src/Application.php
+namespace App;
+
+use App\Middleware\TrackingCookieMiddleware;
+use Cake\Http\MiddlewareQueue;
+
+class Application
+{
+    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+    {
+        // Add your simple middleware onto the queue
+        $middlewareQueue->add(new TrackingCookieMiddleware());
+
+        // Add some more middleware onto the queue
+
+        return $middlewareQueue;
+    }
+}
+----------------------------------------
+
+Code Block 33 (shiki):
+// In Application.php
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    // ...
+    $middlewareQueue->add(new RoutingMiddleware($this));
+}
+----------------------------------------
+
+Code Block 34 ():
+// In Application.php
+public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
+{
+    // ...
+    $middlewareQueue->add(new RoutingMiddleware($this));
+}
+----------------------------------------
+
+Code Block 35 (shiki):
+use Cake\Http\Middleware\EncryptedCookieMiddleware;
+
+$cookies = new EncryptedCookieMiddleware(
+    // Names of cookies to protect
+    ['secrets', 'protected'],
+    Configure::read('Security.cookieKey'),
+);
+
+$middlewareQueue->add($cookies);
+----------------------------------------
+
+Code Block 36 ():
+use Cake\Http\Middleware\EncryptedCookieMiddleware;
+
+$cookies = new EncryptedCookieMiddleware(
+    // Names of cookies to protect
+    ['secrets', 'protected'],
+    Configure::read('Security.cookieKey'),
+);
+
+$middlewareQueue->add($cookies);
+----------------------------------------
+
+Code Block 37 ():
+CookieComponent
+----------------------------------------
+
+Code Block 38 ():
+BodyParserMiddleware
+----------------------------------------
+
+Code Block 39 ():
+$request->getParsedData()
+----------------------------------------
+
+Code Block 40 ():
+$request->getData()
+----------------------------------------
+
+Code Block 41 ():
+json
+----------------------------------------
+
+Code Block 42 (shiki):
+use Cake\Http\Middleware\BodyParserMiddleware;
+
+// only JSON will be parsed.
+$bodies = new BodyParserMiddleware();
+
+// Enable XML parsing
+$bodies = new BodyParserMiddleware(['xml' => true]);
+
+// Disable JSON parsing
+$bodies = new BodyParserMiddleware(['json' => false]);
+
+// Add your own parser matching content-type header values
+// to the callable that can parse them.
+$bodies = new BodyParserMiddleware();
+$bodies->addParser(['text/csv'], function ($body, $request) {
+    // Use a CSV parsing library.
+    return Csv::parse($body);
+});
+----------------------------------------
+
+Code Block 43 ():
+use Cake\Http\Middleware\BodyParserMiddleware;
+
+// only JSON will be parsed.
+$bodies = new BodyParserMiddleware();
+
+// Enable XML parsing
+$bodies = new BodyParserMiddleware(['xml' => true]);
+
+// Disable JSON parsing
+$bodies = new BodyParserMiddleware(['json' => false]);
+
+// Add your own parser matching content-type header values
+// to the callable that can parse them.
+$bodies = new BodyParserMiddleware();
+$bodies->addParser(['text/csv'], function ($body, $request) {
+    // Use a CSV parsing library.
+    return Csv::parse($body);
+});
+----------------------------------------
+

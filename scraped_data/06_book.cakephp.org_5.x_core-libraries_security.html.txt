@@ -1,0 +1,514 @@
+URL: https://book.cakephp.org/5.x/core-libraries/security.html
+Title: Security Utility | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Security Utility ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Encrypting and Decrypting Data ​
+  - Hashing Data ​
+  - Getting Secure Random Data ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Security::encrypt() ​
+  - Security::decrypt() ​
+  - Security::hash() ​
+  - Security::randomBytes() ​
+  - Security::randomString() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Utility\Security
+
+The security library handles basic security measures such as providing methods for hashing and encrypting data.
+
+static Cake\Utility\Security::encrypt(string $plain, string $key, ?string $hmacSalt = null): string
+
+static Cake\Utility\Security::decrypt(string $cipher, string $key, ?string $hmacSalt = null): ?string
+
+Encrypt $text using AES-256. The $key should be a value with a lots of variance in the data much like a good password. The returned result will be the encrypted value with an HMAC checksum.
+
+The openssl extension is required for encrypting/decrypting.
+
+An example use would be:
+
+If you do not supply an HMAC salt, the value of Security::getSalt() will be used. Encrypted values can be decrypted using Cake\Utility\Security::decrypt().
+
+This method should never be used to store passwords.
+
+Decrypt a previously encrypted value. The $key and $hmacSalt parameters must match the values used to encrypt or decryption will fail. An example use would be:
+
+If the value cannot be decrypted due to changes in the key or HMAC salt false will be returned.
+
+static Cake\Utility\Security::hash(string $string, ?string $algorithm = null, string|bool $salt = false): string
+
+Create a hash from string using given method. Fallback on next available method. If $salt is set to true, the application's salt value will be used:
+
+The hash() method supports the following hashing strategies:
+
+And any other hash algorithm that PHP's hash() function supports.
+
+WARNING
+
+You should not be using hash() for passwords in new applications. Instead you should use the DefaultPasswordHasher class which uses bcrypt by default.
+
+static Cake\Utility\Security::randomBytes(int $length): string
+
+Get $length number of bytes from a secure random source. This function draws data from one of the following sources:
+
+If neither source is available a warning will be emitted and an unsafe value will be used for backwards compatibility reasons.
+
+static Cake\Utility\Security::randomString(int $length = 64): string
+
+Get a random string $length long from a secure random source. This method draws from the same random source as randomBytes() and will encode the data as a hexadecimal string.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+static
+----------------------------------------
+
+Code Block 3 ():
+static
+----------------------------------------
+
+Code Block 4 ():
+$text
+----------------------------------------
+
+Code Block 5 ():
+$key
+----------------------------------------
+
+Code Block 6 (shiki):
+// Assuming key is stored somewhere it can be re-used for
+// decryption later.
+$key = 'wt1U5MACWJFTXGenFoZoiLwQGrLgdbHA';
+$result = Security::encrypt($value, $key);
+----------------------------------------
+
+Code Block 7 ():
+// Assuming key is stored somewhere it can be re-used for
+// decryption later.
+$key = 'wt1U5MACWJFTXGenFoZoiLwQGrLgdbHA';
+$result = Security::encrypt($value, $key);
+----------------------------------------
+
+Code Block 8 ():
+Security::getSalt()
+----------------------------------------
+
+Code Block 9 ():
+Cake\Utility\Security::decrypt()
+----------------------------------------
+
+Code Block 10 ():
+$key
+----------------------------------------
+
+Code Block 11 ():
+$hmacSalt
+----------------------------------------
+
+Code Block 12 (shiki):
+// Assuming the key is stored somewhere it can be re-used for
+// Decryption later.
+$key = 'wt1U5MACWJFTXGenFoZoiLwQGrLgdbHA';
+
+$cipher = $user->secrets;
+$result = Security::decrypt($cipher, $key);
+----------------------------------------
+
+Code Block 13 ():
+// Assuming the key is stored somewhere it can be re-used for
+// Decryption later.
+$key = 'wt1U5MACWJFTXGenFoZoiLwQGrLgdbHA';
+
+$cipher = $user->secrets;
+$result = Security::decrypt($cipher, $key);
+----------------------------------------
+
+Code Block 14 ():
+false
+----------------------------------------
+
+Code Block 15 ():
+static
+----------------------------------------
+
+Code Block 16 ():
+$salt
+----------------------------------------
+
+Code Block 17 ():
+true
+----------------------------------------
+
+Code Block 18 (shiki):
+// Using the application's salt value
+$sha1 = Security::hash('CakePHP Framework', 'sha1', true);
+
+// Using a custom salt value
+$sha1 = Security::hash('CakePHP Framework', 'sha1', 'my-salt');
+
+// Using the default hash algorithm
+$hash = Security::hash('CakePHP Framework');
+----------------------------------------
+
+Code Block 19 ():
+// Using the application's salt value
+$sha1 = Security::hash('CakePHP Framework', 'sha1', true);
+
+// Using a custom salt value
+$sha1 = Security::hash('CakePHP Framework', 'sha1', 'my-salt');
+
+// Using the default hash algorithm
+$hash = Security::hash('CakePHP Framework');
+----------------------------------------
+
+Code Block 20 ():
+hash()
+----------------------------------------
+
+Code Block 21 ():
+hash()
+----------------------------------------
+
+Code Block 22 ():
+hash()
+----------------------------------------
+
+Code Block 23 ():
+DefaultPasswordHasher
+----------------------------------------
+
+Code Block 24 ():
+static
+----------------------------------------
+
+Code Block 25 ():
+$length
+----------------------------------------
+
+Code Block 26 ():
+random_bytes
+----------------------------------------
+
+Code Block 27 ():
+openssl_random_pseudo_bytes
+----------------------------------------
+
+Code Block 28 ():
+static
+----------------------------------------
+
+Code Block 29 ():
+$length
+----------------------------------------
+
+Code Block 30 ():
+randomBytes()
+----------------------------------------
+

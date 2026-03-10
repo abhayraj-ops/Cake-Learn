@@ -1,0 +1,424 @@
+URL: https://book.cakephp.org/5.x/development/application.html
+Title: Application | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Application ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Bootstrapping your Application ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Application::bootstrap() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The Application is the heart of your application. It controls how your application is configured, and what plugins, middleware, console commands and routes are included.
+
+You can find your Application class at src/Application.php. By default it will be pretty slim and only define a few default Middleware. Applications can define the following hook methods:
+
+If you have any additional configuration needs, you should add them to your application's config/bootstrap.php file. This file is included before each request, and CLI command.
+
+This file is ideal for a number of common bootstrapping tasks:
+
+It might be tempting to place formatting functions there in order to use them in your controllers. As you'll see in the Controllers and Views sections there are better ways you add custom logic to your application.
+
+In addition to the config/bootstrap.php file which should be used to configure low-level concerns of your application, you can also use the Application::bootstrap() hook method to load/initialize plugins, and attach global event listeners:
+
+Loading plugins and events in Application::bootstrap() makes Integration Testing easier as events and routes will be re-processed on each test method.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+Application
+----------------------------------------
+
+Code Block 2 ():
+Application
+----------------------------------------
+
+Code Block 3 ():
+bootstrap
+----------------------------------------
+
+Code Block 4 ():
+routes
+----------------------------------------
+
+Code Block 5 ():
+middleware
+----------------------------------------
+
+Code Block 6 ():
+console
+----------------------------------------
+
+Code Block 7 ():
+Application::bootstrap()
+----------------------------------------
+
+Code Block 8 (shiki):
+// in src/Application.php
+namespace App;
+
+use Cake\Http\BaseApplication;
+
+class Application extends BaseApplication
+{
+    public function bootstrap(): void
+    {
+        // Call the parent to `require_once` config/bootstrap.php
+        parent::bootstrap();
+
+        // CakePHP has the ability to fallback to using the `Cake\ORM\Table`
+        // class to represent your database tables when a related class is
+        // not created for that table. But using this "auto-tables" feature
+        // can make debugging more difficult in some scenarios. So we disable
+        // this feature except for the CLI environment (since the classes
+        // would not be present when using the `bake` code generation tool).
+        if (PHP_SAPI !== 'cli') {
+            FactoryLocator::add(
+                'Table',
+                (new TableLocator())->allowFallbackClass(false),
+            );
+        }
+
+        // Load MyPlugin
+        $this->addPlugin('MyPlugin');
+    }
+}
+----------------------------------------
+
+Code Block 9 ():
+// in src/Application.php
+namespace App;
+
+use Cake\Http\BaseApplication;
+
+class Application extends BaseApplication
+{
+    public function bootstrap(): void
+    {
+        // Call the parent to `require_once` config/bootstrap.php
+        parent::bootstrap();
+
+        // CakePHP has the ability to fallback to using the `Cake\ORM\Table`
+        // class to represent your database tables when a related class is
+        // not created for that table. But using this "auto-tables" feature
+        // can make debugging more difficult in some scenarios. So we disable
+        // this feature except for the CLI environment (since the classes
+        // would not be present when using the `bake` code generation tool).
+        if (PHP_SAPI !== 'cli') {
+            FactoryLocator::add(
+                'Table',
+                (new TableLocator())->allowFallbackClass(false),
+            );
+        }
+
+        // Load MyPlugin
+        $this->addPlugin('MyPlugin');
+    }
+}
+----------------------------------------
+
+Code Block 10 ():
+Application::bootstrap()
+----------------------------------------
+

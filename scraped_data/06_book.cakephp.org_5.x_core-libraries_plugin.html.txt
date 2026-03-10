@@ -1,0 +1,405 @@
+URL: https://book.cakephp.org/5.x/core-libraries/plugin.html
+Title: Plugin Class | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Plugin Class ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Locating Plugins ​
+  - Check if a Plugin is Loaded ​
+  - Finding Paths to Namespaces ​
+  - Finding Paths to Resources ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Plugin::path() ​
+  - Plugin::classPath() ​
+  - Plugin::templatePath() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Core\Plugin
+
+The Plugin class is responsible for resource location and path management of plugins.
+
+static Cake\Core\Plugin::path(string $plugin): string
+
+Plugins can be located with Plugin. Using Plugin::path('DebugKit'); for example, will give you the full path to the DebugKit plugin:
+
+You can check dynamically inside your code if a specific plugin has been loaded:
+
+Use Plugin::loaded() if you want to get a list of all currently loaded plugins.
+
+static Cake\Core\Plugin::classPath(string $plugin): string
+
+Used to get the location of the plugin's class files:
+
+static Cake\Core\Plugin::templatePath(string $plugin): string
+
+The method returns the path to the plugins' templates:
+
+The same goes for the config path:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 ():
+static
+----------------------------------------
+
+Code Block 3 ():
+Plugin::path('DebugKit');
+----------------------------------------
+
+Code Block 4 (shiki):
+$path = Plugin::path('DebugKit');
+----------------------------------------
+
+Code Block 5 ():
+$path = Plugin::path('DebugKit');
+----------------------------------------
+
+Code Block 6 (shiki):
+$isLoaded = Plugin::isLoaded('DebugKit');
+----------------------------------------
+
+Code Block 7 ():
+$isLoaded = Plugin::isLoaded('DebugKit');
+----------------------------------------
+
+Code Block 8 ():
+Plugin::loaded()
+----------------------------------------
+
+Code Block 9 ():
+static
+----------------------------------------
+
+Code Block 10 (shiki):
+$path = App::classPath('DebugKit');
+----------------------------------------
+
+Code Block 11 ():
+$path = App::classPath('DebugKit');
+----------------------------------------
+
+Code Block 12 ():
+static
+----------------------------------------
+
+Code Block 13 (shiki):
+$path = Plugin::templatePath('DebugKit');
+----------------------------------------
+
+Code Block 14 ():
+$path = Plugin::templatePath('DebugKit');
+----------------------------------------
+
+Code Block 15 (shiki):
+$path = Plugin::configPath('DebugKit');
+----------------------------------------
+
+Code Block 16 ():
+$path = Plugin::configPath('DebugKit');
+----------------------------------------
+

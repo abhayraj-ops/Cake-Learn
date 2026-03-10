@@ -1,0 +1,466 @@
+URL: https://book.cakephp.org/5.x/tutorials-and-examples/cms/installation.html
+Title: Content Management Tutorial | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Content Management Tutorial ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Getting CakePHP ​
+  - Checking our Installation ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+This tutorial will walk you through the creation of a simple CMS (Content Management System) application. To start with, we'll be installing CakePHP, creating our database, and building simple article management.
+
+Here's what you'll need:
+
+Before starting you should make sure that you're using a supported PHP version:
+
+You should have at least PHP 8.2 (CLI) or higher installed. Your webserver's PHP version must also be of 8.2 or higher, and should be the same version your command line interface (CLI) PHP is.
+
+The easiest way to install CakePHP is to use Composer. Composer is a simple way of installing CakePHP from your terminal or command line prompt. First, you'll need to download and install Composer if you haven't done so already. If you have cURL installed, run the following:
+
+Or, you can download composer.phar from the Composer website.
+
+Then simply type the following line in your terminal from your installation directory to install the CakePHP application skeleton in the cms directory of the current working directory:
+
+The advantage to using Composer is that it will automatically complete some important set up tasks, such as setting the correct file permissions and creating your config/app.php file for you.
+
+There are other ways to install CakePHP. If you cannot or don't want to use Composer, check out the Installation section.
+
+Regardless of how you downloaded and installed CakePHP, once your set up is completed, your directory setup should look like the following, though other files may also be present:
+
+Now might be a good time to learn a bit about how CakePHP's directory structure works: check out the Structure & Conventions guide.
+
+Completed Tutorial
+
+If you get lost during this tutorial, you can see the finished result on GitHub.
+
+Use Bake Wisely
+
+The bin/cake console utility can build most of the classes and data tables in this tutorial automatically. However, we recommend following along with the manual code examples to understand how the pieces fit together and how to add your application logic.
+
+We can quickly check that our installation is correct, by checking the default home page. Before you can do that, you'll need to start the development server:
+
+This will start PHP's built-in webserver on port 8765. Open up http://localhost:8765 in your web browser to see the welcome page. All the bullet points should be green chef hats other than CakePHP being able to connect to your database. If not, you may need to install additional PHP extensions, or set directory permissions.
+
+Next, we will build our Database.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+CMS (Content Management System)
+----------------------------------------
+
+Code Block 2 ():
+pdo_mysql
+----------------------------------------
+
+Code Block 3 (shiki):
+php -v
+----------------------------------------
+
+Code Block 4 ():
+php -v
+----------------------------------------
+
+Code Block 5 (shiki):
+curl -s https://getcomposer.org/installer | php
+----------------------------------------
+
+Code Block 6 ():
+curl -s https://getcomposer.org/installer | php
+----------------------------------------
+
+Code Block 7 (shiki):
+# Download and run the Composer Windows Installer
+# https://getcomposer.org/Composer-Setup.exe
+----------------------------------------
+
+Code Block 8 ():
+# Download and run the Composer Windows Installer
+# https://getcomposer.org/Composer-Setup.exe
+----------------------------------------
+
+Code Block 9 ():
+composer.phar
+----------------------------------------
+
+Code Block 10 (shiki):
+php composer.phar create-project --prefer-dist cakephp/app:5.3 cms
+----------------------------------------
+
+Code Block 11 ():
+php composer.phar create-project --prefer-dist cakephp/app:5.3 cms
+----------------------------------------
+
+Code Block 12 (shiki):
+composer create-project --prefer-dist cakephp/app:5.3 cms
+----------------------------------------
+
+Code Block 13 ():
+composer create-project --prefer-dist cakephp/app:5.3 cms
+----------------------------------------
+
+Code Block 14 (shiki):
+cms/
+  bin/
+  config/
+  plugins/
+  resources/
+  src/
+  templates/
+  tests/
+  tmp/
+  vendor/
+  webroot/
+  composer.json
+  index.php
+  README.md
+----------------------------------------
+
+Code Block 15 ():
+cms/
+  bin/
+  config/
+  plugins/
+  resources/
+  src/
+  templates/
+  tests/
+  tmp/
+  vendor/
+  webroot/
+  composer.json
+  index.php
+  README.md
+----------------------------------------
+
+Code Block 16 ():
+bin/cake
+----------------------------------------
+
+Code Block 17 (shiki):
+cd /path/to/our/app
+
+bin/cake server
+----------------------------------------
+
+Code Block 18 ():
+cd /path/to/our/app
+
+bin/cake server
+----------------------------------------
+
+Code Block 19 (shiki):
+cd C:\path\to\our\app
+
+bin\cake server
+----------------------------------------
+
+Code Block 20 ():
+cd C:\path\to\our\app
+
+bin\cake server
+----------------------------------------
+

@@ -1,0 +1,1558 @@
+URL: https://book.cakephp.org/5.x/core-libraries/validation.html
+Title: Validation | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Validation ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Creating Validators ​
+  - Make Rules 'last' by default ​
+  - Validating Data ​
+  - Validating Entity Data ​
+  - Core Validation Rules ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Requiring Field Presence ​
+  - Allowing Empty Fields ​
+  - Adding Validation Rules ​
+  - Using Custom Validation Rules ​
+  - Conditional/Dynamic Error Messages ​
+  - Conditional Validation ​
+  - Marking Rules as the Last to Run ​
+  - Adding Validation Providers ​
+  - Nesting Validators ​
+  - Creating Reusable Validators ​
+  - IP and Range Validation ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+The validation package in CakePHP provides features to build validators that can validate arbitrary arrays of data with ease. You can find a list of available Validation rules in the API.
+
+class Cake\Validation\Validator
+
+Validator objects define the rules that apply to a set of fields. Validator objects contain a mapping between fields and validation sets. In turn, the validation sets contain a collection of rules that apply to the field they are attached to. Creating a validator is simple:
+
+Once created, you can start defining sets of rules for the fields you want to validate:
+
+As seen in the example above, validators are built with a fluent interface that allows you to define rules for each field you want to validate.
+
+There were a few methods called in the example above, so let's go over the various features. The add() method allows you to add new rules to a validator. You can either add rules individually or in groups as seen above.
+
+The requirePresence() method requires the field to be present in any validated array. If the field is absent, validation will fail. The requirePresence() method has 4 modes:
+
+By default, true is used. Key presence is checked by using array_key_exists() so that null values will count as present. You can set the mode using the second parameter:
+
+If you have multiple fields that are required, you can define them as a list:
+
+Validators offer several methods to control which fields accept empty values and which empty values are accepted and not forwarded to other validation rules for the named field. CakePHP provides empty value support for different shapes of data:
+
+You also can use following specific validators: notEmptyString(), notEmptyArray(), notEmptyFile(), notEmptyDate(), notEmptyTime(), notEmptyDateTime().
+
+The allowEmpty* methods support a when parameter that allows you to control when a field can or cannot be empty:
+
+An example of these methods in action is:
+
+The Validator class provides methods that make building validators simple and expressive. For example adding validation rules to a username could look like:
+
+See the Validator API documentation for the full set of validator methods.
+
+In addition to using methods on the Validator, and coming from providers, you can also use any callable, including anonymous functions, as validation rules:
+
+Closures or callable methods will receive 2 arguments when called. The first will be the value for the field being validated. The second is a context array containing data related to the validation process:
+
+Closures should return boolean true if the validation passes. If it fails, return boolean false or for a custom error message return a string, see the Conditional/Dynamic Error Messages section for further details.
+
+Changed in version 5.3.0
+
+The entity key was added to validation context.
+
+Validation rule methods, being it custom callables, or methods supplied by providers, can either return a boolean, indicating whether the validation succeeded, or they can return a string, which means that the validation failed, and that the returned string should be used as the error message.
+
+Possible existing error messages defined via the message option will be overwritten by the ones returned from the validation rule method:
+
+When defining validation rules, you can use the on key to define when a validation rule should be applied. If left undefined, the rule will always be applied. Other valid values are create and update. Using one of these values will make the rule apply to only create or update operations.
+
+Additionally, you can provide a callable function that will determine whether or not a particular rule should be applied:
+
+You can access the other submitted field values using the $context['data'] array. The above example will make the rule for 'picture' optional depending on whether the value for show_profile_picture is empty. You could also use the uploadedFile validation rule to create optional file upload inputs:
+
+The allowEmpty*, notEmpty* and requirePresence() methods will also accept a callback function as their last argument. If present, the callback determines whether or not the rule should be applied. For example, a field is sometimes allowed to be empty:
+
+Likewise, a field can be required to be populated when certain conditions are met:
+
+In the above example, the email_frequency field cannot be left empty if the the user wants to receive the newsletter.
+
+Further it's also possible to require a field to be present under certain conditions only:
+
+This would require the full_name field to be present only in case the user wants to create a subscription, while the email field would always be required.
+
+The $context parameter passed to custom conditional callbacks contains the following keys:
+
+When fields have multiple rules, each validation rule will be run even if the previous one has failed. This allows you to collect as many validation errors as you can in a single pass. If you want to stop execution after a specific rule has failed, you can set the last option to true:
+
+If the minLength rule fails in the example above, the maxLength rule will not be run.
+
+You can have the last option automatically applied to each rule you can use the setStopOnFailure() method to enable this behavior:
+
+When enabled all fields will stop validation on the first failing rule instead of checking all possible rules. In this case only a single error message will appear under the form field.
+
+The Validator, ValidationSet and ValidationRule classes do not provide any validation methods themselves. Validation rules come from 'providers'. You can bind any number of providers to a Validator object. Validator instances come with a 'default' provider setup automatically. The default provider is mapped to the Cake\Validation\Validation class. This makes it simple to use the methods on that class as validation rules. When using Validators and the ORM together, additional providers are configured for the table and entity objects. You can use the setProvider() method to add any additional providers your application needs:
+
+Validation providers can be objects, or class names. If a class name is used the methods must be static. To use a provider other than 'default', be sure to set the provider key in your rule:
+
+If you wish to add a provider to all Validator objects that are created in the future, you can use the addDefaultProvider() method as follows:
+
+NOTE
+
+DefaultProviders must be added before the Validator object is created therefore config/bootstrap.php is the best place to set up your default providers.
+
+You can use the Localized plugin to get providers based on countries. With this plugin, you'll be able to validate model fields, depending on a country, ie:
+
+The localized plugin uses the two letter ISO code of the countries for validation, like en, fr, de.
+
+There are a few methods that are common to all classes, defined through the ValidationInterface interface:
+
+When validating Modelless Forms with nested data, or when working with models that contain array data types, it is necessary to validate the nested data you have. CakePHP makes it simple to add validators to specific attributes. For example, assume you are working with a non-relational database and need to store an article and its comments:
+
+To validate the comments you would use a nested validator:
+
+You can create 1:1 'relationships' with addNested() and 1:N 'relationships' with addNestedMany(). With both methods, the nested validator's errors will contribute to the parent validator's errors and influence the final result. Like other validator features, nested validators support error messages and conditional application:
+
+The error message for a nested validator can be found in the _nested key.
+
+While defining validators inline where they are used makes for good example code, it doesn't lead to maintainable applications. Instead, you should create Validator sub-classes for your reusable validation logic:
+
+Now that you've created a validator and added the rules you want to it, you can start using it to validate data. Validators are able to validate array data. For example, if you wanted to validate a contact form before creating and sending an email you could do the following:
+
+The getErrors() method will return a non-empty array when there are validation failures. The returned array of errors will be structured like:
+
+If you have multiple errors on a single field, an array of error messages will be returned per field. By default, the getErrors() method applies rules for the 'create' mode. If you'd like to apply 'update' rules you can do the following:
+
+NOTE
+
+If you need to validate entities you should use methods like Cake\ORM\Table::newEntity(), Cake\ORM\Table::newEntities(), Cake\ORM\Table::patchEntity(), Cake\ORM\Table::patchEntities() as they are designed for that.
+
+Validation is meant for checking request data coming from forms or other user interfaces used to populate the entities.
+
+The request data is validated automatically when using the newEntity(), newEntities(), patchEntity() or patchEntities() methods of Table class:
+
+Similarly, when you need to validate multiple entities at a time, you can use the newEntities() method:
+
+The newEntity(), patchEntity(), newEntities() and patchEntities() methods allow you to specify which associations are validated, and which validation sets to apply using the options parameter:
+
+Apart from validating user provided data maintaining integrity of data regardless where it came from is important. To solve this problem CakePHP offers a second level of validation which is called "application rules". You can read more about them in the Applying Application Rules section.
+
+CakePHP provides a basic suite of validation methods in the Validation class. The Validation class contains a variety of static methods that provide validators for several common validation situations.
+
+The API documentation for the Validation class provides a good list of the validation rules that are available, and their basic usage.
+
+Some of the validation methods accept additional parameters to define boundary conditions or valid options. You can provide these boundary conditions and options as follows:
+
+Core rules that take additional parameters should have an array for the rule key that contains the rule as the first element, and the additional parameters as the remaining parameters.
+
+You can validate that a value is a valid IP address or an IP range (subnet) using the ipOrRange() rule:
+
+Added in version 5.3.0
+
+The ipOrRange() validation rule was added.
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 (shiki):
+use Cake\Validation\Validator;
+
+$validator = new Validator();
+----------------------------------------
+
+Code Block 3 ():
+use Cake\Validation\Validator;
+
+$validator = new Validator();
+----------------------------------------
+
+Code Block 4 (shiki):
+$validator
+    ->requirePresence('title')
+    ->notEmptyString('title', 'Please fill this field')
+    ->add('title', [
+        'length' => [
+            'rule' => ['minLength', 10],
+            'message' => 'Titles need to be at least 10 characters long',
+        ]
+    ])
+    ->allowEmptyDateTime('published')
+    ->add('published', 'boolean', [
+        'rule' => 'boolean',
+    ])
+    ->requirePresence('body')
+    ->add('body', 'length', [
+        'rule' => ['minLength', 50],
+        'message' => 'Articles must have a substantial body.',
+    ]);
+----------------------------------------
+
+Code Block 5 ():
+$validator
+    ->requirePresence('title')
+    ->notEmptyString('title', 'Please fill this field')
+    ->add('title', [
+        'length' => [
+            'rule' => ['minLength', 10],
+            'message' => 'Titles need to be at least 10 characters long',
+        ]
+    ])
+    ->allowEmptyDateTime('published')
+    ->add('published', 'boolean', [
+        'rule' => 'boolean',
+    ])
+    ->requirePresence('body')
+    ->add('body', 'length', [
+        'rule' => ['minLength', 50],
+        'message' => 'Articles must have a substantial body.',
+    ]);
+----------------------------------------
+
+Code Block 6 ():
+add()
+----------------------------------------
+
+Code Block 7 ():
+requirePresence()
+----------------------------------------
+
+Code Block 8 ():
+requirePresence()
+----------------------------------------
+
+Code Block 9 ():
+true
+----------------------------------------
+
+Code Block 10 ():
+false
+----------------------------------------
+
+Code Block 11 ():
+create
+----------------------------------------
+
+Code Block 12 ():
+update
+----------------------------------------
+
+Code Block 13 ():
+true
+----------------------------------------
+
+Code Block 14 ():
+array_key_exists()
+----------------------------------------
+
+Code Block 15 (shiki):
+$validator->requirePresence('author_id', 'create');
+----------------------------------------
+
+Code Block 16 ():
+$validator->requirePresence('author_id', 'create');
+----------------------------------------
+
+Code Block 17 (shiki):
+// Define multiple fields for create
+$validator->requirePresence(['author_id', 'title'], 'create');
+
+// Define multiple fields for mixed modes
+$validator->requirePresence([
+    'author_id' => [
+        'mode' => 'create',
+        'message' => 'An author is required.',
+    ],
+    'published' => [
+        'mode' => 'update',
+        'message' => 'The published state is required.',
+    ],
+]);
+----------------------------------------
+
+Code Block 18 ():
+// Define multiple fields for create
+$validator->requirePresence(['author_id', 'title'], 'create');
+
+// Define multiple fields for mixed modes
+$validator->requirePresence([
+    'author_id' => [
+        'mode' => 'create',
+        'message' => 'An author is required.',
+    ],
+    'published' => [
+        'mode' => 'update',
+        'message' => 'The published state is required.',
+    ],
+]);
+----------------------------------------
+
+Code Block 19 ():
+allowEmptyString()
+----------------------------------------
+
+Code Block 20 ():
+allowEmptyArray()
+----------------------------------------
+
+Code Block 21 ():
+allowEmptyDate()
+----------------------------------------
+
+Code Block 22 ():
+allowEmptyTime()
+----------------------------------------
+
+Code Block 23 ():
+allowEmptyDateTime()
+----------------------------------------
+
+Code Block 24 ():
+allowEmptyFile()
+----------------------------------------
+
+Code Block 25 ():
+notEmptyString()
+----------------------------------------
+
+Code Block 26 ():
+notEmptyArray()
+----------------------------------------
+
+Code Block 27 ():
+notEmptyFile()
+----------------------------------------
+
+Code Block 28 ():
+notEmptyDate()
+----------------------------------------
+
+Code Block 29 ():
+notEmptyTime()
+----------------------------------------
+
+Code Block 30 ():
+notEmptyDateTime()
+----------------------------------------
+
+Code Block 31 ():
+allowEmpty*
+----------------------------------------
+
+Code Block 32 ():
+when
+----------------------------------------
+
+Code Block 33 ():
+false
+----------------------------------------
+
+Code Block 34 ():
+create
+----------------------------------------
+
+Code Block 35 ():
+update
+----------------------------------------
+
+Code Block 36 ():
+true
+----------------------------------------
+
+Code Block 37 ():
+false
+----------------------------------------
+
+Code Block 38 (shiki):
+$validator->allowEmptyDateTime('published')
+    ->allowEmptyString('title', 'Title cannot be empty', false)
+    ->allowEmptyString('body', 'Body cannot be empty', 'update')
+    ->allowEmptyFile('header_image', 'update');
+    ->allowEmptyDateTime('posted', 'update');
+----------------------------------------
+
+Code Block 39 ():
+$validator->allowEmptyDateTime('published')
+    ->allowEmptyString('title', 'Title cannot be empty', false)
+    ->allowEmptyString('body', 'Body cannot be empty', 'update')
+    ->allowEmptyFile('header_image', 'update');
+    ->allowEmptyDateTime('posted', 'update');
+----------------------------------------
+
+Code Block 40 ():
+Validator
+----------------------------------------
+
+Code Block 41 (shiki):
+$validator = new Validator();
+$validator
+    ->email('username')
+    ->ascii('username')
+    ->lengthBetween('username', [4, 8]);
+----------------------------------------
+
+Code Block 42 ():
+$validator = new Validator();
+$validator
+    ->email('username')
+    ->ascii('username')
+    ->lengthBetween('username', [4, 8]);
+----------------------------------------
+
+Code Block 43 ():
+Validator
+----------------------------------------
+
+Code Block 44 (shiki):
+// Use a global function
+$validator->add('title', 'custom', [
+    'rule' => 'validate_title',
+    'message' => 'The title is not valid',
+]);
+
+// Use an array callable that is not in a provider
+$validator->add('title', 'custom', [
+    'rule' => [$this, 'method'],
+    'message' => 'The title is not valid',
+]);
+
+// Use a closure
+$extra = 'Some additional value needed inside the closure';
+$validator->add('title', 'custom', [
+    'rule' => function (mixed $value, array $context) use ($extra) {
+        // Custom logic that returns true/false
+    },
+    'message' => 'The title is not valid',
+]);
+
+// Use a rule from a custom provider
+$validator->add('title', 'custom', [
+    'rule' => 'customRule',
+    'provider' => 'custom',
+    'message' => 'The title is not unique enough',
+]);
+----------------------------------------
+
+Code Block 45 ():
+// Use a global function
+$validator->add('title', 'custom', [
+    'rule' => 'validate_title',
+    'message' => 'The title is not valid',
+]);
+
+// Use an array callable that is not in a provider
+$validator->add('title', 'custom', [
+    'rule' => [$this, 'method'],
+    'message' => 'The title is not valid',
+]);
+
+// Use a closure
+$extra = 'Some additional value needed inside the closure';
+$validator->add('title', 'custom', [
+    'rule' => function (mixed $value, array $context) use ($extra) {
+        // Custom logic that returns true/false
+    },
+    'message' => 'The title is not valid',
+]);
+
+// Use a rule from a custom provider
+$validator->add('title', 'custom', [
+    'rule' => 'customRule',
+    'provider' => 'custom',
+    'message' => 'The title is not unique enough',
+]);
+----------------------------------------
+
+Code Block 46 ():
+validate()
+----------------------------------------
+
+Code Block 47 ():
+entity
+----------------------------------------
+
+Code Block 48 ():
+message
+----------------------------------------
+
+Code Block 49 (shiki):
+$validator->add('length', 'custom', [
+    'rule' => function (mixed $value, array $context) {
+        if (!$value) {
+            return false;
+        }
+
+        if ($value < 10) {
+            return 'Error message when value is less than 10';
+        }
+
+        if ($value > 20) {
+            return 'Error message when value is greater than 20';
+        }
+
+        return true;
+    },
+    'message' => 'Generic error message used when `false` is returned',
+]);
+----------------------------------------
+
+Code Block 50 ():
+$validator->add('length', 'custom', [
+    'rule' => function (mixed $value, array $context) {
+        if (!$value) {
+            return false;
+        }
+
+        if ($value < 10) {
+            return 'Error message when value is less than 10';
+        }
+
+        if ($value > 20) {
+            return 'Error message when value is greater than 20';
+        }
+
+        return true;
+    },
+    'message' => 'Generic error message used when `false` is returned',
+]);
+----------------------------------------
+
+Code Block 51 ():
+on
+----------------------------------------
+
+Code Block 52 ():
+create
+----------------------------------------
+
+Code Block 53 ():
+update
+----------------------------------------
+
+Code Block 54 (shiki):
+$validator->add('picture', 'file', [
+    'rule' => ['mimeType', ['image/jpeg', 'image/png']],
+    'on' => function (array $context): bool {
+        return !empty($context['data']['show_profile_picture']);
+    }
+]);
+----------------------------------------
+
+Code Block 55 ():
+$validator->add('picture', 'file', [
+    'rule' => ['mimeType', ['image/jpeg', 'image/png']],
+    'on' => function (array $context): bool {
+        return !empty($context['data']['show_profile_picture']);
+    }
+]);
+----------------------------------------
+
+Code Block 56 ():
+$context['data']
+----------------------------------------
+
+Code Block 57 ():
+show_profile_picture
+----------------------------------------
+
+Code Block 58 ():
+uploadedFile
+----------------------------------------
+
+Code Block 59 (shiki):
+$validator->add('picture', 'file', [
+    'rule' => ['uploadedFile', ['optional' => true]],
+]);
+----------------------------------------
+
+Code Block 60 ():
+$validator->add('picture', 'file', [
+    'rule' => ['uploadedFile', ['optional' => true]],
+]);
+----------------------------------------
+
+Code Block 61 ():
+allowEmpty*
+----------------------------------------
+
+Code Block 62 ():
+notEmpty*
+----------------------------------------
+
+Code Block 63 ():
+requirePresence()
+----------------------------------------
+
+Code Block 64 (shiki):
+$validator->allowEmptyString('tax', 'This field is required', function (array $context): bool {
+    return !$context['data']['is_taxable'];
+});
+----------------------------------------
+
+Code Block 65 ():
+$validator->allowEmptyString('tax', 'This field is required', function (array $context): bool {
+    return !$context['data']['is_taxable'];
+});
+----------------------------------------
+
+Code Block 66 (shiki):
+$validator->notEmptyString('email_frequency', 'This field is required', function (array $context): bool {
+    return !empty($context['data']['wants_newsletter']);
+});
+----------------------------------------
+
+Code Block 67 ():
+$validator->notEmptyString('email_frequency', 'This field is required', function (array $context): bool {
+    return !empty($context['data']['wants_newsletter']);
+});
+----------------------------------------
+
+Code Block 68 ():
+email_frequency
+----------------------------------------
+
+Code Block 69 (shiki):
+$validator->requirePresence('full_name', function (array $context): bool {
+    if (isset($context['data']['action'])) {
+        return $context['data']['action'] === 'subscribe';
+    }
+
+    return false;
+});
+$validator->requirePresence('email');
+----------------------------------------
+
+Code Block 70 ():
+$validator->requirePresence('full_name', function (array $context): bool {
+    if (isset($context['data']['action'])) {
+        return $context['data']['action'] === 'subscribe';
+    }
+
+    return false;
+});
+$validator->requirePresence('email');
+----------------------------------------
+
+Code Block 71 ():
+full_name
+----------------------------------------
+
+Code Block 72 ():
+email
+----------------------------------------
+
+Code Block 73 ():
+$context
+----------------------------------------
+
+Code Block 74 ():
+data
+----------------------------------------
+
+Code Block 75 ():
+newRecord
+----------------------------------------
+
+Code Block 76 ():
+field
+----------------------------------------
+
+Code Block 77 ():
+providers
+----------------------------------------
+
+Code Block 78 ():
+last
+----------------------------------------
+
+Code Block 79 ():
+true
+----------------------------------------
+
+Code Block 80 (shiki):
+$validator = new Validator();
+$validator
+    ->add('body', [
+        'minLength' => [
+            'rule' => ['minLength', 10],
+            'last' => true,
+            'message' => 'Comments must have a substantial body.',
+        ],
+        'maxLength' => [
+            'rule' => ['maxLength', 250],
+            'message' => 'Comments cannot be too long.',
+        ],
+    ]);
+----------------------------------------
+
+Code Block 81 ():
+$validator = new Validator();
+$validator
+    ->add('body', [
+        'minLength' => [
+            'rule' => ['minLength', 10],
+            'last' => true,
+            'message' => 'Comments must have a substantial body.',
+        ],
+        'maxLength' => [
+            'rule' => ['maxLength', 250],
+            'message' => 'Comments cannot be too long.',
+        ],
+    ]);
+----------------------------------------
+
+Code Block 82 ():
+last
+----------------------------------------
+
+Code Block 83 ():
+setStopOnFailure()
+----------------------------------------
+
+Code Block 84 (shiki):
+public function validationDefault(Validator $validator): Validator
+{
+    $validator
+        ->setStopOnFailure()
+        ->requirePresence('email', 'create')
+        ->notBlank('email')
+        ->email('email');
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 85 ():
+public function validationDefault(Validator $validator): Validator
+{
+    $validator
+        ->setStopOnFailure()
+        ->requirePresence('email', 'create')
+        ->notBlank('email')
+        ->email('email');
+
+    return $validator;
+}
+----------------------------------------
+
+Code Block 86 ():
+Validator
+----------------------------------------
+
+Code Block 87 ():
+ValidationSet
+----------------------------------------
+
+Code Block 88 ():
+ValidationRule
+----------------------------------------
+
+Code Block 89 ():
+Cake\Validation\Validation
+----------------------------------------
+
+Code Block 90 ():
+setProvider()
+----------------------------------------
+
+Code Block 91 (shiki):
+$validator = new Validator();
+
+// Use an object instance.
+$validator->setProvider('custom', $myObject);
+
+// Use a class name. Methods must be static.
+$validator->setProvider('custom', 'App\Model\Validation');
+----------------------------------------
+
+Code Block 92 ():
+$validator = new Validator();
+
+// Use an object instance.
+$validator->setProvider('custom', $myObject);
+
+// Use a class name. Methods must be static.
+$validator->setProvider('custom', 'App\Model\Validation');
+----------------------------------------
+
+Code Block 93 ():
+provider
+----------------------------------------
+
+Code Block 94 (shiki):
+// Use a rule from the table provider
+$validator->add('title', 'custom', [
+    'rule' => 'customTableMethod',
+    'provider' => 'table',
+]);
+----------------------------------------
+
+Code Block 95 ():
+// Use a rule from the table provider
+$validator->add('title', 'custom', [
+    'rule' => 'customTableMethod',
+    'provider' => 'table',
+]);
+----------------------------------------
+
+Code Block 96 ():
+provider
+----------------------------------------
+
+Code Block 97 ():
+Validator
+----------------------------------------
+
+Code Block 98 ():
+addDefaultProvider()
+----------------------------------------
+
+Code Block 99 (shiki):
+use Cake\Validation\Validator;
+
+// Use an object instance.
+Validator::addDefaultProvider('custom', $myObject);
+
+// Use a class name. Methods must be static.
+Validator::addDefaultProvider('custom', 'App\Model\Validation');
+----------------------------------------
+
+Code Block 100 ():
+use Cake\Validation\Validator;
+
+// Use an object instance.
+Validator::addDefaultProvider('custom', $myObject);
+
+// Use a class name. Methods must be static.
+Validator::addDefaultProvider('custom', 'App\Model\Validation');
+----------------------------------------
+
+Code Block 101 ():
+Validator
+----------------------------------------
+
+Code Block 102 (shiki):
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+use Cake\Validation\Validator;
+
+class PostsTable extends Table
+{
+    public function validationDefault(Validator $validator): Validator
+    {
+        // add the provider to the validator
+        $validator->setProvider('fr', 'Cake\Localized\Validation\FrValidation');
+        // use the provider in a field validation rule
+        $validator->add('phoneField', 'myCustomRuleNameForPhone', [
+            'rule' => 'phone',
+            'provider' => 'fr',
+        ]);
+
+        return $validator;
+    }
+}
+----------------------------------------
+
+Code Block 103 ():
+namespace App\Model\Table;
+
+use Cake\ORM\Table;
+use Cake\Validation\Validator;
+
+class PostsTable extends Table
+{
+    public function validationDefault(Validator $validator): Validator
+    {
+        // add the provider to the validator
+        $validator->setProvider('fr', 'Cake\Localized\Validation\FrValidation');
+        // use the provider in a field validation rule
+        $validator->add('phoneField', 'myCustomRuleNameForPhone', [
+            'rule' => 'phone',
+            'provider' => 'fr',
+        ]);
+
+        return $validator;
+    }
+}
+----------------------------------------
+
+Code Block 104 (shiki):
+phone() to check a phone number
+postal() to check a postal code
+personId() to check a country specific person ID
+----------------------------------------
+
+Code Block 105 ():
+phone() to check a phone number
+postal() to check a postal code
+personId() to check a country specific person ID
+----------------------------------------
+
+Code Block 106 (shiki):
+$data = [
+    'title' => 'Best article',
+    'comments' => [
+        ['comment' => ''],
+    ],
+];
+----------------------------------------
+
+Code Block 107 ():
+$data = [
+    'title' => 'Best article',
+    'comments' => [
+        ['comment' => ''],
+    ],
+];
+----------------------------------------
+
+Code Block 108 (shiki):
+$validator = new Validator();
+$validator->add('title', 'not-blank', ['rule' => 'notBlank']);
+
+$commentValidator = new Validator();
+$commentValidator->add('comment', 'not-blank', ['rule' => 'notBlank']);
+
+// Connect the nested validators.
+$validator->addNestedMany('comments', $commentValidator);
+
+// Get all errors including those from nested validators.
+$validator->validate($data);
+----------------------------------------
+
+Code Block 109 ():
+$validator = new Validator();
+$validator->add('title', 'not-blank', ['rule' => 'notBlank']);
+
+$commentValidator = new Validator();
+$commentValidator->add('comment', 'not-blank', ['rule' => 'notBlank']);
+
+// Connect the nested validators.
+$validator->addNestedMany('comments', $commentValidator);
+
+// Get all errors including those from nested validators.
+$validator->validate($data);
+----------------------------------------
+
+Code Block 110 ():
+addNested()
+----------------------------------------
+
+Code Block 111 ():
+addNestedMany()
+----------------------------------------
+
+Code Block 112 (shiki):
+$validator->addNestedMany(
+    'comments',
+    $commentValidator,
+    'Invalid comment',
+    'create',
+);
+----------------------------------------
+
+Code Block 113 ():
+$validator->addNestedMany(
+    'comments',
+    $commentValidator,
+    'Invalid comment',
+    'create',
+);
+----------------------------------------
+
+Code Block 114 ():
+_nested
+----------------------------------------
+
+Code Block 115 ():
+Validator
+----------------------------------------
+
+Code Block 116 (shiki):
+// In src/Model/Validation/ContactValidator.php
+namespace App\Model\Validation;
+
+use Cake\Validation\Validator;
+
+class ContactValidator extends Validator
+{
+    public function __construct()
+    {
+        parent::__construct();
+        // Add validation rules here.
+    }
+}
+----------------------------------------
+
+Code Block 117 ():
+// In src/Model/Validation/ContactValidator.php
+namespace App\Model\Validation;
+
+use Cake\Validation\Validator;
+
+class ContactValidator extends Validator
+{
+    public function __construct()
+    {
+        parent::__construct();
+        // Add validation rules here.
+    }
+}
+----------------------------------------
+
+Code Block 118 (shiki):
+use Cake\Validation\Validator;
+
+$validator = new Validator();
+$validator
+    ->requirePresence('email')
+    ->add('email', 'validFormat', [
+        'rule' => 'email',
+        'message' => 'E-mail must be valid',
+    ])
+    ->requirePresence('name')
+    ->notEmptyString('name', 'We need your name.')
+    ->requirePresence('comment')
+    ->notEmptyString('comment', 'You need to give a comment.');
+
+$errors = $validator->validate($this->request->getData());
+if (!$errors) {
+    // Send an email.
+}
+----------------------------------------
+
+Code Block 119 ():
+use Cake\Validation\Validator;
+
+$validator = new Validator();
+$validator
+    ->requirePresence('email')
+    ->add('email', 'validFormat', [
+        'rule' => 'email',
+        'message' => 'E-mail must be valid',
+    ])
+    ->requirePresence('name')
+    ->notEmptyString('name', 'We need your name.')
+    ->requirePresence('comment')
+    ->notEmptyString('comment', 'You need to give a comment.');
+
+$errors = $validator->validate($this->request->getData());
+if (!$errors) {
+    // Send an email.
+}
+----------------------------------------
+
+Code Block 120 ():
+getErrors()
+----------------------------------------
+
+Code Block 121 (shiki):
+$errors = [
+    'email' => ['E-mail must be valid'],
+];
+----------------------------------------
+
+Code Block 122 ():
+$errors = [
+    'email' => ['E-mail must be valid'],
+];
+----------------------------------------
+
+Code Block 123 ():
+getErrors()
+----------------------------------------
+
+Code Block 124 (shiki):
+$errors = $validator->validate($this->request->getData(), false);
+if (!$errors) {
+    // Send an email.
+}
+----------------------------------------
+
+Code Block 125 ():
+$errors = $validator->validate($this->request->getData(), false);
+if (!$errors) {
+    // Send an email.
+}
+----------------------------------------
+
+Code Block 126 ():
+Cake\ORM\Table::newEntity()
+----------------------------------------
+
+Code Block 127 ():
+Cake\ORM\Table::newEntities()
+----------------------------------------
+
+Code Block 128 ():
+Cake\ORM\Table::patchEntity()
+----------------------------------------
+
+Code Block 129 ():
+Cake\ORM\Table::patchEntities()
+----------------------------------------
+
+Code Block 130 ():
+newEntity()
+----------------------------------------
+
+Code Block 131 ():
+newEntities()
+----------------------------------------
+
+Code Block 132 ():
+patchEntity()
+----------------------------------------
+
+Code Block 133 ():
+patchEntities()
+----------------------------------------
+
+Code Block 134 ():
+Table
+----------------------------------------
+
+Code Block 135 (shiki):
+// In the ArticlesController class
+$article = $this->Articles->newEntity($this->request->getData());
+if ($article->getErrors()) {
+    // Do work to show error messages.
+}
+----------------------------------------
+
+Code Block 136 ():
+// In the ArticlesController class
+$article = $this->Articles->newEntity($this->request->getData());
+if ($article->getErrors()) {
+    // Do work to show error messages.
+}
+----------------------------------------
+
+Code Block 137 ():
+newEntities()
+----------------------------------------
+
+Code Block 138 (shiki):
+// In the ArticlesController class
+$entities = $this->Articles->newEntities($this->request->getData());
+foreach ($entities as $entity) {
+    if (!$entity->getErrors()) {
+        $this->Articles->save($entity);
+    }
+}
+----------------------------------------
+
+Code Block 139 ():
+// In the ArticlesController class
+$entities = $this->Articles->newEntities($this->request->getData());
+foreach ($entities as $entity) {
+    if (!$entity->getErrors()) {
+        $this->Articles->save($entity);
+    }
+}
+----------------------------------------
+
+Code Block 140 ():
+newEntity()
+----------------------------------------
+
+Code Block 141 ():
+patchEntity()
+----------------------------------------
+
+Code Block 142 ():
+newEntities()
+----------------------------------------
+
+Code Block 143 ():
+patchEntities()
+----------------------------------------
+
+Code Block 144 ():
+options
+----------------------------------------
+
+Code Block 145 (shiki):
+$valid = $this->Articles->newEntity($article, [
+    'associated' => [
+        'Comments' => [
+            'associated' => ['User'],
+            'validate' => 'special',
+        ],
+    ],
+]);
+----------------------------------------
+
+Code Block 146 ():
+$valid = $this->Articles->newEntity($article, [
+    'associated' => [
+        'Comments' => [
+            'associated' => ['User'],
+            'validate' => 'special',
+        ],
+    ],
+]);
+----------------------------------------
+
+Code Block 147 ():
+Validation
+----------------------------------------
+
+Code Block 148 ():
+Validation
+----------------------------------------
+
+Code Block 149 (shiki):
+$validator = new Validator();
+$validator
+    ->add('title', 'minLength', [
+        'rule' => ['minLength', 10],
+    ])
+    ->add('rating', 'validValue', [
+        'rule' => ['range', 1, 5],
+    ]);
+----------------------------------------
+
+Code Block 150 ():
+$validator = new Validator();
+$validator
+    ->add('title', 'minLength', [
+        'rule' => ['minLength', 10],
+    ])
+    ->add('rating', 'validValue', [
+        'rule' => ['range', 1, 5],
+    ]);
+----------------------------------------
+
+Code Block 151 ():
+rule
+----------------------------------------
+
+Code Block 152 ():
+ipOrRange()
+----------------------------------------
+
+Code Block 153 (shiki):
+$validator->add('ip_address', 'validRange', [
+    'rule' => 'ipOrRange',
+    'message' => 'Please provide a valid IP or IP range.',
+]);
+----------------------------------------
+
+Code Block 154 ():
+$validator->add('ip_address', 'validRange', [
+    'rule' => 'ipOrRange',
+    'message' => 'Please provide a valid IP or IP range.',
+]);
+----------------------------------------
+
+Code Block 155 ():
+ipOrRange()
+----------------------------------------
+

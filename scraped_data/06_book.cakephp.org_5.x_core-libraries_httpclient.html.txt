@@ -1,0 +1,1356 @@
+URL: https://book.cakephp.org/5.x/core-libraries/httpclient.html
+Title: Http Client | CakePHP
+================================================================================
+
+HEADERS:
+H1:
+  - Http Client ​
+H2:
+  - Getting Started
+  - Controllers
+  - Views
+  - ORM
+  - Core Libraries
+  - Console Commands
+  - Development
+  - Plugins
+  - Security
+  - Additional Topics
+  - Doing Requests ​
+  - Creating Multipart Requests with Files ​
+  - Sending Request Bodies ​
+  - Request Method Options ​
+  - Authentication ​
+  - Creating Scoped Clients ​
+  - Setting and Managing Cookies ​
+  - Client Events ​
+  - Response Objects ​
+  - Changing Transport Adapters ​
+  - Events ​
+  - Testing ​
+H3:
+  - Tutorials & Examples
+  - Components
+  - Helpers
+  - Behaviors
+  - Application Core
+  - Data Handling
+  - Text & Formatting
+  - Forms & Validation
+  - Core Plugins
+  - Contributing
+  - Appendices
+  - Building Multipart Request Bodies ​
+  - Using Basic Authentication ​
+  - Using Digest Authentication ​
+  - OAuth 1 Authentication ​
+  - OAuth 2 Authentication ​
+  - Proxy Authentication ​
+  - Reading Response Bodies ​
+  - Reading JSON and XML Response Bodies ​
+  - Accessing Response Headers ​
+  - Accessing Cookie Data ​
+  - Checking the Status Code ​
+  - HttpClient.beforeSend ​
+  - HttpClient.afterSend ​
+  - Response::newClientResponse() ​
+H4:
+  - CMS Tutorial
+
+================================================================================
+
+CONTENT:
+Next releases
+
+English
+
+English
+
+Appearance
+
+Quickstart
+
+Installation
+
+Introduction
+
+Structure & Conventions
+
+Supported Versions
+
+Where to Get Help
+
+Overview
+
+Installation
+
+Database
+
+Articles Model
+
+Articles Controller
+
+Tags and Users
+
+Authentication
+
+Authorization
+
+Controllers
+
+Request & Response
+
+Middleware
+
+Pages Controller
+
+Pagination
+
+Components
+
+Check HTTP Cache
+
+Flash
+
+Form Protection
+
+Views
+
+Cells
+
+JSON and XML Views
+
+Themes
+
+Helpers
+
+Breadcrumbs
+
+Flash
+
+Form
+
+HTML
+
+Number
+
+Paginator
+
+Text
+
+Time
+
+URL
+
+ORM
+
+Database Basics
+
+Query Builder
+
+Table Objects
+
+Entities
+
+Associations
+
+Retrieving Data and Resultsets
+
+Saving Data
+
+Deleting Data
+
+Validation
+
+Schema System
+
+Behaviors
+
+Counter Cache
+
+Timestamp
+
+Translate
+
+Tree
+
+Events
+
+Caching
+
+Email
+
+Logging
+
+Security
+
+App
+
+Plugin
+
+Registry Objects
+
+Global Constants and Functions
+
+HTTP Client
+
+Collections
+
+Hash
+
+XML
+
+Inflector
+
+Number
+
+Text
+
+Time
+
+Internationalization and Localization
+
+Form
+
+Validation
+
+Console Commands
+
+Commands
+
+Input Output
+
+Option Parsers
+
+Cache
+
+Completion
+
+Counter Cache
+
+Cron Jobs
+
+I18n
+
+Plugin
+
+REPL
+
+Routes
+
+Schema Cache
+
+Server
+
+Application
+
+Configuration
+
+Routing
+
+Sessions
+
+Debugging
+
+Dependency Injection
+
+Errors
+
+REST
+
+Testing
+
+Creating Plugins
+
+Authentication
+
+Authorization
+
+Bake
+
+Chronos
+
+Debug Kit
+
+Elasticsearch
+
+Migrations
+
+Phinx
+
+Security
+
+Content Security Policy
+
+CSRF
+
+HTTPS Enforcer
+
+Security Headers
+
+Deployment
+
+Release Policy
+
+Standalone Packages
+
+Topics
+
+Contributing
+
+Backwards Compatibility
+
+CakePHP Coding Conventions
+
+Code
+
+Documentation
+
+Tickets
+
+Appendices
+
+Migration Guides
+
+5.0 Migration Guide
+
+5.0 Upgrade Guide
+
+5.1 Migration Guide
+
+5.2 Migration Guide
+
+5.3 Migration Guide
+
+CakePHP Development Process
+
+Glossary
+
+PHPUnit Upgrade
+
+class Cake\Http\Client(mixed $config = [])
+
+CakePHP includes a PSR-18 compliant HTTP client which can be used for making requests. It is a great way to communicate with webservices, and remote APIs.
+
+Doing requests is simple and straight forward. Doing a GET request looks like:
+
+Doing POST and PUT requests is equally simple:
+
+If you have created a PSR-7 request object you can send it using sendRequest():
+
+You can include files in request bodies by including a filehandle in the array:
+
+The filehandle will be read until its end; it will not be rewound before being read.
+
+There may be times when you need to build a request body in a very specific way. In these situations you can often use Cake\Http\Client\FormData to craft the specific multipart HTTP request you want:
+
+When dealing with REST APIs you often need to send request bodies that are not form encoded. Http\Client exposes this through the type option:
+
+The type key can either be a one of 'json', 'xml' or a full mime type. When using the type option, you should provide the data as a string. If you're doing a GET request that needs both querystring parameters and a request body you can do the following:
+
+Each HTTP method takes an $options parameter which is used to provide addition request information. The following keys can be used in $options:
+
+The options parameter is always the 3rd parameter in each of the HTTP methods. They can also be used when constructing Client to create scoped clients.
+
+Cake\Http\Client supports a few different authentication systems. Different authentication strategies can be added by developers. Auth strategies are called before the request is sent, and allow headers to be added to the request context.
+
+An example of basic authentication:
+
+By default, Cake\Http\Client will use basic authentication if there is no 'type' key in the auth option.
+
+An example of basic authentication:
+
+By setting the 'type' key to 'digest', you tell the authentication subsystem to use digest authentication. Digest authentication supports the following algorithms:
+
+The algorithm will be automatically chosen based on the server challenge.
+
+Many modern web-services require OAuth authentication to access their APIs. The included OAuth authentication assumes that you already have your consumer key and consumer secret:
+
+Because OAuth2 is often a single header, there is not a specialized authentication adapter. Instead you can create a client with the access token:
+
+Some proxies require authentication to use them. Generally this authentication is Basic, but it can be implemented by any authentication adapter. By default Http\Client will assume Basic authentication, unless the type key is set:
+
+The second proxy parameter must be a string with an IP or a domain without protocol. The username and password information will be passed through the request headers, while the proxy string will be passed through stream_context_create().
+
+Having to re-type the domain name, authentication and proxy settings can become tedious & error prone. To reduce the chance for mistake and relieve some of the tedium, you can create scoped clients:
+
+If your scoped client only needs information from the URL you can use createFromUrl():
+
+The above would create a client instance with the protocol, host, and basePath options set.
+
+The following information can be used when creating a scoped client:
+
+Any of these options can be overridden by specifying them when doing requests. host, scheme, proxy, port are overridden in the request URL:
+
+The above will replace the domain, scheme, and port. However, this request will continue using all the other options defined when the scoped client was created. See Http Client Request Options for more information on the options supported.
+
+Http\Client can also accept cookies when making requests. In addition to accepting cookies, it will also automatically store valid cookies set in responses. Any response with cookies, will have them stored in the originating instance of Http\Client. The cookies stored in a Client instance are automatically included in future requests to domain + path combinations that match:
+
+You can always override the auto-included cookies by setting them in the request's $options parameters:
+
+You can add cookie objects to the client after creating it using the addCookie() method:
+
+Client will emit events when requests are sent. The HttpClient.beforeSend event is fired before a request is sent, and HttpClient.afterSend is fired after a request is sent. You can modify the request, or set a response in a beforeSend listener. The afterSend event is triggered for all requests, even those that have their responses set by a beforeSend event.
+
+class Cake\Http\Client\Response
+
+Response objects have a number of methods for inspecting the response data.
+
+You read the entire response body as a string:
+
+You can also access the stream object for the response and use its methods:
+
+Since JSON and XML responses are commonly used, response objects provide a way to use accessors to read decoded data. JSON data is decoded into an array, while XML data is decoded into a SimpleXMLElement tree:
+
+The decoded response data is stored in the response object, so accessing it multiple times has no additional cost.
+
+You can access headers through a few different methods. Header names are always treated as case-insensitive values when accessing them through methods:
+
+You can read cookies with a few different methods depending on how much data you need about the cookies:
+
+Response objects provide a few methods for checking status codes:
+
+By default, Http\Client will prefer using a curl based transport adapter. If the curl extension is not available a stream based adapter will be used instead. You can force select a transport adapter using a constructor option:
+
+The HTTP client triggers couple of events before and after sending a request which allows you to modify either the request or response or do other tasks like caching, logging etc.
+
+In tests you will often want to create mock responses to external APIs. You can use the HttpClientTrait to define responses to the requests your application is making:
+
+There are methods to mock the most commonly used HTTP methods:
+
+method Cake\Http\TestSuite\HttpClientTrait::newClientResponse(int $code = 200, array $headers = [], string $body = ''): Cake\Http\Client\Response
+
+As seen above you can use the newClientResponse() method to create responses for the requests your application will make. The headers need to be a list of strings:
+
+Released under the MIT License.
+
+Copyright © Cake Software Foundation, Inc. All rights reserved.
+
+
+================================================================================
+
+CODE BLOCKS:
+Code Block 1 ():
+class
+----------------------------------------
+
+Code Block 2 (shiki):
+use Cake\Http\Client;
+
+$http = new Client();
+
+// Simple get
+$response = $http->get('https://example.com/test.html');
+
+// Simple get with querystring
+$response = $http->get('https://example.com/search', ['q' => 'widget']);
+
+// Simple get with querystring & additional headers
+$response = $http->get('https://example.com/search', ['q' => 'widget'], [
+    'headers' => ['X-Requested-With' => 'XMLHttpRequest'],
+]);
+----------------------------------------
+
+Code Block 3 ():
+use Cake\Http\Client;
+
+$http = new Client();
+
+// Simple get
+$response = $http->get('https://example.com/test.html');
+
+// Simple get with querystring
+$response = $http->get('https://example.com/search', ['q' => 'widget']);
+
+// Simple get with querystring & additional headers
+$response = $http->get('https://example.com/search', ['q' => 'widget'], [
+    'headers' => ['X-Requested-With' => 'XMLHttpRequest'],
+]);
+----------------------------------------
+
+Code Block 4 (shiki):
+// Send a POST request with application/x-www-form-urlencoded encoded data
+$http = new Client();
+$response = $http->post('https://example.com/posts/add', [
+    'title' => 'testing',
+    'body' => 'content in the post',
+]);
+
+// Send a PUT request with application/x-www-form-urlencoded encoded data
+$response = $http->put('https://example.com/posts/add', [
+    'title' => 'testing',
+    'body' => 'content in the post',
+]);
+
+// Other methods as well.
+$http->delete(/* ... */);
+$http->head(/* ... */);
+$http->patch(/* ... */);
+----------------------------------------
+
+Code Block 5 ():
+// Send a POST request with application/x-www-form-urlencoded encoded data
+$http = new Client();
+$response = $http->post('https://example.com/posts/add', [
+    'title' => 'testing',
+    'body' => 'content in the post',
+]);
+
+// Send a PUT request with application/x-www-form-urlencoded encoded data
+$response = $http->put('https://example.com/posts/add', [
+    'title' => 'testing',
+    'body' => 'content in the post',
+]);
+
+// Other methods as well.
+$http->delete(/* ... */);
+$http->head(/* ... */);
+$http->patch(/* ... */);
+----------------------------------------
+
+Code Block 6 ():
+sendRequest()
+----------------------------------------
+
+Code Block 7 (shiki):
+use Cake\Http\Client;
+use Cake\Http\Client\Request as ClientRequest;
+
+$request = new ClientRequest(
+    'https://example.com/search',
+    ClientRequest::METHOD_GET,
+);
+$http = new Client();
+$response = $http->sendRequest($request);
+----------------------------------------
+
+Code Block 8 ():
+use Cake\Http\Client;
+use Cake\Http\Client\Request as ClientRequest;
+
+$request = new ClientRequest(
+    'https://example.com/search',
+    ClientRequest::METHOD_GET,
+);
+$http = new Client();
+$response = $http->sendRequest($request);
+----------------------------------------
+
+Code Block 9 (shiki):
+$http = new Client();
+$response = $http->post('https://example.com/api', [
+    'image' => fopen('/path/to/a/file', 'r'),
+]);
+----------------------------------------
+
+Code Block 10 ():
+$http = new Client();
+$response = $http->post('https://example.com/api', [
+    'image' => fopen('/path/to/a/file', 'r'),
+]);
+----------------------------------------
+
+Code Block 11 ():
+Cake\Http\Client\FormData
+----------------------------------------
+
+Code Block 12 (shiki):
+use Cake\Http\Client\FormData;
+
+$data = new FormData();
+
+// Create an XML part
+$xml = $data->newPart('xml', $xmlString);
+// Set the content type.
+$xml->type('application/xml');
+$data->add($xml);
+
+// Create a file upload with addFile()
+// This will append the file to the form data as well.
+$file = $data->addFile('upload', fopen('/some/file.txt', 'r'));
+$file->contentId('abc123');
+$file->disposition('attachment');
+
+// Send the request.
+$response = $http->post(
+    'https://example.com/api',
+    (string)$data,
+    ['headers' => ['Content-Type' => $data->contentType()]],
+);
+----------------------------------------
+
+Code Block 13 ():
+use Cake\Http\Client\FormData;
+
+$data = new FormData();
+
+// Create an XML part
+$xml = $data->newPart('xml', $xmlString);
+// Set the content type.
+$xml->type('application/xml');
+$data->add($xml);
+
+// Create a file upload with addFile()
+// This will append the file to the form data as well.
+$file = $data->addFile('upload', fopen('/some/file.txt', 'r'));
+$file->contentId('abc123');
+$file->disposition('attachment');
+
+// Send the request.
+$response = $http->post(
+    'https://example.com/api',
+    (string)$data,
+    ['headers' => ['Content-Type' => $data->contentType()]],
+);
+----------------------------------------
+
+Code Block 14 (shiki):
+// Send a JSON request body.
+$http = new Client();
+$response = $http->post(
+    'https://example.com/tasks',
+    json_encode($data),
+    ['type' => 'json'],
+);
+----------------------------------------
+
+Code Block 15 ():
+// Send a JSON request body.
+$http = new Client();
+$response = $http->post(
+    'https://example.com/tasks',
+    json_encode($data),
+    ['type' => 'json'],
+);
+----------------------------------------
+
+Code Block 16 ():
+type
+----------------------------------------
+
+Code Block 17 ():
+type
+----------------------------------------
+
+Code Block 18 (shiki):
+// Send a JSON body in a GET request with query string parameters.
+$http = new Client();
+$response = $http->get(
+    'https://example.com/tasks',
+    ['q' => 'test', '_content' => json_encode($data)],
+    ['type' => 'json'],
+);
+----------------------------------------
+
+Code Block 19 ():
+// Send a JSON body in a GET request with query string parameters.
+$http = new Client();
+$response = $http->get(
+    'https://example.com/tasks',
+    ['q' => 'test', '_content' => json_encode($data)],
+    ['type' => 'json'],
+);
+----------------------------------------
+
+Code Block 20 ():
+$options
+----------------------------------------
+
+Code Block 21 ():
+$options
+----------------------------------------
+
+Code Block 22 ():
+headers
+----------------------------------------
+
+Code Block 23 ():
+cookie
+----------------------------------------
+
+Code Block 24 ():
+proxy
+----------------------------------------
+
+Code Block 25 ():
+auth
+----------------------------------------
+
+Code Block 26 ():
+type
+----------------------------------------
+
+Code Block 27 ():
+ssl_verify_peer
+----------------------------------------
+
+Code Block 28 ():
+true
+----------------------------------------
+
+Code Block 29 ():
+false
+----------------------------------------
+
+Code Block 30 ():
+ssl_verify_peer_name
+----------------------------------------
+
+Code Block 31 ():
+true
+----------------------------------------
+
+Code Block 32 ():
+false
+----------------------------------------
+
+Code Block 33 ():
+ssl_verify_depth
+----------------------------------------
+
+Code Block 34 ():
+ssl_verify_host
+----------------------------------------
+
+Code Block 35 ():
+true
+----------------------------------------
+
+Code Block 36 ():
+ssl_cafile
+----------------------------------------
+
+Code Block 37 ():
+timeout
+----------------------------------------
+
+Code Block 38 ():
+type
+----------------------------------------
+
+Code Block 39 ():
+$data
+----------------------------------------
+
+Code Block 40 ():
+_content
+----------------------------------------
+
+Code Block 41 ():
+redirect
+----------------------------------------
+
+Code Block 42 ():
+false
+----------------------------------------
+
+Code Block 43 ():
+curl
+----------------------------------------
+
+Code Block 44 ():
+[CURLOPT_SSLKEY => 'key.pem']
+----------------------------------------
+
+Code Block 45 ():
+Client
+----------------------------------------
+
+Code Block 46 ():
+Cake\Http\Client
+----------------------------------------
+
+Code Block 47 (shiki):
+$http = new Client();
+$response = $http->get('https://example.com/profile/1', [], [
+    'auth' => ['username' => 'mark', 'password' => 'secret'],
+]);
+----------------------------------------
+
+Code Block 48 ():
+$http = new Client();
+$response = $http->get('https://example.com/profile/1', [], [
+    'auth' => ['username' => 'mark', 'password' => 'secret'],
+]);
+----------------------------------------
+
+Code Block 49 ():
+Cake\Http\Client
+----------------------------------------
+
+Code Block 50 ():
+'type'
+----------------------------------------
+
+Code Block 51 (shiki):
+$http = new Client();
+$response = $http->get('https://example.com/profile/1', [], [
+    'auth' => [
+        'type' => 'digest',
+        'username' => 'mark',
+        'password' => 'secret',
+        'realm' => 'myrealm',
+        'nonce' => 'onetimevalue',
+        'qop' => 1,
+        'opaque' => 'someval',
+    ],
+]);
+----------------------------------------
+
+Code Block 52 ():
+$http = new Client();
+$response = $http->get('https://example.com/profile/1', [], [
+    'auth' => [
+        'type' => 'digest',
+        'username' => 'mark',
+        'password' => 'secret',
+        'realm' => 'myrealm',
+        'nonce' => 'onetimevalue',
+        'qop' => 1,
+        'opaque' => 'someval',
+    ],
+]);
+----------------------------------------
+
+Code Block 53 (shiki):
+$http = new Client();
+$response = $http->get('https://example.com/profile/1', [], [
+    'auth' => [
+        'type' => 'oauth',
+        'consumerKey' => 'bigkey',
+        'consumerSecret' => 'secret',
+        'token' => '...',
+        'tokenSecret' => '...',
+        'realm' => 'tickets',
+    ],
+]);
+----------------------------------------
+
+Code Block 54 ():
+$http = new Client();
+$response = $http->get('https://example.com/profile/1', [], [
+    'auth' => [
+        'type' => 'oauth',
+        'consumerKey' => 'bigkey',
+        'consumerSecret' => 'secret',
+        'token' => '...',
+        'tokenSecret' => '...',
+        'realm' => 'tickets',
+    ],
+]);
+----------------------------------------
+
+Code Block 55 (shiki):
+$http = new Client([
+    'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+]);
+$response = $http->get('https://example.com/api/profile/1');
+----------------------------------------
+
+Code Block 56 ():
+$http = new Client([
+    'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+]);
+$response = $http->get('https://example.com/api/profile/1');
+----------------------------------------
+
+Code Block 57 (shiki):
+$http = new Client();
+$response = $http->get('https://example.com/test.php', [], [
+    'proxy' => [
+        'username' => 'mark',
+        'password' => 'testing',
+        'proxy' => '127.0.0.1:8080',
+    ],
+]);
+----------------------------------------
+
+Code Block 58 ():
+$http = new Client();
+$response = $http->get('https://example.com/test.php', [], [
+    'proxy' => [
+        'username' => 'mark',
+        'password' => 'testing',
+        'proxy' => '127.0.0.1:8080',
+    ],
+]);
+----------------------------------------
+
+Code Block 59 (shiki):
+// Create a scoped client.
+$http = new Client([
+    'host' => 'api.example.com',
+    'scheme' => 'https',
+    'auth' => ['username' => 'mark', 'password' => 'testing'],
+]);
+
+// Do a request to api.example.com
+$response = $http->get('/test.php');
+----------------------------------------
+
+Code Block 60 ():
+// Create a scoped client.
+$http = new Client([
+    'host' => 'api.example.com',
+    'scheme' => 'https',
+    'auth' => ['username' => 'mark', 'password' => 'testing'],
+]);
+
+// Do a request to api.example.com
+$response = $http->get('/test.php');
+----------------------------------------
+
+Code Block 61 ():
+createFromUrl()
+----------------------------------------
+
+Code Block 62 (shiki):
+$http = Client::createFromUrl('https://api.example.com/v1/test');
+----------------------------------------
+
+Code Block 63 ():
+$http = Client::createFromUrl('https://api.example.com/v1/test');
+----------------------------------------
+
+Code Block 64 ():
+protocol
+----------------------------------------
+
+Code Block 65 ():
+host
+----------------------------------------
+
+Code Block 66 ():
+basePath
+----------------------------------------
+
+Code Block 67 (shiki):
+// Using the scoped client we created earlier.
+$response = $http->get('http://foo.com/test.php');
+----------------------------------------
+
+Code Block 68 ():
+// Using the scoped client we created earlier.
+$response = $http->get('http://foo.com/test.php');
+----------------------------------------
+
+Code Block 69 (shiki):
+$http = new Client([
+    'host' => 'cakephp.org',
+]);
+
+// Do a request that sets some cookies
+$response = $http->get('/');
+
+// Cookies from the first request will be included
+// by default.
+$response2 = $http->get('/changelogs');
+----------------------------------------
+
+Code Block 70 ():
+$http = new Client([
+    'host' => 'cakephp.org',
+]);
+
+// Do a request that sets some cookies
+$response = $http->get('/');
+
+// Cookies from the first request will be included
+// by default.
+$response2 = $http->get('/changelogs');
+----------------------------------------
+
+Code Block 71 ():
+$options
+----------------------------------------
+
+Code Block 72 (shiki):
+// Replace a stored cookie with a custom value.
+$response = $http->get('/changelogs', [], [
+    'cookies' => ['sessionid' => '123abc'],
+]);
+----------------------------------------
+
+Code Block 73 ():
+// Replace a stored cookie with a custom value.
+$response = $http->get('/changelogs', [], [
+    'cookies' => ['sessionid' => '123abc'],
+]);
+----------------------------------------
+
+Code Block 74 ():
+addCookie()
+----------------------------------------
+
+Code Block 75 (shiki):
+use Cake\Http\Cookie\Cookie;
+
+$http = new Client([
+    'host' => 'cakephp.org',
+]);
+$http->addCookie(new Cookie('session', 'abc123'));
+----------------------------------------
+
+Code Block 76 ():
+use Cake\Http\Cookie\Cookie;
+
+$http = new Client([
+    'host' => 'cakephp.org',
+]);
+$http->addCookie(new Cookie('session', 'abc123'));
+----------------------------------------
+
+Code Block 77 ():
+Client
+----------------------------------------
+
+Code Block 78 ():
+HttpClient.beforeSend
+----------------------------------------
+
+Code Block 79 ():
+HttpClient.afterSend
+----------------------------------------
+
+Code Block 80 ():
+beforeSend
+----------------------------------------
+
+Code Block 81 ():
+afterSend
+----------------------------------------
+
+Code Block 82 ():
+beforeSend
+----------------------------------------
+
+Code Block 83 ():
+class
+----------------------------------------
+
+Code Block 84 (shiki):
+// Read the entire response as a string.
+$response->getStringBody();
+----------------------------------------
+
+Code Block 85 ():
+// Read the entire response as a string.
+$response->getStringBody();
+----------------------------------------
+
+Code Block 86 (shiki):
+// Get a Psr\Http\Message\StreamInterface containing the response body
+$stream = $response->getBody();
+
+// Read a stream 100 bytes at a time.
+while (!$stream->eof()) {
+    echo $stream->read(100);
+}
+----------------------------------------
+
+Code Block 87 ():
+// Get a Psr\Http\Message\StreamInterface containing the response body
+$stream = $response->getBody();
+
+// Read a stream 100 bytes at a time.
+while (!$stream->eof()) {
+    echo $stream->read(100);
+}
+----------------------------------------
+
+Code Block 88 ():
+SimpleXMLElement
+----------------------------------------
+
+Code Block 89 (shiki):
+// Get some XML
+$http = new Client();
+$response = $http->get('https://example.com/test.xml');
+$xml = $response->getXml();
+
+// Get some JSON
+$http = new Client();
+$response = $http->get('https://example.com/test.json');
+$json = $response->getJson();
+----------------------------------------
+
+Code Block 90 ():
+// Get some XML
+$http = new Client();
+$response = $http->get('https://example.com/test.xml');
+$xml = $response->getXml();
+
+// Get some JSON
+$http = new Client();
+$response = $http->get('https://example.com/test.json');
+$json = $response->getJson();
+----------------------------------------
+
+Code Block 91 (shiki):
+// Get all the headers as an associative array.
+$response->getHeaders();
+
+// Get a single header as an array.
+$response->getHeader('content-type');
+
+// Get a header as a string
+$response->getHeaderLine('content-type');
+
+// Get the response encoding
+$response->getEncoding();
+----------------------------------------
+
+Code Block 92 ():
+// Get all the headers as an associative array.
+$response->getHeaders();
+
+// Get a single header as an array.
+$response->getHeader('content-type');
+
+// Get a header as a string
+$response->getHeaderLine('content-type');
+
+// Get the response encoding
+$response->getEncoding();
+----------------------------------------
+
+Code Block 93 (shiki):
+// Get all cookies (full data)
+$response->getCookies();
+
+// Get a single cookie's value.
+$response->getCookie('session_id');
+
+// Get a the complete data for a single cookie
+// includes value, expires, path, httponly, secure keys.
+$response->getCookieData('session_id');
+----------------------------------------
+
+Code Block 94 ():
+// Get all cookies (full data)
+$response->getCookies();
+
+// Get a single cookie's value.
+$response->getCookie('session_id');
+
+// Get a the complete data for a single cookie
+// includes value, expires, path, httponly, secure keys.
+$response->getCookieData('session_id');
+----------------------------------------
+
+Code Block 95 (shiki):
+// Was the response a 20x
+$response->isOk();
+
+// Was the response a 30x
+$response->isRedirect();
+
+// Get the status code
+$response->getStatusCode();
+----------------------------------------
+
+Code Block 96 ():
+// Was the response a 20x
+$response->isOk();
+
+// Was the response a 30x
+$response->isRedirect();
+
+// Get the status code
+$response->getStatusCode();
+----------------------------------------
+
+Code Block 97 ():
+Http\Client
+----------------------------------------
+
+Code Block 98 ():
+curl
+----------------------------------------
+
+Code Block 99 (shiki):
+use Cake\Http\Client\Adapter\Stream;
+
+$http = new Client(['adapter' => Stream::class]);
+----------------------------------------
+
+Code Block 100 ():
+use Cake\Http\Client\Adapter\Stream;
+
+$http = new Client(['adapter' => Stream::class]);
+----------------------------------------
+
+Code Block 101 (shiki):
+// Somewhere before calling one of the HTTP client's methods which makes a request
+$http->getEventManager()->on(
+    'HttpClient.beforeSend',
+    function (
+        \Cake\Http\Client\ClientEvent $event,
+        \Cake\Http\Client\Request $request,
+        array $adapterOptions,
+        int $redirects,
+    ) {
+        // Modify the request
+        $event->setRequest(....);
+        // Modify the adapter options
+        $event->setAdapterOptions(....);
+
+        // Skip making the actual request by returning a response.
+        // You can use $event->setResult($response) to achieve the same.
+        return new \Cake\Http\Client\Response(body: 'something');
+    }
+);
+----------------------------------------
+
+Code Block 102 ():
+// Somewhere before calling one of the HTTP client's methods which makes a request
+$http->getEventManager()->on(
+    'HttpClient.beforeSend',
+    function (
+        \Cake\Http\Client\ClientEvent $event,
+        \Cake\Http\Client\Request $request,
+        array $adapterOptions,
+        int $redirects,
+    ) {
+        // Modify the request
+        $event->setRequest(....);
+        // Modify the adapter options
+        $event->setAdapterOptions(....);
+
+        // Skip making the actual request by returning a response.
+        // You can use $event->setResult($response) to achieve the same.
+        return new \Cake\Http\Client\Response(body: 'something');
+    }
+);
+----------------------------------------
+
+Code Block 103 (shiki):
+// Somewhere before calling one of the HTTP client's methods which makes a request
+$http->getEventManager()->on(
+    'HttpClient.afterSend',
+    function (
+        \Cake\Http\Client\ClientEvent $event,
+        \Cake\Http\Client\Request $request,
+        array $adapterOptions,
+        int $redirects,
+        bool $requestSent // Indicates whether the request was actually sent
+                            // or response returned from ``beforeSend`` event
+    ) {
+        // Get the response
+        $response = $event->getResponse();
+
+        // Return a new/modified response.
+        // You can use $event->setResult($response) to achieve the same.
+        return new \Cake\Http\Client\Response(body: 'something');
+    }
+);
+----------------------------------------
+
+Code Block 104 ():
+// Somewhere before calling one of the HTTP client's methods which makes a request
+$http->getEventManager()->on(
+    'HttpClient.afterSend',
+    function (
+        \Cake\Http\Client\ClientEvent $event,
+        \Cake\Http\Client\Request $request,
+        array $adapterOptions,
+        int $redirects,
+        bool $requestSent // Indicates whether the request was actually sent
+                            // or response returned from ``beforeSend`` event
+    ) {
+        // Get the response
+        $response = $event->getResponse();
+
+        // Return a new/modified response.
+        // You can use $event->setResult($response) to achieve the same.
+        return new \Cake\Http\Client\Response(body: 'something');
+    }
+);
+----------------------------------------
+
+Code Block 105 ():
+HttpClientTrait
+----------------------------------------
+
+Code Block 106 (shiki):
+use Cake\Http\TestSuite\HttpClientTrait;
+use Cake\TestSuite\TestCase;
+
+class CartControllerTests extends TestCase
+{
+    use HttpClientTrait;
+
+    public function testCheckout()
+    {
+        // Mock a POST request that will be made.
+        $this->mockClientPost(
+            'https://example.com/process-payment',
+            $this->newClientResponse(200, [], json_encode(['ok' => true])),
+        );
+        $this->post("/cart/checkout");
+        // Do assertions.
+    }
+}
+----------------------------------------
+
+Code Block 107 ():
+use Cake\Http\TestSuite\HttpClientTrait;
+use Cake\TestSuite\TestCase;
+
+class CartControllerTests extends TestCase
+{
+    use HttpClientTrait;
+
+    public function testCheckout()
+    {
+        // Mock a POST request that will be made.
+        $this->mockClientPost(
+            'https://example.com/process-payment',
+            $this->newClientResponse(200, [], json_encode(['ok' => true])),
+        );
+        $this->post("/cart/checkout");
+        // Do assertions.
+    }
+}
+----------------------------------------
+
+Code Block 108 (shiki):
+$this->mockClientGet(/* ... */);
+$this->mockClientPatch(/* ... */);
+$this->mockClientPost(/* ... */);
+$this->mockClientPut(/* ... */);
+$this->mockClientDelete(/* ... */);
+----------------------------------------
+
+Code Block 109 ():
+$this->mockClientGet(/* ... */);
+$this->mockClientPatch(/* ... */);
+$this->mockClientPost(/* ... */);
+$this->mockClientPut(/* ... */);
+$this->mockClientDelete(/* ... */);
+----------------------------------------
+
+Code Block 110 ():
+method
+----------------------------------------
+
+Code Block 111 ():
+newClientResponse()
+----------------------------------------
+
+Code Block 112 (shiki):
+$headers = [
+    'Content-Type: application/json',
+    'Connection: close',
+];
+$response = $this->newClientResponse(200, $headers, $body)
+----------------------------------------
+
+Code Block 113 ():
+$headers = [
+    'Content-Type: application/json',
+    'Connection: close',
+];
+$response = $this->newClientResponse(200, $headers, $body)
+----------------------------------------
+
