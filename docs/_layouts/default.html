@@ -532,8 +532,14 @@
   <!-- Copy All as Markdown button script -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Find the first h1 element (page title)
-      const pageTitle = document.querySelector('.container h1');
+      // Find the first h1 element that is NOT the site title (find h1 inside main content)
+      const allH1s = document.querySelectorAll('.container h1');
+      let pageTitle = null;
+      
+      // Get the last h1 (which should be the page title, not site title)
+      if (allH1s.length > 0) {
+        pageTitle = allH1s[allH1s.length - 1];
+      }
       
       if (pageTitle) {
         // Create the copy button
@@ -553,15 +559,25 @@
         
         copyAllBtn.addEventListener('click', async function () {
           try {
-            // Fetch the current page's markdown source
+            // Get the current page filename
             const currentPath = window.location.pathname;
-            const mdFileName = currentPath.split('/').pop().replace('.html', '.md');
-            const mdPath = currentPath.replace(/[^\/]*$/, mdFileName);
+            const htmlFileName = currentPath.split('/').pop();
+            
+            // Convert .html to .md
+            const mdFileName = htmlFileName.replace('.html', '.md');
+            
+            // Build the correct path - GitHub Pages serves from /Cake-Learn/
+            let mdPath;
+            if (currentPath.includes('/Cake-Learn/')) {
+              mdPath = '/Cake-Learn/' + mdFileName;
+            } else {
+              mdPath = mdFileName;
+            }
             
             // Fetch the markdown file
             const response = await fetch(mdPath);
             if (!response.ok) {
-              throw new Error('Failed to fetch markdown file');
+              throw new Error(`Failed to fetch: ${response.status}`);
             }
             
             const markdownContent = await response.text();
