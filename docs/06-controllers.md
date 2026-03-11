@@ -11,8 +11,8 @@ description: Complete guide to CakePHP controllers, middleware, rate limiting, a
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="05-components.html" style="color: var(--link-color);">← Previous: Components</a>
-    <span style="color: var(--text-secondary);">🎮 Page 6 of 6</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">🎮 Page 6 of 7</span>
+    <a href="07-pagination-request-response.html" style="color: var(--link-color);">Next: Pagination & Request/Response →</a>
   </div>
 </nav>
 
@@ -2150,8 +2150,8 @@ mindmap
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="05-components.html" style="color: var(--link-color);">← Previous: Components</a>
-    <span style="color: var(--text-secondary);">🎮 Page 6 of 6</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">🎮 Page 6 of 7</span>
+    <a href="07-pagination-request-response.html" style="color: var(--link-color);">Next: Pagination & Request/Response →</a>
   </div>
 </nav>
 
