@@ -294,7 +294,126 @@
       display: none;
     }
 
+    /* Sidebar styles */
+    .docs-layout {
+      display: flex;
+      gap: 0;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .sidebar {
+      width: 280px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      position: sticky;
+      top: 49px;
+      height: calc(100vh - 49px);
+      overflow-y: auto;
+      padding: 20px 0;
+      flex-shrink: 0;
+    }
+
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 60px;
+      left: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      z-index: 1001;
+      font-size: 20px;
+    }
+
+    .sidebar-section {
+      margin-bottom: 20px;
+    }
+
+    .sidebar-section-title {
+      padding: 8px 20px;
+      font-weight: 600;
+      font-size: 0.85em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      padding: 8px 20px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-size: 0.95em;
+      transition: background 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-link:hover {
+      background: var(--bg-primary);
+      text-decoration: none;
+    }
+
+    .sidebar-link.active {
+      background: var(--bg-primary);
+      border-left-color: var(--link-color);
+      color: var(--link-color);
+      font-weight: 600;
+    }
+
+    .sidebar-link .icon {
+      margin-right: 10px;
+      font-size: 1.1em;
+    }
+
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      padding: 0 45px;
+    }
+
     /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 49px;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-toggle {
+        display: block;
+      }
+
+      .main-content {
+        padding: 0 20px;
+      }
+
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 49px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+
+      .sidebar-overlay.open {
+        display: block;
+      }
+    }
+
     @media (max-width: 768px) {
       .container {
         padding: 20px;
@@ -307,6 +426,10 @@
       .theme-toggle {
         top: 10px;
         right: 10px;
+      }
+
+      .main-content {
+        padding: 0 15px;
       }
     }
   </style>
@@ -333,23 +456,81 @@
     </div>
   </nav>
 
-  <div class="container">
-    {% if site.title and site.title != page.title %}
-    <h1>
-      <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP Logo"
-        style="height: 40px; vertical-align: middle; margin-right: 10px;">
-      <a href="/Cake-Learn/" style="vertical-align: middle;">{{ site.title }}</a>
-    </h1>
-    {% endif %}
+  <!-- Sidebar toggle button (mobile) -->
+  <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
 
-    {{ content }}
+  <!-- Sidebar overlay (mobile) -->
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
-    {% if site.github.private != true %}
-    <hr>
-    <div style="text-align: center; color: var(--text-secondary); font-size: 0.9em;">
-      <p>Released under the MIT License. Copyright © Cake Software Foundation, Inc.</p>
+  <div class="docs-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Getting Started</div>
+        <a href="/Cake-Learn/" class="sidebar-link">
+          <span class="icon">🏠</span>
+          <span>Home</span>
+        </a>
+        <a href="/Cake-Learn/01-cakephp-at-a-glance.html" class="sidebar-link">
+          <span class="icon">📖</span>
+          <span>CakePHP at a Glance</span>
+        </a>
+        <a href="/Cake-Learn/02-installation-guide.html" class="sidebar-link">
+          <span class="icon">⚙️</span>
+          <span>Installation Guide</span>
+        </a>
+        <a href="/Cake-Learn/03-conventions.html" class="sidebar-link">
+          <span class="icon">📋</span>
+          <span>Conventions</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Tutorials</div>
+        <a href="/Cake-Learn/04-cms-tutorial.html" class="sidebar-link">
+          <span class="icon">📚</span>
+          <span>CMS Tutorial</span>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Core Concepts</div>
+        <a href="/Cake-Learn/05-components.html" class="sidebar-link">
+          <span class="icon">⚡</span>
+          <span>Components</span>
+        </a>
+        <a href="/Cake-Learn/06-controllers.html" class="sidebar-link">
+          <span class="icon">🎮</span>
+          <span>Controllers</span>
+        </a>
+        <a href="/Cake-Learn/07-pagination-request-response.html" class="sidebar-link">
+          <span class="icon">📄</span>
+          <span>Pagination & Request/Response</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <div class="container" style="max-width: 100%; padding: 45px 0;">
+        {% if site.title and site.title != page.title %}
+        <h1>
+          <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP Logo"
+            style="height: 40px; vertical-align: middle; margin-right: 10px;">
+          <a href="/Cake-Learn/" style="vertical-align: middle;">{{ site.title }}</a>
+        </h1>
+        {% endif %}
+
+        {{ content }}
+
+        {% if site.github.private != true %}
+        <hr>
+        <div style="text-align: center; color: var(--text-secondary); font-size: 0.9em;">
+          <p>Released under the MIT License. Copyright © Cake Software Foundation, Inc.</p>
+        </div>
+        {% endif %}
+      </div>
     </div>
-    {% endif %}
   </div>
 
   <!-- Mermaid JS for diagrams -->
@@ -627,6 +808,51 @@
           });
         }
       }, 100); // Small delay to ensure content is rendered
+    });
+  </script>
+
+  <!-- Sidebar navigation script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebar = document.getElementById('sidebar');
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+      // Highlight active page
+      const currentPath = window.location.pathname;
+      sidebarLinks.forEach(link => {
+        const linkPath = new URL(link.href).pathname;
+        if (currentPath === linkPath || currentPath.endsWith(linkPath)) {
+          link.classList.add('active');
+        }
+      });
+
+      // Toggle sidebar on mobile
+      if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function () {
+          sidebar.classList.toggle('open');
+          sidebarOverlay.classList.toggle('open');
+        });
+      }
+
+      // Close sidebar when clicking overlay
+      if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function () {
+          sidebar.classList.remove('open');
+          sidebarOverlay.classList.remove('open');
+        });
+      }
+
+      // Close sidebar when clicking a link on mobile
+      sidebarLinks.forEach(link => {
+        link.addEventListener('click', function () {
+          if (window.innerWidth <= 1024) {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('open');
+          }
+        });
+      });
     });
   </script>
 </body>
