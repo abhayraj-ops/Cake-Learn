@@ -11,8 +11,8 @@ description: Learn about CakePHP Controller Components - packages of logic share
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="04-cms-tutorial.html" style="color: var(--link-color);">← Previous: CMS Tutorial</a>
-    <span style="color: var(--text-secondary);">⚙️ Page 5 of 5</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">⚙️ Page 5 of 6</span>
+    <a href="06-controllers.html" style="color: var(--link-color);">Next: Controllers →</a>
   </div>
 </nav>
 
@@ -48,6 +48,7 @@ style F fill:#2d3436,stroke:#ffeaa7,stroke-width:2px
 ```
 
 > **Key Benefits:**
+>
 > - Reusable across multiple controllers
 > - Keeps controller code clean
 > - Organized business logic
@@ -149,7 +150,7 @@ graph LR
     B --> C[Exposed as Property]
     C --> D[$this->Flash]
     C --> E[$this->FormProtection]
-    
+
     style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
     style B fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
     style C fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
@@ -219,7 +220,7 @@ graph TB
     C --> D[Extend Component]
     D --> E[Add Methods]
     E --> F[Load in Controller]
-    
+
     style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
     style B fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
     style C fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
@@ -318,6 +319,7 @@ C-->>R: Send Response
 ```
 
 Available callbacks:
+
 - `beforeFilter(EventInterface $event): void` - Called before controller's beforeFilter
 - `startup(EventInterface $event): void` - Called after controller's startup
 - `beforeRender(EventInterface $event): void` - Called before rendering
@@ -364,13 +366,13 @@ graph TB
     A --> D[Check HTTP Cache]
     A --> E[Authentication]
     A --> F[Authorization]
-    
+
     B --> B1[One-time messages]
     C --> C1[Form tampering protection]
     D --> D1[HTTP caching]
     E --> E1[User login]
     F --> F1[Access control]
-    
+
     style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
     style B fill:#2d3436,color:#fff,stroke:#ffeaa7,stroke-width:2px
     style C fill:#2d3436,color:#fff,stroke:#fab1a0,stroke-width:2px
@@ -395,12 +397,12 @@ $this->Flash->set('This is a message');
 
 #### Options:
 
-| Option | Description |
-|--------|-------------|
-| `key` | The flash message key (default: 'flash') |
-| `clear` | Set to true to overwrite existing messages |
-| `params` | Additional parameters for the template |
-| `escape` | Set to false to allow HTML |
+| Option   | Description                                |
+| -------- | ------------------------------------------ |
+| `key`    | The flash message key (default: 'flash')   |
+| `clear`  | Set to true to overwrite existing messages |
+| `params` | Additional parameters for the template     |
+| `escape` | Set to false to allow HTML                 |
 
 ```php
 <?php
@@ -427,7 +429,7 @@ graph TD
     B -->|Yes| C[304 Not Modified]
     B -->|No| D[Generate Response]
     D --> E[200 OK + Content]
-    
+
     style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
     style B fill:#2d3436,color:#fff,stroke:#fab1a0,stroke-width:2px
     style C fill:#2d3436,color:#fff,stroke:#74b9ff,stroke-width:2px
@@ -448,6 +450,7 @@ public function initialize(): void
 ```
 
 This automatically activates a `beforeRender` check comparing:
+
 - `If-None-Match` with response `ETag`
 - `If-Modified-Since` with response `Last-Modified`
 
@@ -465,7 +468,7 @@ graph LR
     A[Form Submission] --> B{Validate Token?}
     B -->|Valid| C[Process Form]
     B -->|Invalid| D[400 Error]
-    
+
     style A fill:#2d3436,color:#fff,stroke:#4ecdc4,stroke-width:2px
     style B fill:#2d3436,color:#fff,stroke:#fab1a0,stroke-width:2px
     style C fill:#2d3436,color:#fff,stroke:#96ceb4,stroke-width:2px
@@ -486,12 +489,12 @@ public function initialize(): void
 
 #### Configuration Options:
 
-| Option | Description |
-|--------|-------------|
-| `validate` | Set to false to skip validation |
-| `unlockedFields` | Fields to exclude from validation |
-| `unlockedActions` | Actions to exclude from validation |
-| `validationFailureCallback` | Custom callback for failures |
+| Option                      | Description                        |
+| --------------------------- | ---------------------------------- |
+| `validate`                  | Set to false to skip validation    |
+| `unlockedFields`            | Fields to exclude from validation  |
+| `unlockedActions`           | Actions to exclude from validation |
+| `validationFailureCallback` | Custom callback for failures       |
 
 #### Disabling for Specific Actions:
 
@@ -513,7 +516,7 @@ public function beforeFilter(EventInterface $event): void
 public function beforeFilter(EventInterface $event): void
 {
     parent::beforeFilter($event);
-    
+
     $this->FormProtection->setConfig('validationFailureCallback', function ($controller) {
         $controller->response->statusCode(403);
         $controller->response->body('Invalid form submission');
@@ -530,8 +533,8 @@ public function beforeFilter(EventInterface $event): void
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="04-cms-tutorial.html" style="color: var(--link-color);">← Previous: CMS Tutorial</a>
-    <span style="color: var(--text-secondary);">⚙️ Page 5 of 5</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">⚙️ Page 5 of 6</span>
+    <a href="06-controllers.html" style="color: var(--link-color);">Next: Controllers →</a>
   </div>
 </nav>
 

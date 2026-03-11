@@ -23,6 +23,7 @@ graph TB
     A --> D[📋 Conventions]
     A --> E[📚 CMS Tutorial]
     A --> F[⚡ Components]
+    A --> G[🎮 Controllers]
 
     B --> B1[CakePHP at a Glance]
     B --> B2[Where to Get Help]
@@ -36,6 +37,10 @@ graph TB
     F --> F1[Flash Component]
     F --> F2[Check HTTP Cache]
     F --> F3[Form Protection]
+
+    G --> G1[Request Flow]
+    G --> G2[Middleware]
+    G --> G3[Rate Limiting]
 ```
 
 ---
@@ -64,19 +69,21 @@ graph TB
 
 ### Getting Started
 
-| Document                                        | Description                                       | Status       |
-| ----------------------------------------------- | ------------------------------------------------- | ------------ |
-| [CakePHP at a Glance](cakephp-at-a-glance.html) | Introduction to CakePHP concepts and architecture | ✅ Available |
-| [Installation Guide](installation-guide.html)   | Complete installation and configuration guide     | ✅ Available |
-| [CakePHP Conventions](03-conventions.html) | Naming conventions and folder structure for rapid development | ✅ Available |
-| [Content Management Tutorial](04-cms-tutorial.html) | Build a CMS with articles, tags, auth, and authorization | ✅ Available |
-| [Controller Components](05-components.html) | Flash, Form Protection, HTTP Cache components | ✅ Available |
+| Document                                            | Description                                                   | Status       |
+| --------------------------------------------------- | ------------------------------------------------------------- | ------------ |
+| [CakePHP at a Glance](cakephp-at-a-glance.html)     | Introduction to CakePHP concepts and architecture             | ✅ Available |
+| [Installation Guide](installation-guide.html)       | Complete installation and configuration guide                 | ✅ Available |
+| [CakePHP Conventions](03-conventions.html)          | Naming conventions and folder structure for rapid development | ✅ Available |
+| [Content Management Tutorial](04-cms-tutorial.html) | Build a CMS with articles, tags, auth, and authorization      | ✅ Available |
+| [Controller Components](05-components.html)         | Flash, Form Protection, HTTP Cache components                 | ✅ Available |
+| [Controllers](06-controllers.html)                  | Request handling, middleware, and rate limiting               | ✅ Available |
+| [Controllers](06-controllers.html)                  | Request handling, middleware, and rate limiting               | ✅ Available |
 
 ### Coming Soon
 
 - 🗄️ Database Configuration
 - 🛣️ Routing Basics
-- 🎮 Controllers & Views
+- 👁️ Views & Templates
 - 📊 ORM & Query Builder
 - 🔐 Authentication & Authorization
 - 🧪 Testing
@@ -181,12 +188,12 @@ This documentation is generated from scraped CakePHP official documentation. If 
 
 ```mermaid
 pie title Documentation Coverage
-    "Completed" : 5
+    "Completed" : 6
     "In Progress" : 0
-    "Planned" : 13
+    "Planned" : 12
 ```
 
-**Current Status:** 4 documents completed, 13+ planned
+**Current Status:** 6 documents completed, 12+ planned
 
 ---
 

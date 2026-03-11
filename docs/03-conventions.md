@@ -11,7 +11,7 @@ description: Learn CakePHP naming conventions and folder structure for rapid dev
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="02-installation-guide.html" style="color: var(--link-color);">← Previous: Installation</a>
-    <span style="color: var(--text-secondary);">📋 Page 3 of 4</span>
+    <span style="color: var(--text-secondary);">📋 Page 3 of 6</span>
     <a href="04-cms-tutorial.html" style="color: var(--link-color);">Next: CMS Tutorial →</a>
   </div>
 </nav>
@@ -696,7 +696,7 @@ Now that you understand CakePHP's structure and conventions:
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="02-installation-guide.html" style="color: var(--link-color);">← Previous: Installation</a>
-    <span style="color: var(--text-secondary);">📋 Page 3 of 4</span>
+    <span style="color: var(--text-secondary);">📋 Page 3 of 6</span>
     <a href="04-cms-tutorial.html" style="color: var(--link-color);">Next: CMS Tutorial →</a>
   </div>
 </nav>
