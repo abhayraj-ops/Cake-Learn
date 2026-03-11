@@ -314,19 +314,7 @@
       flex-shrink: 0;
     }
 
-    .sidebar-toggle {
-      display: none;
-      position: fixed;
-      top: 60px;
-      left: 20px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 8px 12px;
-      cursor: pointer;
-      z-index: 1001;
-      font-size: 20px;
-    }
+
 
     .sidebar-section {
       margin-bottom: 20px;
@@ -364,10 +352,7 @@
       font-weight: 600;
     }
 
-    .sidebar-link .icon {
-      margin-right: 10px;
-      font-size: 1.1em;
-    }
+
 
     .main-content {
       flex: 1;
@@ -388,10 +373,6 @@
 
       .sidebar.open {
         left: 0;
-      }
-
-      .sidebar-toggle {
-        display: block;
       }
 
       .main-content {
@@ -440,7 +421,15 @@
   <nav
     style="background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 12px 0; position: sticky; top: 0; z-index: 999;">
     <div
-      style="max-width: 1200px; margin: 0 auto; padding: 0 45px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+      style="max-width: 1400px; margin: 0 auto; padding: 0 45px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+      <!-- Sidebar toggle button (always visible) -->
+      <button id="sidebar-toggle" aria-label="Toggle sidebar" style="background: transparent; border: none; cursor: pointer; padding: 6px; display: flex; align-items: center; color: var(--text-primary);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
       <a href="/Cake-Learn/" style="font-weight: 600; font-size: 1.1em; display: flex; align-items: center; gap: 8px;">
         <img src="https://book.cakephp.org/5.x/logo.svg" alt="CakePHP" style="height: 24px;">
         CakePHP Docs
@@ -456,9 +445,6 @@
     </div>
   </nav>
 
-  <!-- Sidebar toggle button (mobile) -->
-  <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
-
   <!-- Sidebar overlay (mobile) -->
   <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
@@ -468,19 +454,15 @@
       <div class="sidebar-section">
         <div class="sidebar-section-title">Getting Started</div>
         <a href="/Cake-Learn/" class="sidebar-link">
-          <span class="icon">🏠</span>
           <span>Home</span>
         </a>
         <a href="/Cake-Learn/01-cakephp-at-a-glance.html" class="sidebar-link">
-          <span class="icon">📖</span>
           <span>CakePHP at a Glance</span>
         </a>
         <a href="/Cake-Learn/02-installation-guide.html" class="sidebar-link">
-          <span class="icon">⚙️</span>
           <span>Installation Guide</span>
         </a>
         <a href="/Cake-Learn/03-conventions.html" class="sidebar-link">
-          <span class="icon">📋</span>
           <span>Conventions</span>
         </a>
       </div>
@@ -488,7 +470,6 @@
       <div class="sidebar-section">
         <div class="sidebar-section-title">Tutorials</div>
         <a href="/Cake-Learn/04-cms-tutorial.html" class="sidebar-link">
-          <span class="icon">📚</span>
           <span>CMS Tutorial</span>
         </a>
       </div>
@@ -496,15 +477,12 @@
       <div class="sidebar-section">
         <div class="sidebar-section-title">Core Concepts</div>
         <a href="/Cake-Learn/05-components.html" class="sidebar-link">
-          <span class="icon">⚡</span>
           <span>Components</span>
         </a>
         <a href="/Cake-Learn/06-controllers.html" class="sidebar-link">
-          <span class="icon">🎮</span>
           <span>Controllers</span>
         </a>
         <a href="/Cake-Learn/07-pagination-request-response.html" class="sidebar-link">
-          <span class="icon">📄</span>
           <span>Pagination & Request/Response</span>
         </a>
       </div>
