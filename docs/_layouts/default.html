@@ -532,100 +532,101 @@
   <!-- Copy All as Markdown button script -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Find the first h1 element that is NOT the site title (find h1 inside main content)
-      const allH1s = document.querySelectorAll('.container h1');
-      let pageTitle = null;
-      
-      // Get the last h1 (which should be the page title, not site title)
-      if (allH1s.length > 0) {
-        pageTitle = allH1s[allH1s.length - 1];
-      }
-      
-      if (pageTitle) {
-        // Create the copy button
-        const copyAllBtn = document.createElement('button');
-        copyAllBtn.id = 'copy-all-markdown';
-        copyAllBtn.className = 'copy-all-markdown-btn';
-        copyAllBtn.innerHTML = `
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-          Copy Page as Markdown
-        `;
+      // Wait a bit for content to fully render
+      setTimeout(() => {
+        // Find all H1 elements
+        const allH1s = document.querySelectorAll('.container h1');
         
-        // Insert button after the title
-        pageTitle.parentNode.insertBefore(copyAllBtn, pageTitle.nextSibling);
-        
-        copyAllBtn.addEventListener('click', async function () {
-          try {
-            // Get the current page filename
-            const currentPath = window.location.pathname;
-            const htmlFileName = currentPath.split('/').pop();
-            
-            // Convert .html to .md
-            const mdFileName = htmlFileName.replace('.html', '.md');
-            
-            // Build the correct path - GitHub Pages serves from /Cake-Learn/
-            let mdPath;
-            if (currentPath.includes('/Cake-Learn/')) {
-              mdPath = '/Cake-Learn/' + mdFileName;
-            } else {
-              mdPath = mdFileName;
-            }
-            
-            // Fetch the markdown file
-            const response = await fetch(mdPath);
-            if (!response.ok) {
-              throw new Error(`Failed to fetch: ${response.status}`);
-            }
-            
-            const markdownContent = await response.text();
-            
-            // Copy to clipboard
-            await navigator.clipboard.writeText(markdownContent);
-            
-            // Update button state
-            copyAllBtn.innerHTML = `
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              Copied!
-            `;
-            copyAllBtn.classList.add('copied');
-            
-            setTimeout(() => {
-              copyAllBtn.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                Copy Page as Markdown
-              `;
-              copyAllBtn.classList.remove('copied');
-            }, 3000);
-          } catch (err) {
-            console.error('Failed to copy:', err);
-            copyAllBtn.innerHTML = `
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="15" y1="9" x2="9" y2="15"></line>
-                <line x1="9" y1="9" x2="15" y2="15"></line>
-              </svg>
-              Failed to copy
-            `;
-            setTimeout(() => {
-              copyAllBtn.innerHTML = `
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
-                Copy Page as Markdown
-              `;
-            }, 2000);
+        // The page title is the one that doesn't contain an <a> tag to home
+        let pageTitle = null;
+        allH1s.forEach(h1 => {
+          const hasHomeLink = h1.querySelector('a[href="/Cake-Learn/"]');
+          if (!hasHomeLink) {
+            pageTitle = h1;
           }
         });
-      }
+        
+        if (pageTitle) {
+          // Create the copy button
+          const copyAllBtn = document.createElement('button');
+          copyAllBtn.id = 'copy-all-markdown';
+          copyAllBtn.className = 'copy-all-markdown-btn';
+          copyAllBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy Page as Markdown
+          `;
+          
+          // Insert button after the title
+          pageTitle.parentNode.insertBefore(copyAllBtn, pageTitle.nextSibling);
+          
+          copyAllBtn.addEventListener('click', async function () {
+            try {
+              // Get the current page filename
+              const currentPath = window.location.pathname;
+              const htmlFileName = currentPath.split('/').pop();
+              
+              // Convert .html to .md
+              const mdFileName = htmlFileName.replace('.html', '.md');
+              
+              // Use raw GitHub URL to fetch the markdown file
+              const mdPath = `https://raw.githubusercontent.com/abhayraj-ops/Cake-Learn/main/docs/${mdFileName}`;
+              
+              // Fetch the markdown file
+              const response = await fetch(mdPath);
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+              }
+              
+              const markdownContent = await response.text();
+              
+              // Copy to clipboard
+              await navigator.clipboard.writeText(markdownContent);
+              
+              // Update button state
+              copyAllBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Copied!
+              `;
+              copyAllBtn.classList.add('copied');
+              
+              setTimeout(() => {
+                copyAllBtn.innerHTML = `
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy Page as Markdown
+                `;
+                copyAllBtn.classList.remove('copied');
+              }, 3000);
+            } catch (err) {
+              console.error('Failed to copy:', err);
+              copyAllBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                Failed to copy
+              `;
+              setTimeout(() => {
+                copyAllBtn.innerHTML = `
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  Copy Page as Markdown
+                `;
+              }, 2000);
+            }
+          });
+        }
+      }, 100); // Small delay to ensure content is rendered
     });
   </script>
 </body>
