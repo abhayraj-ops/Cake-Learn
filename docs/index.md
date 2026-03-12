@@ -25,6 +25,7 @@ graph TB
     A --> F[⚡ Components]
     A --> G[🎮 Controllers]
     A --> H[📄 Pagination & Request/Response]
+    A --> I[👁️ Views]
 
     B --> B1[CakePHP at a Glance]
     B --> B2[Where to Get Help]
@@ -46,6 +47,11 @@ graph TB
     H --> H1[Pagination]
     H --> H2[Request Object]
     H --> H3[Response Object]
+    
+    I --> I1[Templates]
+    I --> I2[Elements]
+    I --> I3[Themes]
+    I --> I4[View Cells]
 ```
 
 ---
@@ -83,12 +89,12 @@ graph TB
 | [Controller Components](05-components.html)                          | Flash, Form Protection, HTTP Cache components                 | ✅ Available |
 | [Controllers](06-controllers.html)                                   | Request handling, middleware, and rate limiting               | ✅ Available |
 | [Pagination & Request/Response](07-pagination-request-response.html) | Pagination, request handling, and response generation         | ✅ Available |
+| [Views, Elements & Themes](08-views.html)                            | Templates, layouts, view blocks, elements, themes, and cells  | ✅ Available |
 
 ### Coming Soon
 
 - 🗄️ Database Configuration
 - 🛣️ Routing Basics
-- 👁️ Views & Templates
 - 📊 ORM & Query Builder
 - 🔐 Authentication & Authorization
 - 🧪 Testing
@@ -193,12 +199,12 @@ This documentation is generated from scraped CakePHP official documentation. If 
 
 ```mermaid
 pie title Documentation Coverage
-    "Completed" : 7
+    "Completed" : 8
     "In Progress" : 0
-    "Planned" : 11
+    "Planned" : 10
 ```
 
-**Current Status:** 7 documents completed, 11+ planned
+**Current Status:** 8 documents completed, 10+ planned
 
 ---
 

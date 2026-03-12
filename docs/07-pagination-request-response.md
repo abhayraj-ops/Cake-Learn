@@ -11,8 +11,8 @@ description: Complete guide to CakePHP pagination, request introspection, and re
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="06-controllers.html" style="color: var(--link-color);">← Previous: Controllers</a>
-    <span style="color: var(--text-secondary);">📄 Page 7 of 7</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">📄 Page 7 of 8</span>
+    <a href="08-views.html" style="color: var(--link-color);">Next: Views →</a>
   </div>
 </nav>
 
@@ -1849,8 +1849,8 @@ mindmap
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="06-controllers.html" style="color: var(--link-color);">← Previous: Controllers</a>
-    <span style="color: var(--text-secondary);">📄 Page 7 of 7</span>
-    <a href="index.html" style="color: var(--link-color);">Home →</a>
+    <span style="color: var(--text-secondary);">📄 Page 7 of 8</span>
+    <a href="08-views.html" style="color: var(--link-color);">Next: Views →</a>
   </div>
 </nav>
 

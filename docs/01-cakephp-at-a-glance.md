@@ -11,7 +11,7 @@ description: Introduction to CakePHP framework concepts and architecture
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="index.html" style="color: var(--link-color);">← Home</a>
-    <span style="color: var(--text-secondary);">📖 Page 1 of 7</span>
+    <span style="color: var(--text-secondary);">📖 Page 1 of 8</span>
     <a href="02-installation-guide.html" style="color: var(--link-color);">Next: Installation →</a>
   </div>
 </nav>
@@ -434,7 +434,7 @@ The next obvious steps are to:
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="index.html" style="color: var(--link-color);">← Home</a>
-    <span style="color: var(--text-secondary);">📖 Page 1 of 7</span>
+    <span style="color: var(--text-secondary);">📖 Page 1 of 8</span>
     <a href="02-installation-guide.html" style="color: var(--link-color);">Next: Installation →</a>
   </div>
 </nav>

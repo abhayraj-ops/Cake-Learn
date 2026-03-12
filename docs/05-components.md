@@ -11,7 +11,7 @@ description: Learn about CakePHP Controller Components - packages of logic share
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 20px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="04-cms-tutorial.html" style="color: var(--link-color);">← Previous: CMS Tutorial</a>
-    <span style="color: var(--text-secondary);">⚙️ Page 5 of 7</span>
+    <span style="color: var(--text-secondary);">⚙️ Page 5 of 8</span>
     <a href="06-controllers.html" style="color: var(--link-color);">Next: Controllers →</a>
   </div>
 </nav>
@@ -533,7 +533,7 @@ public function beforeFilter(EventInterface $event): void
 <nav style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 15px 20px; margin: 30px 0;">
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
     <a href="04-cms-tutorial.html" style="color: var(--link-color);">← Previous: CMS Tutorial</a>
-    <span style="color: var(--text-secondary);">⚙️ Page 5 of 7</span>
+    <span style="color: var(--text-secondary);">⚙️ Page 5 of 8</span>
     <a href="06-controllers.html" style="color: var(--link-color);">Next: Controllers →</a>
   </div>
 </nav>
