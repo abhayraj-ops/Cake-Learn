@@ -27,8 +27,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     </title>
     <?= $this->Html->meta('icon') ?>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <?= $this->Html->css(['normalize.min', 'milligram.min', 'fonts', 'cake', 'glass']) ?>
+    <?= $this->Html->css(['normalize.min', 'milligram.min', 'fonts', 'cake']) ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>

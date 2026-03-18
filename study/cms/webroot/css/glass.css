@@ -1,0 +1,236 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --bg-main: #020617;
+    --bg-card: rgba(15, 23, 42, 0.6);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --accent-primary: #818cf8;
+    --accent-secondary: #c084fc;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --glass-blur: 24px;
+}
+
+body {
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(192, 132, 252, 0.15) 0%, transparent 40%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Elegant Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { 
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+@keyframes pageReveal {
+    from { opacity: 0; transform: translateY(10px); filter: blur(10px); }
+    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+.top-nav {
+    background: rgba(2, 6, 23, 0.8);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 4rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-nav-title a {
+    color: var(--text-primary) !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    letter-spacing: -0.02em;
+}
+
+.top-nav-title span {
+    background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.top-nav-links a {
+    color: var(--text-secondary) !important;
+    margin-left: 2.5rem;
+    text-decoration: none !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.top-nav-links a:hover {
+    color: var(--text-primary) !important;
+    text-shadow: 0 0 20px rgba(129, 140, 248, 0.5);
+}
+
+.main {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.content {
+    background: var(--bg-card) !important;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border-color) !important;
+    border-radius: 1.5rem !important;
+    padding: 3.5rem !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    animation: pageReveal 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.content h1, .content h2, .content h3 {
+    font-weight: 800 !important;
+    letter-spacing: -0.03em;
+    margin-bottom: 2rem;
+    color: var(--text-primary) !important;
+}
+
+.content a {
+    color: var(--accent-primary) !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.content a:hover {
+    border-bottom-color: var(--accent-primary);
+}
+
+.button, button, input[type='button'], input[type='submit'] {
+    background: var(--text-primary) !important;
+    color: var(--bg-main) !important;
+    border: none !important;
+    padding: 0.85rem 2rem !important;
+    border-radius: 0.75rem !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    height: auto !important;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+    filter: brightness(0.9);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+}
+
+thead th {
+    text-align: left;
+    padding: 1.25rem !important;
+    color: var(--text-secondary) !important;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+tbody td {
+    padding: 1.25rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+tbody tr {
+    transition: background 0.3s;
+}
+
+tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+input[type='text'], input[type='password'], input[type='email'], select, textarea {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 0.75rem !important;
+    color: var(--text-primary) !important;
+    padding: 1rem !important;
+    width: 100%;
+    font-family: inherit;
+    transition: all 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent-primary) !important;
+    box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.15);
+}
+
+.side-nav a {
+    color: var(--text-secondary) !important;
+    padding: 0.85rem 1.25rem !important;
+    border-radius: 0.75rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.side-nav a:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary) !important;
+    transform: translateX(5px);
+}
+
+/* Home Page Elevation */
+header h1 {
+    font-size: 4rem !important;
+    font-weight: 800 !important;
+    margin-top: 1rem;
+}
+
+.bullet:before {
+    color: var(--accent-primary) !important;
+    font-size: 1.2rem !important;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--border-color) !important;
+    margin: 3rem 0;
+}
+
+.message {
+    border-radius: 1rem !important;
+    padding: 1.25rem !important;
+    font-weight: 500;
+}
+
+.message.success {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border: 1px solid rgba(16, 185, 129, 0.2) !important;
+    color: #34d399 !important;
+}
+
+.message.error {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 1px solid rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+}

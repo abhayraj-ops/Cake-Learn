@@ -9,7 +9,7 @@
  * It's loaded within the context of `Application::routes()` method which
  * receives a `RouteBuilder` instance `$routes` as method argument.
  *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * CpreakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
@@ -25,10 +25,10 @@ use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 
 /*
- * This file is loaded in the context of the `Application` class.
-  * So you can use  `$this` to reference the application class instance
-  * if required.
- */
+* This file is loaded in the context of the `Application` class.
+* So you can use  `$this` to reference the application class instance
+* if required.
+*/
 return function (RouteBuilder $routes): void {
     /*
      * The default class to use for all routes
@@ -46,7 +46,7 @@ return function (RouteBuilder $routes): void {
      * Note that `Route` does not do any inflections on URLs which will result in
      * inconsistently cased URLs when used with `{plugin}`, `{controller}` and
      * `{action}` markers.
-     */
+     */     
     $routes->setRouteClass(DashedRoute::class);
 
     $routes->scope('/', function (RouteBuilder $builder): void {
