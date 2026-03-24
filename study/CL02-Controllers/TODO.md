@@ -16,7 +16,7 @@
 - [ ] **The App Controller**
   - Create `src/Controller/AppController.php` extending `Cake\Controller\Controller`
   - Implement `initialize()` method - load global components available to all controllers
-  - Purpose: share common methods across all controllers
+  - Purpose: share common methods acssross all controllers
 
 ---
 

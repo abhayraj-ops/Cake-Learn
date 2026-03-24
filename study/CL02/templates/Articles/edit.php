@@ -122,14 +122,25 @@
         <?= h($article['id']) ?>
     </div>
     <h1>Edit Article</h1>
-    <form action="/articles/edit/<?= h($article['id']) ?>" method="post">
-        <?= $this->Form->hidden('_csrfToken', ['value' => $this->request->getAttribute('csrfToken')]) ?> <label
-            for="title">Title</label>
-        <input type="text" id="title" name="title" value="<?= h($article['title']) ?>" required />
-        <label for="body">Body</label>
-        <textarea id="body" name="body" required><?= h($article['body']) ?></textarea>
-        <button type="submit" class="btn">Update Article</button>
-    </form>
+
+<?= $this->Form->create($article, ['url' => ['action' => 'edit', $article->id]]) ?>
+
+    <label for="title">Title</label>
+    <?= $this->Form->control('title', [
+        'id'    => 'title',
+        'label' => false,
+    ]) ?>
+
+    <label for="body">Body</label>
+    <?= $this->Form->control('body', [
+        'id'    => 'body', 
+        'type'  => 'textarea',
+        'label' => false,
+    ]) ?>
+
+    <?= $this->Form->button('Update Article', ['class' => 'btn']) ?>
+
+<?= $this->Form->end() ?>
 </body>
 
 </html>

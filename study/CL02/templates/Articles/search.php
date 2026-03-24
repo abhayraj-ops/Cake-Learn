@@ -182,6 +182,16 @@
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
+    <p class="page-count">
+        <?= $this->Paginator->counter('Page {{page}} of {{pages}}, showing {{current}} of {{count}} articles') ?>
+    </p>
+    <div class="pagination">
+        <?= $this->Paginator->first('« First') ?>
+        <?= $this->Paginator->prev('← Prev') ?>
+        <?= $this->Paginator->numbers() ?>
+        <?= $this->Paginator->next('Next →') ?>
+        <?= $this->Paginator->last('Last »') ?>
+    </div>
 </body>
 
 </html>

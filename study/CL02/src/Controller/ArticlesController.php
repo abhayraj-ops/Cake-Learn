@@ -1,130 +1,171 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Controller\Exception\FormProtectionException;
 use Cake\Http\Exception\NotFoundException;
 
 class ArticlesController extends AppController
 {
-    private array $data = [
-        ['id' => 1, 'title' => 'First Article', 'body' => 'Body of first article'],
-        ['id' => 2, 'title' => 'Second Article', 'body' => 'Body of second article'],
-        ['id' => 3, 'title' => 'Third Article', 'body' => 'Body of third article'],
-    ];
-    public function index(): void
+    public function initialize(): void
     {
-        $this->set([
-            'articles' => $this->data,
-            'total' => count($this->data),
-            'page' => 'Articles Index',
-        ]);
+        parent::initialize();
+        $this->loadComponent(
+            'FormProtection',
+            [
+                'unlockedActions' => ['search', 'apiIndex', 'delete']
+            ]
+        );
+        $this->loadComponent('CheckHttpCache');
+    }
+
+    public function beforeFilter(\Cake\Event\EventInterface $event)
+    {
+        parent::beforeFilter($event);
+
+        $this->FormProtection->setConfig(
+            'validateFailureCallback',
+            function (FormProtectionException $exception) {
+                $this->Flash->error('Form Security Check Failed');
+                return $this->redirect(['action' => 'index']);
+            }
+        );
+    }
+
+    public function index()
+    {
+        $articles = $this->paginate(
+            $this->Articles->find()
+                ->select(['id', 'title', 'body'])
+                ->orderBy(['Articles.id' => 'ASC']),
+            ['limit' => 10]
+        );
+
+        $latest = $this->Articles->find()
+            ->orderBy(['modified' => 'DESC'])
+            ->first();
+
+        if ($latest) {
+            $response = $this->response
+                ->withEtag(md5($latest->modified . $latest->id))
+                ->withModified($latest->modified)
+                ->withCache('-1 minute', '+1 hour');
+
+            if ($response->isNotModified($this->request)) {
+                return $response;  // ← return the response object directly
+            }
+
+            $this->response = $response;
+        }
+
+        $this->set(['articles' => $articles, 'page' => 'Articles Index']);
 
         $this->viewBuilder()
-            ->addHelper('Html')
-            ->addHelper('Url')
-            ->setLayout('default');
+            ->addHelper('Paginator')
+            ->setLayout('ajax');
     }
 
     public function view($id)
     {
-        $article = null;
-        foreach ($this->data as $key => $value) {
-            if ($value['id'] == $id) {
-                $article = $value;
-                break;
-            }
-        }
+        $article = $this->Articles->get($id);
 
-        if ($article === null) {
-            throw new NotFoundException('Article not found!!');
+        $etag = md5($article->modified . $article->id);
+
+        $response = $this->response
+            ->withEtag($etag)
+            ->withModified($article->modified)
+            ->withCache('-1 minute', '+1 hour');
+        if ($response->isNotModified($this->request)) {
+            return $response;  // ← return the response object directly
         }
 
         $this->set('article', $article);
-
+        $this->viewBuilder()
+            ->addHelper('Html')
+            ->setLayout('default');
     }
 
-    public function edit($id)
+    public function add()
     {
-        $articleKey = null;
-        $article = null;
-        foreach ($this->data as $key => $value) {
-            if ($value['id'] == $id) {
-                $article = $value;
-                $articleKey = $key;
-                break;
+        $article = $this->Articles->newEmptyEntity();
+
+        if ($this->request->is('post')) {
+            $article = $this->Articles->patchEntity($article, $this->request->getData());
+            $article->user_id = 1;
+            $article->slug = strtolower(str_replace(' ', '-', $article->title ?? ''));
+            $article->published = 1;
+
+            if ($this->Articles->save($article)) {
+                $this->Flash->success("Data Saved Successfully");
+                return $this->redirect(['action' => 'index']);
             }
-        }
-
-        if ($article === null) {
-            throw new NotFoundException('Article Not Found');
-        }
-
-        if ($this->request->is(['put', 'post'])) {
-            $this->data[$articleKey] = $this->request->getData() + ['id' => $id];
-            $this->Flash->success('Successfuly Updated');
-            $this->redirect(['action' => 'index']);
+            $this->Flash->error('Could not save. Check errors.');
             return;
         }
 
         $this->set(compact('article'));
-
         $this->viewBuilder()
+            ->addHelper('Html')
+            ->addHelper('Form')
+            ->setLayout('default');
+    }
+
+    public function edit(int $id)
+    {
+        $article = $this->Articles->get($id);
+
+        if ($this->request->is(['post', 'put'])) {
+            $this->Articles->patchEntity($article, $this->request->getData());
+            $article->slug = strtolower(str_replace([' ', "'", '"'], ['-', '', ''], $article->title ?? ''));
+
+            if ($this->Articles->save($article)) {
+                $this->Flash->success('Article updated.');
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error('Could not update.');
+        }
+
+        $this->set(compact('article'));
+        $this->viewBuilder()
+            ->addHelper('Html')
             ->addHelper('Form')
             ->setLayout('default');
     }
 
     public function delete($id)
     {
-        if ($this->request->is('delete')) {
-            $this->data = array_filter(
-                $this->data,
-                fn($item) => $item['id'] !== $id
-            );
-            $this->Flash->success('Successfuly Deleted.');
-            $this->redirect(['action' => 'index']);
+        $this->request->allowMethod(['post', 'delete']);
+        $article = $this->Articles->get($id);
+
+        if ($this->Articles->delete($article)) {
+            $this->Flash->success('Article Deleted Successfully');
+        } else {
+            $this->Flash->error('Could not delete.');
         }
-    }
-
-    public function add()
-    {
-        $article = [];
-
-        if ($this->request->is('post')) {
-
-            $article = $this->request->getData();
-            $article['id'] = count($this->data) + 1;
-            $this->data[] = $article;
-
-            $this->Flash->success('Article Created');
-            $this->redirect(['action' => 'index']);
-
-            return;
-
-        }
-
-        $this->set(compact('article'));
-
-        $this->viewBuilder()
-            ->addHelper('Form')
-            ->setLayout('default');
+        $this->redirect(['action' => 'index']);
     }
 
     public function search(): void
     {
         $query = $this->request->getData('query') ?? '';
 
-        $results = array_filter(
-            $this->data,
-            fn($item) => str_contains(strtolower($item['title']), strtolower($query))
+        $articles = $this->paginate(
+            $this->Articles->find()
+                ->where(['Articles.title LIKE' => '%' . $query . '%'])
+                ->orderBy(['Articles.id' => 'ASC']),
+            ['limit' => 10]   // ← same pattern as index(), no $this->paginate
         );
 
         $this->set([
-            'articles' => $results,
+            'articles' => $articles,
             'query' => $query,
-            'count' => count($results),
+            'page' => 'Search: ' . h($query),
         ]);
+
+        $this->viewBuilder()
+            ->addHelper('Paginator')
+            ->setLayout('ajax');
     }
 
     public function apiIndex()
@@ -133,7 +174,6 @@ class ArticlesController extends AppController
         $this->response = $this->response
             ->withType('application/json')
             ->withStatus(200)
-            ->withStringBody(json_encode($this->data));
+            ->withStringBody(json_encode($this->Articles->find()->all()->toArray()));
     }
-
 }

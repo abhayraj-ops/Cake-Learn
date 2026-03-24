@@ -7,12 +7,23 @@ return function (RouteBuilder $routes): void {
 
     $routes->setRouteClass(DashedRoute::class);
 
+    $routes->scope('/articles', function (RouteBuilder $builder): void {
+
+        $builder->connect('/', ['controller' => 'Articles', 'action' => 'index']);
+
+        $builder->connect('/view/*', ['controller' => 'Articles', 'action' => 'view']);
+
+        $builder->connect('/edit/*', ['controller' => 'Articles', 'action' => 'edit']);
+
+        $builder->connect('/delete/*', ['controller' => 'Articles', 'action' => 'delete']);
+
+        $builder->connect('/search', ['controller' => 'Articles', 'action' => 'search']);
+    });
+
     $routes->scope('/', function (RouteBuilder $builder): void {
 
-        $builder->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
-
-        $builder->connect('/pages/*', 'Pages::display');
-
         $builder->fallbacks();
+
     });
+
 };

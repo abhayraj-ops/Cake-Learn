@@ -113,14 +113,27 @@
     <?= $this->Flash->render() ?>
     <a href="/articles" class="back">← Back to Articles</a>
     <h1>New Article</h1>
-    <form action="/articles/add" method="post">
-        <?= $this->Form->hidden('_token', ['value' => $this->request->getAttribute('csrfToken')]) ?>
-        <label for="title">Title</label>
-        <input type="text" id="title" name="title" value="<?= h($article['title'] ?? '') ?>" required />
-        <label for="body">Body</label>
-        <textarea id="body" name="body" required><?= h($article['body'] ?? '') ?></textarea>
-        <button type="submit" class="btn">Create Article</button>
-    </form>
+
+    <?= $this->Form->create($article, ['url' => ['action' => 'add']]) ?>
+
+    <label for="title">Title</label>
+    <?= $this->Form->control('title', [
+        'id' => 'title',
+        'label' => false,
+        'value' => $article->title ?? '',
+    ]) ?>
+
+    <label for="body">Body</label>
+    <?= $this->Form->control('body', [
+        'id' => 'body',
+        'label' => false,
+        'type' => 'textarea',
+        'value' => $article->body ?? '',
+    ]) ?>
+
+    <?= $this->Form->button('Create Article', ['class' => 'btn']) ?>
+
+    <?= $this->Form->end() ?>
 </body>
 
 </html>
