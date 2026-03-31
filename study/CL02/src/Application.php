@@ -25,6 +25,7 @@ class Application extends BaseApplication
     public function bootstrap(): void
     {
         parent::bootstrap();
+        $this->addPlugin('Modern');
 
         if (PHP_SAPI !== 'cli') {
             FactoryLocator::add('Table', (new TableLocator())->allowFallbackClass(false));

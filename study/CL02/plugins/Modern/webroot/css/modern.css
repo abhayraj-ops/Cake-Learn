@@ -1,0 +1,25 @@
+body.theme-modern {
+    background: #0a0a0a;
+    color: #e8e8e8;
+    font-family: monospace;
+    margin: 0;
+}
+
+.modern-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #1e1e1e;
+    background: #111;
+}
+
+.modern-logo {
+    color: #42f5c8;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+}
+
+.modern-wrap {
+    padding: 2rem;
+}

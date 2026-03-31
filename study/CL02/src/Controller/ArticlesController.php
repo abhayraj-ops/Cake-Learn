@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Controller\Exception\FormProtectionException;
-use Cake\Http\Exception\NotFoundException;
 
 class ArticlesController extends AppController
 {
@@ -53,7 +52,7 @@ class ArticlesController extends AppController
                 ->withCache('-1 minute', '+1 hour');
 
             if ($response->isNotModified($this->request)) {
-                return $response;  // ← return the response object directly
+                return $response;
             }
 
             $this->response = $response;
@@ -62,6 +61,7 @@ class ArticlesController extends AppController
         $this->set(['articles' => $articles, 'page' => 'Articles Index']);
 
         $this->viewBuilder()
+            ->setLayout('default')
             ->addHelper('Paginator')
             ->setLayout('ajax');
     }
@@ -70,15 +70,12 @@ class ArticlesController extends AppController
     {
         $article = $this->Articles->get($id);
 
-        $etag = md5($article->modified . $article->id);
+        $etag = md5($article->modified->toUnixString() . $article->id);
 
-        $response = $this->response
-            ->withEtag($etag)
+        $this->response = $this->response
+            ->withEtag(trim($etag, '"'))
             ->withModified($article->modified)
             ->withCache('-1 minute', '+1 hour');
-        if ($response->isNotModified($this->request)) {
-            return $response;  // ← return the response object directly
-        }
 
         $this->set('article', $article);
         $this->viewBuilder()

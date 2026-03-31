@@ -22,6 +22,10 @@ return function (RouteBuilder $routes): void {
 
     $routes->scope('/', function (RouteBuilder $builder): void {
 
+        $builder->connect('/', ['controller' => 'Homes', 'action' => 'home']);
+
+        $builder->connect('/api-home', ['controller' => 'Homes', 'action' => 'apiHome']);
+
         $builder->fallbacks();
 
     });
