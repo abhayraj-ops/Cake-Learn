@@ -26,6 +26,8 @@ return function (RouteBuilder $routes): void {
 
         $builder->connect('/api-home', ['controller' => 'Homes', 'action' => 'apiHome']);
 
+        $builder->connect('/dashboard', ['controller' => 'Dashboards', 'action' => 'index']);
+
         $builder->fallbacks();
 
     });

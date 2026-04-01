@@ -40,7 +40,6 @@ class ArticlesController extends AppController
                 ->orderBy(['Articles.id' => 'ASC']),
             ['limit' => 10]
         );
-
         $latest = $this->Articles->find()
             ->orderBy(['modified' => 'DESC'])
             ->first();
