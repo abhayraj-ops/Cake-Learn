@@ -37,8 +37,9 @@ class ArticlesController extends AppController
         $articles = $this->paginate(
             $this->Articles->find()
                 ->select(['id', 'title', 'body'])
-                ->orderBy(['Articles.id' => 'ASC']),
-            ['limit' => 10]
+                ->where(['published' => true])
+                ->orderBy(['created' => 'DESC']),
+            ['limit' => 5]
         );
         $latest = $this->Articles->find()
             ->orderBy(['modified' => 'DESC'])

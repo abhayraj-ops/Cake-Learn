@@ -65,10 +65,6 @@ class ArticlesTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->integer('user_id')
-            ->notEmptyString('user_id');
-
-        $validator
             ->scalar('title')
             ->maxLength('title', 255)
             ->requirePresence('title', 'create')

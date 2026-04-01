@@ -29,7 +29,6 @@ class Article extends Entity
      * @var array<string, bool>
      */
     protected array $_accessible = [
-        'user_id' => true,
         'title' => true,
         'slug' => true,
         'body' => true,
@@ -37,4 +36,21 @@ class Article extends Entity
         'created' => true,
         'modified' => true,
     ];
+
+    protected function _getTitle(string $title): string
+    {
+        return ucwords($title);
+    }
+
+    protected function _setBody(string $body): string
+    {
+        return trim($body);
+    }
+
+    protected function _getPreview(): string
+    {
+        return substr($this->body ?? '', 0, 100) . '...';
+    }
+
+    protected array $_virtual = ['preview'];
 }
