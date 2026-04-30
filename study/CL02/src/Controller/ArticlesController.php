@@ -90,7 +90,7 @@ class ArticlesController extends AppController
         if ($this->request->is('post')) {
             $article = $this->Articles->patchEntity($article, $this->request->getData());
             $article->user_id = 1;
-            $article->slug = strtolower(str_replace(' ', '-', $article->title ?? ''));
+            //$article->slug = strtolower(str_replace(' ', '-', $article->title ?? ''));
             $article->published = 1;
 
             if ($this->Articles->save($article)) {
@@ -114,7 +114,7 @@ class ArticlesController extends AppController
 
         if ($this->request->is(['post', 'put'])) {
             $this->Articles->patchEntity($article, $this->request->getData());
-            $article->slug = strtolower(str_replace([' ', "'", '"'], ['-', '', ''], $article->title ?? ''));
+            //$article->slug = strtolower(str_replace([' ', "'", '"'], ['-', '', ''], $article->title ?? ''));
 
             if ($this->Articles->save($article)) {
                 $this->Flash->success('Article updated.');
